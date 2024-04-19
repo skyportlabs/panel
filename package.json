@@ -1,0 +1,28 @@
+{
+  "name": "skyport",
+  "version": "1.0.0",
+  "description": "It's skyport.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@keyv/sqlite": "^3.6.7",
+    "@tailwindcss/forms": "^0.5.7",
+    "axios": "^1.6.8",
+    "body-parser": "^1.20.2",
+    "cat-loggr": "^1.2.2",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-basic-auth": "^1.2.1",
+    "express-session": "^1.18.0",
+    "fs": "^0.0.1-security",
+    "keyv": "^4.5.4",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "tailwindcss": "^3.4.3",
+    "uuid": "^9.0.1"
+  }
+}

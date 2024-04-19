@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../assets/tailwind.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body style="font-family: 'Inter'" class="bg-[#181818]">
+    <div class="flex relative items-center justify-center w-screen h-[100svh] md:h-[100svh] overflow-hidden">
+        <div class="absolute top-4 right-4 md:top-6 md:right-6">
+           <button class="w-fit p-2 rounded-md hover:scale-110 active:scale-100 duration-200 bg-white/[0.05]">
+            <svg class="h-5 w-5 text-white" height="1792" viewBox="0 0 1792 1792" width="1792" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M1664 896q0 251-146.5 451.5t-378.5 277.5q-27 5-39.5-7t-12.5-30v-211q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-121-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-86-13.5q-44 113-7 204-79 85-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-40 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 89t.5 54q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/></svg>
+           </button>
+        </div>
+        <div class="flex flex-col gap-4 md:gap-8">
+           <div class="flex flex-row gap-5 justify-center items-center text-xl lg:text-3xl w-[450px] p-4 h-fit" style="opacity: 1; transform: none;">
+              <div class="lg:max-w-[20rem] text-white tracking-tighter text-center">Skyport Beta</div>
+           </div>
+           <div class="rounded-lg flex flex-col w-[350px] lg:w-[450px] mx-auto p-8 backdrop-blur-xl h-fit border border-neutral-800/50 bg-neutral-900/80 shadow-md" style="opacity: 1; transform: none;">
+              <div id="0auth" class="flex flex-col gap-1">
+                <input type="text" autocomplete="username" id="username" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-xs lg:text-base w-full items-center transition justify-left gap-16 hover:bg-white/10 px-6 py-4 flex :text-slate-100 border-white/5 bg-neutral-900 placeholder:text-white/20 text-black border border-black/10" placeholder="admin">
+              </div>
+              <div id="0auth" class="flex flex-col gap-1 mt-5">
+                <input type="password" autocomplete="current-password" id="password" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-xs lg:text-base w-full items-center transition justify-left gap-16 hover:bg-white/10 px-6 py-4 flex text-slate-100 border-white/5 bg-neutral-900 placeholder:text-white/20 text-black border border-black/10" placeholder="*******">
+              </div>
+              <div id="divider" class="py-4 text-white/10 tracking-tighter text-xs text-center w-full">--------</div>
+              <button onclick="submitForm()" class="rounded-lg text-xs lg:text-base font-normal tracking-tight w-full items-center transition justify-left gap-16 hover:bg-black/5 hover:bg-white/10 px-12 py-4 flex text-slate-100 border-white/10 bg-neutral-900/10 text-black border border-black/10">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-in ">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                    <polyline points="10 17 15 12 10 7"></polyline>
+                    <line x1="15" x2="3" y1="12" y2="12"></line>
+                 </svg>
+                 Continue to Skyport
+              </button>
+           </div>
+           <script>
+            async function submitForm() {
+             let n = encodeURIComponent(document.getElementById("username").value);
+             let p = encodeURIComponent(document.getElementById("password").value);
+             document.location.href = `/auth/login?username=${n}&password=${p}`;
+            }
+           </script>
+        </div>
+        <div class="absolute w-fit bottom-0 -z-10" style="opacity: 1; transform: none;"><img src="/assets/glasswork.png" alt="blobs" class="w-screen opacity-100 object-contain"></div>
+     </div>
+</body>
+</html>

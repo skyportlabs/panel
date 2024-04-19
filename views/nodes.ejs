@@ -1,0 +1,157 @@
+<%- include('components/template') %>
+<main>
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+           <h1 class="text-base font-semibold leading-6 text-white">Nodes</h1>
+           <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the nodes set up on the Skyport panel.</p>
+         </div>
+         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+           <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new node</button>
+         </div>
+       </div>
+      <div id="nodeTable" class="mt-6 w-full">
+      <table class="mt-6 w-full whitespace-nowrap text-left">
+        <colgroup>
+          <col class="w-full sm:w-4/12">
+          <col class="lg:w-4/12">
+          <col class="lg:w-2/12">
+          <col class="lg:w-1/12">
+          <col class="lg:w-1/12">
+        </colgroup>
+        <thead class="border-b border-white/5 text-sm leading-6 text-white">
+          <tr>
+            <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
+            <th scope="col" class="hidden py-2 pl-0 pr-8 font-semibold sm:table-cell">Connection</th>
+            <th scope="col" class="py-2 pl-0 pr-4 text-right font-semibold sm:pr-8 sm:text-left lg:pr-20">Status</th>
+            <th scope="col" class="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">Instances</th>
+            <th scope="col" class="hidden py-2 pl-0 pr-4 text-right font-semibold sm:table-cell sm:pr-6 lg:pr-8">Deployed at</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+         <% nodes.forEach(function(node) { %>
+          <tr>
+            <td class="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
+              <div class="flex items-center gap-x-4">
+                <div class="truncate text-sm font-medium leading-6 text-white"><%= node.name %></div>
+              </div>
+            </td>
+            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+              <div class="flex gap-x-3">
+                <div class="font-mono text-sm leading-6 text-neutral-400"><%= node.address %><span class="text-neutral-500">:<%= node.port %></span></div>
+                <div class="rounded-md bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"><%= node.versionRelease || 'unknown' %></div>
+              </div>
+            </td>
+            <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
+              <% if (node.status == "Online") { %>
+              <div class="flex items-center justify-end gap-x-2 sm:justify-start">
+                <div class="flex-none rounded-full p-1 text-emerald-400 bg-emerald-400/10">
+                  <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                </div>
+                <div class="hidden text-white sm:block">online</div>
+              </div>
+              <% } else if (node.status == "Offline") { %>
+               <div class="flex items-center justify-end gap-x-2 sm:justify-start">
+                  <div class="flex-none rounded-full p-1 text-neutral-600 bg-neutral-600/10">
+                    <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                  </div>
+                  <div class="hidden text-white sm:block">connection failed</div>
+               </div>
+               <% } else { %>
+               <div class="flex items-center justify-end gap-x-2 sm:justify-start">
+                  <div class="flex-none rounded-full p-1 text-neutral-400 bg-neutral-400/10">
+                     <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                  </div>
+                  <div class="hidden text-white sm:block">unknown</div>
+               </div>
+               <% } %>
+            </td>
+            <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20">1</td>
+            <td class="hidden py-4 pl-0 pr-4 text-right text-sm leading-6 text-neutral-400 sm:table-cell sm:pr-6 lg:pr-8">
+              <time datetime="2023-01-23T11:00">TODO</time>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      </div>
+      <div id="nodeForm" class="mt-6 px-8 w-full hidden">
+        <form>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
+         <input id="nodeName" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My node">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
+         <input id="nodeTags" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="Tag 1 - Tag 2 - Tag 3">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">RAM (GB):</label>
+         <input id="nodeRam" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (GB):</label>
+         <input id="nodeDisk" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="40">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Processor:</label>
+         <input id="nodeProcessor" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="AMD EPYC 9454 - 16 Threads">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">IP Address:</label>
+         <input id="nodeAddress" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="192.168.1.1 or my.hostnamehere.com">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Daemon Port:</label>
+         <input id="nodePort" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8080">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Access Key:</label>
+         <input id="nodeApiKey" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="skyportd_xxxxxxxxxxxxxxxx">
+    
+         <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
+      </form>
+    </div>
+    </div>
+</main>
+<script>
+  document.getElementById('createButton').addEventListener('click', function() {
+    var table = document.getElementById('nodeTable');
+    var form = document.getElementById('nodeForm');
+    if (table.style.display !== 'none') {
+      table.style.display = 'none';
+      form.style.display = 'block';
+    } else {
+      table.style.display = 'block';
+      form.style.display = 'none';
+    }
+  });
+</script>
+<script>
+document.getElementById('createNodeBtn').addEventListener('click', function() {
+    const name = document.getElementById('nodeName').value;
+    const tags = document.getElementById('nodeTags').value.split('-');
+    const ram = document.getElementById('nodeRam').value;
+    const disk = document.getElementById('nodeDisk').value;
+    const processor = document.getElementById('nodeProcessor').value;
+    const address = document.getElementById('nodeAddress').value;
+    const port = document.getElementById('nodePort').value;
+    const apiKey = document.getElementById('nodeApiKey').value;
+
+    const nodeData = {
+        name, tags, ram, disk, processor, address, port, apiKey
+    };
+
+    fetch('/nodes/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(nodeData)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Failed to create node');
+    })
+    .then(data => {
+        console.log('Node created:', data);
+        alert('Done! Node created successfully.')
+    })
+    .catch(error => console.error('Error creating node:', error));
+});
+</script>
+<%- include('components/footer') %>

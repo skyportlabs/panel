@@ -1,0 +1,17 @@
+<%- include('components/template') %>
+<main>
+   <div class="px-4 sm:px-6 lg:px-8">
+      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
+      <% instances.forEach(function(instance) { %>
+      <a href="../instance/<%= instance.ContainerId %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10">
+         <div class="lg:flex lg:items-center lg:justify-between">
+            <div class="min-w-0 flex-1">
+               <h2 class="text-md font-medium text-white tracking-tight">instance <%= (instance.ContainerId).substring(0, 8); %></h2>
+               <p class="text-xs uppercase text-neutral-600 tracking-wide mt-1"><%= instance.Memory / 1024 / 1024 %> MB Memory / <%= instance.Cpu %> CPU Thread(s)</p>
+            </div>
+         </div>
+      </a>
+      <% }); %>
+   </div>
+</main>
+<%- include('components/footer') %>

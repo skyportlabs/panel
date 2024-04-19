@@ -1,0 +1,12 @@
+[
+    {
+        "path": "/instances",
+        "template": "instances",
+        "requiresAuth": true
+    },
+    {
+        "path": "/login",
+        "template": "auth/login",
+        "requiresAuth": false
+    }
+]
