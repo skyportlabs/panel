@@ -1,0 +1,301 @@
+<%- include('components/template') %>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js" integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css" integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/attach/attach.min.js" integrity="sha512-43J76SR5UijcuJTzs73z8NpkyWon8a8EoV+dX6obqXW7O26Yb268H2vP6EiJjD7sWXqxS3G/YOqPyyLF9fmqgA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fit/fit.min.js" integrity="sha512-+wh8VA1djpWk3Dj9/IJDu6Ufi4vVQ0zxLv9Vmfo70AbmYFJm0z3NLnV98vdRKBdPDV4Kwpi7EZdr8mDY9L8JIA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fullscreen/fullscreen.min.css" integrity="sha512-Uowe00aPyi/0HrMR7lEu5Ot9HPayA6wIBueVcj3sCCbFV2dan8tMs2AbPmjPdHW5iDDjwRFMa5nvIwmOQQ/qaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fullscreen/fullscreen.min.js" integrity="sha512-a2UduN5n2FB1FMXX6b+R4EZsC+uEAco4KBuIDstE1Eq3NacUXhxNYeDcR+enLHDJBxrtffgjR6Z7gjx87668mw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/search/search.min.js" integrity="sha512-OkVnWNhmCMHw8pYndhQ+yEMJzD1VrgqF12deRfRcqR6iWL4s8IkxTBwSrJZ2WgpevhD71S68dAqBPHv/VHGDAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/terminado/terminado.min.js" integrity="sha512-TtKncBxqCuka3yQ40VKwx1Jm3cfx1JyWCbRjAFIu7gQ+pvi8b4RwDIbTfmckBi2hpTSdIxxIN2nn23U6tcoboQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/webLinks/webLinks.min.js" integrity="sha512-obszFFlN3K8h7hpqVwXAODf9IOnd1P4PuYRFAwZKTaykxzyMmizo9+eStvrFobjmFs6r6QVsXHMa7ksl34jecg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/zmodem/zmodem.min.js" integrity="sha512-bNnvEr5vJ3m5rknohyD4TK9GIfGYhZU9v8ScE5er0msHAJNnp4UYy+vspakf4xRfrfrQpqORwCpUKL89Dj85mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<main>
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+            <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
+            <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
+         </div>
+         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex">
+            <button id="startButton" type="button" class="block rounded-l-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-emerald-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            Start
+            </button>
+            <button id="restartButton" type="button" class="block bg-orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-orange-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            Restart
+            </button>
+            <button id="stopButton" type="button" class="block rounded-r-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            Stop
+            </button>
+         </div>
+      </div>
+   </div>
+   <div class="mt-8 ml-8 mb-8">
+      <div>
+         <div class="hidden sm:block">
+            <nav class="flex border-b border-white/5 py-4">
+               <ul role="list" class="flex min-w-full flex-none gap-x-6 px-2 text-sm font-semibold leading-6 text-neutral-500">
+                  <li>
+                     <a href="#" class="text-neutral-100">Overview</a>
+                  </li>
+                  <li>
+                     <a href="#" class="hover:scale-105">Files</a>
+                  </li>
+                  <li>
+                     <a href="#" class="hover:scale-105">Network</a>
+                  </li>
+                  <li>
+                     <a href="#" class="hover:scale-105">SFTP</a>
+                  </li>
+                  <li>
+                     <a href="#" class="hover:scale-105">Settings</a>
+                  </li>
+               </ul>
+            </nav>
+         </div>
+      </div>
+   </div>
+   <div class="rounded-lg bg-red-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8 hidden" id="daemonIsDown">
+      <div class="flex">
+         <div class="flex-shrink-0 ml-1.5">
+            <svg class="animate-spin mt-2 h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+         </div>
+         <div class="ml-5">
+            <h3 class="text-sm font-semibold text-red-400">Connection failure</h3>
+            <div class="text-sm text-red-400/50">
+               <p>The node running this instance appears to be having issues. Please wait...</p>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="mt-8 ml-8 mb-8">
+      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5">
+         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
+            <dt class="truncate text-sm font-medium text-neutral-400">Status</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+               <span id="status">
+               <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+               </svg>
+            </dd>
+         </div>
+         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
+            <dt class="truncate text-sm font-medium text-neutral-400">RAM Usage</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+               <span id="ramUsage">
+                  <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+               </span>
+               <span id="ramLimit"></span>
+            </dd>
+         </div>
+         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
+            <dt class="truncate text-sm font-medium text-neutral-400">CPU Usage</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+               <span id="cpuUsage">
+                  <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+               </span>
+            </dd>
+         </div>
+         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
+            <dt class="truncate text-sm font-medium text-neutral-400">Network In</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+               <span id="networkIn">
+                  <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+               </span>
+            </dd>
+         </div>
+         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
+            <dt class="truncate text-sm font-medium text-neutral-400">Network Out</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+               <span id="networkOut">
+                  <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+               </span>
+            </dd>
+         </div>
+      </dl>
+   </div>
+   <div class="mt-8 ml-8 mr-8 bg-transparent rounded-2xl p-4 border border-white/5 mx-3 my-3">
+      <div id="terminal"></div>
+   </div>
+   <script>
+      var baseTheme = {
+      foreground: '#c5c9d1',
+      background: '#141414',
+      selection: '#5DA5D533',
+      black: '#1E1E1D',
+      brightBlack: '#262625',
+      red: '#CE5C5C',
+      brightRed: '#FF7272',
+      green: '#5BCC5B',
+      brightGreen: '#72FF72',
+      yellow: '#CCCC5B',
+      brightYellow: '#FFFF72',
+      blue: '#5D5DD3',
+      brightBlue: '#7279FF',
+      magenta: '#BC5ED1',
+      brightMagenta: '#E572FF',
+      cyan: '#5DA5D5',
+      brightCyan: '#72F0FF',
+      white: '#F8F8F8',
+      brightWhite: '#FFFFFF'
+      };
+      var ws;
+      
+      function initWebSocket() {
+      ws = new WebSocket(`ws://localhost:3001/console/<%= req.params.id %>`);
+      ws.onopen = () => {
+      console.log('WebSocket connected!');
+      };
+      ws.onmessage = handleWebSocketMessage;
+      ws.onclose = () => {
+      console.log('WebSocket connection closed, attempting to reconnect...');
+      setTimeout(initWebSocket, 3000); // Reconnect after 3s or so
+      };
+      ws.onerror = (error) => {
+      console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
+      setTimeout(initWebSocket, 5000); // Reconnect after a delay on err
+      };
+      }
+      
+      let daemonIsDown = document.getElementById('daemonIsDown');
+      
+      function handleWebSocketMessage(msg) {
+      const lines = msg.data.split('\n');
+      lines.forEach(line => {
+      term.write('\x1b[0m' + line.trim() + '\r\n');
+      if (line.includes("state:")) {
+      term.write('\x1b[34;1m[panel] \x1b[0mReconnecting socket, please wait...\r\n');
+      ws.close(); // Close the current connection to trigger onclose and reconnect
+      }
+      
+      if (line.includes("skyportd instance appears to be down")) {
+      ws.close();
+      daemonIsDown.classList.remove('hidden')
+      } else {
+      daemonIsDown.classList.add('hidden')
+      }
+      });
+      }
+      
+      initWebSocket(); // Initialize WebSocket connection
+      
+      // Terminal setup remains the same
+      var term = new Terminal({
+      lineHeight: 1.35,
+      rows: 20,
+      cols: 200,
+      fontFamily: 'Menlo, monospace',
+      theme: baseTheme,
+      cursorBlink: true,
+      });
+      term.open(document.getElementById('terminal'));
+      
+      let command = ""; // To accumulate command characters
+      
+      term.onData(e => {
+      switch (e) {
+      case '\u0003': // Ctrl+C
+      term.write('^C');
+      command = ''; // Clear command
+      break;
+      case '\r': // Enter
+      term.write('\r\n');
+      if (command.trim() !== '') {
+      ws.send(JSON.stringify({ event: 'cmd', command: command.trim(), containerId: '<%= req.params.id %>' })); // Send the command
+      }
+      command = ''; // Reset command after sending
+      break;
+      default:
+      command += e; // Append character to command
+      term.write(e); // Echo character back to terminal
+      }
+      });
+      
+      // Button event listeners remain the same
+      document.getElementById('startButton').addEventListener('click', function() {
+      ws.send(JSON.stringify({ event: 'power:start', containerId: '<%= req.params.id %>' }));
+      });
+      
+      document.getElementById('stopButton').addEventListener('click', function() {
+      ws.send(JSON.stringify({ event: 'power:stop', containerId: '<%= req.params.id %>' }));
+      });
+      
+      document.getElementById('restartButton').addEventListener('click', function() {
+      ws.send(JSON.stringify({ event: 'power:restart', containerId: '<%= req.params.id %>' }));
+      });
+   </script>
+   <script>
+      const statsWs = new WebSocket(`ws://localhost:3001/stats/<%= req.params.id %>`);
+      
+      function formatBytes(bytes, decimals = 2) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ['Bytes', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+      }
+      
+      statsWs.onmessage = event => {
+      const stats = JSON.parse(event.data);
+      
+      if (stats.error) {
+      console.error('Error fetching stats:', stats.error);
+      return;
+      }
+      
+      // Update RAM usage
+      const ramUsageRaw = stats.memory_stats.usage/1024;
+      const ramUsage = isNaN(ramUsageRaw) ? '0 Bytes' : formatBytes(ramUsageRaw);
+      const ramLimitRaw = stats.memory_stats.limit/1024;
+      const ramLimit = isNaN(ramLimitRaw) ? '0 Bytes' : formatBytes(ramLimitRaw);
+      document.getElementById('ramUsage').textContent = ramUsage;
+      document.getElementById('ramLimit').textContent = ' / ' + ramLimit;
+      
+      // Determine status based on RAM usage
+      const statusElement = document.getElementById('status');
+      if (isNaN(ramUsageRaw)) {
+      statusElement.className = 'text-neutral-500';
+      statusElement.textContent = 'Offline';
+      } else if (ramUsageRaw > 1) {
+      statusElement.className = 'text-emerald-500';
+      statusElement.textContent = 'Online';
+      }
+      
+      // Update CPU usage
+      const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
+      const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
+      const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta)) 
+      ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%' 
+      : '0%';
+      document.getElementById('cpuUsage').textContent = cpuUsagePercent;
+      
+      // Update Network stats
+      const networkInRaw = stats.networks.eth0.rx_bytes;
+      const networkOutRaw = stats.networks.eth0.tx_bytes;
+      const networkIn = isNaN(networkInRaw) ? '0 Bytes' : formatBytes(networkInRaw);
+      const networkOut = isNaN(networkOutRaw) ? '0 Bytes' : formatBytes(networkOutRaw);
+      document.getElementById('networkIn').textContent = networkIn;
+      document.getElementById('networkOut').textContent = networkOut;
+      };
+      
+      
+   </script>
+</main>
+<%- include('components/footer') %>

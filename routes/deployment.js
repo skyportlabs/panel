@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This module provides API routes for managing deployment of instances,
+ * including listing available instances with basic authentication and deploying new instances.
+ * It handles interactions with a custom database and communicates with node services
+ * for instance creation and deployment.
+ */
+
 const express = require('express');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
@@ -6,15 +13,40 @@ const basicAuth = require('express-basic-auth');
 
 const router = express.Router();
 
-// Custom basic auth configuration for /instances/list
+/**
+ * GET /instances/list
+ * Provides a list of all instances available in the database. Access to this route is restricted
+ * with basic authentication, requiring a username and password. The authentication challenge and
+ * realm can be configured within the route setup.
+ *
+ * @returns {Response} Sends a JSON response containing an array of instances.
+ */
 router.get('/instances/list', basicAuth({
-  users: { 'Skyport': 'skyport_1' }, // Replace with your actual admin credentials
-  challenge: true, // Optional, this will cause browsers to show a login dialog
-  realm: 'Imb4T3st4pp' // Optional, can set a realm identifier
+  users: { 'Skyport': 'skyport_1' },
+  challenge: true, // we'll disable this in prod
 }), async (req, res) => {
   let instances = await db.get('instances');
   res.json(instances);
 });
+
+/**
+ * GET /instances/deploy
+ * Handles the deployment of a new instance based on the parameters provided via query strings.
+ * It validates the required parameters, interacts with a node specific API to create the instance,
+ * and updates the database with the new instance data. Error handling is included for validation
+ * and remote request failures.
+ *
+ * @param {string} image - The Docker image name to deploy.
+ * @param {string} [cmd] - Optional command to run in the container, passed as comma-separated values.
+ * @param {string} [env] - Optional environment variables for the container, passed as comma-separated values.
+ * @param {number} [memory] - Optional memory allocation for the container, specified in MB.
+ * @param {number} [cpu] - Optional CPU share for the container.
+ * @param {string} [ports] - Optional port mappings for the container, passed as comma-separated values in 'container:host' format.
+ * @param {string} nodeId - Identifier for the node on which the instance will be deployed.
+ * @param {string} name - Name of the instance.
+ * @param {string} user - User identifier who is deploying the instance.
+ * @returns {Response} Sends a 201 status with instance deployment details if successful, or an error status if deployment fails.
+ */
 
 router.get('/instances/deploy', async (req, res) => {
   const {
@@ -117,6 +149,20 @@ router.get('/instances/deploy', async (req, res) => {
     // Save the updated list back to the database
     await db.set(`${userId}_instances`, userServers);
     await db.set(`instances`, globalServers);
+
+    // somewhatNotGlobalServerYetSlightlyGlobalIsThisGlobalOrNot this was called
+    await db.set(`${response.data.containerId}`, {
+      Name: name,
+      Node,
+      ContainerId: response.data.containerId,
+      VolumeId: response.data.volumeId,
+      Memory,
+      Cpu,
+      Cmd,
+      Env,
+      ExposedPorts,
+      PortBindings
+    });
 
     res.status(201).json({
       Message: 'Container created successfully and added to user\'s servers',
