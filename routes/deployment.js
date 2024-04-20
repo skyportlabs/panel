@@ -151,7 +151,7 @@ router.get('/instances/deploy', async (req, res) => {
     await db.set(`instances`, globalServers);
 
     // somewhatNotGlobalServerYetSlightlyGlobalIsThisGlobalOrNot this was called
-    await db.set(`${response.data.containerId}`, {
+    await db.set(`${response.data.containerId}_instance`, {
       Name: name,
       Node,
       ContainerId: response.data.containerId,
