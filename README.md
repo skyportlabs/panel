@@ -1,4 +1,4 @@
-# Skyport Panel v1 (Firestorm Peak)
+# Skyport Panel
 
 ## Overview
 - Simple, funnier version: An open source project powered by Docker for managing applications, game servers and more. Ditch Pterodactyl or PufferPanel and fly higher with a panel that isn't named after a creature.
