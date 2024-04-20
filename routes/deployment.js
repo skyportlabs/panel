@@ -61,9 +61,7 @@ router.get('/instances/deploy', async (req, res) => {
     user
   } = req.query;
 
-  if (!image) {
-    return res.status(400).json({ error: 'Image parameter is required' });
-  }
+  if (!image || !cmd || !env || !memory || !cpu || !ports || !nodeId || !name || !user) return res.send('Missing parameters')
 
   const NodeId = nodeId;
   const Name = name;
@@ -75,7 +73,7 @@ router.get('/instances/deploy', async (req, res) => {
   const PortBindings = {};
 
   let Node = await db.get(NodeId + '_node');
-  if (!Node) return res.send('invalid node');
+  if (!Node) return res.send('Invalid node');
 
   const NodeRemote = Node.address;
   const NodePort = Node.port;

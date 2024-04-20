@@ -1,0 +1,50 @@
+<div class="mt-8 ml-8 mb-8">
+    <div>
+       <div class="hidden sm:block">
+          <nav class="flex border-b border-white/5 py-4">
+             <ul role="list" class="flex min-w-full flex-none gap-x-6 px-2 text-sm font-semibold leading-6 text-neutral-500">
+                <li class="hover:scale-105 transition">
+                   <a href="../instance/<%= req.params.id %>" class="nav-link2">Overview</a>
+                </li>
+                <li class="hover:scale-105 transition">
+                   <a href="../instance/<%= req.params.id %>/files" class="nav-link2">Files</a>
+                </li>
+                <li class="hover:scale-105 transition">
+                   <a href="../instance/<%= req.params.id %>/network" class="nav-link2">Network</a>
+                </li>
+                <li class="hover:scale-105 transition">
+                   <a href="../instance/<%= req.params.id %>/sftp" class="nav-link2">SFTP</a>
+                </li>
+                <li class="hover:scale-105 transition">
+                   <a href="../instance/<%= req.params.id %>/settings" class="nav-link2">Settings</a>
+                </li>
+             </ul>
+          </nav>
+       </div>
+    </div>
+ </div>
+ <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var currentPageUrl = window.location.href;
+  
+      // Get all navigation links
+      var navLinks2 = document.querySelectorAll('.nav-link2');
+  
+      // Loop through each navigation link
+      navLinks2.forEach(function(link) {
+        // Get the href attribute of the link
+        var linkUrl = link.getAttribute('href');
+  
+        // Check if the current page URL contains the link URL
+        if (currentPageUrl.includes(linkUrl.replace('../', '/'))) {
+          // Remove all existing classes
+          link.className = 'nav-link';
+  
+          // Add the specified classes
+          link.classList.add(
+            'text-white', 'font-semibold'
+          );
+        }
+      });
+    });
+  </script>

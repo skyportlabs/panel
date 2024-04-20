@@ -137,6 +137,8 @@ router.delete('/nodes/delete', isAdmin, async (req, res) => {
   const nodes = await db.get('nodes') || [];
   const newNodes = nodes.filter(id => id !== nodeId);
 
+  if (!nodeId) return res.send('Invalid node')
+
   await db.set('nodes', newNodes);
   await db.delete(nodeId + '_node');
 
@@ -154,7 +156,20 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
   let nodes = await db.get('nodes') || [];
   nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
 
-  res.render('nodes', { user: req.user, nodes, name: await db.get('name') || 'Skyport' });
+  res.render('admin/nodes', { user: req.user, nodes, name: await db.get('name') || 'Skyport' });
+});
+
+/**
+ * GET /admin/instances
+ * Retrieves a list of all instances, checks their statuses, and renders an admin page to display these instances.
+ * This route is protected and allows only administrators to view the instance management page.
+ *
+ * @returns {Response} Renders the 'instances' view with instance data and user information.
+ */
+router.get('/admin/instances', isAdmin, async (req, res) => {
+  let instances = await db.get('instances') || [];
+
+  res.render('admin/instances', { user: req.user, instances, name: await db.get('name') || 'Skyport' });
 });
 
 module.exports = router;

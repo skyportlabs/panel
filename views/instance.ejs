@@ -19,42 +19,18 @@
          </div>
          <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex">
             <button id="startButton" type="button" class="block rounded-l-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-emerald-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            Start
+              Start
             </button>
             <button id="restartButton" type="button" class="block bg-orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-orange-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            Restart
+              Restart
             </button>
             <button id="stopButton" type="button" class="block rounded-r-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            Stop
+              Stop
             </button>
          </div>
       </div>
    </div>
-   <div class="mt-8 ml-8 mb-8">
-      <div>
-         <div class="hidden sm:block">
-            <nav class="flex border-b border-white/5 py-4">
-               <ul role="list" class="flex min-w-full flex-none gap-x-6 px-2 text-sm font-semibold leading-6 text-neutral-500">
-                  <li>
-                     <a href="#" class="text-neutral-100">Overview</a>
-                  </li>
-                  <li>
-                     <a href="#" class="hover:scale-105">Files</a>
-                  </li>
-                  <li>
-                     <a href="#" class="hover:scale-105">Network</a>
-                  </li>
-                  <li>
-                     <a href="#" class="hover:scale-105">SFTP</a>
-                  </li>
-                  <li>
-                     <a href="#" class="hover:scale-105">Settings</a>
-                  </li>
-               </ul>
-            </nav>
-         </div>
-      </div>
-   </div>
+   <%- include('components/instance') %>
    <div class="rounded-lg bg-red-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8 hidden" id="daemonIsDown">
       <div class="flex">
          <div class="flex-shrink-0 ml-1.5">
@@ -180,7 +156,9 @@
       lines.forEach(line => {
       term.write('\x1b[0m' + line.trim() + '\r\n');
       if (line.includes("state:")) {
-      term.write('\x1b[34;1m[panel] \x1b[0mReconnecting socket, please wait...\r\n');
+      
+      // everything will lock up if we don't do this :skull: - atqr
+      term.write('\x1b[34;1m[panel] \x1b[0msocket reconnecting to prevent it from locking up, hold on...\r\n');
       ws.close(); // Close the current connection to trigger onclose and reconnect
       }
       
