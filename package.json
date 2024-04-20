@@ -4,7 +4,7 @@
   "description": "It's skyport.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "seed": "node exec/seed.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,10 +14,12 @@
     "axios": "^1.6.8",
     "body-parser": "^1.20.2",
     "cat-loggr": "^1.2.2",
+    "chalk": "^4.1.2",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "express-basic-auth": "^1.2.1",
     "express-session": "^1.18.0",
+    "express-ws": "^5.0.2",
     "fs": "^0.0.1-security",
     "keyv": "^4.5.4",
     "passport": "^0.7.0",

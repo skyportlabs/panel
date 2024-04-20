@@ -60,7 +60,7 @@ router.get('/auth/register', async (req, res) => {
 // Login Route
 router.get('/auth/login', passport.authenticate('local', {
     successRedirect: '/instances',
-    failureRedirect: '/login'
+    failureRedirect: '/login?err=InvalidCredentials&state=failed'
 }));
 
 // Logout Route

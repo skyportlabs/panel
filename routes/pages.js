@@ -15,11 +15,11 @@ async function setupRoutes() {
             if (page.requiresAuth) {
                 router.get(page.path, isAuthenticated, async (req, res) => {
                     const instances = await db.get(req.user.userId + '_instances') || [];
-                    res.render(page.template, { user: req.user, instances, name: await db.get('name') || 'Skyport' });
+                    res.render(page.template, { req, user: req.user, instances, name: await db.get('name') || 'Skyport' });
                 });
             } else {
                 router.get(page.path, async (req, res) => {
-                    res.render(page.template, { name: await db.get('name') || 'Skyport' });
+                    res.render(page.template, { req, name: await db.get('name') || 'Skyport' });
                 });
             }
         });

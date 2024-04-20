@@ -6,8 +6,6 @@ const { db } = require('../handlers/db.js'); // Ensure db.js is properly set up 
 
 router.ws("/console/:id", async (ws, req) => {
     if (!req.user) return ws.end();
-
-    const instance = 
 });
 
 async function connectToConsole(id, node) {
