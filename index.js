@@ -1,3 +1,16 @@
+/*
+ *           __                          __ 
+*      _____/ /____  ______  ____  _____/ /_
+ *    / ___/ //_/ / / / __ \/ __ \/ ___/ __/
+ *   (__  ) ,< / /_/ / /_/ / /_/ / /  / /_  
+ *  /____/_/|_|\__, / .___/\____/_/   \__/  
+ *           /____/_/                  
+ *              
+ *  Skyport Panel
+ *  (c) 2024 Matt James and contributers
+ * 
+*/
+
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
