@@ -24,6 +24,7 @@
     "keyv": "^4.5.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "readline": "^1.3.0",
     "tailwindcss": "^3.4.3",
     "uuid": "^9.0.1"
   }

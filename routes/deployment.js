@@ -10,6 +10,7 @@ const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const { db } = require('../handlers/db.js'); // Import the custom database handler
 const basicAuth = require('express-basic-auth');
+const config = require('../config.json')
 
 const router = express.Router();
 
@@ -22,11 +23,25 @@ const router = express.Router();
  * @returns {Response} Sends a JSON response containing an array of instances.
  */
 router.get('/instances/list', basicAuth({
-  users: { 'Skyport': 'skyport_1' },
+  users: { 'Skyport': config.key },
   challenge: true, // we'll disable this in prod
 }), async (req, res) => {
   let instances = await db.get('instances');
   res.json(instances);
+});
+
+/**
+ * GET /images/list
+ * Provides a list of all images available in the database.
+ *
+ * @returns {Response} Sends a JSON response containing an array of images.
+ */
+router.get('/images/list', basicAuth({
+  users: { 'Skyport': config.key },
+  challenge: true, // we'll disable this in prod
+}), async (req, res) => {
+  let images = await db.get('images');
+  res.json(images);
 });
 
 /**
