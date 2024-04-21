@@ -1,0 +1,34 @@
+<%- include('components/template') %>
+<main>
+    <div class="bg-transparent">
+        <div class="sm:flex sm:items-center px-8 pt-4">
+           <div class="sm:flex-auto">
+              <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
+              <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
+           </div>
+           <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex">
+              <button id="startButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Create File
+              </button>
+           </div>
+        </div>
+    </div>
+    <%- include('components/instance') %>
+   <div class="px-4 sm:px-6 lg:px-8">
+      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-6">
+      <% files.forEach(function(fileName) { %>
+      <% if (fileName.isEditable == true) { %>
+      <a href="../../../../../instance/<%= req.params.id %>/files/edit/<%= fileName.name %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10">
+      <% } else { %>
+        <a class="p-3 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10">
+      <% } %>
+         <div class="lg:flex lg:items-center lg:justify-between">
+            <div class="min-w-0 flex-1">
+               <h2 class="text-md font-medium text-white tracking-tight"><%= fileName.name %></h2>
+            </div>
+         </div>
+      </a>
+      <% }); %>
+   </div>
+</main>
+<%- include('components/footer') %>

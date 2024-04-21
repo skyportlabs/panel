@@ -22,7 +22,7 @@ const { db } = require('../handlers/db.js');
  * or the ID is not provided. Otherwise, renders the instance page with appropriate data.
  */
 router.get("/instance/:id", async (req, res) => {
-    if (!req.user) return ws.end();
+    if (!req.user) return res.redirect('/')
 
     const { id } = req.params;
     const instance = await db.get(id + '_instance');
@@ -30,6 +30,72 @@ router.get("/instance/:id", async (req, res) => {
     if (!instance || !id) return res.redirect('../instances')
 
     res.render('instance', { req, instance, user: req.user, name: await db.get('name') || 'Skyport' });
+});
+
+/**
+ * GET /instance/:id/files
+ * Retrieves and renders a list of files from a specific instance identified by its unique ID.
+ * The endpoint requires user authentication and valid instance details, including volume and node
+ * information to construct the appropriate API call to the storage service. It supports an optional
+ * query parameter for path to specify subdirectories within the instance's volume.
+ *
+ * @param {string} id - The unique identifier of the instance to fetch files from.
+ * @param {string} [path] - Optional. Specifies a subdirectory path within the instance's volume.
+ * @returns {Response} Renders the 'files' view with the files list if successful or redirects to
+ * the instance overview page if the instance is not found. It also handles errors related to file
+ * retrieval and invalid node configurations.
+ */
+router.get("/instance/:id/files", async (req, res) => {
+    if (!req.user) {
+        return res.redirect('/');
+    }
+
+    const { id } = req.params;
+    if (!id) {
+        return res.redirect('../instances');
+    }
+
+    const instance = await db.get(id + '_instance').catch(err => {
+        console.error('Failed to fetch instance:', err);
+        return null; // Handle the error and return null if instance fetch fails
+    });
+
+    if (!instance || !instance.VolumeId) {
+        return res.redirect('../instances');
+    }
+
+    let query;
+    if (req.query.path) {
+        query = '?path=' + req.query.path
+    } else {
+        query = ''
+    }
+
+    if (instance.Node && instance.Node.address && instance.Node.port) {
+        const RequestData = {
+            method: 'get',
+            url: `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files${query}`,
+            auth: {
+                username: 'Skyport',
+                password: instance.Node.apiKey
+            },
+            headers: { 
+                'Content-Type': 'application/json'
+            }
+        };
+
+        try {
+            const response = await axios(RequestData);
+            const files = response.data.files || [];
+
+            res.render('files', { req, files, user: req.user, name: await db.get('name') || 'Skyport' });
+        } catch (error) {
+            console.error('Failed to fetch files:', error);
+            res.status(500).send('Error retrieving files from storage service');
+        }
+    } else {
+        res.status(500).send('Invalid instance node configuration');
+    }
 });
 
 /**
