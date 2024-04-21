@@ -29,6 +29,8 @@ const app = express();
 const chalk = require('chalk');
 const expressWs = require('express-ws')(app);
 
+const { init } = require('./handlers/init.js');
+
 const log = new CatLoggr();
 
 /**
@@ -49,6 +51,9 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// init
+init();
 
 // Log the ASCII
 console.log(chalk.gray(ascii) + chalk.white(`version v${config.version}\n`));

@@ -9,7 +9,8 @@ const express = require('express');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const { db } = require('../handlers/db.js');
-const { v4: uuidv4 } = require('uuid');  // Import the uuid function
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const router = express.Router();
 
@@ -31,7 +32,8 @@ passport.use(new LocalStrategy(
       if (!user) {
         return done(null, false, { message: 'Incorrect username.' });
       }
-      if (user.password !== password) {
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
         return done(null, false, { message: 'Incorrect password.' });
       }
       return done(null, user);
@@ -65,26 +67,6 @@ passport.deserializeUser(async (username, done) => {
     done(null, user);
   } catch (error) {
     done(error);
-  }
-});
-
-/**
- * GET /auth/register
- * Handles user registration by taking a username and password from the query string, generating
- * a unique user ID, and saving these details to the database. On successful registration, the user
- * is redirected to the login page, otherwise, they are redirected back to the registration page.
- *
- * @returns {Response} Redirects to either the login page or the registration page based on the outcome.
- */
-router.get('/auth/register', async (req, res) => {
-  const { username, password } = req.query;
-  const userId = uuidv4();  // Generate a unique user ID
-  try {
-      // Store the user with the newly generated ID
-      await db.set(username, { userId, username, password, admin: true });
-      res.redirect('/login');
-  } catch (error) {
-      res.redirect('/register');
   }
 });
 

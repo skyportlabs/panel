@@ -4,7 +4,8 @@
   "description": "It's skyport.",
   "main": "index.js",
   "scripts": {
-    "seed": "node exec/seed.js"
+    "seed": "node exec/seed.js",
+    "createUser": "node exec/createUser.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +13,7 @@
     "@keyv/sqlite": "^3.6.7",
     "@tailwindcss/forms": "^0.5.7",
     "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cat-loggr": "^1.2.2",
     "chalk": "^4.1.2",
