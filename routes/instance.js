@@ -12,6 +12,27 @@ const axios = require('axios');
 const { db } = require('../handlers/db.js');
 
 /**
+ * Checks if the user is authorized to access the specified container ID.
+ * @param {string} userId - The unique identifier of the user.
+ * @param {string} containerId - The container ID to check authorization for.
+ * @returns {Promise<boolean>} True if the user is authorized, otherwise false.
+ */
+async function isUserAuthorizedForContainer(userId, containerId) {
+    try {
+        const userInstances = await db.get(userId + '_instances');
+        if (!userInstances) {
+            console.error('No instances found for user:', userId);
+            return false;
+        }
+
+        return userInstances.some(instance => instance.ContainerId === containerId);
+    } catch (error) {
+        console.error('Error fetching user instances:', error);
+        return false;
+    }
+}
+
+/**
  * GET /instance/:id
  * Renders the page for a specific instance identified by its unique ID.
  * The endpoint checks for user authentication, retrieves the instance details from the database,
@@ -26,6 +47,12 @@ router.get("/instance/:id", async (req, res) => {
 
     const { id } = req.params;
     const instance = await db.get(id + '_instance');
+
+    // Authorization check
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    if (!isAuthorized) {
+        return res.status(403).send('Unauthorized access to this instance.');
+    }
 
     if (!instance || !id) return res.redirect('../instances')
 
@@ -59,6 +86,12 @@ router.get("/instance/:id/files", async (req, res) => {
         console.error('Failed to fetch instance:', err);
         return null; // Handle the error and return null if instance fetch fails
     });
+
+    // Authorization check
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    if (!isAuthorized) {
+        return res.status(403).send('Unauthorized access to this instance.');
+    }
 
     if (!instance || !instance.VolumeId) {
         return res.redirect('../instances');
@@ -116,6 +149,12 @@ router.ws("/console/:id", async (ws, req) => {
 
     if (!instance || !id) return ws.close(1008, "Invalid instance or ID"); 
 
+    // Authorization check
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    if (!isAuthorized) {
+        return ws.close(1008, "Unauthorized access");
+    }
+
     const node = instance.Node;
     const socket = new WebSocket(`ws://${node.address}:${node.port}/logs/${id}`);
 
@@ -159,6 +198,12 @@ router.ws("/stats/:id", async (ws, req) => {
     const instance = await db.get(id + '_instance');
 
     if (!instance || !id) return ws.close(1008, "Invalid instance or ID");  // Use ws.close with a reason
+
+    // Authorization check
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    if (!isAuthorized) {
+        return ws.close(1008, "Unauthorized access");
+    }
 
     const node = instance.Node;
     const socket = new WebSocket(`ws://${node.address}:${node.port}/stats/${id}`);
