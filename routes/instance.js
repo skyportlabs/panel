@@ -48,6 +48,8 @@ router.get("/instance/:id", async (req, res) => {
     const { id } = req.params;
     const instance = await db.get(id + '_instance');
 
+    if (!id) return res.redirect('/'); // no ID
+
     // Authorization check
     const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
     if (!isAuthorized) {
@@ -124,7 +126,78 @@ router.get("/instance/:id/files", async (req, res) => {
             res.render('files', { req, files, user: req.user, name: await db.get('name') || 'Skyport' });
         } catch (error) {
             console.error('Failed to fetch files:', error);
-            res.status(500).send('Error retrieving files from storage service');
+            res.status(500).render('500', { error: error.response.data.message });
+        }
+    } else {
+        res.status(500).send('Invalid instance node configuration');
+    }
+});
+
+/**
+ * GET /instance/:id/file/view/:file
+ * Retrieves and renders a file's content from a specific instance identified by its unique ID.
+ * The endpoint requires user authentication and valid instance details, including volume and node
+ * information to construct the appropriate API call to the storage service. It supports an optional
+ * query parameter for path to specify subdirectories within the instance's volume.
+ *
+ * @param {string} id - The unique identifier of the instance to fetch files from.
+ * @param {string} file - The file that you want to view the content of.
+ * @param {string} [path] - Optional. Specifies a subdirectory path within the instance's volume.
+ * @returns {Response} Renders the view file page with 'file' as the content.
+ */
+router.get("/instance/:id/files/view/:file", async (req, res) => {
+    if (!req.user) {
+        return res.redirect('/');
+    }
+
+    const { id, file } = req.params;
+    if (!id || !file) {
+        return res.redirect('../instances');
+    }
+
+    const instance = await db.get(id + '_instance').catch(err => {
+        console.error('Failed to fetch instance:', err);
+        return null;
+    });
+
+    // Authorization check
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    if (!isAuthorized) {
+        return res.status(403).send('Unauthorized access to this instance.');
+    }
+
+    if (!instance || !instance.VolumeId) {
+        return res.redirect('../instances');
+    }
+
+    let query;
+    if (req.query.path) {
+        query = '?path=' + req.query.path
+    } else {
+        query = ''
+    }
+
+    if (instance.Node && instance.Node.address && instance.Node.port) {
+        const RequestData = {
+            method: 'get',
+            url: `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/view/${file}${query}`,
+            auth: {
+                username: 'Skyport',
+                password: instance.Node.apiKey
+            },
+            headers: { 
+                'Content-Type': 'application/json'
+            }
+        };
+
+        try {
+            const response = await axios(RequestData);
+            const file = response.data.content || [];
+
+            res.render('file', { req, file, user: req.user, name: await db.get('name') || 'Skyport' });
+        } catch (error) {
+            console.error('Failed to fetch file:', error);
+            res.status(500).render('500', { error: error.response.data.message });
         }
     } else {
         res.status(500).send('Invalid instance node configuration');

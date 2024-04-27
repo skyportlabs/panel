@@ -1,0 +1,32 @@
+<%- include('components/template') %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/min/vs/loader.js"></script>
+<div class="bg-transparent">
+    <div class="sm:flex sm:items-center px-8 pt-4">
+       <div class="sm:flex-auto">
+          <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
+          <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
+       </div>
+    </div>
+</div>
+<%- include('components/instance') %>
+<% let formattedFile; %>
+<% if (req.query.path) { %>
+    <% formattedFile = '/' + req.params.file %>
+<% } else { %>
+    <% formattedFile = req.params.file %>
+<% } %>
+<h1 class="text-neutral-200 text-md px-8"><a class="text-neutral-400 hover:text-neutral-300 transition" href="../">/app/data/<%= req.query.path %></a><%= formattedFile %></h1>
+
+<div class="pt-8 overflow-hidden" style="height: 500px;" id="editor"></div>
+
+<script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/min/vs' }});
+        require(['vs/editor/editor.main'], function () {
+            var editor = monaco.editor.create(document.getElementById('editor'), {
+                value: <%- JSON.stringify(file) %>,
+                language: 'javascript',
+                theme: 'vs-dark'
+            });
+        });
+</script>
+<%- include('components/footer') %>
