@@ -18,7 +18,7 @@
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-6">
       <% files.forEach(function(fileName) { %>
       <% if (fileName.isEditable == true) { %>
-      <a href="../../../../../instance/<%= req.params.id %>/files/edit/<%= fileName.name %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10">
+      <a href="/instance/<%= req.params.id %>/files/edit/<%= fileName.name %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10">
       <% } else { %>
         <a class="p-3 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10">
       <% } %>

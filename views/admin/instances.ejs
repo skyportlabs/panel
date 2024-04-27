@@ -22,7 +22,8 @@
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
             <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
-            <th scope="col" class="hidden py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker ID</th>
+			<th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Node</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker ID</th>
             <th scope="col" class="py-2 pl-0 pr-4 text-right font-semibold sm:pr-8 sm:text-left lg:pr-20">Volume / Mount</th>
           </tr>
         </thead>
@@ -34,7 +35,12 @@
                 <div class="truncate text-sm font-medium leading-6 text-white"><%= instance.Name %></div>
               </div>
             </td>
-            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+            <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+              <div class="flex gap-x-3">
+                <div class="font-mono text-sm leading-6 text-neutral-400"><%= instance.Node.name %></div>
+              </div>
+            </td>
+            <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
               <div class="flex gap-x-3">
                 <div class="font-mono text-sm leading-6 text-neutral-400"><%= instance.ContainerId %></div>
               </div>
