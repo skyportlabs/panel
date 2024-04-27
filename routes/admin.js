@@ -154,9 +154,19 @@ router.delete('/nodes/delete', isAdmin, async (req, res) => {
  */
 router.get('/admin/nodes', isAdmin, async (req, res) => {
   let nodes = await db.get('nodes') || [];
+  let instances = await db.get('instances') || [];
+  let set = {};
+  nodes.forEach(function(node) {
+	  set[node] = 0;
+	  instances.forEach(function(instance) {
+		if (instance.Node.id == node) {
+			set[node]++;
+		}
+	  });
+  });
   nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
 
-  res.render('admin/nodes', { user: req.user, nodes, name: await db.get('name') || 'Skyport' });
+  res.render('admin/nodes', { user: req.user, nodes, set, name: await db.get('name') || 'Skyport' });
 });
 
 /**
@@ -175,6 +185,60 @@ router.get('/admin/instances', isAdmin, async (req, res) => {
   nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
 
   res.render('admin/instances', { user: req.user, instances, images, nodes, users, name: await db.get('name') || 'Skyport' });
+});
+
+/**
+ * GET /admin/node/:id
+ * Renders the page for a specific node identified by its unique ID.
+ * The endpoint retrieves the node details from the database,
+ * and renders the 'admin/node' view with the retrieved data.
+ *
+ * @param {string} id - The unique identifier of the node to fetch.
+ * @returns {Response} Redirects to the nodes overview page if the node does not exist
+ * or the ID is not provided. Otherwise, renders the node page with appropriate data.
+ */
+ 
+router.get("/admin/node/:id", async (req, res) => {
+
+    const { id } = req.params;
+    const node = await db.get(id + '_node');
+
+    if (!node || !id) return res.redirect('../nodes')
+
+    res.render('admin/node', { node, user: req.user, name: await db.get('name') || 'Skyport' });
+});
+
+
+/**
+ * POST /admin/node/:id
+ * Edit an existing node with specified parameters from the request body, such as name, hardware specifications.
+ *
+ * @returns {Response} Sends the node data if all goes ok else 400 if the node doesn't exist.
+ */
+ 
+router.post("/admin/node/:id", async (req, res) => {
+
+	const { id } = req.params;
+	const cnode = await db.get(id + '_node');
+
+    if (!cnode || !id) return res.status(400).send();
+	
+    const node = {
+		id: id,
+		name: req.body.name,
+		tags: req.body.tags,
+		ram: req.body.ram,
+		disk: req.body.disk,
+		processor: req.body.processor,
+		address: req.body.address,
+		port: req.body.port,
+		apiKey: req.body.apiKey,
+		status: 'Unknown' // Default status
+	};
+
+    await db.set(node.id + '_node', node); 
+	const updatedNode = await checkNodeStatus(node);
+	res.status(201).send(updatedNode);
 });
 
 module.exports = router;

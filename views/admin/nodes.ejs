@@ -21,18 +21,37 @@
         </colgroup>
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
-            <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
-            <th scope="col" class="hidden py-2 pl-0 pr-8 font-semibold sm:table-cell">Connection</th>
-            <th scope="col" class="py-2 pl-0 pr-4 text-right font-semibold sm:pr-8 sm:text-left lg:pr-20">Status</th>
-            <th scope="col" class="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">Instances</th>
-            <th scope="col" class="hidden py-2 pl-0 pr-4 text-right font-semibold sm:table-cell sm:pr-6 lg:pr-8">Deployed at</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:pl-80 lg:pl-8">Name</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Connection</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">Instances</th>
+			<th scope="col" class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
          <% nodes.forEach(function(node) { %>
           <tr>
-            <td class="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
-              <div class="flex items-center gap-x-4">
+            <td class="py-4 pl-4 pr-8 sm:pl-8 lg:pl-8">
+			  <div class="flex items-center gap-x-4">
+			  <% if (node.status == "Online") { %>
+				  <div class="flex items-center justify-end gap-x-2 sm:justify-start">
+					<div class="flex-none rounded-full p-1 text-emerald-400 bg-emerald-600/10">
+					  <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+					</div>
+				  </div>
+				<% } else if (node.status == "Offline") { %>
+				   <div class="flex items-center justify-end gap-x-2 sm:justify-start">
+					  <div class="flex-none rounded-full p-1 text-neutral-600 bg-neutral-600/10">
+						<div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+					  </div>
+				   </div>
+				<% } else { %>
+				   <div class="flex items-center justify-end gap-x-2 sm:justify-start">
+					  <div class="flex-none rounded-full p-1 text-neutral-400 bg-neutral-400/10">
+						 <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+					  </div>
+				   </div>
+				<% } %>
+
                 <div class="truncate text-sm font-medium leading-6 text-white"><%= node.name %></div>
               </div>
             </td>
@@ -42,34 +61,11 @@
                 <div class="rounded-md bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"><%= node.versionRelease || 'unknown' %></div>
               </div>
             </td>
-            <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
-              <% if (node.status == "Online") { %>
-              <div class="flex items-center justify-end gap-x-2 sm:justify-start">
-                <div class="flex-none rounded-full p-1 text-emerald-400 bg-emerald-400/10">
-                  <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
-                </div>
-                <div class="hidden text-white sm:block">online</div>
-              </div>
-              <% } else if (node.status == "Offline") { %>
-               <div class="flex items-center justify-end gap-x-2 sm:justify-start">
-                  <div class="flex-none rounded-full p-1 text-neutral-600 bg-neutral-600/10">
-                    <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
-                  </div>
-                  <div class="hidden text-white sm:block">connection failed</div>
-               </div>
-               <% } else { %>
-               <div class="flex items-center justify-end gap-x-2 sm:justify-start">
-                  <div class="flex-none rounded-full p-1 text-neutral-400 bg-neutral-400/10">
-                     <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
-                  </div>
-                  <div class="hidden text-white sm:block">unknown</div>
-               </div>
-               <% } %>
-            </td>
-            <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20">1</td>
-            <td class="hidden py-4 pl-0 pr-4 text-right text-sm leading-6 text-neutral-400 sm:table-cell sm:pr-6 lg:pr-8">
-              <time datetime="2023-01-23T11:00">TODO</time>
-            </td>
+            <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"><%= set[node.id] || 0 %></td>
+			<td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 outer">
+				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-emerald-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</button></a></div>
+				<div class="inner"><button id="removeButton" type="button" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</button></div>
+			</td>
           </tr>
           <% }); %>
         </tbody>
@@ -149,7 +145,7 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
     })
     .then(data => {
         console.log('Node created:', data);
-        alert('Done! Node created successfully.')
+        window.location.reload();
     })
     .catch(error => console.error('Error creating node:', error));
 });
