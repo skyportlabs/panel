@@ -7,7 +7,7 @@
            <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the instances deployed on the Skyport panel.</p>
          </div>
          <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-           <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new node</button>
+           <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new instance</button>
          </div>
        </div>
       <div id="nodeTable" class="mt-6 w-full">
@@ -24,7 +24,6 @@
             <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
             <th scope="col" class="hidden py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker ID</th>
             <th scope="col" class="py-2 pl-0 pr-4 text-right font-semibold sm:pr-8 sm:text-left lg:pr-20">Volume / Mount</th>
-            <th scope="col" class="hidden py-2 pl-0 pr-4 text-right font-semibold sm:table-cell sm:pr-6 lg:pr-8">Deployed at</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
@@ -45,10 +44,6 @@
                 <div class="font-mono text-sm leading-6 text-neutral-400">/volumes/<%= instance.VolumeId %></div>
               </div>
             </td>
-            <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20">1</td>
-            <td class="hidden py-4 pl-0 pr-4 text-right text-sm leading-6 text-neutral-400 sm:table-cell sm:pr-6 lg:pr-8">
-              <time datetime="2023-01-23T11:00">TODO</time>
-            </td>
           </tr>
           <% }); %>
         </tbody>
@@ -57,28 +52,37 @@
       <div id="nodeForm" class="mt-6 px-8 w-full hidden">
         <form>
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
-         <input id="nodeName" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My node">
+         <input id="name" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My node">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
-         <input id="nodeTags" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="Tag 1 - Tag 2 - Tag 3">
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">User:</label>
+         <select style="background: #171717;" id="user" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
+            <% users.forEach(function(user) { %>
+                <option value="<%= user.userId %>"><%= user.username %></option>
+            <% }); %>
+         </select>
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">RAM (GB):</label>
-         <input id="nodeRam" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8">
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
+         <select style="background: #171717;" id="image" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
+            <% images.forEach(function(image) { %>
+                <option value="<%= image.Image %>"><%= image.Name %> (<%= image.Image %>)</option>
+            <% }); %>
+         </select>
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (GB):</label>
-         <input id="nodeDisk" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="40">
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Node:</label>
+         <select style="background: #171717;" id="node" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
+            <% nodes.forEach(function(node) { %>
+                <option value="<%= node.id %>"><%= node.name %></option>
+            <% }); %>
+         </select>
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Processor:</label>
-         <input id="nodeProcessor" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="AMD EPYC 9454 - 16 Threads">
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory/RAM (MB):</label>
+         <input id="memory" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="2">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">IP Address:</label>
-         <input id="nodeAddress" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="192.168.1.1 or my.hostnamehere.com">
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU Threads:</label>
+         <input id="cpu" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="1">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Daemon Port:</label>
-         <input id="nodePort" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8080">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Access Key:</label>
-         <input id="nodeApiKey" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="skyportd_xxxxxxxxxxxxxxxx">
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports (localIp : hostIp):</label>
+         <input id="ports" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="25565:25565,8080:8080">
     
          <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
       </form>
@@ -97,40 +101,57 @@
       form.style.display = 'none';
     }
   });
+
+  document.getElementById('image').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const cmd = selectedOption.getAttribute('data-cmd');
+    const env = JSON.parse(selectedOption.getAttribute('data-env') || '{}');
+  });
 </script>
 <script>
 document.getElementById('createNodeBtn').addEventListener('click', function() {
-    const name = document.getElementById('nodeName').value;
-    const tags = document.getElementById('nodeTags').value.split('-');
-    const ram = document.getElementById('nodeRam').value;
-    const disk = document.getElementById('nodeDisk').value;
-    const processor = document.getElementById('nodeProcessor').value;
-    const address = document.getElementById('nodeAddress').value;
-    const port = document.getElementById('nodePort').value;
-    const apiKey = document.getElementById('nodeApiKey').value;
+    const name = document.getElementById('name').value;
+    const image = document.getElementById('image').value;
+    const user = document.getElementById('user').value;
+    const node = document.getElementById('node').value;
+    const memory = document.getElementById('memory').value;
+    const cpu = document.getElementById('cpu').value;
+    const ports = document.getElementById('ports').value;
 
     const nodeData = {
-        name, tags, ram, disk, processor, address, port, apiKey
+        name, image, nodeId: node, user, memory, cpu, ports
     };
 
-    fetch('/nodes/create', {
-        method: 'POST',
+    // Function to serialize data as query parameters
+    function serializeParams(params) {
+        return Object.keys(params)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+            .join('&');
+    }
+
+    // Create the URL with query parameters
+    const baseUrl = '/instances/deploy';
+    const queryParams = serializeParams(nodeData);
+    const fullUrl = `${baseUrl}?${queryParams}`;
+
+    // Fetch call
+    fetch(fullUrl, {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(nodeData)
+        }
     })
     .then(response => {
         if (response.ok) {
             return response.json();
         }
-        throw new Error('Failed to create node');
+        throw new Error('Failed to create instance');
     })
     .then(data => {
-        console.log('Node created:', data);
-        alert('Done! Node created successfully.')
+        console.log('Instance created:', data);
+        alert('Done! Instance created successfully.')
     })
-    .catch(error => console.error('Error creating node:', error));
+    .catch(error => console.error('Error creating instance:', error));
 });
 </script>
 <%- include('../components/footer') %>

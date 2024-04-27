@@ -66,8 +66,6 @@ router.get('/images/list', basicAuth({
 router.get('/instances/deploy', async (req, res) => {
   const {
     image,
-    cmd,
-    env,
     memory,
     cpu,
     ports,
@@ -76,12 +74,10 @@ router.get('/instances/deploy', async (req, res) => {
     user
   } = req.query;
 
-  if (!image || !cmd || !env || !memory || !cpu || !ports || !nodeId || !name || !user) return res.send('Missing parameters')
+  if (!image || !memory || !cpu || !ports || !nodeId || !name || !user) return res.send('Missing parameters')
 
   const NodeId = nodeId;
   const Name = name;
-  const Cmd = cmd ? cmd.split(',') : undefined;
-  const Env = env ? env.split(',') : undefined;
   const Memory = memory ? parseInt(memory) * 1024 * 1024 : undefined;
   const Cpu = cpu ? parseInt(cpu) : undefined;
   const ExposedPorts = {};
@@ -115,8 +111,6 @@ router.get('/instances/deploy', async (req, res) => {
     data: {
       Name,
       Image: image,
-      Cmd,
-      Env,
       Memory,
       Cpu,
       ExposedPorts,
@@ -140,8 +134,6 @@ router.get('/instances/deploy', async (req, res) => {
       VolumeId: response.data.volumeId,
       Memory,
       Cpu,
-      Cmd,
-      Env,
       ExposedPorts,
       PortBindings
     });
@@ -153,8 +145,6 @@ router.get('/instances/deploy', async (req, res) => {
       VolumeId: response.data.volumeId,
       Memory,
       Cpu,
-      Cmd,
-      Env,
       ExposedPorts,
       PortBindings
   });
@@ -171,8 +161,6 @@ router.get('/instances/deploy', async (req, res) => {
       VolumeId: response.data.volumeId,
       Memory,
       Cpu,
-      Cmd,
-      Env,
       ExposedPorts,
       PortBindings
     });
@@ -185,7 +173,7 @@ router.get('/instances/deploy', async (req, res) => {
   } catch (error) {
     console.log(error)
     res.status(500).json({
-      error: 'Failed to register container',
+      error: 'Failed to create container',
       details: error ? error.data : 'No additional error info'
     });
   }

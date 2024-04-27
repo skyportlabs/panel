@@ -168,8 +168,13 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
  */
 router.get('/admin/instances', isAdmin, async (req, res) => {
   let instances = await db.get('instances') || [];
+  let images = await db.get('images') || [];
+  let nodes = await db.get('nodes') || [];
+  let users = await db.get('users') || [];
 
-  res.render('admin/instances', { user: req.user, instances, name: await db.get('name') || 'Skyport' });
+  nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
+
+  res.render('admin/instances', { user: req.user, instances, images, nodes, users, name: await db.get('name') || 'Skyport' });
 });
 
 module.exports = router;
