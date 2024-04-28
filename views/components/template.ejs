@@ -38,6 +38,7 @@
                 </a>
               </li>
 
+              <% if (user.admin == true) { %>
               <p class="pl-6 text-neutral-500 text-sm font-semibold tracking-tight pt-6 pb-3">Admin panel</p>
               <li>
                 <a href="/admin/overview" class="hover:scale-105 transition nav-link text-neutral-400 pl-6 group flex gap-x-3 border border-transparent shadow-none rounded-md py-3 text-sm leading-6 font-normal">
@@ -91,6 +92,7 @@
                   Images
                 </a>
               </li>
+              <% } %>
             </ul>
           </li>
           <!--<li>

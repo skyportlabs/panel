@@ -55,9 +55,9 @@
            </div>
            <script>
             async function submitForm() {
-             let n = encodeURIComponent(document.getElementById("username").value);
-             let p = encodeURIComponent(document.getElementById("password").value);
-             document.location.href = `/auth/login?username=${n}&password=${p}`;
+             let username = encodeURIComponent(document.getElementById("username").value);
+             let password = encodeURIComponent(document.getElementById("password").value);
+             document.location.href = `/auth/login?username=${username}&password=${password}`;
             }
            </script>
         </div>

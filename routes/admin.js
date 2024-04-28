@@ -94,6 +94,32 @@ router.get('/account/debug', isAdmin, async (req, res) => {
 });
 
 /**
+ * GET /admin/overview
+ * Retrieves counts of users, servers, images, and instances from the database.
+ * Available only to administrators and renders an overview page displaying the counts.
+ *
+ * @returns {Response} Renders the 'overview' view with the total counts.
+ */
+router.get('/admin/overview', isAdmin, async (req, res) => {
+  try {
+      const users = await db.get('users') || [];
+      const servers = await db.get('servers') || [];
+      const images = await db.get('images') || [];
+      const instances = await db.get('instances') || [];
+
+      // Calculate the total number of each type of object
+      const usersTotal = users.length;
+      const serversTotal = servers.length;
+      const imagesTotal = images.length;
+      const instancesTotal = instances.length;
+
+      res.render('admin/overview', { req, user: req.user, usersTotal, serversTotal, imagesTotal, instancesTotal, name: await db.get('name') || 'Skyport' });
+  } catch (error) {
+      res.status(500).send({ error: 'Failed to retrieve data from the database.' });
+  }
+});
+
+/**
  * POST /nodes/create
  * Creates a new node with specified parameters from the request body, such as name, hardware specifications,
  * and API credentials. After creation, the node's operational status is checked and updated. The new node is
