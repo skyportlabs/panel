@@ -10,6 +10,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 const { db } = require('../handlers/db.js');
+const config = require('../config.json');
 const bcrypt = require('bcrypt');
 const saltRounds = process.env.SALT_ROUNDS || 10;
 /**
@@ -105,7 +106,7 @@ router.get('/account/debug', isAdmin, async (req, res) => {
 
 /**
  * GET /admin/overview
- * Retrieves counts of users, servers, images, and instances from the database.
+ * Retrieves counts of users, nodes, images, and instances from the database.
  * Available only to administrators and renders an overview page displaying the counts.
  *
  * @returns {Response} Renders the 'overview' view with the total counts.
@@ -113,17 +114,17 @@ router.get('/account/debug', isAdmin, async (req, res) => {
 router.get('/admin/overview', isAdmin, async (req, res) => {
   try {
       const users = await db.get('users') || [];
-      const servers = await db.get('servers') || [];
+      const nodes = await db.get('nodes') || [];
       const images = await db.get('images') || [];
       const instances = await db.get('instances') || [];
 
       // Calculate the total number of each type of object
       const usersTotal = users.length;
-      const serversTotal = servers.length;
+      const nodesTotal = nodes.length;
       const imagesTotal = images.length;
       const instancesTotal = instances.length;
 
-      res.render('admin/overview', { req, user: req.user, usersTotal, serversTotal, imagesTotal, instancesTotal, name: await db.get('name') || 'Skyport' });
+      res.render('admin/overview', { req, user: req.user, usersTotal, nodesTotal, imagesTotal, instancesTotal, version: config.version, name: await db.get('name') || 'Skyport' });
   } catch (error) {
       res.status(500).send({ error: 'Failed to retrieve data from the database.' });
   }
