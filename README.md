@@ -3,6 +3,9 @@
 ## Overview
 An open source project powered by Docker for managing applications, game servers and more. Ditch Pterodactyl or PufferPanel and fly higher with a panel that isn't named after a creature.
 
+> [!WARNING]
+> Skyport is not ready for production use, nor does it have a stable and completed release yet.
+
 ## Installation
 1. Clone the repository:
 `git clone https://github.com/skyportlabs/panel/`
