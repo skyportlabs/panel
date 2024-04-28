@@ -3,11 +3,11 @@
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
-           <h1 class="text-base font-semibold leading-6 text-white">Nodes</h1>
-           <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the nodes set up on the Skyport panel.</p>
+           <h1 class="text-base font-semibold leading-6 text-white">節點</h1>
+           <p class="mt-1 tracking-tight text-sm text-neutral-500">Skyport面板上的節點列表</p>
          </div>
          <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-           <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new node</button>
+           <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">建立新的節點</button>
          </div>
        </div>
       <div id="nodeTable" class="mt-6 w-full">
@@ -21,10 +21,10 @@
         </colgroup>
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
-            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:pl-80 lg:pl-8">Name</th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Connection</th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">Instances</th>
-			<th scope="col" class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">Actions</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:pl-80 lg:pl-8">名稱</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">連接點</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">實例</th>
+			<th scope="col" class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">動作</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
@@ -73,7 +73,7 @@
       </div>
       <div id="nodeForm" class="mt-6 px-8 w-full hidden">
         <form>
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">名稱:</label>
          <input id="nodeName" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My node">
 
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
@@ -82,19 +82,19 @@
          <label class="text-neutral-400 text-sm tracking-tight mb-2">RAM (GB):</label>
          <input id="nodeRam" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (GB):</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">硬碟 (GB):</label>
          <input id="nodeDisk" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="40">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Processor:</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">處理器:</label>
          <input id="nodeProcessor" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="AMD EPYC 9454 - 16 Threads">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">IP Address:</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">IP地址:</label>
          <input id="nodeAddress" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="192.168.1.1 or my.hostnamehere.com">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Daemon Port:</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Daemon端口/埠:</label>
          <input id="nodePort" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8080">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Access Key:</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">存取金鑰:</label>
          <input id="nodeApiKey" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="skyportd_xxxxxxxxxxxxxxxx">
     
          <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
