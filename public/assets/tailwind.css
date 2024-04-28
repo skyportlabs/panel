@@ -1396,6 +1396,10 @@ select {
   background-color: rgb(255 255 255 / 0.05);
 }
 
+.bg-emerald-800\/10 {
+  background-color: rgb(6 95 70 / 0.1);
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;
@@ -1696,6 +1700,10 @@ select {
 
 .text-white\/10 {
   color: rgb(255 255 255 / 0.1);
+}
+
+.text-emerald-400\/50 {
+  color: rgb(52 211 153 / 0.5);
 }
 
 .opacity-100 {
