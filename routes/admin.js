@@ -115,6 +115,8 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
     status: 'Unknown' // Default status
   };
 
+  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.port || !req.body.apiKey) return res.send('Form validation failure.')
+
   await db.set(node.id + '_node', node); // Save the initial node info
   const updatedNode = await checkNodeStatus(node); // Check and update status
 
@@ -166,7 +168,7 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
   });
   nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
 
-  res.render('admin/nodes', { user: req.user, nodes, set, name: await db.get('name') || 'Skyport' });
+  res.render('admin/nodes', { req, user: req.user, nodes, set, name: await db.get('name') || 'Skyport' });
 });
 
 /**
@@ -184,7 +186,7 @@ router.get('/admin/instances', isAdmin, async (req, res) => {
 
   nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
 
-  res.render('admin/instances', { user: req.user, instances, images, nodes, users, name: await db.get('name') || 'Skyport' });
+  res.render('admin/instances', { req, user: req.user, instances, images, nodes, users, name: await db.get('name') || 'Skyport' });
 });
 
 /**
@@ -199,13 +201,12 @@ router.get('/admin/instances', isAdmin, async (req, res) => {
  */
  
 router.get("/admin/node/:id", async (req, res) => {
-
     const { id } = req.params;
     const node = await db.get(id + '_node');
 
     if (!node || !id) return res.redirect('../nodes')
 
-    res.render('admin/node', { node, user: req.user, name: await db.get('name') || 'Skyport' });
+    res.render('admin/node', { req, node, user: req.user, name: await db.get('name') || 'Skyport' });
 });
 
 

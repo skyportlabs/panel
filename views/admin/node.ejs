@@ -25,7 +25,7 @@
 	 <label class="text-neutral-400 text-sm tracking-tight mb-2">Access Key:</label>
 	 <input id="nodeApiKey" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="skyportd_xxxxxxxxxxxxxxxx" value="<%- node.apiKey %>">
 
-	 <button id="saveNodeBtn" type="button" class="block rounded-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-emerald-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+	 <button id="saveNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Apply Changes</button>
   </form>
 </div>
 
@@ -59,7 +59,7 @@ document.getElementById('saveNodeBtn').addEventListener('click', function() {
     })
     .then(data => {
         console.log('Node edited:', data);
-        window.location.reload();
+        window.location.href = '../nodes?err=SUCCESS'
     })
     .catch(error => console.error('Error editing node:', error));
 });

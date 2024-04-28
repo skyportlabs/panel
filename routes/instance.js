@@ -125,8 +125,8 @@ router.get("/instance/:id/files", async (req, res) => {
 
             res.render('files', { req, files, user: req.user, name: await db.get('name') || 'Skyport' });
         } catch (error) {
-            console.error('Failed to fetch files:', error);
-            res.status(500).render('500', { error: error.response.data.message });
+            const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
+            res.status(500).render('500', { error: errorMessage, req, user: req.user, name: await db.get('name') || 'Skyport' });
         }
     } else {
         res.status(500).send('Invalid instance node configuration');
@@ -196,8 +196,8 @@ router.get("/instance/:id/files/view/:file", async (req, res) => {
 
             res.render('file', { req, file, user: req.user, name: await db.get('name') || 'Skyport' });
         } catch (error) {
-            console.error('Failed to fetch file:', error);
-            res.status(500).render('500', { error: error.response.data.message });
+            const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
+            res.status(500).render('500', { error: errorMessage, req, user: req.user, name: await db.get('name') || 'Skyport' });
         }
     } else {
         res.status(500).send('Invalid instance node configuration');

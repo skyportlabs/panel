@@ -10,8 +10,26 @@
            <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new node</button>
          </div>
        </div>
-      <div id="nodeTable" class="mt-6 w-full">
-      <table class="mt-6 w-full whitespace-nowrap text-left">
+      <% if (req.query.err == "none") { %>
+      <div class="mt-6 w-full">
+        <div class="rounded-lg bg-red-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8 hidden" id="daemonIsDown">
+          <div class="flex">
+             <div class="flex-shrink-0 ml-1.5">
+                <svg class="animate-spin mt-2 h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+             </div>
+             <div class="ml-5">
+                <h3 class="text-sm font-semibold text-red-400">Connection failure</h3>
+                <div class="text-sm text-red-400/50">
+                   <p>The node running this instance appears to be having issues. Please wait...</p>
+                </div>
+             </div>
+          </div>
+       </div>
+      <% } %>
+      <table id="nodeTable" class="mt-6 w-full whitespace-nowrap text-left">
         <colgroup>
           <col class="w-full sm:w-4/12">
           <col class="lg:w-4/12">
@@ -62,8 +80,8 @@
               </div>
             </td>
             <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"><%= set[node.id] || 0 %></td>
-			<td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 outer">
-				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-emerald-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</button></a></div>
+			<td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3">
+				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</button></a></div>
 				<div class="inner"><button id="removeButton" type="button" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</button></div>
 			</td>
           </tr>
@@ -147,7 +165,7 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
         console.log('Node created:', data);
         window.location.reload();
     })
-    .catch(error => console.error('Error creating node:', error));
+    .catch(error => alert('Error creating node:', error));
 });
 </script>
 <%- include('../components/footer') %>
