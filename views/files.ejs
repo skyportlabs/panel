@@ -3,19 +3,19 @@
     <div class="bg-transparent">
         <div class="sm:flex sm:items-center px-8 pt-4">
            <div class="sm:flex-auto">
-              <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
-              <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
+              <h1 class="text-base font-semibold leading-6 text-white">管理實例(Instances)</h1>
+              <p class="mt-1 tracking-tight text-sm text-neutral-500">檢視,更新,管理在Skyport面板的實例</p>
            </div>
            <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex">
               <button id="startButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Create File
+                建立檔案
               </button>
            </div>
         </div>
     </div>
     <%- include('components/instance') %>
     <div class="px-4 sm:px-6 lg:px-8">
-       <h1 class="text-white text-sm">Directory: <a class="text-neutral-300 hover:text-neutral-200 transition" href="./files">/app/data/</a><%= req.query.path %></h1>
+       <h1 class="text-white text-sm">路徑: <a class="text-neutral-300 hover:text-neutral-200 transition" href="./files">/app/data/</a><%= req.query.path %></h1>
        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-6">
        <% files.filter(file => file.isDirectory).forEach(function(directory) { %>
          <% let currentPath; %>
@@ -41,7 +41,7 @@
        <table class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl">
           <thead class="text-white">
              <tr>
-                <th class="px-6 py-3 text-left">File Name</th>
+                <th class="px-6 py-3 text-left">檔案名稱</th>
                 <th class="px-6 py-3 text-left">&nbsp;</th>
              </tr>
           </thead>
