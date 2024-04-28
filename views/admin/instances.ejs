@@ -3,11 +3,11 @@
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
-           <h1 class="text-base font-semibold leading-6 text-white">Instances</h1>
+           <h1 class="text-base font-semibold leading-6 text-white">實例(Instances)</h1>
            <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the instances deployed on the Skyport panel.</p>
          </div>
          <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-           <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new instance</button>
+           <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">建立新的實例</button>
          </div>
        </div>
       <div id="nodeTable" class="mt-6 w-full">
@@ -21,10 +21,10 @@
         </colgroup>
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
-            <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
-			<th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Node</th>
+            <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">名稱</th>
+			<th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">節點</th>
             <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker ID</th>
-            <th scope="col" class="py-2 pl-0 pr-4 text-right font-semibold sm:pr-8 sm:text-left lg:pr-20">Volume / Mount</th>
+            <th scope="col" class="py-2 pl-0 pr-4 text-right font-semibold sm:pr-8 sm:text-left lg:pr-20">掛載/Mount/Volume</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
@@ -57,10 +57,10 @@
       </div>
       <div id="nodeForm" class="mt-6 px-8 w-full hidden">
         <form>
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">名稱:</label>
          <input id="name" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My node">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">User:</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">使用者:</label>
          <select style="background: #171717;" id="user" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
             <% users.forEach(function(user) { %>
                 <option value="<%= user.userId %>"><%= user.username %></option>
@@ -81,13 +81,13 @@
             <% }); %>
          </select>
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory/RAM (MB):</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">記憶體/RAM (MB):</label>
          <input id="memory" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="2">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU Threads:</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU執行緒:</label>
          <input id="cpu" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="1">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports (localIp : hostIp):</label>
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">埠/端口 (localIp : hostIp):</label>
          <input id="ports" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="25565:25565,8080:8080">
     
          <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
@@ -151,7 +151,7 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
         if (response.ok) {
             return response.json();
         }
-        throw new Error('Failed to create instance');
+        throw new Error('創建失敗');
     })
     .then(data => {
         console.log('Instance created:', data);
