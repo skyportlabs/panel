@@ -10,7 +10,8 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 const { db } = require('../handlers/db.js');
-
+const bcrypt = require('bcrypt');
+const saltRounds = process.env.SALT_ROUNDS || 10;
 /**
  * Middleware to verify if the user is an administrator.
  * Checks if the user object exists and if the user has admin privileges. If not, redirects to the
@@ -26,6 +27,15 @@ function isAdmin(req, res, next) {
     return res.redirect('../');
   }
   next();
+}
+
+async function doesUserExist(username) {
+  const users = await db.get('users');
+  if (users) {
+      return users.some(user => user.username === username);
+  } else {
+      return false; // If no users found, return false
+  }
 }
 
 /**
@@ -153,6 +163,53 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
   res.status(201).send(updatedNode);
 });
 
+router.post('/users/create', isAdmin, async (req, res) => {
+  const user = {
+    userId: uuidv4(),
+    username: req.body.username,
+    password: await bcrypt.hash(req.body.password, saltRounds),
+    admin: req.body.admin, 
+};
+
+if (!req.body.username || !req.body.password) {
+  return res.send('Username and password are required.');
+}
+
+if (req.body.admin !== true && req.body.admin !== false) {
+  return res.send('Other values as true or false are not allowed!');
+}
+
+
+const userExists = await doesUserExist(req.body.username);
+if (userExists) {
+  return res.send("user already exists!");
+}
+
+let users = await db.get('users') || [];
+users.push(user);
+await db.set('users', users);
+
+console.log(user)
+
+res.status(201).send(user);
+});
+
+router.delete('/user/delete', isAdmin, async (req, res) => {
+  const userId = req.body.userId;
+  const users = await db.get('users') || [];
+
+  const userIndex = users.findIndex(user => user.userId === userId);
+
+  if (userIndex === -1) {
+    return res.status(400).send('The specified user does not exist');
+  }
+
+  users.splice(userIndex, 1);
+  await db.set('users', users);
+  res.status(204).send();
+});
+
+
 /**
  * DELETE /nodes/delete
  * Deletes a node from the database based on its identifier provided in the request body. Updates the list of
@@ -213,6 +270,12 @@ router.get('/admin/instances', isAdmin, async (req, res) => {
   nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
 
   res.render('admin/instances', { req, user: req.user, instances, images, nodes, users, name: await db.get('name') || 'Skyport' });
+});
+
+router.get('/admin/users', isAdmin, async (req, res) => {
+  let users = await db.get('users') || [];
+
+  res.render('admin/users', { req, user: req.user, users, name: await db.get('name') || 'Skyport' });
 });
 
 /**
