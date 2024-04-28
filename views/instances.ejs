@@ -10,7 +10,7 @@
                   <svg class="animate-spin h-3 w-3 text-white inline-flex mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg> loading...
+                  </svg> 載入中...
                </span></span></h2>
 
                <div class="relative pt-4">
@@ -18,13 +18,13 @@
                   <svg class="animate-spin h-3 w-3 text-white inline-flex mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg> loading...
+                  </svg> 載入中...
                </span><span id="ramLimit"></span></span>
                <span class="border border-neutral-600/30 text-neutral-400 text-xs mb-2 font-medium me-2 px-2.5 py-1 rounded-full"><span id="cpuUsage">
                   <svg class="animate-spin h-3 w-3 text-white inline-flex mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg> loading...
+                  </svg> 載入中...
                </span></span>
             </div>
                <div class="relative pt-2">
@@ -32,13 +32,13 @@
                   <svg class="animate-spin h-3 w-3 text-white inline-flex mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg> loading...
+                  </svg> 載入中...
                </span></span>
                <span class="border border-neutral-600/30 text-neutral-400 text-xs font-medium me-2 px-2.5 py-1 rounded-full"><span id="networkOut">
                   <svg class="animate-spin h-3 w-3 text-white inline-flex mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg> loading...
+                  </svg> 載入中...
                </span></span>
             </div>
             </div>
@@ -77,12 +77,12 @@
          const statusBg = document.getElementById('statusBg');
          if (isNaN(ramUsageRaw)) {
          statusElement.className = 'text-neutral-500';
-         statusElement.textContent = 'offline';
+         statusElement.textContent = '離線';
          } else if (ramUsageRaw > 1) {
          statusBg.classList.remove('bg-neutral-600/20');
          statusBg.classList.add('bg-emerald-600/10');
          statusElement.className = 'text-emerald-500';
-         statusElement.textContent = 'online';
+         statusElement.textContent = '線上';
          }
          
          // Update CPU usage
