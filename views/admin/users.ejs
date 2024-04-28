@@ -1,0 +1,299 @@
+<%- include('../components/template') %>
+<main>
+  <div class="bg-transparent">
+    <div class="sm:flex sm:items-center px-8 pt-4">
+      <div class="sm:flex-auto">
+        <h1 class="text-base font-semibold leading-6 text-white">Users</h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500">
+          A list of all the users set up on the Skyport panel.
+        </p>
+      </div>
+      <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+        <button
+          id="createButton"
+          type="button"
+          class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Create new user
+        </button>
+      </div>
+    </div>
+    <div id="nodeTable" class="mt-6 w-full">
+      <table class="mt-6 w-full whitespace-nowrap text-left">
+        <colgroup>
+          <col class="w-full sm:w-4/12" />
+          <col class="lg:w-4/12" />
+          <col class="lg:w-2/12" />
+          <col class="lg:w-1/12" />
+          <col class="lg:w-1/12" />
+        </colgroup>
+        <thead class="border-b border-white/5 text-sm leading-6 text-white">
+          <tr>
+            <th
+              scope="col"
+              class="py-2 pl-0 pr-8 font-semibold sm:pl-80 lg:pl-8"
+            >
+              Name
+            </th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">
+              Information
+            </th>
+            <th
+              scope="col"
+              class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
+            >
+              Role
+            </th>
+            <th
+              scope="col"
+              class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          <% users.forEach(function(user) { %>
+          <tr>
+            <td class="py-4 pl-4 pr-8 sm:pl-8 lg:pl-8">
+              <div class="flex items-center gap-x-4">
+                <img
+                  class="h-8 w-8 rounded-full bg-transparent"
+                  src="https://source.boringavatars.com/beam/120/<%= user.username %>?colors=264653,f4a261,e76f51"
+                  alt=""
+                />
+
+                <div class="truncate text-sm font-medium leading-6 text-white">
+                  <%= user.username %>
+                </div>
+              </div>
+            </td>
+            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+              <div class="flex gap-x-3">
+                <div
+                  class="rounded-md bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
+                >
+                  <%= user.userId %>
+                </div>
+              </div>
+            </td>
+
+            <% if (user.admin==true) { %>
+            <td
+              class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
+            >
+              Admin
+            </td>
+            <% } else if (user.admin==false) { %>
+            <td
+              class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
+            >
+              Regular user
+            </td>
+            <% } else { %>
+            <td
+              class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
+            >
+              Error
+            </td>
+            <% } %>
+            <td
+              class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3"
+            >
+              <div class="inner">
+                <a href="./user/<%= user.id %>"
+                  ><button
+                    id="editButton"
+                    type="button"
+                    class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Edit
+                  </button></a
+                >
+              </div>
+              <div class="inner">
+                <button
+                  id="removeButton"
+                  type="button"
+                  class="removeButton block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  data-user-id="<%= user.userId %>"                
+                  >
+                  Remove
+                </button>
+              </div>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <div id="nodeForm" class="mt-6 px-8 w-full hidden">
+      <form>
+        <label class="text-neutral-400 text-sm tracking-tight mb-2"
+          >Username:</label
+        >
+        <input
+          id="userName"
+          type="text"
+          name="username"
+          class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          placeholder="JohnDoe"
+        />
+
+        <label class="text-neutral-400 text-sm tracking-tight mb-2"
+          >Password:</label
+        >
+        <input
+          id="userPass"
+          type="password"
+          name="password"
+          class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          placeholder="******"
+        />
+
+        <label class="text-neutral-400 text-sm tracking-tight mb-2"
+          >Admin:</label
+        >
+        <select
+          id="userAdmin"
+          name="admin"
+          class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+        >
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
+        <!-- <label class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
+         <input id="nodeTags" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="Tag 1 - Tag 2 - Tag 3">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">RAM (GB):</label>
+         <input id="nodeRam" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (GB):</label>
+         <input id="nodeDisk" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="40">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Processor:</label>
+         <input id="nodeProcessor" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="AMD EPYC 9454 - 16 Threads">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">IP Address:</label>
+         <input id="nodeAddress" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="192.168.1.1 or my.hostnamehere.com">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Daemon Port:</label>
+         <input id="nodePort" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8080">
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Access Key:</label>
+         <input id="nodeApiKey" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="skyportd_xxxxxxxxxxxxxxxx"> -->
+
+        <button
+          id="createNodeBtn"
+          type="button"
+          class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Create
+        </button>
+      </form>
+    </div>
+  </div>
+</main>
+<script>
+  document
+    .getElementById("createButton")
+    .addEventListener("click", function () {
+      var table = document.getElementById("nodeTable");
+      var form = document.getElementById("nodeForm");
+      if (table.style.display !== "none") {
+        table.style.display = "none";
+        form.style.display = "block";
+      } else {
+        table.style.display = "block";
+        form.style.display = "none";
+      }
+    });
+</script>
+<script>
+  document
+    .getElementById("createNodeBtn")
+    .addEventListener("click", function () {
+      const username = document.getElementById("userName").value;
+      const password = document.getElementById("userPass").value;
+      const adminString = document.getElementById("userAdmin").value; // Get the admin value as a string
+
+// Convert the admin value to a boolean
+const admin = adminString === "true";
+
+      const nodeData = {
+        username,
+        password,
+        admin,
+      };
+
+      console.log(nodeData);
+
+      fetch("/users/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(nodeData),
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Failed to create user");
+        })
+        .then((data) => {
+          console.log("user created:", data);
+          alert("User created successfully");
+          window.location.reload();
+        })
+        .catch((error) =>
+          alert("Errorje vader creating user: " + error.message)
+        );
+    });
+</script>
+<!-- remove -->
+<script>
+  document.querySelectorAll('.removeButton').forEach(button => {
+    button.addEventListener('click', function() {
+      const userId = this.dataset.userId; // Get the user ID from the button's data attribute
+
+      // Check if there is only one user in the database
+      const totalUsers = document.querySelectorAll('.removeButton').length;
+      if (totalUsers === 1) {
+        alert('Cannot delete the only user in the database.');
+        return;
+      }
+
+      // Check if the user being deleted is the current user
+      const currentUserId = '<%= user.userId %>';
+      if (userId === currentUserId) {
+        alert('Cannot delete the current user.');
+        return;
+      }
+
+      // Confirm with the user before deleting
+      const confirmation = confirm('Are you sure you want to delete this user?');
+      if (!confirmation) return; // If the user cancels, do nothing
+
+      fetch('/user/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId }) // Send the user ID in the request body
+      })
+      .then(response => {
+        if (response.ok) {
+          // If deletion is successful, reload the page
+          window.location.reload();
+        } else {
+          throw new Error('Failed to delete user');
+        }
+      })
+      .catch(error => alert('Error deleting user: ' + error.message));
+    });
+  });
+</script>
+
+
+<%- include('../components/footer') %>
