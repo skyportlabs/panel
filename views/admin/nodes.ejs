@@ -162,7 +162,7 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
     })
     .then(data => {
         console.log('Node created:', data);
-        window.location.href = '../nodes?err=SUCCESS'
+        window.location.href = '../admin/nodes?err=SUCCESS'
     })
     .catch(error => alert('Error creating node:', error));
 });

@@ -205,6 +205,73 @@ router.get("/instance/:id/files/view/:file", async (req, res) => {
 });
 
 /**
+ * POST /instance/:id/files/edit/:filename
+ * Forwards the request to the node to modify the content of a specific file within an instance's volume.
+ * Receives the new content in the request body and sends it to the node to overwrite the file with this content.
+ *
+ * @param {string} id - The unique identifier of the instance.
+ * @param {string} filename - The name of the file to edit.
+ * @returns {Response} JSON response indicating the result of the file update operation from the node.
+ */
+router.post("/instance/:id/files/edit/:filename", async (req, res) => {
+    if (!req.user) {
+        return res.status(401).send('Authentication required');
+    }
+
+    const { id, filename } = req.params;
+    const { content } = req.body;
+
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+        return res.status(404).send('Instance not found');
+    }
+
+    // Authorization check
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    if (!isAuthorized) {
+        return res.status(403).send('Unauthorized access to this instance.');
+    }
+
+    if (!instance.Node || !instance.Node.address || !instance.Node.port) {
+        return res.status(500).send('Invalid instance node configuration');
+    }
+
+    let query;
+    if (req.query.path) {
+        query = '?path=' + req.query.path
+    } else {
+        query = ''
+    }
+
+    const apiUrl = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/edit/${filename}${query}`;
+
+    const requestData = {
+        method: 'post',
+        url: apiUrl,
+        auth: {
+            username: 'Skyport',
+            password: instance.Node.apiKey
+        },
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+            filename,
+            content: content
+        }
+    };
+
+    try {
+        const response = await axios(requestData);
+        res.json(response.data);
+    } catch (error) {
+        if (error.response) {
+            res.status(error.response.status).send(error.response.data);
+        } else {
+            res.status(500).send({ message: 'Failed to communicate with node.' });
+        }
+    }
+});
+
+/**
  * WebSocket /console/:id
  * Establishes a WebSocket connection to stream console logs from a specific instance.
  * Requires user authentication and valid instance ID. It connects to another WebSocket service

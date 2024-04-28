@@ -241,8 +241,25 @@ function sendData(nodeData, createBtn) {
             'Content-Type': 'application/json'
         }
     })
-    .then(handleResponse)
-    .catch(handleError);
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to create instance');
+        }
+    })
+    .then(data => {
+        alert('Done! Instance created successfully.');
+        console.log('Instance created:', data);
+        createBtn.textContent = 'Create';
+        createBtn.disabled = false;
+    })
+    .catch(error => {
+        console.error('Error creating instance:', error);
+        alert('Error! Instance creation failed. Check the console for more details.');
+        createBtn.textContent = 'Create';
+        createBtn.disabled = false;
+    });
 }
 
 function handleResponse(response) {
