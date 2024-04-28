@@ -14,18 +14,18 @@
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
-            <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
-            <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
+            <h1 class="text-base font-semibold leading-6 text-white">管理實例(Instance)</h1>
+            <p class="mt-1 tracking-tight text-sm text-neutral-500">檢視,更新,管理在Skyport面板的實例</p>
          </div>
          <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex">
             <button id="startButton" type="button" class="block rounded-l-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-emerald-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-              Start
+              啟動
             </button>
             <button id="restartButton" type="button" class="block bg-orange-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-orange-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-              Restart
+              重新啟動
             </button>
             <button id="stopButton" type="button" class="block rounded-r-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-              Stop
+              停止
             </button>
          </div>
       </div>
@@ -40,9 +40,9 @@
             </svg>
          </div>
          <div class="ml-5">
-            <h3 class="text-sm font-semibold text-red-400">Connection failure</h3>
+            <h3 class="text-sm font-semibold text-red-400">連線失敗</h3>
             <div class="text-sm text-red-400/50">
-               <p>The node running this instance appears to be having issues. Please wait...</p>
+               <p>負責這台實例的節點似乎有點問題 請等待...</p>
             </div>
          </div>
       </div>
@@ -60,7 +60,7 @@
             </dd>
          </div>
          <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
-            <dt class="truncate text-sm font-medium text-neutral-400">RAM Usage</dt>
+            <dt class="truncate text-sm font-medium text-neutral-400">RAM使用率</dt>
             <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
                <span id="ramUsage">
                   <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -83,7 +83,7 @@
             </dd>
          </div>
          <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
-            <dt class="truncate text-sm font-medium text-neutral-400">Network In</dt>
+            <dt class="truncate text-sm font-medium text-neutral-400">網路輸入</dt>
             <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
                <span id="networkIn">
                   <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@
             </dd>
          </div>
          <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
-            <dt class="truncate text-sm font-medium text-neutral-400">Network Out</dt>
+            <dt class="truncate text-sm font-medium text-neutral-400">網路輸出</dt>
             <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
                <span id="networkOut">
                   <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@
       <div id="terminal"></div>
    </div>
    <div class="mt-8 ml-8 mr-8">
-      <input placeholder="Send a command..." class="rounded-lg w-full focus:ring-transparent focus:border focus:border-white/10 text-white text-sm mt-2 mb-6 items-center transition justify-left gap-16 hover:bg-neutral-900 px-4 py-3 flex border-white/5 bg-transparent placeholder:text-neutral-300 text-white border border-black/10" id="input"></input>
+      <input placeholder='發送指令(Minecraft伺服器不需要加入"/")' class="rounded-lg w-full focus:ring-transparent focus:border focus:border-white/10 text-white text-sm mt-2 mb-6 items-center transition justify-left gap-16 hover:bg-neutral-900 px-4 py-3 flex border-white/5 bg-transparent placeholder:text-neutral-300 text-white border border-black/10" id="input"></input>
    </div>
    <script>
       console.log('<%= instance.VolumeId %>')
@@ -141,15 +141,15 @@
       function initWebSocket() {
           ws = new WebSocket(`ws://localhost:3001/console/<%= req.params.id %>`);
           ws.onopen = () => {
-              console.log('WebSocket connected!');
+              console.log('WebSocket已連接');
           };
           ws.onmessage = handleWebSocketMessage;
           ws.onclose = () => {
-              console.log('WebSocket connection closed, attempting to reconnect...');
+              console.log('WebSocket連接已斷開 正在嘗試重新連接...');
               setTimeout(initWebSocket, 3000); // Reconnect after 3s or so
           };
           ws.onerror = (error) => {
-              console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
+              console.log('WebSocket出現問題:', error, '正在嘗試重新連接...');
               setTimeout(initWebSocket, 5000); // Reconnect after a delay on err
           };
       }
@@ -161,11 +161,11 @@
               term.write('\x1b[0m' + line.trim() + '\r\n');
               if (line.includes("state:")) {
                   // everything will lock up if we don't do this :skull: - atqr
-                  term.write('\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
+                  term.write('\u001b[1m\u001b[33m[panel] \u001b[0m正在嘗試重新連接，稍等......\r\n');
                   term.clear();
                   ws.close(); // Close the current connection to trigger onclose and reconnect
               }
-              if (line.includes("skyportd instance appears to be down")) {
+              if (line.includes("Skyportd實例似乎掛了")) {
                   ws.close();
                   daemonIsDown.classList.remove('hidden')
               } else {
@@ -258,10 +258,10 @@
           const statusElement = document.getElementById('status');
           if (isNaN(ramUsageRaw)) {
               statusElement.className = 'text-neutral-500';
-              statusElement.textContent = 'Offline';
+              statusElement.textContent = '離線';
           } else if (ramUsageRaw > 1) {
               statusElement.className = 'text-emerald-500';
-              statusElement.textContent = 'Online';
+              statusElement.textContent = '線上';
           }
           // Update CPU usage
           const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
