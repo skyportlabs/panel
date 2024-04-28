@@ -14,6 +14,9 @@ const rl = readline.createInterface({
 async function createUser(username, password) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const userId = uuidv4();
+    const allUsers = await db.get('users') || [];
+    allUsers.push({ userId, username, password: hashedPassword, admin: true });
+    await db.set('users', allUsers)
     return db.set(username, { userId, username, password: hashedPassword, admin: true });
 }
 
