@@ -1,5 +1,15 @@
 <%- include('../components/template') %>
 <main>
+  <style>
+.input-error {
+    border: 2px solid rgb(255, 69, 69);
+}
+
+.error-message {
+    color: rgb(255, 69, 69);
+    font-size: 0.9rem; /* Adjust size as needed */
+}
+  </style>
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
@@ -58,38 +68,52 @@
       <div style="display: none;"  id="nodeForm" class="mt-6 px-8 w-full">
         <form>
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
-         <input id="name" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My node">
+         <input id="name" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My node">
+
+         <div class="mb-6"></div>
 
          <label class="text-neutral-400 text-sm tracking-tight mb-2">User:</label>
-         <select style="background: #171717;" id="user" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
+         <select style="background: #171717;" id="user" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
             <% users.forEach(function(user) { %>
                 <option value="<%= user.userId %>"><%= user.username %></option>
             <% }); %>
          </select>
 
+         <div class="mb-6"></div>
+
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
-         <select style="background: #171717;" id="image" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
+         <select style="background: #171717;" id="image" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
             <% images.forEach(function(image) { %>
                 <option value="<%= image.Image %>"><%= image.Name %> (<%= image.Image %>)</option>
             <% }); %>
          </select>
 
+         <div class="mb-6"></div>
+
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Node:</label>
-         <select style="background: #171717;" id="node" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
+         <select style="background: #171717;" id="node" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
             <% nodes.forEach(function(node) { %>
                 <option value="<%= node.id %>"><%= node.name %></option>
             <% }); %>
          </select>
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory/RAM (MB):</label>
-         <input id="memory" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="2">
+         <div class="mb-6"></div>
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory (MiB):</label>
+         <input id="memory" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="2">
+
+         <div class="mb-6"></div>
 
          <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU Threads:</label>
-         <input id="cpu" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="1">
+         <input id="cpu" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="1">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports (localIp : hostIp):</label>
-         <input id="ports" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="25565:25565,8080:8080">
+         <div class="mb-6"></div>
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports:</label>
+         <input id="ports" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="25565:25565,8080:8080">
     
+         <div class="mb-6"></div>
+
          <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
       </form>
     </div>
@@ -116,48 +140,123 @@
 </script>
 <script>
 document.getElementById('createNodeBtn').addEventListener('click', function() {
-    const name = document.getElementById('name').value;
-    const image = document.getElementById('image').value;
-    const user = document.getElementById('user').value;
-    const node = document.getElementById('node').value;
-    const memory = document.getElementById('memory').value;
-    const cpu = document.getElementById('cpu').value;
-    const ports = document.getElementById('ports').value;
+    const createBtn = this;
+    createBtn.textContent = 'Working on it...'; // Change the button text
+    createBtn.disabled = true; // Disable the button
 
-    const nodeData = {
-        name, image, nodeId: node, user, memory, cpu, ports
-    };
+    const name = document.getElementById('name');
+    const memory = document.getElementById('memory');
+    const cpu = document.getElementById('cpu');
+    const ports = document.getElementById('ports');
 
-    // Function to serialize data as query parameters
-    function serializeParams(params) {
-        return Object.keys(params)
-            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
-            .join('&');
+    // Clear previous errors
+    clearValidationErrors();
+
+    let isValid = true;
+
+    // Validate name (no spaces allowed)
+    if (name.value.includes(' ')) {
+        showError(name, 'Name must not contain spaces.');
+        isValid = false;
     }
 
-    // Create the URL with query parameters
+    // Validate memory and CPU (must be integers greater than 1)
+    if (!isPositiveInteger(memory.value)) {
+        showError(memory, 'Memory must be an integer greater than 1.');
+        isValid = false;
+    }
+
+    if (!isPositiveIntegerCpu(cpu.value)) {
+        showError(cpu, 'CPU must be an integer greater than 0.');
+        isValid = false;
+    }
+
+    // Validate ports (must match the format "port:port,port:port")
+    const portPattern = /^(\d+:\d+)(,\d+:\d+)*$/;
+    if (!ports.value.match(portPattern)) {
+        showError(ports, 'Ports must be in the format "port:port,port:port".');
+        isValid = false;
+    }
+
+    if (!isValid) {
+        createBtn.textContent = 'Create';
+        createBtn.disabled = false;
+        return;
+    }
+
+    const nodeData = {
+        name: name.value,
+        image: document.getElementById('image').value,
+        nodeId: document.getElementById('node').value,
+        user: document.getElementById('user').value,
+        memory: memory.value,
+        cpu: cpu.value,
+        ports: ports.value
+    };
+
+    // Proceed with sending data
+    sendData(nodeData, createBtn);
+});
+
+function clearValidationErrors() {
+    const inputs = document.querySelectorAll('.input-error');
+    const messages = document.querySelectorAll('.error-message');
+    inputs.forEach(input => input.classList.remove('input-error'));
+    messages.forEach(msg => msg.remove());
+}
+
+// Serialize and send request as before
+function serializeParams(params) {
+    return Object.keys(params)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+        .join('&');
+    }
+    
+function showError(element, message) {
+    element.classList.add('input-error');
+    const errorDiv = document.createElement('div');
+    errorDiv.textContent = message;
+    errorDiv.className = 'error-message';
+    element.parentNode.insertBefore(errorDiv, element.nextSibling);
+}
+
+function isPositiveInteger(value) {
+    const num = parseInt(value, 10);
+    return Number.isInteger(num) && num > 1;
+}
+
+function isPositiveIntegerCpu(value) {
+    const num = parseInt(value, 10);
+    return Number.isInteger(num) && num > 0;
+}
+
+function sendData(nodeData, createBtn) {
     const baseUrl = '/instances/deploy';
     const queryParams = serializeParams(nodeData);
     const fullUrl = `${baseUrl}?${queryParams}`;
 
-    // Fetch call
     fetch(fullUrl, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        }
-        throw new Error('Failed to create instance');
-    })
-    .then(data => {
-        console.log('Instance created:', data);
-        alert('Done! Instance created successfully.')
-    })
-    .catch(error => console.error('Error creating instance:', error));
-});
+    .then(handleResponse)
+    .catch(handleError);
+}
+
+function handleResponse(response) {
+    if (response.ok) {
+        return response.json();
+    }
+    throw new Error('Failed to create instance');
+}
+
+function handleError(error) {
+    console.error('Error creating instance:', error);
+    alert('Error! Check the console for more details.');
+    createBtn.textContent = 'Create';
+    createBtn.disabled = false;
+}
 </script>
 <%- include('../components/footer') %>
