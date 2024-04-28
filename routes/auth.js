@@ -28,20 +28,28 @@ router.use(passport.session());
 passport.use(new LocalStrategy(
   async (username, password, done) => {
     try {
-      const user = await db.get(username);
+      const users = await db.get('users');
+      if (!users) {
+        return done(null, false, { message: 'No users found.' });
+      }
+
+      const user = users.find(user => user.username === username);
       if (!user) {
         return done(null, false, { message: 'Incorrect username.' });
       }
+
       const match = await bcrypt.compare(password, user.password);
-      if (!match) {
+      if (match) {
+        return done(null, user);
+      } else {
         return done(null, false, { message: 'Incorrect password.' });
       }
-      return done(null, user);
     } catch (error) {
       return done(error);
     }
   }
 ));
+
 
 /**
  * Serializes the user to the session, storing only the username to manage login sessions.
@@ -60,15 +68,24 @@ passport.serializeUser((user, done) => {
  */
 passport.deserializeUser(async (username, done) => {
   try {
-    const user = await db.get(username);
-    if (!user) {
+    const users = await db.get('users');
+    if (!users) {
+      throw new Error('No users found');
+    }
+    
+    // Search for the user with the provided username in the users array
+    const foundUser = users.find(user => user.username === username);
+
+    if (!foundUser) {
       throw new Error('User not found');
     }
-    done(null, user);
+
+    done(null, foundUser); // Deserialize user by retrieving full user details from the database
   } catch (error) {
     done(error);
   }
 });
+
 
 /**
  * GET /auth/login
@@ -88,8 +105,11 @@ router.get('/auth/login', passport.authenticate('local', {
  *
  * @returns {Response} No specific return value but ends the user's session and redirects.
  */
-router.get('/auth/logout', (req, res) => {
-    req.logout();
+router.get("/auth/logout", (req, res) => {
+  req.logout(req.user, err => {
+    if(err) return next(err);
+    res.redirect("/");
+  });
 });
 
 module.exports = router;
