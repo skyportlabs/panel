@@ -106,7 +106,6 @@ router.post('/update-username', async (req, res) => {
 
 router.post('/change-password', async (req, res) => {
     const { currentPassword, newPassword } = req.body;
-    
 
     if (!currentPassword || !newPassword) {
         return res.status(400).send('Current and new password parameters are required.');
@@ -140,8 +139,18 @@ router.post('/change-password', async (req, res) => {
             }
         });
         await db.set('users', updatedUsers);
+        
+        // Log the user out
+        req.logout(async (err) => {
+            if (err) {
+                //console.error('Error logging out user:', err);
+                //return res.status(500).send('Error logging out user.');
+                next(err);
+            }
+        });
 
-        res.status(200).send('Password changed successfully.');
+        // Redirect the user to the login page with a success message
+        res.status(200).redirect('/login?err=UpdatedCredentials');
     } catch (error) {
         console.error('Error changing password:', error);
         res.status(500).send('Internal Server Error');
