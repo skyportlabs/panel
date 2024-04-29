@@ -1,5 +1,9 @@
 ![\[!image\](https://imgur.com/kGNc6dR)](https://i.imgur.com/kGNc6dR.png)
 
+![Discord](https://img.shields.io/discord/1230288144386228224?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
+![GitHub Releases](https://img.shields.io/github/downloads/skyportlabs/panel/latest/total?style=for-the-badge)
+![GitHub contributors](https://img.shields.io/github/contributors/skyportlabs/panel?style=for-the-badge)
+
 # Skyport Panel
 
 ## Overview
