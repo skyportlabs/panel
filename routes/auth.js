@@ -96,7 +96,7 @@ passport.deserializeUser(async (username, done) => {
  */
 router.get('/auth/login', passport.authenticate('local', {
     successRedirect: '/instances',
-    failureRedirect: '/login?err=InvalidCredentials&state=failed'
+    failureRedirect: '/login?err=InvalidCredentials&state=failed',
 }));
 
 /**
