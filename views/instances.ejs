@@ -1,5 +1,13 @@
 <%- include('components/template') %>
 <main>
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+            <h1 class="text-base font-semibold leading-6 text-white">Instances</h1>
+            <p class="mt-1 tracking-tight text-sm text-neutral-500">View the instances that you have access to.</p>
+         </div>
+      </div>
+   </div>
    <div class="px-4 sm:px-6 lg:px-8">
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
       <% instances.forEach(function(instance) { %>
