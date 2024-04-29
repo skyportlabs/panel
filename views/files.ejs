@@ -6,10 +6,18 @@
               <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
               <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
            </div>
-           <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex">
-              <button id="startButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+           <% let query = req.query.path ? '?path=' + req.query.path : ''; %>
+           <div class="mt-4 sm:ml-16 sm:mt-0 flex space-x-4">
+              <a href="/instance/<%= req.params.id %>/files/create<%= query %>" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Create File
-              </button>
+              </a>
+              <a href="/instance/<%= req.params.id %>/files/folder/create<%= query %>" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Create Folder
+             </a>
+             <button id="uploadBtn" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+               Upload File(s)
+             </button>
+             <input type="file" id="fileInput" multiple style="display: none;">
            </div>
         </div>
     </div>
@@ -63,5 +71,41 @@
           </tbody>
        </table>
     </div>
+    <script>
+      document.getElementById('uploadBtn').addEventListener('click', function() {
+          document.getElementById('fileInput').click();
+      });
+      
+      document.getElementById('fileInput').addEventListener('change', function(event) {
+          const files = event.target.files;
+          if (files.length === 0) return;
+      
+          const formData = new FormData();
+          Array.from(files).forEach(file => formData.append('files', file));
+      
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/instance/<%= req.params.id %>/files/upload<%= query %>', true);
+          xhr.upload.onprogress = function(e) {
+              if (e.lengthComputable) {
+                  const percentComplete = (e.loaded / e.total) * 100;
+                  document.getElementById('uploadBtn').style.opacity = '0.4'; // Dim button during upload
+                  document.getElementById('uploadBtn').textContent = 'Uploading ' + Math.floor(percentComplete) + '%';
+              }
+          };
+          xhr.onload = function() {
+              if (xhr.status == 200) {
+                  alert('Upload complete!');
+                  document.getElementById('uploadBtn').textContent = 'Upload File(s)';
+                  document.getElementById('uploadBtn').style.opacity = '1'; // Reset button when done
+              } else {
+                  alert('Upload failed. Server responded with status ' + xhr.status);
+                  document.getElementById('uploadBtn').textContent = 'Upload File(s)';
+                  document.getElementById('uploadBtn').style.opacity = '1'; // Reset button if fail
+              }
+          };
+          xhr.send(formData);
+          document.getElementById('fileInput').value = ''; // Reset file input
+      });
+      </script>
 </main>
 <%- include('components/footer') %>

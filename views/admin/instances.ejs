@@ -83,10 +83,10 @@
 
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
          <select style="background: #171717;" id="image" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
-            <% images.forEach(function(image) { %>
-                <option value="<%= image.Image %>"><%= image.Name %> (<%= image.Image %>)</option>
-            <% }); %>
-         </select>
+          <% images.forEach(function(image) { %>
+              <option value="<%= image.Image %>" data-configfilepath="<%= image.ConfigFilePath %>" data-configfilecontent="<%= image.ConfigFileContent %>"><%= image.Name %> (<%= image.Image %>)</option>
+          <% }); %>
+          </select>      
 
          <div class="mb-6"></div>
 
@@ -111,6 +111,11 @@
 
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports:</label>
          <input id="ports" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="25565:25565,8080:8080">
+
+         <div class="mb-6"></div>
+
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Primary Port:</label>
+         <input id="primary" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="25565">
     
          <div class="mb-6"></div>
 
@@ -148,6 +153,11 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
     const memory = document.getElementById('memory');
     const cpu = document.getElementById('cpu');
     const ports = document.getElementById('ports');
+    const imageDropdown = document.getElementById('image');
+    const primaryPort = document.getElementById('primary');
+    const selectedImage = imageDropdown.options[imageDropdown.selectedIndex];
+    const configFilePath = selectedImage.getAttribute('data-configfilepath');
+    let configFileContent = selectedImage.getAttribute('data-configfilecontent');
 
     // Clear previous errors
     clearValidationErrors();
@@ -178,6 +188,15 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
         isValid = false;
     }
 
+    // Validate primary port (must be a number)
+    if (!primaryPort.value.match(/^\d+$/)) {
+        showError(primaryPort, 'Primary port must be a valid number.');
+        isValid = false;
+    } else {
+        // Replace {{primaryPort}} in configFileContent
+        configFileContent = configFileContent.replace('{{primaryPort}}', primaryPort.value);
+    }
+
     if (!isValid) {
         createBtn.textContent = 'Create';
         createBtn.disabled = false;
@@ -186,12 +205,14 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
 
     const nodeData = {
         name: name.value,
-        image: document.getElementById('image').value,
+        image: imageDropdown.value,
         nodeId: document.getElementById('node').value,
         user: document.getElementById('user').value,
         memory: memory.value,
         cpu: cpu.value,
-        ports: ports.value
+        ports: ports.value,
+        configFilePath: configFilePath,
+        configFileContent: configFileContent
     };
 
     // Proceed with sending data
@@ -241,8 +262,25 @@ function sendData(nodeData, createBtn) {
             'Content-Type': 'application/json'
         }
     })
-    .then(handleResponse)
-    .catch(handleError);
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to create instance');
+        }
+    })
+    .then(data => {
+        alert('Done! Instance created successfully.');
+        console.log('Instance created:', data);
+        createBtn.textContent = 'Create';
+        createBtn.disabled = false;
+    })
+    .catch(error => {
+        console.error('Error creating instance:', error);
+        alert('Error! Instance creation failed. Check the console for more details.');
+        createBtn.textContent = 'Create';
+        createBtn.disabled = false;
+    });
 }
 
 function handleResponse(response) {

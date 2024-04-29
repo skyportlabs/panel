@@ -71,36 +71,25 @@ router.get('/instances/deploy', async (req, res) => {
     ports,
     nodeId,
     name,
-    user
+    user,
+    configfilepath,
+    configfilecontent
   } = req.query;
 
-  if (!image || !memory || !cpu || !ports || !nodeId || !name || !user) return res.send('Missing parameters')
+  if (!image || !memory || !cpu || !ports || !nodeId || !name || !user) return res.send('Missing parameters');
 
   const NodeId = nodeId;
-  const Name = name;
   const Memory = memory ? parseInt(memory) * 1024 * 1024 : undefined;
   const Cpu = cpu ? parseInt(cpu) : undefined;
   const ExposedPorts = {};
   const PortBindings = {};
 
-  let Node = await db.get(NodeId + '_node');
+  const Node = await db.get(NodeId + '_node');
   if (!Node) return res.send('Invalid node');
-
-  const NodeRemote = Node.address;
-  const NodePort = Node.port;
-
-  if (ports) {
-    ports.split(',').forEach(portMapping => {
-      const [containerPort, hostPort] = portMapping.split(':');
-      const key = `${containerPort}/tcp`;
-      ExposedPorts[key] = {};
-      PortBindings[key] = [{ HostPort: hostPort }];
-    });
-  }
 
   const RequestData = {
     method: 'post',
-    url: 'http://' + NodeRemote + ':' + NodePort + '/instances/create',
+    url: `http://${Node.address}:${Node.port}/instances/create`,
     auth: {
       username: 'Skyport',
       password: Node.apiKey
@@ -109,14 +98,32 @@ router.get('/instances/deploy', async (req, res) => {
       'Content-Type': 'application/json'
     },
     data: {
-      Name,
+      Name: name,
       Image: image,
-      Memory,
-      Cpu,
-      ExposedPorts,
-      PortBindings
+      Memory: memory ? parseInt(memory) * 1024 * 1024 : undefined,
+      Cpu: cpu ? parseInt(cpu) : undefined,
+      ExposedPorts: {},
+      PortBindings: {}
     }
   };
+
+  // Process ports
+  if (ports) {
+    ports.split(',').forEach(portMapping => {
+      const [containerPort, hostPort] = portMapping.split(':');
+      const key = `${containerPort}/tcp`;
+      RequestData.data.ExposedPorts[key] = {};
+      RequestData.data.PortBindings[key] = [{ HostPort: hostPort }];
+    });
+  }
+
+  // Include ConfigFilePath and ConfigFileContent if they are provided
+  if (configfilepath) {
+    RequestData.data.ConfigFilePath = configfilepath;
+  }
+  if (configfilecontent) {
+    RequestData.data.ConfigFileContent = configfilecontent;
+  }
 
   try {
     const response = await axios(RequestData);
