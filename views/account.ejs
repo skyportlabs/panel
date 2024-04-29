@@ -2,238 +2,238 @@
 <main>
    <div class="px-4 sm:px-6 lg:px-8">
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
-         <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10">
-            <div class="lg:flex lg:items-center lg:justify-between">
-               <div class="min-w-0 flex-1">
-                  <h2 class="text-md font-medium text-white tracking-tight">Edit profile <span id="statusBg"
-                        class="bg-neutral-600/20 text-neutral-400 text-sm ml-1.5 font-medium me-2 px-2.5 py-1 rounded-full"><span
-                           id="status">
-                           <svg class="animate-spin h-3 w-3 text-white inline-flex mr-1"
-                              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                 stroke-width="4"></circle>
-                              <path class="opacity-75" fill="currentColor"
-                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                              </path>
-                           </svg>
-                           <%= user.username %>
-                        </span></span></h2>
-
-                        <form id="change-username-form" action="/change-username" method="POST" class="mt-5">
-                            <label class="text-neutral-400 text-sm tracking-tight mb-2"
-                      >Username:</label
-                    >
-                    <input
-                      id="username"
-                      type="text"
-                      name="username"
-                      class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
-                      placeholder="JohnDoe"
-                    />
-                            <span id="username-feedback"
-                               class="border border-neutral-600/30 text-neutral-400 text-xs font-medium me-2 px-2.5 py-1 rounded-full"></span>
-                            <button type="submit" id="change-username-btn"
-                               class="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                               disabled>Change</button>
-                            <!-- <span id="username-feedback-message"></span> -->
-                         </form>
-
-                         <form id="change-password-form" action="/change-password" method="POST" class="mt-5">
-                            <label class="text-neutral-400 text-sm tracking-tight mb-3"
-                      >Current Password:</label
-                    > <div id="current-password-feedback" class="border border-neutral-600/30 text-neutral-400 text-xs ml-1.5 font-medium me-2 px-2.5 py-1 rounded-full"></div> <!-- Add feedback area -->
-                            <input
-                                id="currentPassword"
-                                type="password"
-                                name="currentPassword"
-                                class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
-                                placeholder="********"
-                            />
-                            <!-- <button type="submit" id="change-username-btn"
-                            class="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            disabled>Change</button>-->
-                            
-                            <label class="block text-neutral-400 text-sm tracking-tight mt-4"
-                      >Current Password:</label
-                    >
-                            <input
-                                id="newPassword"
-                                type="password"
-                                name="newPassword"
-                                class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
-                                placeholder="********"
-                                disabled
-                            />
-                            <button type="submit"
-                                class="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Change
-                                Password</button>
-                        </form>
-
-               </div>
+      <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10">
+         <div class="lg:flex lg:items-center lg:justify-between">
+            <div class="min-w-0 flex-1">
+               <h2 class="text-md font-medium text-white tracking-tight">
+                  Edit profile 
+                  <span id="statusBg"
+                     class="bg-neutral-600/20 text-neutral-400 text-sm ml-1.5 font-medium me-2 px-2.5 py-1 rounded-full">
+                     <span
+                        id="status">
+                        <svg class="animate-spin h-3 w-3 text-white inline-flex mr-1"
+                           xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                              stroke-width="4"></circle>
+                           <path class="opacity-75" fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                           </path>
+                        </svg>
+                        <%= user.username %>
+                     </span>
+                  </span>
+               </h2>
+               <form id="change-username-form" action="/change-username" method="POST" class="mt-5">
+                  <label class="text-neutral-400 text-sm tracking-tight mb-2"
+                     >Username:</label
+                     >
+                  <input
+                     id="username"
+                     type="text"
+                     name="username"
+                     class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+                     placeholder="JohnDoe"
+                     />
+                  <span id="username-feedback"
+                     class="mt-2 border border-neutral-600/30 text-neutral-400 text-xs font-medium me-2 px-2.5 py-1 rounded-full"></span>
+                  <button type="submit" id="change-username-btn"
+                     class="mt-4 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                     disabled>Update Username</button>
+                  <!-- <span id="username-feedback-message"></span> -->
+               </form>
+               <form id="change-password-form" action="/change-password" method="POST" class="mt-5">
+                  <label class="text-neutral-400 text-sm tracking-tight mb-3"
+                     >Current Password:</label
+                     > 
+                  <div id="current-password-feedback" class="border border-neutral-600/30 text-neutral-400 text-xs ml-1.5 font-medium me-2 px-2.5 py-1 rounded-full"></div>
+                  <!-- Add feedback area -->
+                  <input
+                     id="currentPassword"
+                     type="password"
+                     name="currentPassword"
+                     class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+                     placeholder="********"
+                     />
+                  <!-- <button type="submit" id="change-username-btn"
+                     class="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                     disabled>Change</button>-->
+                  <label class="block text-neutral-400 text-sm tracking-tight mt-4"
+                     >Current Password:</label
+                     >
+                  <input
+                     id="newPassword"
+                     type="password"
+                     name="newPassword"
+                     class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+                     placeholder="********"
+                     disabled
+                     />
+                  <button type="submit"
+                     class="mt-4 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Update 
+                  Password</button>
+               </form>
             </div>
          </div>
       </div>
    </div>
+   </div>
 </main>
 <style>
-#username-feedback, #current-password-feedback {
-       transition: opacity 0.3s ease-in-out;
-       display: inline-block; /* Display as inline block */
-       min-width: fit-content; /* Set minimum width to fit the content */
-       max-width: 100%; /* Set maximum width to 100% of the parent container */
-    }
- </style>
+   #username-feedback, #current-password-feedback {
+   transition: opacity 0.3s ease-in-out;
+   display: inline-block; /* Display as inline block */
+   min-width: fit-content; /* Set minimum width to fit the content */
+   max-width: 100%; /* Set maximum width to 100% of the parent container */
+   }
+</style>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const currentPasswordInput = document.getElementById('currentPassword');
-    const newPasswordInput = document.getElementById('newPassword');
-    const currentPasswordFeedback = document.getElementById('current-password-feedback');
-    let currentPasswordValue = ''; // Variable to store the current password value
-    let currentPasswordTimeoutId;
-    let controller; // Variable to store the AbortController
-    let isLoading = true; // Set isLoading to true initially
-
-    function showLoadingAnimation() {
-        currentPasswordFeedback.innerHTML = `
-        <span id="current-password-status">
-               <svg class="animate-spin h-3 w-3 text-white inline-flex mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-               </svg> <span id="current-password-feedback-message">Checking...</span>
-            </span>
-        `;
-    }
-
-    function clearPasswordFeedback() {
-        currentPasswordFeedback.innerHTML = ''; // Clear feedback message
-        currentPasswordFeedback.style.display = 'none'; // Hide the feedback div
-        newPasswordInput.disabled = true; // Disable new password input
-        newPasswordInput.value = ''; // Clear the new password input
-    }
-
-    // Call clearPasswordFeedback function to remove feedback for password when the page loads
-    clearPasswordFeedback();
-
-    currentPasswordInput.addEventListener('input', () => {
-        // Disable the new password input when the current password changes
-        newPasswordInput.disabled = true;
-        newPasswordInput.value = ''; // Clear the new password input
-        // Store the new current password value
-        currentPasswordValue = currentPasswordInput.value;
-    });
-
-    currentPasswordInput.addEventListener('input', async () => {
-        clearTimeout(currentPasswordTimeoutId);
-        if (!isLoading) {
-            showLoadingAnimation();
-            isLoading = true;
-        }
-
-        if (controller) {
-            controller.abort(); // Abort previous request if it exists
-        }
-
-        controller = new AbortController(); // Create a new AbortController
-        const signal = controller.signal; // Get the signal from the controller
-
-        currentPasswordTimeoutId = setTimeout(async () => {
-            const currentPassword = currentPasswordValue;
-
-            // Check if the current password is blank
-            if (currentPassword.trim() === '') {
-                clearPasswordFeedback();
-                isLoading = false; // Set isLoading to false if the input is blank
-                return;
-            }
-
-            try {
-                // Show loading animation
-
-                const response = await fetch('/validate-password', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ currentPassword }),
-                    signal // Pass the signal to the request
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.valid) {
-                        currentPasswordFeedback.innerHTML = `<span id="current-password-status">✅ Correct!</span>`;
-                    } else {
-                        currentPasswordFeedback.innerHTML = `<span id="current-current-status">❌ Incorrect password</span>`;
-                    }
-                    
-                    // Enable or disable the new password input based on validation result
-                    newPasswordInput.disabled = !data.valid;
-                    currentPasswordFeedback.style.display = 'inline-block'; // Show the feedback div
-                    isLoading = false;
-                } else {
-                    const errorMessage = await response.text();
-                    currentPasswordFeedback.innerText = errorMessage;
-                    currentPasswordFeedback.style.color = 'red';
-                    currentPasswordFeedback.style.display = 'inline-block'; // Show the feedback div
-                }
-            } catch (error) {
-                console.error('Error validating password:', error);
-                currentPasswordFeedback.innerText = 'Error validating password';
-                currentPasswordFeedback.style.color = 'red';
-                currentPasswordFeedback.style.display = 'inline-block'; // Show the feedback div
-            }
-        }, 500); // Adjust delay time as needed
-    });
-
-    // Trigger initial check when the page is loaded
-    if (currentPasswordInput.value.trim() !== '') {
-        checkCurrentPassword();
-    } else {
-        isLoading = false; // Set isLoading to false if the input is blank initially
-    }
-});
-
+   document.addEventListener('DOMContentLoaded', () => {
+       const currentPasswordInput = document.getElementById('currentPassword');
+       const newPasswordInput = document.getElementById('newPassword');
+       const currentPasswordFeedback = document.getElementById('current-password-feedback');
+       let currentPasswordValue = ''; // Variable to store the current password value
+       let currentPasswordTimeoutId;
+       let controller; // Variable to store the AbortController
+       let isLoading = true; // Set isLoading to true initially
+   
+       function showLoadingAnimation() {
+           currentPasswordFeedback.innerHTML = `
+           <span id="current-password-status">
+                  <svg class="animate-spin h-3 w-3 text-white inline-flex mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg> <span id="current-password-feedback-message">Checking...</span>
+               </span>
+           `;
+       }
+   
+       function clearPasswordFeedback() {
+           currentPasswordFeedback.innerHTML = ''; // Clear feedback message
+           currentPasswordFeedback.style.display = 'none'; // Hide the feedback div
+           newPasswordInput.disabled = true; // Disable new password input
+           newPasswordInput.value = ''; // Clear the new password input
+       }
+   
+       // Call clearPasswordFeedback function to remove feedback for password when the page loads
+       clearPasswordFeedback();
+   
+       currentPasswordInput.addEventListener('input', () => {
+           // Disable the new password input when the current password changes
+           newPasswordInput.disabled = true;
+           newPasswordInput.value = ''; // Clear the new password input
+           // Store the new current password value
+           currentPasswordValue = currentPasswordInput.value;
+       });
+   
+       currentPasswordInput.addEventListener('input', async () => {
+           clearTimeout(currentPasswordTimeoutId);
+           if (!isLoading) {
+               showLoadingAnimation();
+               isLoading = true;
+           }
+   
+           if (controller) {
+               controller.abort(); // Abort previous request if it exists
+           }
+   
+           controller = new AbortController(); // Create a new AbortController
+           const signal = controller.signal; // Get the signal from the controller
+   
+           currentPasswordTimeoutId = setTimeout(async () => {
+               const currentPassword = currentPasswordValue;
+   
+               // Check if the current password is blank
+               if (currentPassword.trim() === '') {
+                   clearPasswordFeedback();
+                   isLoading = false; // Set isLoading to false if the input is blank
+                   return;
+               }
+   
+               try {
+                   // Show loading animation
+   
+                   const response = await fetch('/validate-password', {
+                       method: 'POST',
+                       headers: {
+                           'Content-Type': 'application/json'
+                       },
+                       body: JSON.stringify({ currentPassword }),
+                       signal // Pass the signal to the request
+                   });
+   
+                   if (response.ok) {
+                       const data = await response.json();
+                       if (data.valid) {
+                           currentPasswordFeedback.innerHTML = `<span id="current-password-status">✅ Correct!</span>`;
+                       } else {
+                           currentPasswordFeedback.innerHTML = `<span id="current-current-status">❌ Incorrect password</span>`;
+                       }
+                       
+                       // Enable or disable the new password input based on validation result
+                       newPasswordInput.disabled = !data.valid;
+                       currentPasswordFeedback.style.display = 'inline-block'; // Show the feedback div
+                       isLoading = false;
+                   } else {
+                       const errorMessage = await response.text();
+                       currentPasswordFeedback.innerText = errorMessage;
+                       currentPasswordFeedback.style.color = 'red';
+                       currentPasswordFeedback.style.display = 'inline-block'; // Show the feedback div
+                   }
+               } catch (error) {
+                   console.error('Error validating password:', error);
+                   currentPasswordFeedback.innerText = 'Error validating password';
+                   currentPasswordFeedback.style.color = 'red';
+                   currentPasswordFeedback.style.display = 'inline-block'; // Show the feedback div
+               }
+           }, 500); // Adjust delay time as needed
+       });
+   
+       // Trigger initial check when the page is loaded
+       if (currentPasswordInput.value.trim() !== '') {
+           checkCurrentPassword();
+       } else {
+           isLoading = false; // Set isLoading to false if the input is blank initially
+       }
+   });
+   
 </script>
-
-
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const currentPasswordInput = document.getElementById('currentPassword');
-        const newPasswordInput = document.getElementById('newPassword');
-        const changePasswordBtn = document.querySelector('#change-password-form button[type="submit"]');
-    
-        // Function to check if the "Change Password" button should be enabled or disabled
-        function toggleChangePasswordButton() {
-            if (currentPasswordInput.value.trim() !== '' && newPasswordInput.value.trim() !== '') {
-                changePasswordBtn.disabled = false;
-            } else {
-                changePasswordBtn.disabled = true;
-            }
-        }
-    
-        // Event listener for input on current password field
-        currentPasswordInput.addEventListener('input', () => {
-            toggleChangePasswordButton();
-        });
-    
-        // Event listener for input on new password field
-        newPasswordInput.addEventListener('input', () => {
-            toggleChangePasswordButton();
-        });
-    
-        // Trigger initial check when the page is loaded
-        toggleChangePasswordButton();
-    });
-    
-    </script>
-    
+   document.addEventListener('DOMContentLoaded', () => {
+       const currentPasswordInput = document.getElementById('currentPassword');
+       const newPasswordInput = document.getElementById('newPassword');
+       const changePasswordBtn = document.querySelector('#change-password-form button[type="submit"]');
+   
+       // Function to check if the "Change Password" button should be enabled or disabled
+       function toggleChangePasswordButton() {
+           if (currentPasswordInput.value.trim() !== '' && newPasswordInput.value.trim() !== '') {
+               changePasswordBtn.disabled = false;
+           } else {
+               changePasswordBtn.disabled = true;
+           }
+       }
+   
+       // Event listener for input on current password field
+       currentPasswordInput.addEventListener('input', () => {
+           toggleChangePasswordButton();
+       });
+   
+       // Event listener for input on new password field
+       newPasswordInput.addEventListener('input', () => {
+           toggleChangePasswordButton();
+       });
+   
+       // Trigger initial check when the page is loaded
+       toggleChangePasswordButton();
+   });
+   
+</script>
 <script>
    document.addEventListener('DOMContentLoaded', () => {
       const usernameInput = document.getElementById('username');
       const changeUsernameBtn = document.getElementById('change-username-btn');
       const usernameFeedback = document.getElementById('username-feedback');
       let isLoading = false;
-
+   
       // Function to display loading animation
       function showLoadingAnimation() {
          usernameFeedback.innerHTML = `
@@ -245,13 +245,13 @@ document.addEventListener('DOMContentLoaded', () => {
             </span>
          `;
       }
-
+   
       // Function to check if a username exists
       let timeoutId; // Variable to store the timeout ID for debouncing
-
+   
       async function checkUsername() {
          const username = usernameInput.value.trim().toLowerCase(); // Convert input to lowercase
-
+   
          // Hide feedback elements if username is empty
          if (username === '') {
             usernameFeedback.style.display = 'none';
@@ -260,22 +260,22 @@ document.addEventListener('DOMContentLoaded', () => {
          } else {
             usernameFeedback.style.display = 'inline-block';
          }
-
+   
          // Clear previous timeout to prevent multiple requests
          clearTimeout(timeoutId);
-
+   
          // Show loading animation if not already loading
          if (!isLoading) {
             showLoadingAnimation();
             isLoading = true;
          }
-
+   
          // Set timeout to wait for user to finish typing
          timeoutId = setTimeout(async () => {
             // Check if username already exists
             const response = await fetch(`/check-username?username=${encodeURIComponent(username)}`);
             const data = await response.json();
-
+   
             // Update UI based on response
             if (data.exists) {
                usernameFeedback.innerHTML = `<span id="username-status">❌ Taken</span>`;
@@ -287,18 +287,18 @@ document.addEventListener('DOMContentLoaded', () => {
             isLoading = false;
          }, 500); // Adjust delay time as needed
       }
-
+   
       // Event listener for input on username field with debouncing
       usernameInput.addEventListener('input', () => {
          clearTimeout(timeoutId); // Clear previous timeout
          timeoutId = setTimeout(checkUsername, 500); // Set new timeout with debouncing delay
       });
-
+   
       // Event listener for form submission to prevent default behavior
       document.getElementById('change-username-form').addEventListener('submit', (event) => {
          event.preventDefault();
       });
-
+   
       // Clear feedback elements and disable button when username input is cleared
       usernameInput.addEventListener('change', () => {
          if (usernameInput.value.trim() === '') {
@@ -307,16 +307,16 @@ document.addEventListener('DOMContentLoaded', () => {
             changeUsernameBtn.disabled = true;
          }
       });
-
+   
       // Trigger initial check when the page is loaded
       checkUsername();
-
+   
       async function handleUsernameUpdate(event) {
          event.preventDefault();
-
+   
          const currentUsername = '<%= user.username %>'; // Get current username from server-side template
          const newUsername = usernameInput.value.trim(); // Get new username from input field
-
+   
          try {
             // Send a POST request to the server to update the username
             const response = await fetch('/update-username', {
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
                },
                body: JSON.stringify({ currentUsername, newUsername })
             });
-
+   
             if (response.ok) {
                // Username updated successfully
                alert('Username updated successfully!');
@@ -342,11 +342,10 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Error updating username. Please try again later.');
          }
       }
-
+   
       // Add event listener to the form for submit event
       document.getElementById('change-username-form').addEventListener('submit', handleUsernameUpdate);
    });
    
 </script>
-
 <%- include('components/footer') %>
