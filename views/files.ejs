@@ -6,10 +6,19 @@
               <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
               <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
            </div>
-           <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex">
-              <button id="startButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+           <% let query; %>
+           <% if (req.query.path) { %>
+              <% query = '?path=' + req.query.path %>
+           <% } else { %>
+              <% query = '' %>
+           <% } %>
+           <div class="mt-4 sm:ml-16 sm:mt-0 flex space-x-4">
+              <a href="/instance/<%= req.params.id %>/files/create<%= query %>" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Create File
-              </button>
+              </a>
+              <a href="/instance/<%= req.params.id %>/files/folder/create<%= query %>" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Create Folder
+             </a>
            </div>
         </div>
     </div>

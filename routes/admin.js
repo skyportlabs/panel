@@ -13,6 +13,7 @@ const { db } = require('../handlers/db.js');
 const config = require('../config.json');
 const bcrypt = require('bcrypt');
 const saltRounds = process.env.SALT_ROUNDS || 10;
+
 /**
  * Middleware to verify if the user is an administrator.
  * Checks if the user object exists and if the user has admin privileges. If not, redirects to the
