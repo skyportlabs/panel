@@ -78,6 +78,24 @@
              let password = encodeURIComponent(document.getElementById("password").value);
              document.location.href = `/auth/login?username=${username}&password=${password}`;
             }
+			document.addEventListener("DOMContentLoaded", function() {
+			  var usernameInput = document.getElementById("username");
+			  var passwordInput = document.getElementById("password");
+
+			  usernameInput.addEventListener("keydown", function(event) {
+				if (event.key === "Enter") {
+				  event.preventDefault();
+				  passwordInput.focus();
+				}
+			  });
+
+			  passwordInput.addEventListener("keydown", function(event) {
+				if (event.key === "Enter") {
+				  event.preventDefault();
+				  submitForm();
+				}
+			  });
+			});
            </script>
         </div>
         <div class="absolute w-fit bottom-0 -z-10" style="opacity: 1; transform: none;"><img src="/assets/glasswork.png" alt="blobs" class="w-screen opacity-100 object-contain"></div>

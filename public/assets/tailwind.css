@@ -66,6 +66,7 @@ body {
   /* 1 */
   line-height: inherit;
   /* 2 */
+  overflow-x: hidden; /* Hide horizontal scrollbar */
 }
 
 /*
@@ -640,6 +641,179 @@ select {
   outline: 1px solid ButtonText;
   outline: 1px auto -webkit-focus-ring-color;
 }
+
+.profile_name .blue {
+    color: #fff
+}
+
+.fa-cog:before {
+  content: "\f013"; }
+  
+.fa-sign-out-alt:before {
+  content: "\f2f5"; }
+
+.profile_name .blue:after {
+    -webkit-transition: all .5s ease;
+    -o-transition: all .5s ease;
+    transition: all .5s ease;
+    padding-left: 0;
+    padding-right: 5px;
+    color: #808080;
+    -webkit-transform-origin: center;
+    -ms-transform-origin: center;
+    transform-origin: center;
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg)
+}
+
+.profile_name .white:after {
+    -webkit-transform-origin: center;
+    -ms-transform-origin: center;
+    transform-origin: center;
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg)
+}
+
+.profile_name a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative
+}
+
+.profile_name a:after {
+    display: inline-block;
+    content: "\f107";
+    font-family: Font Awesome\ 5 Free;
+    font-weight: 900;
+    -webkit-transform-origin: center;
+    -ms-transform-origin: center;
+    transform-origin: center;
+    padding-left: 5px
+}
+
+.profile_name .white:after, .profile_name a {
+    -webkit-transition: all .5s ease;
+    -o-transition: all .5s ease;
+    transition: all .5s ease
+}
+
+.profile_name .acc_name {
+    z-index: 1
+}
+
+.profile_name .hide {
+    -webkit-transform: translateY(-100px);
+    -ms-transform: translateY(-100px);
+    transform: translateY(-100px);
+    opacity: 0;
+    position: relative;
+    z-index: -1;
+    pointer-events: none
+}
+
+.profile_name .show {
+    opacity: 1;
+    position: relative;
+    z-index: 2
+}
+.profile_name div {
+    -webkit-transition: all .5s ease;
+    -o-transition: all .5s ease;
+    transition: all .5s ease;
+    border-top: 5px solid transparent
+}
+
+.profile_name div ul {
+    -webkit-box-shadow: 0 0 10px 0 rgba(0,0,0,.15);
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.15);
+    position: absolute;
+    background: #101010;
+    border-radius: 5px;
+    width: 130px
+}
+
+.profile_name div ul .prof_menu {
+    color: #333
+}
+
+.profile_name div ul .prof_menu:after {
+    content: "";
+    padding: 0;
+    margin: 0
+}
+
+.profile_name div ul .grey_link {
+    color: grey
+}
+
+.profile_name div ul .separator {
+    width: 60%;
+    margin: 0 auto;
+    height: 1px;
+    border: none;
+    background: #d3d3d3
+}
+
+.profile_name div ul li {
+    padding: 10px
+}
+
+.profile_name div ul li:hover {
+    border-radius: 5px 5px 0 0;
+    background: #333;
+    -webkit-transition: all .5s ease;
+    -o-transition: all .5s ease;
+    transition: all .5s ease
+}
+
+.profile_name div ul li:hover:nth-child(2),.profile_name div ul li:hover:nth-child(3) {
+    border-radius: 0
+}
+
+.profile_name div ul li:hover:last-child {
+    border-radius: 0 0 5px 5px
+}
+
+.profile_name div ul li:hover a {
+    color: #fff
+}
+
+.profile_name .white:after,.profile_name a {
+    -webkit-transition: all .5s ease;
+    -o-transition: all .5s ease;
+    transition: all .5s ease
+}
+
+
+.fab {
+  font-family: 'Font Awesome 5 Brands';
+  font-weight: 400; }
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../assets/fa-regular-400.eot");
+  src: url("../assets/fa-regular-400.eot?#iefix") format("embedded-opentype"), url("../assets/fa-regular-400.woff2") format("woff2"), url("../assets/fa-regular-400.woff") format("woff"), url("../assets/fa-regular-400.ttf") format("truetype"), url("../assets/fa-regular-400.svg#fontawesome") format("svg"); }
+
+.far {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 400; }
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("../assets/fa-solid-900.eot");
+  src: url("../assets/fa-solid-900.eot?#iefix") format("embedded-opentype"), url("../assets/fa-solid-900.woff2") format("woff2"), url("../assets/fa-solid-900.woff") format("woff"), url("../assets/fa-solid-900.ttf") format("truetype"), url("../assets/fa-solid-900.svg#fontawesome") format("svg"); }
+
+.fa,
+.fas {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900; }
 
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
