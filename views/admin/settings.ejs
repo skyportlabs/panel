@@ -1,0 +1,19 @@
+<%- include('../components/template') %>
+<main>
+  <div class="bg-transparent">
+    <div class="sm:flex sm:items-center px-8 pt-4">
+      <div class="sm:flex-auto">
+        <h1 class="text-base font-semibold leading-6 text-white">Settings</h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of Settings to change for costumation.</p>
+      </div>
+    </div>
+  </div>
+</main>
+<div id="changenameform" class="mt-6 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-5 ml-5 w-96">
+<form action="/admin/settings/change/name" method="POST">
+  <label class="text-neutral-400 text-sm tracking-tight mb-2">Panel Name:</label>
+  <input id="name" name="name" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-88 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" value="<%= name %>" placeholder="<%= name %>" required>
+  <button id="Save-Name" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+</form>
+</div>
+<%- include('../components/footer') %>

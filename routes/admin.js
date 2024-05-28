@@ -256,6 +256,30 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
   res.render('admin/nodes', { req, user: req.user, nodes, set, name: await db.get('name') || 'Skyport' });
 });
 
+
+/**
+ * GET /admin/settings
+ * Settings page. This route is protected and allows only administrators to view the settings page.
+ *
+ * @returns {Response} Renders the 'nodes' view with node data and user information.
+ */
+router.get('/admin/settings', isAdmin, async (req, res) => {
+
+
+  res.render('admin/settings', { req, user: req.user, name: await db.get('name') || 'Skyport' });
+});
+
+router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
+  const name = req.body.name;
+  try {
+  await db.set('name', [name]);
+  res.redirect('/admin/settings?changednameto=' + name);
+} catch (err) {
+  console.error(err);
+  res.status(500).send("Database error");
+}
+});
+
 /**
  * GET /admin/instances
  * Retrieves a list of all instances, checks their statuses, and renders an admin page to display these instances.
