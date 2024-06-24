@@ -79,7 +79,7 @@ router.get('/instances/deploy', async (req, res) => {
   if (!image || !memory || !cpu || !ports || !nodeId || !name || !user) return res.send('Missing parameters');
 
   const NodeId = nodeId;
-  const Memory = memory ? parseInt(memory) * 1024 * 1024 : undefined;
+  const Memory = memory ? parseInt(memory) : undefined;
   const Cpu = cpu ? parseInt(cpu) : undefined;
   const ExposedPorts = {};
   const PortBindings = {};
