@@ -541,7 +541,7 @@ router.ws("/console/:id", async (ws, req) => {
     }
 
     const node = instance.Node;
-    const socket = new WebSocket(`ws://${node.address}:${node.port}/logs/${id}`);
+    const socket = new WebSocket(`ws://${node.address}:${node.port}/exec/${id}`);
 
     socket.onopen = () => {
         socket.send(JSON.stringify({ "event": "auth", "args": [node.apiKey] }));
