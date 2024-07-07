@@ -677,7 +677,7 @@ router.ws("/stats/:id", async (ws, req) => {
     });
 });
 
-router.get("/instance/:id/sftp", async (req, res) => {
+router.get("/instance/:id/ftp", async (req, res) => {
     const settings = await db.get('settings');
     if (!req.user) {
         return res.redirect('/');
@@ -714,7 +714,7 @@ router.get("/instance/:id/sftp", async (req, res) => {
             method: 'get',
             url: `http://${instance.Node.address}:${instance.Node.port}/ftp/info/${instance.VolumeId}`,
             auth: {
-                username: 'Dreams',
+                username: 'Skyport',
                 password: instance.Node.apiKey
             },
             headers: { 
@@ -726,10 +726,10 @@ router.get("/instance/:id/sftp", async (req, res) => {
             const response = await axios(RequestData);
             const logindata = response.data || [];
 
-            res.render('ftpdetails', { req, logindata, user: req.user, instance_name: instance.Name, name: settings.name || 'Dreams', settings });
+            res.render('ftp', { req, logindata, user: req.user, instance_name: instance.Name, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, settings });
         } catch (error) {
             const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
-            res.status(500).render('500', { error: errorMessage, req, user: req.user, name: settings.name || 'Dreams', settings });
+            res.status(500).send({ message: errorMessage })
         }
     } else {
         res.status(500).send('Invalid instance node configuration');
