@@ -50,8 +50,8 @@
    <div class="mt-8 ml-8 mb-8">
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5">
          <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
-            <dt class="truncate text-sm font-medium text-neutral-400">Status</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+            <dt class="truncate text-sm font-medium text-neutral-400">State</dt>
+            <dd class="mt-1 text-xl font-semibold tracking-tight text-white">
                <span id="status">
                <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -61,7 +61,7 @@
          </div>
          <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
             <dt class="truncate text-sm font-medium text-neutral-400">RAM Usage</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+            <dd class="mt-1 text-xl font-semibold tracking-tight text-white">
                <span id="ramUsage">
                   <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -73,7 +73,7 @@
          </div>
          <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
             <dt class="truncate text-sm font-medium text-neutral-400">CPU Usage</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+            <dd class="mt-1 text-xl font-semibold tracking-tight text-white">
                <span id="cpuUsage">
                   <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -84,7 +84,7 @@
          </div>
          <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
             <dt class="truncate text-sm font-medium text-neutral-400">Network In</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+            <dd class="mt-1 text-xl font-semibold tracking-tight text-white">
                <span id="networkIn">
                   <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -95,7 +95,7 @@
          </div>
          <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6">
             <dt class="truncate text-sm font-medium text-neutral-400">Network Out</dt>
-            <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+            <dd class="mt-1 text-xl font-semibold tracking-tight text-white">
                <span id="networkOut">
                   <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -106,17 +106,17 @@
          </div>
       </dl>
    </div>
-   <div class="mt-8 ml-8 mr-8 bg-transparent rounded-2xl p-4 border border-white/5 mx-3 my-3">
+   <div class="mt-8 ml-8 mr-8 bg-[#101010] rounded-t-lg p-4 border-t border-l border-r border-white/5 mx-3 mt-3">
       <div id="terminal"></div>
    </div>
-   <div class="mt-8 ml-8 mr-8 bg-black">
-      <input placeholder="Send a command..." class="rounded-lg w-full focus:ring-transparent focus:border focus:border-white/10 text-white text-sm mt-2 mb-6 items-center transition justify-left gap-16 hover:bg-neutral-900 px-4 py-3 flex border-white/5 bg-transparent placeholder:text-neutral-300 text-white border border-black/10" id="input"></input>
+   <div class="ml-8 mr-8">
+      <input placeholder="Send a command..." class="rounded-b-lg bg-[#101010]/30 w-full focus:ring-transparent focus:border-b focus:border-l focus:border-r focus:border-white/10 text-white text-sm mb-6 items-center transition justify-left gap-16 hover:bg-neutral-900 px-4 py-3 flex border-white/5 bg-transparent placeholder:text-neutral-300 text-white border-b border-l border-r border-black/10" id="input"></input>
    </div>
    <script>
       console.log('<%= instance.VolumeId %>')
       var baseTheme = {
           foreground: '#c5c9d1',
-          background: '#000000',
+          background: '#101010',
           selection: '#5DA5D533',
           black: '#1E1E1D',
           brightBlack: '#262625',
@@ -204,7 +204,7 @@
           fontFamily: 'Menlo, monospace',
           theme: baseTheme,
           allowTransparency: true,
-          fontSize: 17,
+          fontSize: 12,
       });
       term.open(document.getElementById('terminal'));
 
