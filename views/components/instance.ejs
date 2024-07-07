@@ -2,21 +2,21 @@
     <div>
        <div class="hidden sm:block">
           <nav class="flex">
-             <ul role="list" class="flex min-w-full flex-none gap-x-2 text-sm font-semibold leading-6 text-neutral-500">
+             <ul role="list" class="flex min-w-full flex-none gap-x-2 text-sm font-normal leading-6 text-neutral-400">
                 <li class="hover:scale-105 transition">
-                   <a href="/instance/<%= req.params.id %>" class="nav-link2 py-2 px-2.5 rounded-lg">Overview</a>
+                   <a href="/instance/<%= req.params.id %>" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">Overview</a>
                 </li>
                 <li class="hover:scale-105 transition">
-                   <a href="/instance/<%= req.params.id %>/files" class="nav-link2 py-2 px-2.5 rounded-lg">Files</a>
+                   <a href="/instance/<%= req.params.id %>/files" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">Files</a>
                 </li>
                 <li class="hover:scale-105 transition">
-                   <a href="/instance/<%= req.params.id %>/network" class="nav-link2 py-2 px-2.5 rounded-lg">Network</a>
+                   <a href="/instance/<%= req.params.id %>/network" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">Network</a>
                 </li>
                 <li class="hover:scale-105 transition">
-                   <a href="/instance/<%= req.params.id %>/sftp" class="nav-link2 py-2 px-2.5 rounded-lg">SFTP</a>
+                   <a href="/instance/<%= req.params.id %>/ftp" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">FTP</a>
                 </li>
                 <li class="hover:scale-105 transition">
-                   <a href="/instance/<%= req.params.id %>/settings" class="nav-link2 py-2 px-2.5 rounded-lg">Settings</a>
+                   <a href="/instance/<%= req.params.id %>/settings" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">Settings</a>
                 </li>
              </ul>
           </nav>
@@ -46,7 +46,7 @@
          link.className = 'nav-link';
    
          // Add the specified classes
-         link.classList.add('text-white', 'font-semibold', 'bg-white/5', 'py-2', 'px-2.5', 'rounded-lg', 'shadow-sm');
+         link.classList.add('text-white', 'font-semibold', 'border', 'border-transparent', 'bg-white/5', 'font-semibold', 'py-2', 'px-2.5', 'rounded-lg', 'shadow-sm');
        }
      });
    });

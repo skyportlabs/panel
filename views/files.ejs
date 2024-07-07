@@ -1,5 +1,5 @@
 <%- include('components/template') %>
-<main>
+<main id="content">
 <%
 function formatLastUpdated(dateString) {
    const date = new Date(dateString);
@@ -158,41 +158,70 @@ function formatLastUpdated(dateString) {
            </div>
          </div>
        </div>
+
+<!-- File Upload Modal -->
+<div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+   <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+     <h2 class="text-2xl font-semibold mb-4 text-gray-800">Uploading File(s)</h2>
+     <div class="mb-4">
+       <div class="w-full bg-gray-200 rounded-full h-2.5">
+         <div id="uploadProgress" class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>
+       </div>
+     </div>
+     <p id="uploadStatus" class="text-center text-gray-600">Preparing upload...</p>
+   </div>
+ </div>
     <script>
-      document.getElementById('uploadBtn').addEventListener('click', function() {
-          document.getElementById('fileInput').click();
-      });
-      
-      document.getElementById('fileInput').addEventListener('change', function(event) {
-          const files = event.target.files;
-          if (files.length === 0) return;
-      
-          const formData = new FormData();
-          Array.from(files).forEach(file => formData.append('files', file));
-      
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', '/instance/<%= req.params.id %>/files/upload<%= query %>', true);
-          xhr.upload.onprogress = function(e) {
-              if (e.lengthComputable) {
-                  const percentComplete = (e.loaded / e.total) * 100;
-                  document.getElementById('uploadBtn').style.opacity = '0.4'; // Dim button during upload
-                  document.getElementById('uploadBtn').textContent = 'Uploading ' + Math.floor(percentComplete) + '%';
-              }
-          };
-          xhr.onload = function() {
-              if (xhr.status == 200) {
-                  alert('Upload complete!');
-                  document.getElementById('uploadBtn').textContent = 'Upload File(s)';
-                  document.getElementById('uploadBtn').style.opacity = '1'; // Reset button when done
-              } else {
-                  alert('Upload failed. Server responded with status ' + xhr.status);
-                  document.getElementById('uploadBtn').textContent = 'Upload File(s)';
-                  document.getElementById('uploadBtn').style.opacity = '1'; // Reset button if fail
-              }
-          };
-          xhr.send(formData);
-          document.getElementById('fileInput').value = ''; // Reset file input
-      });
+document.getElementById('uploadBtn').addEventListener('click', function() {
+    document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', function(event) {
+    const files = event.target.files;
+    if (files.length === 0) return;
+
+    const formData = new FormData();
+    Array.from(files).forEach(file => formData.append('files', file));
+
+    // Open the upload modal
+    const modal = document.getElementById('uploadModal');
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.querySelector('div').classList.remove('scale-95');
+    modal.querySelector('div').classList.add('scale-100');
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/instance/<%= req.params.id %>/files/upload<%= query %>', true);
+    xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            document.getElementById('uploadProgress').style.width = percentComplete + '%';
+            document.getElementById('uploadStatus').textContent = 'Uploading: ' + Math.floor(percentComplete) + '%';
+        }
+    };
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            document.getElementById('uploadStatus').textContent = 'Upload complete!';
+            setTimeout(() => {
+                // Close the modal
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.querySelector('div').classList.remove('scale-100');
+                modal.querySelector('div').classList.add('scale-95');
+                // Reload the page
+                window.location.reload();
+            }, 1000);
+        } else {
+            document.getElementById('uploadStatus').textContent = 'Upload failed. Server responded with status ' + xhr.status;
+            setTimeout(() => {
+                // Close the modal
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.querySelector('div').classList.remove('scale-100');
+                modal.querySelector('div').classList.add('scale-95');
+            }, 3000);
+        }
+    };
+    xhr.send(formData);
+    document.getElementById('fileInput').value = ''; // Reset file input
+});
 
       let deleteUrl = '';
 
