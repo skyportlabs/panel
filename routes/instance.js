@@ -517,6 +517,67 @@ router.post("/instance/:id/files/edit/:filename", async (req, res) => {
 });
 
 /**
+ * GET /instance/:id/files/delete/:filename
+ */
+router.get("/instance/:id/files/delete/:filename", async (req, res) => {
+    if (!req.user) {
+        return res.status(401).send('Authentication required');
+    }
+
+    const { id, filename } = req.params;
+    const { content } = req.body;
+
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+        return res.status(404).send('Instance not found');
+    }
+
+    // Authorization check
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    if (!isAuthorized) {
+        return res.status(403).send('Unauthorized access to this instance.');
+    }
+
+    if (!instance.Node || !instance.Node.address || !instance.Node.port) {
+        return res.status(500).send('Invalid instance node configuration');
+    }
+
+    let query;
+    if (req.query.path) {
+        query = '?path=' + req.query.path
+    } else {
+        query = ''
+    }
+
+    const apiUrl = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/delete/${filename}${query}`;
+
+    const requestData = {
+        method: 'delete',
+        url: apiUrl,
+        auth: {
+            username: 'Skyport',
+            password: instance.Node.apiKey
+        },
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+            content: content
+        }
+    };
+
+    try {
+        const response = await axios(requestData);
+        let req = response.data;
+        res.redirect('/instance/' + id + '/files' + query); // redir back to files in correct dir
+    } catch (error) {
+        if (error.response) {
+            res.status(error.response.status).send(error.response.data);
+        } else {
+            res.status(500).send({ message: 'Failed to communicate with node.' });
+        }
+    }
+});
+
+/**
  * WebSocket /console/:id
  * Establishes a WebSocket connection to stream console logs from a specific instance.
  * Requires user authentication and valid instance ID. It connects to another WebSocket service
