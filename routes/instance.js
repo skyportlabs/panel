@@ -616,4 +616,63 @@ router.ws("/stats/:id", async (ws, req) => {
     });
 });
 
+router.get("/instance/:id/sftp", async (req, res) => {
+    const settings = await db.get('settings');
+    if (!req.user) {
+        return res.redirect('/');
+    }
+
+    const { id } = req.params;
+    if (!id) {
+        return res.redirect('../../../../instances');
+    }
+
+    const instance = await db.get(id + '_instance').catch(err => {
+        console.error('Failed to fetch instance:', err);
+        return null;
+    });
+
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    if (!isAuthorized) {
+        return res.status(403).send('Unauthorized access to this instance.');
+    }
+
+    if (!instance || !instance.VolumeId) {
+        return res.redirect('../../../../instances');
+    }
+
+    let query;
+    if (req.query.path) {
+        query = '?path=' + req.query.path
+    } else {
+        query = ''
+    }
+
+    if (instance.Node && instance.Node.address && instance.Node.port) {
+        const RequestData = {
+            method: 'get',
+            url: `http://${instance.Node.address}:${instance.Node.port}/ftp/info/${instance.VolumeId}`,
+            auth: {
+                username: 'Dreams',
+                password: instance.Node.apiKey
+            },
+            headers: { 
+                'Content-Type': 'application/json'
+            }
+        };
+
+        try {
+            const response = await axios(RequestData);
+            const logindata = response.data || [];
+
+            res.render('ftpdetails', { req, logindata, user: req.user, instance_name: instance.Name, name: settings.name || 'Dreams', settings });
+        } catch (error) {
+            const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
+            res.status(500).render('500', { error: errorMessage, req, user: req.user, name: settings.name || 'Dreams', settings });
+        }
+    } else {
+        res.status(500).send('Invalid instance node configuration');
+    }
+});
+
 module.exports = router;
