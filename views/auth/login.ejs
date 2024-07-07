@@ -57,7 +57,7 @@
               <span class="text-amber-600 mt-4 font-normal text-sm">Invalid credentials. Please try again.</span>
             <% } %>
 
-            <% } else if (req.query.err && req.query.err == "UpdatedCredentials") { %>
+            <% if (req.query.err && req.query.err == "UpdatedCredentials") { %>
               <span class="text-emerald-600 mt-4 font-normal text-sm">Your account has been updated, please enter your new credentials.</span>
             <% } %>
           </form>
