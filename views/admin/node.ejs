@@ -1,4 +1,5 @@
 <%- include('../components/template') %>
+<main id="content">
 <div id="nodeForm" class="mt-6 px-8 w-full">
 	<form>
 	 <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
@@ -64,5 +65,5 @@ document.getElementById('saveNodeBtn').addEventListener('click', function() {
     .catch(error => console.error('Error editing node:', error));
 });
 </script>
-
+</main>
 <%- include('../components/footer') %>
