@@ -62,7 +62,7 @@ router.get("/instance/:id", async (req, res) => {
 
     if (!instance || !id) return res.redirect('../instances')
 
-    res.render('instance', { req, instance, user: req.user, name: await db.get('name') || 'Skyport' });
+    res.render('instance', { req, instance, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 /**
@@ -127,10 +127,10 @@ router.get("/instance/:id/files", async (req, res) => {
             const response = await axios(RequestData);
             const files = response.data.files || [];
 
-            res.render('files', { req, files, user: req.user, name: await db.get('name') || 'Skyport' });
+            res.render('files', { req, files, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
         } catch (error) {
             const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
-            res.status(500).render('500', { error: errorMessage, req, user: req.user, name: await db.get('name') || 'Skyport' });
+            res.status(500).render('500', { error: errorMessage, req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
         }
     } else {
         res.status(500).send('Invalid instance node configuration');
@@ -198,10 +198,10 @@ router.get("/instance/:id/files/view/:file", async (req, res) => {
             const response = await axios(RequestData);
             const file = response.data.content || [];
 
-            res.render('file', { req, file, user: req.user, name: await db.get('name') || 'Skyport' });
+            res.render('file', { req, file, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
         } catch (error) {
             const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
-            res.status(500).render('500', { error: errorMessage, req, user: req.user, name: await db.get('name') || 'Skyport' });
+            res.status(500).render('500', { error: errorMessage, req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
         }
     } else {
         res.status(500).send('Invalid instance node configuration');
@@ -240,7 +240,7 @@ router.get("/instance/:id/files/create", async (req, res) => {
         return res.redirect('../instances');
     }
 
-    res.render('createFile', { req, user: req.user, name: await db.get('name') || 'Skyport' });
+    res.render('createFile', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 router.post("/instance/:id/files/upload", upload.array('files'), async (req, res) => {
@@ -319,7 +319,7 @@ router.get("/instance/:id/files/folder/create", async (req, res) => {
         return res.redirect('../instances');
     }
 
-    res.render('createFolder', { req, user: req.user, name: await db.get('name') || 'Skyport' });
+    res.render('createFolder', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 /**

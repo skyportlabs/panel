@@ -27,7 +27,7 @@ async function doesUserExist(username) {
 router.get('/account', async (req, res) => {
   let users = await db.get('users') || [];
 
-  res.render('account', { req, user: req.user, users, name: await db.get('name') || 'Skyport' });
+  res.render('account', { req, user: req.user, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 router.get('/accounts', async (req, res) => {

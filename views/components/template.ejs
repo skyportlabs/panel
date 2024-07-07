@@ -13,11 +13,15 @@
 <div>
   <!-- Static sidebar for desktop -->
   <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
-    <!-- Sidebar component, swap this element with another sidebar if you like -->
     <div class="flex grow flex-col gap-y-5 overflow-hidden bg-[#101010] border-r border-white/5">
       <nav class="flex flex-1 flex-col">
-        <div class="pl-6 pt-5 pb-4">
-          <a href="/"><h1 class="text-white font-medium tracking-tight text-lg"><%= name %></h1></a>
+        <div class="pl-6 pt-5 pb-4 flex">
+          <a href="/" class="flex">
+            <% if (logo == true) { %>
+              <img src="../assets/logo.png" class="h-7 w-7 rounded mr-3 inline-flex">
+            <% } %>
+            <h1 class="text-white font-medium tracking-tight text-lg"><%= name %></h1>
+          </a>
         </div>
         <ul role="list" class="flex flex-1 flex-col gap-y-7">
           <li>

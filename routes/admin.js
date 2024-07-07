@@ -12,7 +12,10 @@ const axios = require('axios');
 const { db } = require('../handlers/db.js');
 const config = require('../config.json');
 const bcrypt = require('bcrypt');
-const saltRounds = process.env.SALT_ROUNDS || 10;
+const saltRounds = 10;
+const multer = require('multer');
+const path = require('path')
+const fs = require('node:fs')
 
 /**
  * Middleware to verify if the user is an administrator.
@@ -125,7 +128,7 @@ router.get('/admin/overview', isAdmin, async (req, res) => {
       const imagesTotal = images.length;
       const instancesTotal = instances.length;
 
-      res.render('admin/overview', { req, user: req.user, usersTotal, nodesTotal, imagesTotal, instancesTotal, version: config.version, name: await db.get('name') || 'Skyport' });
+      res.render('admin/overview', { req, user: req.user, usersTotal, nodesTotal, imagesTotal, instancesTotal, version: config.version, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
   } catch (error) {
       res.status(500).send({ error: 'Failed to retrieve data from the database.' });
   }
@@ -253,7 +256,7 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
   });
   nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
 
-  res.render('admin/nodes', { req, user: req.user, nodes, set, name: await db.get('name') || 'Skyport' });
+  res.render('admin/nodes', { req, user: req.user, nodes, set, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 
@@ -264,9 +267,7 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
  * @returns {Response} Renders the 'nodes' view with node data and user information.
  */
 router.get('/admin/settings', isAdmin, async (req, res) => {
-
-
-  res.render('admin/settings', { req, user: req.user, name: await db.get('name') || 'Skyport' });
+  res.render('admin/settings', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
@@ -278,6 +279,52 @@ router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
   console.error(err);
   res.status(500).send("Database error");
 }
+});
+
+// Configure multer for file upload
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      const uploadPath = path.join(__dirname, '..', 'public', 'assets');
+      fs.mkdirSync(uploadPath, { recursive: true });
+      cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+      cb(null, 'logo.png');
+    }
+  }),
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Not an image! Please upload an image file.'), false);
+    }
+  }
+});
+
+router.post('/admin/settings/change/logo', isAdmin, upload.single('logo'), async (req, res) => {
+  const type = req.body.type;
+
+  try {
+    if (type === 'image' && req.file) {
+      // Image uploaded successfully
+      await db.set('logo', true);
+      res.redirect('/admin/settings');
+    } else if (type === 'none') {
+      // Remove existing logo
+      const logoPath = path.join(__dirname, '..', 'public', 'assets', 'logo.png');
+      if (fs.existsSync(logoPath)) {
+        fs.unlinkSync(logoPath);
+      }
+      await db.set('logo', false);
+      res.redirect('/admin/settings');
+    } else {
+      res.status(400).send('Invalid request');
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error processing logo change: " + err.message);
+  }
 });
 
 /**
@@ -295,13 +342,13 @@ router.get('/admin/instances', isAdmin, async (req, res) => {
 
   nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
 
-  res.render('admin/instances', { req, user: req.user, instances, images, nodes, users, name: await db.get('name') || 'Skyport' });
+  res.render('admin/instances', { req, user: req.user, instances, images, nodes, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 router.get('/admin/users', isAdmin, async (req, res) => {
   let users = await db.get('users') || [];
 
-  res.render('admin/users', { req, user: req.user, users, name: await db.get('name') || 'Skyport' });
+  res.render('admin/users', { req, user: req.user, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 /**
@@ -321,7 +368,7 @@ router.get("/admin/node/:id", async (req, res) => {
 
     if (!node || !id) return res.redirect('../nodes')
 
-    res.render('admin/node', { req, node, user: req.user, name: await db.get('name') || 'Skyport' });
+    res.render('admin/node', { req, node, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 
@@ -365,7 +412,7 @@ router.post("/admin/node/:id", async (req, res) => {
 router.get('/admin/images', isAdmin, async (req, res) => {
   let images = await db.get('images') || [];
 
-  res.render('admin/images', { req, user: req.user, images, name: await db.get('name') || 'Skyport' });
+  res.render('admin/images', { req, user: req.user, images, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 module.exports = router;
