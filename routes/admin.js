@@ -357,4 +357,15 @@ router.post("/admin/node/:id", async (req, res) => {
 	res.status(201).send(updatedNode);
 });
 
+/**
+ * GET /admin/images
+ *
+ * @returns {Response} Renders the 'images' view with image data.
+ */
+router.get('/admin/images', isAdmin, async (req, res) => {
+  let images = await db.get('images') || [];
+
+  res.render('admin/images', { req, user: req.user, images, name: await db.get('name') || 'Skyport' });
+});
+
 module.exports = router;

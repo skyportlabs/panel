@@ -1,0 +1,51 @@
+<%- include('../components/template') %>
+<main>
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+           <h1 class="text-base font-semibold leading-6 text-white">Images</h1>
+           <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the images on the Skyport panel.</p>
+         </div>
+       </div>
+      <div style="display: block;" id="nodeTable" class="mt-6 w-full">
+      <table class="mt-6 w-full whitespace-nowrap text-left">
+        <colgroup>
+          <col class="w-full sm:w-4/12">
+          <col class="lg:w-4/12">
+          <col class="lg:w-2/12">
+          <col class="lg:w-1/12">
+          <col class="lg:w-1/12">
+        </colgroup>
+        <thead class="border-b border-white/5 text-sm leading-6 text-white">
+          <tr>
+            <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Author</th>
+			<th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker Image</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+         <% images.forEach(function(image) { %>
+          <tr>
+            <td class="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
+              <div class="flex items-center gap-x-4">
+                <div class="truncate text-sm font-medium leading-6 text-white"><%= image.Name %></div>
+              </div>
+            </td>
+            <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+              <div class="flex gap-x-3">
+                <div class="font-mono text-sm leading-6 text-neutral-400"><%= image.Author %> (<%= image.AuthorName %>)</div>
+              </div>
+            </td>
+            <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+              <div class="flex gap-x-3">
+                <div class="font-mono text-sm leading-6 text-neutral-400"><%= image.Image %></div>
+              </div>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      </div>
+    </div>
+</main>
+<%- include('../components/footer') %>

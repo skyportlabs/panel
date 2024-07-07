@@ -16,22 +16,22 @@
     <!-- Sidebar component, swap this element with another sidebar if you like -->
     <div class="flex grow flex-col gap-y-5 overflow-hidden bg-[#101010] border-r border-white/5">
       <nav class="flex flex-1 flex-col">
-        <div class="pl-4 pt-5 pb-4">
+        <div class="pl-6 pt-5 pb-4">
           <a href="/"><h1 class="text-white font-medium tracking-tight text-lg"><%= name %></h1></a>
         </div>
         <ul role="list" class="flex flex-1 flex-col gap-y-7">
           <li>
             <ul role="list" class="-mx-2 space-y-1">
               <li>
-                <a href="/instances" class="hover:scale-105 transition nav-link text-neutral-400 pl-6 group flex gap-x-3 border border-transparent shadow-none rounded-md py-3 text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+                <a href="/instances" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
                     <path d="M4.464 3.162A2 2 0 0 1 6.28 2h7.44a2 2 0 0 1 1.816 1.162l1.154 2.5c.067.145.115.291.145.438A3.508 3.508 0 0 0 16 6H4c-.288 0-.568.035-.835.1.03-.147.078-.293.145-.438l1.154-2.5Z" />
                     <path fill-rule="evenodd" d="M2 9.5a2 2 0 0 1 2-2h12a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Zm13.24 0a.75.75 0 0 1 .75-.75H16a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75h-.01a.75.75 0 0 1-.75-.75V9.5Zm-2.25-.75a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 0 0 .75-.75V9.5a.75.75 0 0 0-.75-.75h-.01ZM2 15a2 2 0 0 1 2-2h12a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Zm13.24 0a.75.75 0 0 1 .75-.75H16a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75h-.01a.75.75 0 0 1-.75-.75V15Zm-2.25-.75a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 0 0 .75-.75V15a.75.75 0 0 0-.75-.75h-.01Z" clip-rule="evenodd" />
                   </svg>                  
                   Instances
                 </a>
-                <a href="/account" class="hover:scale-105 transition nav-link text-neutral-400 pl-6 group flex gap-x-3 border border-transparent shadow-none rounded-md py-3 text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+                <a href="/account" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
                     <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z" clip-rule="evenodd" />
                   </svg>                                
                   Account
@@ -41,32 +41,32 @@
               <% if (user.admin == true) { %>
               <p class="pl-6 text-neutral-500 text-sm font-semibold tracking-tight pt-6 pb-3">Admin panel</p>
               <li>
-                <a href="/admin/overview" class="hover:scale-105 transition nav-link text-neutral-400 pl-6 group flex gap-x-3 border border-transparent shadow-none rounded-md py-3 text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+                <a href="/admin/overview" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
                     <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v2.5A2.25 2.25 0 0 0 4.25 9h2.5A2.25 2.25 0 0 0 9 6.75v-2.5A2.25 2.25 0 0 0 6.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 2 13.25v2.5A2.25 2.25 0 0 0 4.25 18h2.5A2.25 2.25 0 0 0 9 15.75v-2.5A2.25 2.25 0 0 0 6.75 11h-2.5Zm9-9A2.25 2.25 0 0 0 11 4.25v2.5A2.25 2.25 0 0 0 13.25 9h2.5A2.25 2.25 0 0 0 18 6.75v-2.5A2.25 2.25 0 0 0 15.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 11 13.25v2.5A2.25 2.25 0 0 0 13.25 18h2.5A2.25 2.25 0 0 0 18 15.75v-2.5A2.25 2.25 0 0 0 15.75 11h-2.5Z" clip-rule="evenodd" />
                   </svg>                                               
                   Overview
                 </a>
               </li>
               <li>
-                <a href="/admin/settings" class="hover:scale-105 transition nav-link text-neutral-400 pl-6 group flex gap-x-3 border border-transparent shadow-none rounded-md py-3 text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+                <a href="/admin/settings" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
                     <path fill-rule="evenodd" d="M7.84 1.804A1 1 0 0 1 8.82 1h2.36a1 1 0 0 1 .98.804l.331 1.652a6.993 6.993 0 0 1 1.929 1.115l1.598-.54a1 1 0 0 1 1.186.447l1.18 2.044a1 1 0 0 1-.205 1.251l-1.267 1.113a7.047 7.047 0 0 1 0 2.228l1.267 1.113a1 1 0 0 1 .206 1.25l-1.18 2.045a1 1 0 0 1-1.187.447l-1.598-.54a6.993 6.993 0 0 1-1.929 1.115l-.33 1.652a1 1 0 0 1-.98.804H8.82a1 1 0 0 1-.98-.804l-.331-1.652a6.993 6.993 0 0 1-1.929-1.115l-1.598.54a1 1 0 0 1-1.186-.447l-1.18-2.044a1 1 0 0 1 .205-1.251l1.267-1.114a7.05 7.05 0 0 1 0-2.227L1.821 7.773a1 1 0 0 1-.206-1.25l1.18-2.045a1 1 0 0 1 1.187-.447l1.598.54A6.992 6.992 0 0 1 7.51 3.456l.33-1.652ZM10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd" />
                   </svg>                                 
                   Settings
                 </a>
               </li>
               <li>
-                <a href="/admin/users" class="hover:scale-105 transition nav-link text-neutral-400 pl-6 group flex gap-x-3 border border-transparent shadow-none rounded-md py-3 text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+                <a href="/admin/users" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
                     <path d="M7 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM1.615 16.428a1.224 1.224 0 0 1-.569-1.175 6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 18a9.953 9.953 0 0 1-5.385-1.572ZM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755 4.502 4.502 0 0 1 5.874 2.636.818.818 0 0 1-.36.98A7.465 7.465 0 0 1 14.5 16Z" />
                   </svg>                                
                   Users
                 </a>
               </li>
               <li>
-                <a href="/admin/instances" class="hover:scale-105 transition nav-link text-neutral-400 pl-6 group flex gap-x-3 border border-transparent shadow-none rounded-md py-3 text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+                <a href="/admin/instances" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
                     <path d="M4.464 3.162A2 2 0 0 1 6.28 2h7.44a2 2 0 0 1 1.816 1.162l1.154 2.5c.067.145.115.291.145.438A3.508 3.508 0 0 0 16 6H4c-.288 0-.568.035-.835.1.03-.147.078-.293.145-.438l1.154-2.5Z" />
                     <path fill-rule="evenodd" d="M2 9.5a2 2 0 0 1 2-2h12a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Zm13.24 0a.75.75 0 0 1 .75-.75H16a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75h-.01a.75.75 0 0 1-.75-.75V9.5Zm-2.25-.75a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 0 0 .75-.75V9.5a.75.75 0 0 0-.75-.75h-.01ZM2 15a2 2 0 0 1 2-2h12a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Zm13.24 0a.75.75 0 0 1 .75-.75H16a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75h-.01a.75.75 0 0 1-.75-.75V15Zm-2.25-.75a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 0 0 .75-.75V15a.75.75 0 0 0-.75-.75h-.01Z" clip-rule="evenodd" />
                   </svg>                  
@@ -74,8 +74,8 @@
                 </a>
               </li>
               <li>
-                <a href="/admin/nodes" class="hover:scale-105 transition nav-link text-neutral-400 pl-6 group flex gap-x-3 border border-transparent shadow-none rounded-md py-3 text-sm leading-6 font-normal">            
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+                <a href="/admin/nodes" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">            
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
                     <path d="m3.196 12.87-.825.483a.75.75 0 0 0 0 1.294l7.25 4.25a.75.75 0 0 0 .758 0l7.25-4.25a.75.75 0 0 0 0-1.294l-.825-.484-5.666 3.322a2.25 2.25 0 0 1-2.276 0L3.196 12.87Z" />
                     <path d="m3.196 8.87-.825.483a.75.75 0 0 0 0 1.294l7.25 4.25a.75.75 0 0 0 .758 0l7.25-4.25a.75.75 0 0 0 0-1.294l-.825-.484-5.666 3.322a2.25 2.25 0 0 1-2.276 0L3.196 8.87Z" />
                     <path d="M10.38 1.103a.75.75 0 0 0-.76 0l-7.25 4.25a.75.75 0 0 0 0 1.294l7.25 4.25a.75.75 0 0 0 .76 0l7.25-4.25a.75.75 0 0 0 0-1.294l-7.25-4.25Z" />
@@ -84,8 +84,8 @@
                 </a>
               </li>
               <li>
-                <a href="/admin/images" class="hover:scale-105 transition nav-link text-neutral-400 pl-6 group flex gap-x-3 border border-transparent shadow-none rounded-md py-3 text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+                <a href="/admin/images" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
                     <path d="M2 3a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2Z" />
                     <path fill-rule="evenodd" d="M2 7.5h16l-.811 7.71a2 2 0 0 1-1.99 1.79H4.802a2 2 0 0 1-1.99-1.79L2 7.5ZM7 11a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
                   </svg>                                                 
@@ -99,19 +99,19 @@
             <div class="text-xs font-semibold leading-6 text-neutral-400">Your teams</div>
             <ul role="list" class="-mx-2 mt-2 space-y-1">
               <li>
-                <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-lg p-2 text-sm leading-6 font-semibold">
                   <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">H</span>
                   <span class="truncate">Heroicons</span>
                 </a>
               </li>
               <li>
-                <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-lg p-2 text-sm leading-6 font-semibold">
                   <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">T</span>
                   <span class="truncate">Tailwind Labs</span>
                 </a>
               </li>
               <li>
-                <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-lg p-2 text-sm leading-6 font-semibold">
                   <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">W</span>
                   <span class="truncate">Workcation</span>
                 </a>
@@ -119,8 +119,8 @@
             </ul>
           </li> -->
           <li class="mt-auto border-t border-white/5">
-            <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-md pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition hover:text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-lg pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition hover:text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
               </svg>              
               Sign out
@@ -133,7 +133,7 @@
 
   <div class="lg:pl-56">
     <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 shadow-sm sm:gap-x-6 sm:px-4 lg:px-4">
-      <button type="button" class="w-fit p-2 mt-1 rounded-md text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
+      <button type="button" class="w-fit p-2 mt-1 rounded-lg text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
         <span class="sr-only">Open sidebar</span>
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -142,7 +142,7 @@
 
       <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
         <form class="relative flex flex-1" action="#" method="GET">
-          <input id="search-field" class="w-fit px-4 py-2 h-10 mt-3.5 rounded-md text-white border border-white/5 hover:scale-105 active:scale-100 duration-200 bg-transparent border border-white/5 pr-0 text-white placeholder:text-zinc-500 focus:ring-0 sm:text-sm" placeholder="Search..." type="search" name="search">
+          <input id="search-field" class="w-fit px-4 py-2 h-10 mt-3.5 rounded-lg text-white border border-white/5 hover:scale-105 active:scale-100 duration-200 bg-transparent border border-white/5 pr-0 text-white placeholder:text-zinc-500 focus:ring-0 sm:text-sm" placeholder="Search..." type="search" name="search">
         </form>
         <div class="flex items-center gap-x-4 lg:gap-x-6">
           <!-- Profile dropdown -->
@@ -179,7 +179,7 @@
       
               // Add the specified classes
               link.classList.add(
-                'hover:scale-105', 'transition', 'bg-[#171717]', 'text-white', 'pl-6', 'group', 'flex', 'gap-x-3', 'border', 'border-white/5', 'shadow', 'rounded-md', 'py-3', 'text-sm', 'leading-6', 'font-semibold',
+                'hover:scale-105', 'transition', 'bg-[#171717]', 'text-white', 'mt-1', 'pl-4', 'mx-4', 'group', 'flex', 'gap-x-3', 'shadow-sm', 'rounded-lg', 'py-2', 'text-sm', 'leading-6', 'font-semibold',
               );
             }
           });

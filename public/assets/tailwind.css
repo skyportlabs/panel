@@ -859,6 +859,16 @@ select {
   margin-bottom: 0.75rem;
 }
 
+.mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.mx-6 {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
 .mb-0 {
   margin-bottom: 0px;
 }
@@ -971,6 +981,14 @@ select {
   margin-top: auto;
 }
 
+.mt-0 {
+  margin-top: 0px;
+}
+
+.mt-0\.5 {
+  margin-top: 0.125rem;
+}
+
 .block {
   display: block;
 }
@@ -1052,6 +1070,10 @@ select {
   height: 100%;
 }
 
+.h-4 {
+  height: 1rem;
+}
+
 .w-1 {
   width: 0.25rem;
 }
@@ -1080,10 +1102,6 @@ select {
   width: 2rem;
 }
 
-.w-88 {
-  width: 21rem;
-}
-
 .w-96 {
   width: 24rem;
 }
@@ -1107,6 +1125,10 @@ select {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-4 {
+  width: 1rem;
 }
 
 .min-w-0 {
@@ -1393,6 +1415,11 @@ select {
   background-color: rgb(245 158 11 / var(--tw-bg-opacity));
 }
 
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
 .bg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(59 130 246 / var(--tw-bg-opacity));
@@ -1487,6 +1514,10 @@ select {
 }
 
 .bg-white\/\[0\.05\] {
+  background-color: rgb(255 255 255 / 0.05);
+}
+
+.bg-white\/5 {
   background-color: rgb(255 255 255 / 0.05);
 }
 
@@ -2152,6 +2183,10 @@ select {
 
   .sm\:flex-none {
     flex: none;
+  }
+
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .sm\:grid-cols-4 {
