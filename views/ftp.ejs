@@ -1,5 +1,5 @@
 <%- include('components/template') %>
-<main>
+<main id="content">
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
@@ -33,7 +33,7 @@
                      <span id="passwordText" style="filter: blur(5px)" onclick="navigator.clipboard.writeText('<%- logindata.password %>');" onmouseover="this.style.filter = 'none';" onmouseout="this.style.filter = 'blur(5px)';"><%- logindata.password %></span>
                   </div>
                </div>
-               <button class="block rounded-lg mt-8 bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" onclick="loginToWinSCP()">Mit WinSCP anmelden</button>
+               <button class="block rounded-lg mt-8 bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" onclick="loginToWinSCP()">Connect via your FTP client</button>
                <script>
                   function loginToWinSCP() {
                       const username = "<%- logindata.username %>";
