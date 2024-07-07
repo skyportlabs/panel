@@ -1,13 +1,13 @@
-![\[!image\](https://imgur.com/kGNc6dR)](https://i.imgur.com/kGNc6dR.png)
+![\[!image\](https://i.imgur.com/SU7QypZ.png)](https://i.imgur.com/SU7QypZ.png)
 
-![Discord](https://img.shields.io/discord/1230288144386228224?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
+![Discord](https://img.shields.io/discord/1253782902618194011?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
 ![GitHub Releases](https://img.shields.io/github/downloads/skyportlabs/panel/latest/total?style=for-the-badge)
 ![GitHub contributors](https://img.shields.io/github/contributors/skyportlabs/panel?style=for-the-badge)
 
 # Skyport Panel
 
 ## Overview
-An open source project powered by Docker for managing applications, game servers and more. Ditch Pterodactyl or PufferPanel and fly higher with a panel that isn't named after a creature.
+Skyport is an open source panel for managing and operating game servers and applications built using Node.js with Express and Dockerode. [Click here to join our Discord.](https://discord.gg/skyport)
 
 > [!WARNING]
 > Skyport is not ready for production use, nor does it have a stable and completed release yet.

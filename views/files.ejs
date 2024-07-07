@@ -1,5 +1,49 @@
 <%- include('components/template') %>
-<main>
+<main id="content">
+<%
+function formatLastUpdated(dateString) {
+   const date = new Date(dateString);
+   const now = new Date();
+   const diffTime = Math.abs(now - date);
+   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+   if (diffDays > 30) {
+     return date.toLocaleString('en-US', { 
+       year: 'numeric', 
+       month: 'short', 
+       day: 'numeric', 
+       hour: 'numeric', 
+       minute: '2-digit', 
+       hour12: true 
+     });
+   } else {
+     return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+   }
+ }
+ %>
+ <%
+ function getFileIcon(purpose) {
+   const icons = {
+     programming: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+      <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v11.5A2.25 2.25 0 0 0 4.25 18h11.5A2.25 2.25 0 0 0 18 15.75V4.25A2.25 2.25 0 0 0 15.75 2H4.25Zm4.03 6.28a.75.75 0 0 0-1.06-1.06L4.97 9.47a.75.75 0 0 0 0 1.06l2.25 2.25a.75.75 0 0 0 1.06-1.06L6.56 10l1.72-1.72Zm4.5-1.06a.75.75 0 1 0-1.06 1.06L13.44 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06l2.25-2.25a.75.75 0 0 0 0-1.06l-2.25-2.25Z" clip-rule="evenodd" />
+    </svg>
+    `,
+     webDevelopment: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+      <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v11.5A2.25 2.25 0 0 0 4.25 18h11.5A2.25 2.25 0 0 0 18 15.75V4.25A2.25 2.25 0 0 0 15.75 2H4.25Zm4.03 6.28a.75.75 0 0 0-1.06-1.06L4.97 9.47a.75.75 0 0 0 0 1.06l2.25 2.25a.75.75 0 0 0 1.06-1.06L6.56 10l1.72-1.72Zm4.5-1.06a.75.75 0 1 0-1.06 1.06L13.44 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06l2.25-2.25a.75.75 0 0 0 0-1.06l-2.25-2.25Z" clip-rule="evenodd" />
+    </svg>
+    `,
+     textDocument: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+      <path fill-rule="evenodd" d="M4.5 2A1.5 1.5 0 0 0 3 3.5v13A1.5 1.5 0 0 0 4.5 18h11a1.5 1.5 0 0 0 1.5-1.5V7.621a1.5 1.5 0 0 0-.44-1.06l-4.12-4.122A1.5 1.5 0 0 0 11.378 2H4.5Zm2.25 8.5a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Zm0 3a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />
+     </svg>`,
+     other: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-neutral-400">
+      <path fill-rule="evenodd" d="M4.25 12a.75.75 0 0 1 .75-.75h14a.75.75 0 0 1 0 1.5H5a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+    </svg>
+    `
+   };
+ 
+   return icons[purpose] || icons.other;
+ }
+ %>
     <div class="bg-transparent">
         <div class="sm:flex sm:items-center px-8 pt-4">
            <div class="sm:flex-auto">
@@ -47,64 +91,210 @@
        <% }); %>
        </dl>
        <table class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl">
-          <thead class="text-white">
-             <tr>
-                <th class="px-6 py-3 text-left">File Name</th>
-                <th class="px-6 py-3 text-left">&nbsp;</th>
+         <thead class="text-white">
+            <tr>
+               <th class="px-6 py-3 text-left">File Name</th>
+               <th class="px-6 py-3 text-left">Size</th>
+               <th class="px-6 py-3 text-left">Last Updated</th>
+               <th class="px-6 py-3 text-left">&nbsp;</th>
+            </tr>
+         </thead>
+         <tbody>
+           <% files.filter(file => !file.isDirectory).forEach(function(file) { %>
+              <% let extension; %>
+              <% if (req.query.path) { %>
+                 <% extension = '?path=' + req.query.path %>
+              <% } else { %>
+                 <% extension = '' %>
+              <% } %>
+             <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
+                  <a href="/instance/<%= req.params.id %>/files/view/<%= file.name %><%= extension %>" class="flex items-center">
+                     <span class="mr-2">
+                        <%- getFileIcon(file.purpose) %>
+                     </span>
+                     <%= file.name %>
+                  </a>
+               </td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
+                 <%= file.size %>
+               </td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
+                 <%= formatLastUpdated(file.lastUpdated) %>
+               </td>
+               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-none">
+                  <button onclick="openRenameModal('<%= file.name %>', '<%= extension %>')" class="text-neutral-400 hover:text-white transition mr-4">Rename</button>
+                 <button onclick="openDeleteModal('<%= file.name %>', '<%= extension %>')" class="text-red-500 hover:text-red-400 transition">Delete</button>
+               </td>
              </tr>
-          </thead>
-          <tbody>
-            <% files.filter(file => !file.isDirectory).forEach(function(file) { %>
-               <% let extension; %>
-               <% if (req.query.path) { %>
-                  <% extension = '?path=' + req.query.path %>
-               <% } else { %>
-                  <% extension = '' %>
-               <% } %>
-              <tr onclick="window.location.href = '/instance/<%= req.params.id %>/files/view/<%= file.name %><%= extension %>'" class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none"><%= file.name %></td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-none">
-                  <a class="text-red-500 hover:text-red-400 transition">Delete</a>
-                </td>
-              </tr>
-            <% }); %>
-          </tbody>
-       </table>
+           <% }); %>
+         </tbody>
+      </table>
     </div>
+
+    <!-- End of files -->
+      <!-- Delete Confirmation Modal -->
+        <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+         <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+           <h2 class="text-2xl font-semibold mb-4 text-gray-800">Confirm Deletion</h2>
+           <p id="deleteMessage" class="mb-6 text-gray-600"></p>
+           <div class="flex justify-end space-x-4">
+             <button onclick="closeDeleteModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+             <button id="confirmDelete" class="px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Delete</button>
+           </div>
+         </div>
+      </div>
+
+      <!-- Rename file -->
+      <div id="renameModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+         <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+           <h2 class="text-2xl font-semibold mb-1 text-gray-800">Rename File</h2>
+           <p class="mb-6 text-gray-600">Please choose a new name for this file.</p>
+           <input type="text" id="newFileName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500 transition mb-4" placeholder="Enter new file name">
+           <p id="extensionWarning" class="text-yellow-600 mb-4 hidden">Warning: Changing the file extension may affect file functionality.</p>
+           <div class="flex justify-end space-x-4">
+             <button onclick="closeRenameModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+             <button onclick="confirmRename()" class="px-5 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition">Rename</button>
+           </div>
+         </div>
+       </div>
+
+<!-- File Upload Modal -->
+<div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+   <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+     <h2 class="text-2xl font-semibold mb-4 text-gray-800">Uploading File(s)</h2>
+     <div class="mb-4">
+       <div class="w-full bg-gray-200 rounded-full h-2.5">
+         <div id="uploadProgress" class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>
+       </div>
+     </div>
+     <p id="uploadStatus" class="text-center text-gray-600">Preparing upload...</p>
+   </div>
+ </div>
     <script>
-      document.getElementById('uploadBtn').addEventListener('click', function() {
-          document.getElementById('fileInput').click();
-      });
-      
-      document.getElementById('fileInput').addEventListener('change', function(event) {
-          const files = event.target.files;
-          if (files.length === 0) return;
-      
-          const formData = new FormData();
-          Array.from(files).forEach(file => formData.append('files', file));
-      
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', '/instance/<%= req.params.id %>/files/upload<%= query %>', true);
-          xhr.upload.onprogress = function(e) {
-              if (e.lengthComputable) {
-                  const percentComplete = (e.loaded / e.total) * 100;
-                  document.getElementById('uploadBtn').style.opacity = '0.4'; // Dim button during upload
-                  document.getElementById('uploadBtn').textContent = 'Uploading ' + Math.floor(percentComplete) + '%';
-              }
-          };
-          xhr.onload = function() {
-              if (xhr.status == 200) {
-                  alert('Upload complete!');
-                  document.getElementById('uploadBtn').textContent = 'Upload File(s)';
-                  document.getElementById('uploadBtn').style.opacity = '1'; // Reset button when done
-              } else {
-                  alert('Upload failed. Server responded with status ' + xhr.status);
-                  document.getElementById('uploadBtn').textContent = 'Upload File(s)';
-                  document.getElementById('uploadBtn').style.opacity = '1'; // Reset button if fail
-              }
-          };
-          xhr.send(formData);
-          document.getElementById('fileInput').value = ''; // Reset file input
+document.getElementById('uploadBtn').addEventListener('click', function() {
+    document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', function(event) {
+    const files = event.target.files;
+    if (files.length === 0) return;
+
+    const formData = new FormData();
+    Array.from(files).forEach(file => formData.append('files', file));
+
+    // Open the upload modal
+    const modal = document.getElementById('uploadModal');
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.querySelector('div').classList.remove('scale-95');
+    modal.querySelector('div').classList.add('scale-100');
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/instance/<%= req.params.id %>/files/upload<%= query %>', true);
+    xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            document.getElementById('uploadProgress').style.width = percentComplete + '%';
+            document.getElementById('uploadStatus').textContent = 'Uploading: ' + Math.floor(percentComplete) + '%';
+        }
+    };
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            document.getElementById('uploadStatus').textContent = 'Upload complete!';
+            setTimeout(() => {
+                // Close the modal
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.querySelector('div').classList.remove('scale-100');
+                modal.querySelector('div').classList.add('scale-95');
+                // Reload the page
+                window.location.reload();
+            }, 1000);
+        } else {
+            document.getElementById('uploadStatus').textContent = 'Upload failed. Server responded with status ' + xhr.status;
+            setTimeout(() => {
+                // Close the modal
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.querySelector('div').classList.remove('scale-100');
+                modal.querySelector('div').classList.add('scale-95');
+            }, 3000);
+        }
+    };
+    xhr.send(formData);
+    document.getElementById('fileInput').value = ''; // Reset file input
+});
+
+      let deleteUrl = '';
+
+function openDeleteModal(fileName, extension) {
+  const modal = document.getElementById('deleteModal');
+  const message = document.getElementById('deleteMessage');
+  deleteUrl = `/instance/<%= req.params.id %>/files/delete/${fileName}${extension}`;
+  
+  message.textContent = `Are you sure you want to delete ${fileName}? This is a permanent action and cannot be reversed.`;
+  
+  modal.classList.remove('opacity-0', 'pointer-events-none');
+  modal.querySelector('div').classList.remove('scale-95');
+  modal.querySelector('div').classList.add('scale-100');
+}
+
+function closeDeleteModal() {
+  const modal = document.getElementById('deleteModal');
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  modal.querySelector('div').classList.remove('scale-100');
+  modal.querySelector('div').classList.add('scale-95');
+}
+
+document.getElementById('confirmDelete').addEventListener('click', function() {
+  window.location.href = deleteUrl;
+});
+
+let currentFileName = '';
+      let currentExtension = '';
+
+      function openRenameModal(fileName, extension) {
+        const modal = document.getElementById('renameModal');
+        const input = document.getElementById('newFileName');
+        currentFileName = fileName;
+        currentExtension = extension;
+        
+        input.value = fileName;
+        
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.querySelector('div').classList.remove('scale-95');
+        modal.querySelector('div').classList.add('scale-100');
+
+        input.focus();
+        input.setSelectionRange(0, fileName.lastIndexOf('.'));
+      }
+
+      function closeRenameModal() {
+        const modal = document.getElementById('renameModal');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.querySelector('div').classList.remove('scale-100');
+        modal.querySelector('div').classList.add('scale-95');
+      }
+
+      function confirmRename() {
+        const newFileName = document.getElementById('newFileName').value.trim();
+        if (newFileName && newFileName !== currentFileName) {
+          const encodedNewFileName = encodeURIComponent(newFileName);
+          const renameUrl = `/instance/<%= req.params.id %>/files/rename/${currentFileName}${currentExtension}&filename=${encodedNewFileName}`;
+          window.location.href = renameUrl;
+        } else {
+          closeRenameModal();
+        }
+      }
+
+      document.getElementById('newFileName').addEventListener('input', function(event) {
+        const warningElement = document.getElementById('extensionWarning');
+        const newExtension = event.target.value.split('.').pop();
+        const originalExtension = currentFileName.split('.').pop();
+        
+        if (newExtension !== originalExtension) {
+          warningElement.classList.remove('hidden');
+        } else {
+          warningElement.classList.add('hidden');
+        }
       });
       </script>
 </main>
