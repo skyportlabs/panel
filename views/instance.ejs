@@ -109,14 +109,14 @@
    <div class="mt-8 ml-8 mr-8 bg-transparent rounded-2xl p-4 border border-white/5 mx-3 my-3">
       <div id="terminal"></div>
    </div>
-   <div class="mt-8 ml-8 mr-8">
+   <div class="mt-8 ml-8 mr-8 bg-black">
       <input placeholder="Send a command..." class="rounded-lg w-full focus:ring-transparent focus:border focus:border-white/10 text-white text-sm mt-2 mb-6 items-center transition justify-left gap-16 hover:bg-neutral-900 px-4 py-3 flex border-white/5 bg-transparent placeholder:text-neutral-300 text-white border border-black/10" id="input"></input>
    </div>
    <script>
       console.log('<%= instance.VolumeId %>')
       var baseTheme = {
           foreground: '#c5c9d1',
-          background: '#141414',
+          background: '#000000',
           selection: '#5DA5D533',
           black: '#1E1E1D',
           brightBlack: '#262625',
@@ -156,23 +156,43 @@
       let daemonIsDown = document.getElementById('daemonIsDown');
 
       function handleWebSocketMessage(msg) {
-          const lines = msg.data.split('\n');
-          lines.forEach(line => {
-              term.write('\x1b[0m' + line.trim() + '\r\n');
-              if (line.includes("state:")) {
-                  // everything will lock up if we don't do this :skull: - atqr
-                  term.write('\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
-                  term.clear();
-                  ws.close(); // Close the current connection to trigger onclose and reconnect
-              }
-              if (line.includes("skyportd instance appears to be down")) {
-                  ws.close();
-                  daemonIsDown.classList.remove('hidden')
-              } else {
-                  daemonIsDown.classList.add('hidden')
-              }
-          });
-      }
+    const lines = msg.data.split('\n');
+    let isFirstLine = true;
+    let previousLineWasEmpty = false;
+
+    lines.forEach(line => {
+        const trimmedLine = line.trim();
+        
+        // Skip empty lines if the previous line was also empty
+        if (trimmedLine === '' && previousLineWasEmpty) {
+            return;
+        }
+
+        // Add a newline character only if it's not the first line and the previous line wasn't empty
+        if (!isFirstLine && !previousLineWasEmpty) {
+            term.write('\r\n');
+        }
+
+        term.write('\x1b[0m' + trimmedLine);
+
+        if (trimmedLine.includes("state:")) {
+            term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
+            term.clear();
+            ws.close(); // Close the current connection to trigger onclose and reconnect
+        }
+
+        if (trimmedLine.includes("skyportd instance appears to be down")) {
+            ws.close();
+            daemonIsDown.classList.remove('hidden');
+        } else {
+            daemonIsDown.classList.add('hidden');
+        }
+
+        isFirstLine = false;
+        previousLineWasEmpty = (trimmedLine === '');
+    });
+}
+
       initWebSocket(); // Initialize WebSocket connection
       // Terminal setup remains the same
       var term = new Terminal({
