@@ -1,0 +1,79 @@
+<%- include('components/template') %>
+<main>
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+            <h1 class="text-base font-semibold leading-6 text-white">Managing Instance:<strong> <%= (instance_name).replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) %></strong></h1>
+            <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Dreams panel.</p>
+         </div>
+         <% let query = req.query.path ? '?path=' + req.query.path : ''; %>
+      </div>
+  </div>
+   <%- include('components/instance') %>
+
+   <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10 ml-8 card" style="width: 900px;">
+      <div class="flex flex-row">
+         <div class="w-1/2 mr-4">
+            <h2 class="text-md font-medium text-white tracking-tight">FTP Details</h2>
+            <div class="mt-5">
+               <div class="mr-4 mt-5">
+                  <label class="text-neutral-400 text-sm tracking-tight mb-2">Server Address</label>
+                  <div onclick="navigator.clipboard.writeText(`ftp://<%- logindata.host %>:<%- logindata.port %>`)" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;">
+                     <span onclick="navigator.clipboard.writeText(`ftp://<%- logindata.host %>:<%- logindata.port %>`);">ftp://<%- logindata.host %>:<%- logindata.port %></span>
+                  </div>
+               </div>
+               <div class="mr-4 mt-5">
+                  <label class="text-neutral-400 text-sm tracking-tight mb-2">Username:</label>
+                  <div onclick="navigator.clipboard.writeText('<%- logindata.username %>');" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;">
+                     <span id="usernameText" onclick="navigator.clipboard.writeText('<%- logindata.username %>');" onmouseover="this.style.filter = 'none';"><%- logindata.username %></span>
+                  </div>
+               </div>
+               <div class="mr-4 mt-5">
+                  <label class="text-neutral-400 text-sm tracking-tight mb-2">Password:</label>
+                  <div onclick="navigator.clipboard.writeText('<%- logindata.password %>');" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;">
+                     <span id="passwordText" style="filter: blur(5px)" onclick="navigator.clipboard.writeText('<%- logindata.password %>');" onmouseover="this.style.filter = 'none';" onmouseout="this.style.filter = 'blur(5px)';"><%- logindata.password %></span>
+                  </div>
+               </div>
+               <button class="block rounded-lg mt-8 bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" onclick="loginToWinSCP()">Mit WinSCP anmelden</button>
+               <script>
+                  function loginToWinSCP() {
+                      const username = "<%- logindata.username %>";
+                      const password = "<%- logindata.password %>";
+                      const hostname = "<%- logindata.host %>";
+                      const port = "<%- logindata.port %>";
+          
+                      const winscpUrl = `sftp://${username}:${password}@${hostname}:${port}`;
+                      window.location.href = winscpUrl;
+                  }
+              </script>
+            </div>
+         </div>
+         <div class="w-1/2 ml-8">
+            <h2 class="text-md font-medium text-white tracking-tight">Recommended FTP Clients</h2>
+            <ul class="mt-5">
+               <li class="text-white text-sm mb-3 flex items-center">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/WinSCP_6_Logo.png" width="44" height="44" alt="WinSCP Logo" style="margin-right: 10px;">
+                  <span class="mr-2"><strong>WinSCP</strong> - Simple to use FTP client</span>
+                  <a href="client_website_1" class="ml-2" style="color: #60a5fa;">Website</a>
+               </li>
+               <li class="text-white text-sm mb-3 flex items-center">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/FileZilla_logo.svg/1024px-FileZilla_logo.svg.png" width="44" height="44" alt="FileZilla Logo" style="margin-right: 10px;">
+                  <span class="mr-2"><strong>FileZilla</strong> - Free and open-source FTP client</span>
+                  <a href="https://filezilla-project.org/" class="ml-2" style="color: #60a5fa;">Website</a>
+               </li>
+               <li class="text-white text-sm mb-3 flex items-center">
+                  <img src="https://camo.githubusercontent.com/14ca4b30139f5b1d02213ee62088b13120f1b2b44ee8493c7f05654fa55f7ac6/68747470733a2f2f63646e2e63796265726475636b2e696f2f696d672f63796265726475636b2d69636f6e2d726563742d3531322e706e67" width="44" height="44" alt="Cyberduck Logo" style="margin-right: 10px;">
+                  <span class="mr-2"><strong>Cyberduck</strong> - Libre server and cloud storage browser for Mac and Windows</span>
+                  <a href="https://cyberduck.io/" class="ml-2" style="color: #60a5fa;">Website</a>
+               </li>
+               <li class="text-white text-sm mb-3 flex items-center">
+                  <img src="https://static.macupdate.com/products/6771/l/transmit-logo.png?v=1669040857" width="44" height="44" alt="Transmit Logo" style="margin-right: 10px;">
+                  <span class="mr-2"><strong>Transmit</strong> - Share files quickly without cloud services</span>
+                  <a href="https://panic.com/transmit/" class="ml-2" style="color: #60a5fa;">Website</a>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</main>
+<%- include('components/footer') %>
