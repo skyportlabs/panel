@@ -1,4 +1,5 @@
 node_modules/
 skyport.db
+sessions.db
 package-lock.json
 tmp/
