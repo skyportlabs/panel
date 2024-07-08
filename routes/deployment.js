@@ -86,6 +86,10 @@ router.get('/instances/deploy', async (req, res) => {
   const PortBindings = {};
   const PrimaryPort = primary;
 
+  let rawimage = await db.get('images');
+  rawimage = rawimage.find(i => i.Image === image);
+  const Env = rawimage ? rawimage.Env : undefined;
+
   const Node = await db.get(NodeId + '_node');
   if (!Node) return res.send('Invalid node');
 
@@ -102,6 +106,7 @@ router.get('/instances/deploy', async (req, res) => {
     data: {
       Name: name,
       Image: image,
+      Env,
       Memory: memory ? parseInt(memory) * 1024 * 1024 : undefined,
       Cpu: cpu ? parseInt(cpu) : undefined,
       ExposedPorts: {},
@@ -171,6 +176,7 @@ router.get('/instances/deploy', async (req, res) => {
     await db.set(`${response.data.containerId}_instance`, {
       Name: name,
       Node,
+      Image: image,
       User: userId,
       ContainerId: response.data.containerId,
       VolumeId: response.data.volumeId,
