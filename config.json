@@ -1,6 +1,6 @@
 {
     "port": 3001,
-    "version": "0.1.0-beta1",
+    "version": "0.1.0-beta2",
     "_note": "The key is only used by skyportd to get the images and instances. Not much important or critical data in that.",
     "key": "skyport_default_key"
 } 

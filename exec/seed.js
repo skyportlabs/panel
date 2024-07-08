@@ -3,7 +3,7 @@ const { db } = require('../handlers/db');
 const CatLoggr = require('cat-loggr');
 const log = new CatLoggr();
 const readline = require('readline');
-const config = require('../config.json')
+const config = require('../config.json');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -37,7 +37,7 @@ async function seed() {
 
 async function performSeeding() {
   try {
-    const imagesIndexResponse = await axios.get('https://raw.githubusercontent.com/skyportlabs/images_v2/main/seed/' + config.version + '.json');
+    const imagesIndexResponse = await axios.get('https://raw.githubusercontent.com/skyportlabs/images_v2/main/seed/0.1.0-beta2.json');
     const imageUrls = imagesIndexResponse.data;
     let imageDataArray = [];
 
@@ -45,8 +45,10 @@ async function performSeeding() {
       log.init('fetching image data...');
       try {
         const imageDataResponse = await axios.get(url);
-        log.init('seeding: ' + imageDataResponse.data.Name);
-        imageDataArray.push(imageDataResponse.data);
+        const imageData = imageDataResponse.data;
+      
+        log.init('seeding: ' + imageData.Name);
+        imageDataArray.push(imageData);
       } catch (error) {
         log.error(`failed to fetch image data from ${url}: ${error}`);
       }

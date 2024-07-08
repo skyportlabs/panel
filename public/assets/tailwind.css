@@ -1011,6 +1011,14 @@ select {
   margin-right: 0px;
 }
 
+.mr-2\.5 {
+  margin-right: 0.625rem;
+}
+
+.ml-3 {
+  margin-left: 0.75rem;
+}
+
 .block {
   display: block;
 }
@@ -1814,6 +1822,10 @@ select {
 
 .pt-8 {
   padding-top: 2rem;
+}
+
+.pl-3 {
+  padding-left: 0.75rem;
 }
 
 .text-left {
