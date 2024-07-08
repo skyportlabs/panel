@@ -425,6 +425,9 @@ router.get('/admin/images', isAdmin, async (req, res) => {
       return res.status(404).send('Instance not found');
     }
     await axios.get(`http://Dreams:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${id}/delete`);
+    let du = await db.get(instance.User + '_instances')
+    du = du.filter(obj => obj.ContainerId !== id);
+    await db.set(instance.User + '_instances', du)
     await db.delete(id + '_instance');
     let di = await db.get('instances')
     di = di.value = di.filter(obj => obj.ContainerId !== id);
@@ -435,12 +438,19 @@ router.get('/admin/images', isAdmin, async (req, res) => {
   router.get('/admin/instances/purge/all', isAdmin, async (req, res) => {
     const instances = await db.get('instances');
     for (const instance of instances) {
-      await axios.get(`http://Skyport:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}/delete`);
+      await axios.get(`http://Dreams:dmc_g9kwav5ezp7@${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}/delete`);
+      let du = await db.get(instance.User + '_instances')
+      du = du.filter(obj => obj.ContainerId !== instance.ContainerId);
+      await db.set(instance.User + '_instances', du)
+      let di = await db.get('instances')
+      di = di.value = di.filter(obj => obj.ContainerId !== instance.ContainerId);
+      await db.set('instances', di)
       await db.delete(instance.ContainerId + '_instance');
     }
     await db.delete('instances');
     res.redirect('/admin/instances');
   });
+  
   
 
   /*
