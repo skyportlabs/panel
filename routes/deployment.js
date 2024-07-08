@@ -72,17 +72,19 @@ router.get('/instances/deploy', async (req, res) => {
     nodeId,
     name,
     user,
+    primary,
     configfilepath,
     configfilecontent
   } = req.query;
 
-  if (!image || !memory || !cpu || !ports || !nodeId || !name || !user) return res.send('Missing parameters');
+  if (!image || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) return res.send('Missing parameters');
 
   const NodeId = nodeId;
   const Memory = memory ? parseInt(memory) : undefined;
   const Cpu = cpu ? parseInt(cpu) : undefined;
   const ExposedPorts = {};
   const PortBindings = {};
+  const PrimaryPort = primary;
 
   const Node = await db.get(NodeId + '_node');
   if (!Node) return res.send('Invalid node');
@@ -142,6 +144,7 @@ router.get('/instances/deploy', async (req, res) => {
       VolumeId: response.data.volumeId,
       Memory,
       Cpu,
+      Primary: PrimaryPort,
       ExposedPorts,
       PortBindings
     });
@@ -154,6 +157,7 @@ router.get('/instances/deploy', async (req, res) => {
       VolumeId: response.data.volumeId,
       Memory,
       Cpu,
+      Primary: PrimaryPort,
       ExposedPorts,
       PortBindings
   });
@@ -170,6 +174,7 @@ router.get('/instances/deploy', async (req, res) => {
       VolumeId: response.data.volumeId,
       Memory,
       Cpu,
+      Primary: PrimaryPort,
       ExposedPorts,
       PortBindings
     });

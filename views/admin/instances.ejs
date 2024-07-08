@@ -61,7 +61,7 @@
                 <div class="font-mono text-sm leading-6 text-neutral-400">/volumes/<%= instance.VolumeId %></div>
               </div>
             </td>
-	    <td class="py-4 pl-0 pr-4 text-right sm:pr-8 lg:pr-20">
+            <td class="py-4 pl-0 pr-4 text-right sm:pr-8 lg:pr-20">
               <div class="flex gap-x-3">
                 <button onclick="location.href='/admin/instance/delete/<%= instance.ContainerId %>'" class="font-mono text-sm leading-6 bg-red-600 hover:bg-red-700 transition-all p-1 rounded-lg text-white">
                   Delete
@@ -219,6 +219,7 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
         memory: memory.value,
         cpu: cpu.value,
         ports: ports.value,
+        primary: primaryPort,
         configFilePath: configFilePath,
         configFileContent: configFileContent
     };
