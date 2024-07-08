@@ -89,6 +89,7 @@ router.get('/instances/deploy', async (req, res) => {
   let rawimage = await db.get('images');
   rawimage = rawimage.find(i => i.Image === image);
   const Env = rawimage ? rawimage.Env : undefined;
+  const Scripts = rawimage ? rawimage.Scripts : undefined;
 
   const Node = await db.get(NodeId + '_node');
   if (!Node) return res.send('Invalid node');
@@ -107,6 +108,7 @@ router.get('/instances/deploy', async (req, res) => {
       Name: name,
       Image: image,
       Env,
+      Scripts,
       Memory: memory ? parseInt(memory) * 1024 * 1024 : undefined,
       Cpu: cpu ? parseInt(cpu) : undefined,
       ExposedPorts: {},
