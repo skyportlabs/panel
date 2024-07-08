@@ -415,4 +415,63 @@ router.get('/admin/images', isAdmin, async (req, res) => {
   res.render('admin/images', { req, user: req.user, images, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
+  router.get('/admin/instance/delete/:id', isAdmin, async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+      return res.redirect('../../../../instances');
+    }
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+      return res.status(404).send('Instance not found');
+    }
+    await axios.get(`http://Skyport:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${id}/delete`);
+    let du = await db.get(instance.User + '_instances')
+    du = du.filter(obj => obj.ContainerId !== id);
+    await db.set(instance.User + '_instances', du)
+    await db.delete(id + '_instance');
+    let di = await db.get('instances')
+    di = di.value = di.filter(obj => obj.ContainerId !== id);
+    await db.set('instances', di)
+    res.redirect('/admin/instances');
+  });
+
+  router.get('/admin/instances/purge/all', isAdmin, async (req, res) => {
+    const instances = await db.get('instances');
+    for (const instance of instances) {
+      await axios.get(`http://Skyport:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}/delete`);
+      let du = await db.get(instance.User + '_instances')
+      du = du.filter(obj => obj.ContainerId !== instance.ContainerId);
+      await db.set(instance.User + '_instances', du)
+      let di = await db.get('instances')
+      di = di.value = di.filter(obj => obj.ContainerId !== instance.ContainerId);
+      await db.set('instances', di)
+      await db.delete(instance.ContainerId + '_instance');
+    }
+    await db.delete('instances');
+    res.redirect('/admin/instances');
+  });
+  
+  
+
+  /*
+	"this is to delete the node you can fix this if you want idk"
+
+ 
+ router.get('/admin/nodes/delete/:id', isAdmin, async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+      return res.redirect('../../../../nodes');
+    }
+    const node = await db.get(id + '_node');
+    if (!node) {
+      return res.status(404).send('Node not found');
+    }
+    let dn = await db.get('nodes')
+    dn = dn.value = dn.filter(id => id.includes(id));
+    await db.set('instances', dn)
+    await db.delete(id + '_node');
+    res.redirect('/admin/nodes');
+  }); */
+
+
 module.exports = router;
