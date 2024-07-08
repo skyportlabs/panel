@@ -1,0 +1,37 @@
+<%- include('components/template') %>
+<main id="content">
+    <div class="bg-transparent">
+        <div class="sm:flex sm:items-center px-8 pt-4">
+           <div class="sm:flex-auto">
+              <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
+              <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
+           </div>
+        </div>
+    </div>
+    <%- include('components/instance') %>
+    <div class="px-4 sm:px-6 lg:px-8">
+       <table class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl">
+         <thead class="text-white">
+            <tr>
+               <th class="px-6 py-3 text-left">Port</th>
+               <th class="px-6 py-3 text-left">Additional Values</th>
+            </tr>
+         </thead>
+         <tbody>
+           <% ports.forEach(function(port) { %>
+             <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+               <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-white border-none">
+                    <%= port.port %><span class="text-neutral-300">:<%= port.internal %></span>
+               </td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
+                    <% if (port.primary == true) { %>
+                        <span class="bg-emerald-600/10 text-emerald-600 px-4 py-2">Primary</span>
+                    <% } %>
+               </td>
+             </tr>
+           <% }); %>
+         </tbody>
+      </table>
+    </div>
+</main>
+<%- include('components/footer') %>

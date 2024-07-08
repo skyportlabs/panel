@@ -66,6 +66,62 @@ router.get("/instance/:id", async (req, res) => {
 });
 
 /**
+ * GET /instance/:id/network
+ * Renders the network page for a specific instance, displaying port information.
+ * 
+ * @param {string} id - The unique identifier of the instance.
+ * @returns {Response} Renders the 'network' view with port information.
+ */
+router.get("/instance/:id/network", async (req, res) => {
+    if (!req.user) {
+        return res.redirect('/');
+    }
+
+    const { id } = req.params;
+    if (!id) {
+        return res.redirect('../instances');
+    }
+
+    const instance = await db.get(id + '_instance').catch(err => {
+        console.error('Failed to fetch instance:', err);
+        return null;
+    });
+
+    if (!instance) {
+        return res.status(404).send('Instance not found');
+    }
+
+    // Authorization check
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    if (!isAuthorized) {
+        return res.status(403).send('Unauthorized access to this instance.');
+    }
+
+    // Process port information
+    const ports = [];
+    if (instance.Ports) {
+        const portMappings = instance.Ports.split(',');
+        portMappings.forEach(mapping => {
+            const [external, internal] = mapping.split(':');
+            ports.push({
+                port: parseInt(external),
+                primary: instance.Primary === external,
+                internal: parseInt(internal)
+            });
+        });
+    }
+
+    res.render('network', {
+        req,
+        instance,
+        ports,
+        user: req.user,
+        name: await db.get('name') || 'Skyport',
+        logo: await db.get('logo') || false
+    });
+});
+
+/**
  * GET /instance/:id/files
  * Retrieves and renders a list of files from a specific instance identified by its unique ID.
  * The endpoint requires user authentication and valid instance details, including volume and node
