@@ -81,8 +81,7 @@
             <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"><%= set[node.id] || 0 %></td>
 			<td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3">
 				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</button></a></div>
-				<div class="inner"><button id="removeButton" type="button" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</button></div>
-			</td>
+				<div class="inner"><button id="removeButton" onclick="location.href='/admin/nodes/delete/<%= node.id %>'" type="button" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</button></div>
           </tr>
           <% }); %>
         </tbody>
