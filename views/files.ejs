@@ -283,7 +283,7 @@ let currentFileName = '';
         const newFileName = document.getElementById('newFileName').value.trim();
         if (newFileName && newFileName !== currentFileName) {
           const encodedNewFileName = encodeURIComponent(newFileName);
-          const renameUrl = `/instance/<%= req.params.id %>/files/rename/${currentFileName}${currentExtension}&filename=${encodedNewFileName}`;
+          const renameUrl = `/instance/<%= req.params.id %>/files/rename/${currentFileName}/${encodedNewFileName}${currentExtension}`;
           window.location.href = renameUrl;
         } else {
           closeRenameModal();

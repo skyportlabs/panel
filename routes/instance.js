@@ -292,13 +292,13 @@ router.get("/instance/:id/files/create", async (req, res) => {
 /**
  * GET /instance/:id/files/rename/:file
  */
-router.get("/instance/:id/files/rename/:file", async (req, res) => {
+router.get("/instance/:id/files/rename/:file/:newfile", async (req, res) => {
     if (!req.user) {
         return res.redirect('/');
     }
 
-    const { id, file } = req.params;
-    if (!id || !file) {
+    const { id, file, newfile } = req.params;
+    if (!id || !file || !newfile) {
         return res.redirect('../instances');
     }
 
@@ -321,8 +321,8 @@ router.get("/instance/:id/files/rename/:file", async (req, res) => {
 
     if (instance.Node && instance.Node.address && instance.Node.port) {
         const RequestData = {
-            method: 'get',
-            url: `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/rename/${file}${query}`,
+            method: 'post',
+            url: `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/rename/${file}/${newfile}${query}`,
             auth: {
                 username: 'Skyport',
                 password: instance.Node.apiKey
