@@ -137,6 +137,7 @@ router.get('/instances/deploy', async (req, res) => {
     userServers.push({
       Name: name,
       Node,
+      User: userId,
       ContainerId: response.data.containerId,
       VolumeId: response.data.volumeId,
       Memory,
@@ -148,6 +149,7 @@ router.get('/instances/deploy', async (req, res) => {
     globalServers.push({
       Name: name,
       Node,
+      User: userId,
       ContainerId: response.data.containerId,
       VolumeId: response.data.volumeId,
       Memory,
@@ -163,6 +165,7 @@ router.get('/instances/deploy', async (req, res) => {
     await db.set(`${response.data.containerId}_instance`, {
       Name: name,
       Node,
+      User: userId,
       ContainerId: response.data.containerId,
       VolumeId: response.data.volumeId,
       Memory,
