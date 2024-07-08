@@ -29,6 +29,10 @@ const app = express();
 const chalk = require('chalk');
 const expressWs = require('express-ws')(app);
 
+const sqlite = require("better-sqlite3");
+const SqliteStore = require("better-sqlite3-session-store")(session);
+const sessionstorage = new sqlite("sessions.db");
+
 const { init } = require('./handlers/init.js');
 
 const log = new CatLoggr();
@@ -43,11 +47,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.set('view engine', 'ejs');
-app.use(session({
-    secret: 'secret',
+app.use(
+  session({
+    store: new SqliteStore({
+      client: sessionstorage,
+      expired: {
+        clear: true,
+        intervalMs: 9000000
+      }
+    }),
+    secret: "secret",
     resave: true,
     saveUninitialized: true
-}));
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
