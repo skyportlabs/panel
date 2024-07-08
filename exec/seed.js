@@ -3,6 +3,7 @@ const { db } = require('../handlers/db');
 const CatLoggr = require('cat-loggr');
 const log = new CatLoggr();
 const readline = require('readline');
+const config = require('../config.json')
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -36,7 +37,7 @@ async function seed() {
 
 async function performSeeding() {
   try {
-    const imagesIndexResponse = await axios.get('https://raw.githubusercontent.com/skyportlabs/images/main/images.json');
+    const imagesIndexResponse = await axios.get('https://raw.githubusercontent.com/skyportlabs/images_v2/main/seed/' + config.version + '.json');
     const imageUrls = imagesIndexResponse.data;
     let imageDataArray = [];
 

@@ -73,8 +73,6 @@ router.get('/instances/deploy', async (req, res) => {
     name,
     user,
     primary,
-    configfilepath,
-    configfilecontent
   } = req.query;
 
   if (!image || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) return res.send('Missing parameters');
@@ -86,10 +84,10 @@ router.get('/instances/deploy', async (req, res) => {
   const PortBindings = {};
   const PrimaryPort = primary;
 
-  let rawimage = await db.get('images');
-  rawimage = rawimage.find(i => i.Image === image);
-  const Env = rawimage ? rawimage.Env : undefined;
-  const Scripts = rawimage ? rawimage.Scripts : undefined;
+  let rawImage = await db.get('images');
+  rawImage = rawImage.find(i => i.Image === image);
+  const Env = rawImage ? rawImage.Env : undefined;
+  const Scripts = rawImage ? rawImage.Scripts : undefined;
 
   const Node = await db.get(NodeId + '_node');
   if (!Node) return res.send('Invalid node');
@@ -109,7 +107,7 @@ router.get('/instances/deploy', async (req, res) => {
       Image: image,
       Env,
       Scripts,
-      Memory: memory ? parseInt(memory) * 1024 * 1024 : undefined,
+      Memory: memory ? parseInt(memory) : undefined,
       Cpu: cpu ? parseInt(cpu) : undefined,
       ExposedPorts: {},
       PortBindings: {}
@@ -124,14 +122,6 @@ router.get('/instances/deploy', async (req, res) => {
       RequestData.data.ExposedPorts[key] = {};
       RequestData.data.PortBindings[key] = [{ HostPort: hostPort }];
     });
-  }
-
-  // Include ConfigFilePath and ConfigFileContent if they are provided
-  if (configfilepath) {
-    RequestData.data.ConfigFilePath = configfilepath;
-  }
-  if (configfilecontent) {
-    RequestData.data.ConfigFileContent = configfilecontent;
   }
 
   try {
