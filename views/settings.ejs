@@ -1,0 +1,34 @@
+<%- include('components/template') %>
+<main id="content">
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+            <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
+            <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
+         </div>
+      </div>
+  </div>
+   <%- include('components/instance') %>
+   <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10 ml-8 card" style="width: 900px;">
+      <div class="flex flex-row">
+         <div class="w-1/2 mr-4">
+            <h2 class="text-md font-medium text-white tracking-tight">Change Instance Name</h2>
+            <div class="mt-5">
+               <div class="mr-4 mt-5">
+                  <label class="text-neutral-400 text-sm tracking-tight mb-2">Name</label>
+                     <input id="name" placeholder="My Server" value="<%= instance.Name %>" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" style="width: 340px;">
+                  </div>
+               </div>
+               <button id="save" class="block rounded-lg mt-8 bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+            </div>
+         </div>
+      </div>
+   </div>
+</main>
+<script>
+    document.getElementById('save').addEventListener('click', function() {
+        const name = document.getElementById('name').value;
+        window.location.href = '/instance/<%= req.params.id %>/change/name/' + name;
+    });
+    </script>
+<%- include('components/footer') %>
