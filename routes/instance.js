@@ -652,7 +652,8 @@ router.ws("/stats/:id", async (ws, req) => {
     }
 
     const node = instance.Node;
-    const socket = new WebSocket(`ws://${node.address}:${node.port}/stats/${id}`);
+    const volume = instance.VolumeId;
+    const socket = new WebSocket(`ws://${node.address}:${node.port}/stats/${id}/${volume}`);
 
     socket.onopen = () => {
         socket.send(JSON.stringify({ "event": "auth", "args": [node.apiKey] }));

@@ -67,7 +67,12 @@ function formatLastUpdated(dateString) {
     </div>
     <%- include('components/instance') %>
     <div class="px-4 sm:px-6 lg:px-8">
-       <h1 class="text-white text-sm">Directory: <a class="text-neutral-300 hover:text-neutral-200 transition" href="./files">/app/data/</a><%= req.query.path %></h1>
+      <div class="flex">
+         <div class="flex-grow">
+           <h1 class="text-white text-sm"><a class="text-neutral-300 hover:text-neutral-200 transition" href="./files">/app/data/</a><%= req.query.path %></h1>
+         </div>
+         <p id="diskUsage" class="text-sm text-neutral-400"></p>
+       </div>
        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-6">
        <% files.filter(file => file.isDirectory).forEach(function(directory) { %>
          <% let currentPath; %>
@@ -297,5 +302,20 @@ let currentFileName = '';
         }
       });
       </script>
+<script>
+function getCookie(name) {
+    let cookies = document.cookie.split(';');
+    for(let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        if (cookie.indexOf(name + "=") === 0) {
+            return cookie.substring(name.length + 1);
+        }
+    }
+    return "";
+}
+
+let disk = getCookie("disk");
+document.getElementById('diskUsage').textContent = disk + ' disk usage';
+</script>
 </main>
 <%- include('components/footer') %>
