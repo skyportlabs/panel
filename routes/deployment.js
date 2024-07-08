@@ -144,6 +144,7 @@ router.get('/instances/deploy', async (req, res) => {
       VolumeId: response.data.volumeId,
       Memory,
       Cpu,
+      Ports: ports,
       Primary: PrimaryPort,
       ExposedPorts,
       PortBindings
@@ -157,6 +158,7 @@ router.get('/instances/deploy', async (req, res) => {
       VolumeId: response.data.volumeId,
       Memory,
       Cpu,
+      Ports: ports,
       Primary: PrimaryPort,
       ExposedPorts,
       PortBindings
@@ -174,6 +176,7 @@ router.get('/instances/deploy', async (req, res) => {
       VolumeId: response.data.volumeId,
       Memory,
       Cpu,
+      Ports: ports,
       Primary: PrimaryPort,
       ExposedPorts,
       PortBindings
