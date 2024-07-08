@@ -578,6 +578,53 @@ router.get("/instance/:id/files/delete/:filename", async (req, res) => {
 });
 
 /**
+ * GET /instance/:id/change/name/:name
+ */
+router.get("/instance/:id/change/name/:name", async (req, res) => {
+    if (!req.user) {
+        return res.status(401).send('Authentication required');
+    }
+
+    const { id, name } = req.params;
+
+    // Name validation
+    if (!name || name.trim() === '') {
+        return res.status(400).send('Name cannot be empty');
+    }
+
+    if (name.length > 50) {
+        return res.status(400).send('Name cannot exceed 50 characters');
+    }
+
+    if (!/^[a-zA-Z0-9 ]+$/.test(name)) {
+        return res.status(400).send('Name can only contain alphanumeric characters and spaces');
+    }
+
+    let instance = await db.get(id + '_instance');
+    if (!instance) {
+        return res.status(404).send('Instance not found');
+    }
+
+    // Authorization check
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    if (!isAuthorized) {
+        return res.status(403).send('Unauthorized access to this instance.');
+    }
+
+    let query;
+    if (req.query.path) {
+        query = '?path=' + req.query.path
+    } else {
+        query = ''
+    }
+
+    instance.Name = name.trim(); // Trim the name before saving
+    await db.set(id + '_instance', instance);
+
+    res.redirect('/instance/' + id + '/settings')
+});
+
+/**
  * WebSocket /console/:id
  * Establishes a WebSocket connection to stream console logs from a specific instance.
  * Requires user authentication and valid instance ID. It connects to another WebSocket service
