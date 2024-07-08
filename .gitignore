@@ -1,3 +1,4 @@
 node_modules/
 skyport.db
+package-lock.json
 tmp/
