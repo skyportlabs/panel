@@ -6,7 +6,7 @@
   "scripts": {
     "seed": "node exec/seed.js",
     "createUser": "node exec/createUser.js",
-    "build": "npx tailwindcss -i ./public/tw.conf -o ./public/assets/tailwind.css --watch"
+    "build:css": "npx tailwindcss -i ./public/tw.conf -o ./public/assets/tailwind.css --watch"
   },
   "author": "",
   "license": "ISC",
