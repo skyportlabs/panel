@@ -1,0 +1,50 @@
+<%- include('components/template') %>
+<main id="content">
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+            <h1 class="text-base font-semibold leading-6 text-white">Managing Instance: <strong><%= (instance_name).replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) %></strong></h1>
+            <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Dreams panel.</p>
+         </div>
+         <% let query = req.query.path ? '?path=' + req.query.path : ''; %>
+      </div>
+   </div>
+   <%- include('components/instance') %>
+
+   <table class="min-w-full">
+      <thead>
+         <tr class="text-white">
+            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">IP</th>
+            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Port</th>
+            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Primary</th>
+         </tr>
+      </thead>
+      <tbody class="divide-y divide-white/5">
+         <% ports.forEach(port => { %>
+          <tr>
+            <td class="px-4 py-3">
+               <div class="flex items-center gap-x-4">
+                 <div class="truncate text-sm font-medium leading-6 text-white"><%= IP  %></div>
+               </div>
+             </td>
+
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-x-4">
+                <div class="truncate text-sm font-medium leading-6 text-white"><%= port  %></div>
+              </div>
+            </td>
+            
+            <td class="px-4 py-3">
+              <div class="flex gap-x-3">
+               <button onclick="location.href='/instance/<%= id %>/network/primary/<%= port %>'" class="font-mono text-sm leading-6 bg-neutral-800 hover:bg-neutral-900 transition-all p-1 rounded-lg <%= (port.toString() === primary) ? 'text-white hover:text-slate-50 bg-sky-500 hover:bg-sky-400' : 'text-neutral-400' %>">
+                  Primary
+                </button>
+              </div>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+   </table>
+
+</main>
+<%- include('components/footer') %>
