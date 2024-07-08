@@ -28,8 +28,8 @@ async function isUserAuthorizedForContainer(userId, containerId) {
             console.error('No instances found for user:', userId);
             return false;
         }
-
-        return userInstances.some(instance => instance.ContainerId === containerId);
+        
+        return userInstances.some(instance => instance.ContainerId === containerId); // some node vers dont have .some - and .filter is more efficient, less cpu cycles wasted
     } catch (error) {
         console.error('Error fetching user instances:', error);
         return false;
@@ -103,17 +103,12 @@ router.get("/instance/:id/files", async (req, res) => {
         return res.redirect('../instances');
     }
 
-    let query;
-    if (req.query.path) {
-        query = '?path=' + req.query.path
-    } else {
-        query = ''
-    }
+    let query = req.query.path ? `?path=${req.query.path}` : '';
 
     if (instance.Node && instance.Node.address && instance.Node.port) {
         const RequestData = {
             method: 'get',
-            url: `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files${query}`,
+            url: `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files${query}`, // http...
             auth: {
                 username: 'Skyport',
                 password: instance.Node.apiKey
@@ -174,12 +169,7 @@ router.get("/instance/:id/files/view/:file", async (req, res) => {
         return res.redirect('../instances');
     }
 
-    let query;
-    if (req.query.path) {
-        query = '?path=' + req.query.path
-    } else {
-        query = ''
-    }
+    let query = req.query.path ? `?path=${req.query.path}` : '';
 
     if (instance.Node && instance.Node.address && instance.Node.port) {
         const RequestData = {
@@ -352,13 +342,7 @@ router.post("/instance/:id/files/folder/create/:foldername", async (req, res) =>
         return res.status(500).send('Invalid instance node configuration');
     }
 
-    let query;
-    if (req.query.path) {
-        query = '?path=' + req.query.path
-    } else {
-        query = ''
-    }
-
+    let query = req.query.path ? `?path=${req.query.path}` : '';
     const apiUrl = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/folders/create/${foldername}${query}`;
 
     const requestData = {
@@ -416,12 +400,7 @@ router.post("/instance/:id/files/create/:filename", async (req, res) => {
         return res.status(500).send('Invalid instance node configuration');
     }
 
-    let query;
-    if (req.query.path) {
-        query = '?path=' + req.query.path
-    } else {
-        query = ''
-    }
+    let query = req.query.path ? `?path=${req.query.path}` : '';
 
     const apiUrl = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/create/${filename}${query}`;
 
@@ -482,12 +461,7 @@ router.post("/instance/:id/files/edit/:filename", async (req, res) => {
         return res.status(500).send('Invalid instance node configuration');
     }
 
-    let query;
-    if (req.query.path) {
-        query = '?path=' + req.query.path
-    } else {
-        query = ''
-    }
+    let query = req.query.path ? `?path=${req.query.path}` : '';
 
     const apiUrl = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/edit/${filename}${query}`;
 
@@ -542,12 +516,7 @@ router.get("/instance/:id/files/delete/:filename", async (req, res) => {
         return res.status(500).send('Invalid instance node configuration');
     }
 
-    let query;
-    if (req.query.path) {
-        query = '?path=' + req.query.path
-    } else {
-        query = ''
-    }
+    let query = req.query.path ? `?path=${req.query.path}` : '';
 
     const apiUrl = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/delete/${filename}${query}`;
 
@@ -794,12 +763,7 @@ router.get("/instance/:id/ftp", async (req, res) => {
         return res.redirect('../../../../instances');
     }
 
-    let query;
-    if (req.query.path) {
-        query = '?path=' + req.query.path
-    } else {
-        query = ''
-    }
+    let query = req.query.path ? `?path=${req.query.path}` : '';
 
     if (instance.Node && instance.Node.address && instance.Node.port) {
         const RequestData = {

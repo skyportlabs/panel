@@ -91,19 +91,16 @@
       <div id="nodeForm" class="mt-6 px-8 w-full hidden">
         <form>
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
-         <input id="nodeName" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My node">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
-         <input id="nodeTags" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="Tag 1 - Tag 2 - Tag 3">
+         <input id="nodeName" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My Node">
 
          <label class="text-neutral-400 text-sm tracking-tight mb-2">RAM (GB):</label>
-         <input id="nodeRam" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8">
+         <input id="nodeRam" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="This is only for information purposes.">
 
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (GB):</label>
-         <input id="nodeDisk" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="40">
+         <input id="nodeDisk" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="This is only for information purposes.">
 
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Processor:</label>
-         <input id="nodeProcessor" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="AMD EPYC 9454 - 16 Threads">
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU:</label>
+         <input id="nodeProcessor" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="This is only for information purposes.">
 
          <label class="text-neutral-400 text-sm tracking-tight mb-2">IP Address:</label>
          <input id="nodeAddress" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="192.168.1.1 or my.hostnamehere.com">
@@ -114,6 +111,10 @@
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Access Key:</label>
          <input id="nodeApiKey" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="skyportd_xxxxxxxxxxxxxxxx">
     
+         <label class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
+         <div id="tagContainer" class="flex flex-wrap gap-2 mb-2"></div>
+         <input id="tagInput" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="Add a tag and press Enter">
+
          <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
       </form>
     </div>
@@ -133,38 +134,81 @@
   });
 </script>
 <script>
-document.getElementById('createNodeBtn').addEventListener('click', function() {
+function createBadge(text, container, inputField) {
+    const badge = document.createElement('span');
+    badge.className = 'bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300';
+    badge.textContent = text;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'ml-2 text-blue-800 dark:text-blue-300';
+    removeBtn.textContent = '×';
+    removeBtn.onclick = function() {
+      container.removeChild(badge);
+    };
+
+    badge.appendChild(removeBtn);
+    container.appendChild(badge);
+    inputField.value = '';
+  }
+
+  function setupBadgeInput(inputId, containerId, validator) {
+    const input = document.getElementById(inputId);
+    const container = document.getElementById(containerId);
+
+    input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const value = input.value.trim();
+        if (value !== '' && (!validator || validator(value))) {
+          createBadge(value, container, input);
+        } else {
+          alert('Invalid format. Ports should be like this: 8080:8080 [external:internal]. For example, if you wanted to assign 8080 to the internal port 2022, you could do: 8080:2022.');
+        }
+      }
+    });
+  }
+
+  setupBadgeInput('tagInput', 'tagContainer');
+
+  document.getElementById('createNodeBtn').addEventListener('click', function() {
     const name = document.getElementById('nodeName').value;
-    const tags = document.getElementById('nodeTags').value.split('-');
+    const tags = Array.from(document.getElementById('tagContainer').children).map(badge => badge.textContent.slice(0, -1).trim());
     const ram = document.getElementById('nodeRam').value;
     const disk = document.getElementById('nodeDisk').value;
     const processor = document.getElementById('nodeProcessor').value;
     const address = document.getElementById('nodeAddress').value;
-    const port = document.getElementById('nodePort').value;
     const apiKey = document.getElementById('nodeApiKey').value;
+    const port = document.getElementById('nodePort').value;
 
     const nodeData = {
-        name, tags, ram, disk, processor, address, port, apiKey
+      name,
+      tags: tags.join(' - '),
+      ram,
+      disk,
+      processor,
+      address,
+      port,
+      apiKey
     };
 
     fetch('/nodes/create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(nodeData)
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(nodeData)
     })
     .then(response => {
-        if (response.ok) {
-            return response.json();
-        }
-        throw new Error('Failed to create node');
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('Failed to create node');
     })
     .then(data => {
-        console.log('Node created:', data);
-        window.location.href = '../admin/nodes?err=SUCCESS'
+      console.log('Node created:', data);
+      window.location.href = '../admin/nodes?err=SUCCESS'
     })
     .catch(error => alert('Error creating node:', error));
-});
+  });
 </script>
 <%- include('../components/footer') %>
