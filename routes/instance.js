@@ -37,7 +37,7 @@ async function isUserAuthorizedForContainer(userId, containerId) {
 }
 
 function generatePortList(rangeStr) {
-    const [startPort, endPort] = rangeStr.split(':').map(Number);
+    const [startPort, endPort] = rangeStr.split(',').map(Number);
     const ports = [];
     for (let i = startPort; i <= endPort; i++) {
       ports.push(i);
@@ -885,7 +885,7 @@ router.get("/instance/:id/network", async (req, res) => {
 
     const ports = generatePortList(instance.ports);
 
-    res.render('network', { req, user: req.user, instance_name: instance.Name, ports, IP: instance.Node.address, id, primary: instance.primary, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, settings });
+    res.render('network', { req, user: req.user, instance_name: instance.Name, ports, IP: instance.Node.address, id, primary: instance.ports, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, settings });
 });
 
 
