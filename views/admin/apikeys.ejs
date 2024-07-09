@@ -1,0 +1,184 @@
+<%- include('../components/template') %>
+<main id="content">
+  <div class="bg-transparent">
+    <div class="sm:flex sm:items-center px-8 pt-4">
+      <div class="sm:flex-auto">
+        <h1 class="text-base font-semibold leading-6 text-white">API Keys</h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500">
+          A list of all the API Keys on the Skyport panel.
+        </p>
+      </div>
+      <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+        <button
+          id="createButton"
+          type="button"
+          class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Create new API Key
+        </button>
+      </div>
+    </div>
+    <div id="nodeTable" class="mt-6 w-full">
+      <table class="mt-6 w-full whitespace-nowrap text-left">
+        <colgroup>
+          <col class="w-full sm:w-4/12" />
+          <col class="lg:w-4/12" />
+          <col class="lg:w-2/12" />
+          <col class="lg:w-1/12" />
+          <col class="lg:w-1/12" />
+        </colgroup>
+        <thead class="border-b border-white/5 text-sm leading-6 text-white">
+          <tr>
+            <th
+              scope="col"
+              class="py-2 pl-0 pr-8 font-semibold sm:pl-80 lg:pl-8"
+            >
+              ID
+            </th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">
+              Key
+            </th>
+            <th
+              scope="col"
+              class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
+            >
+              Created At
+            </th>
+            <th
+              scope="col"
+              class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          <% apiKeys.forEach(function(key) { %>
+          <tr>
+            <td class="py-4 pl-4 pr-8 sm:pl-8 lg:pl-8">
+              <div class="flex items-center gap-x-4">
+                <div class="truncate text-sm font-medium leading-6 text-white">
+                  <%= key.id %>
+                </div>
+              </div>
+            </td>
+            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+              <div class="flex gap-x-3">
+                <div
+                  class="rounded-lg font-mono bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
+                >
+                  <%= key.key %>
+                </div>
+              </div>
+            </td>
+
+            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+                <div class="flex gap-x-3">
+                  <div
+                    class="rounded-lg bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
+                  >
+                    <%= key.createdAt %>
+                  </div>
+                </div>
+              </td>
+            <td
+              class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3"
+            >
+              <div class="inner">
+                <button
+                  id="removeButton"
+                  type="button"
+                  class="removeButton block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  data-keyid="<%= key.id %>"                
+                  >
+                  Remove
+                </button>
+              </div>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <div id="nodeForm" class="mt-6 px-8 w-full hidden">
+      <form>
+        <button
+          id="createNodeBtn"
+          type="button"
+          class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Click to confirm creation
+        </button>
+      </form>
+    </div>
+  </div>
+</main>
+<script>
+  document
+    .getElementById("createButton")
+    .addEventListener("click", function () {
+      var table = document.getElementById("nodeTable");
+      var form = document.getElementById("nodeForm");
+      if (table.style.display !== "none") {
+        table.style.display = "none";
+        form.style.display = "block";
+      } else {
+        table.style.display = "block";
+        form.style.display = "none";
+      }
+    });
+</script>
+<script>
+  document
+    .getElementById("createNodeBtn")
+    .addEventListener("click", function () {
+      fetch("/apikeys/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Failed to create API Key");
+        })
+        .then((data) => {
+          console.log("key created:", data);
+          alert("API key created successfully");
+          window.location.reload();
+        })
+        .catch((error) =>
+          alert("Error creating API Key: " + error.message)
+        );
+    });
+</script>
+<!-- remove -->
+<script>
+  document.querySelectorAll('.removeButton').forEach(button => {
+    button.addEventListener('click', function() {
+      const keyId = this.dataset.keyid; // Get the user ID from the button's data attribute
+
+      fetch('/apikeys/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ keyId }) // Send the user ID in the request body
+      })
+      .then(response => {
+        if (response.ok) {
+          // If deletion is successful, reload the page
+          window.location.reload();
+        } else {
+          throw new Error('Failed to delete key');
+        }
+      })
+      .catch(error => alert('Error deleting key: ' + error.message));
+    });
+  });
+</script>
+
+
+<%- include('../components/footer') %>
