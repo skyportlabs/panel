@@ -74,31 +74,6 @@ router.post('/api/users/create', validateApiKey, async (req, res) => {
   }
 });
 
-// Work but bugged by sessions.db 
-// router.delete('/api/users/delete', validateApiKey, async (req, res) => {
-//   try {
-//     const { username } = req.body;
-// 
-//     if (!username) {
-//       return res.status(400).json({ error: 'Username is required' });
-//     }
-// 
-//     let users = await db.get('users') || [];
-//     const userIndex = users.findIndex(user => user.username === username);
-// 
-//     if (userIndex === -1) {
-//       return res.status(404).json({ error: 'User not found' });
-//     }
-// 
-//     users.splice(userIndex, 1);
-//     await db.set('users', users);
-// 
-//     res.status(200).json({ message: 'User deleted successfully' });
-//   } catch (error) {
-//     res.status(500).json({ error: 'Failed to delete user' });
-//   }
-// });
-
 // Instance
 router.get('/api/instances', validateApiKey, async (req, res) => {
   try {
