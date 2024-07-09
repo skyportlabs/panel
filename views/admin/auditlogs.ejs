@@ -1,0 +1,48 @@
+<%- include('../components/template') %>
+<main id="content">
+  <div class="bg-transparent">
+    <div class="sm:flex sm:items-center px-8 pt-4">
+      <div class="sm:flex-auto">
+        <h1 class="text-base font-semibold leading-6 text-white">See Audit Logs</h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500">
+          Take a look at the audit logs to know who did what.
+        </p>
+        <div class="mt-4 text-neutral-500">
+          <div class="mt-8">
+            <% if (audits && audits.length > 0) { %>
+              <table class="min-w-full table-auto border-separate border border-white/5 shadow rounded-xl">
+                <thead>
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">User</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Action</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">IP Address</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-transparent divide-y divide-gray-200">
+                  <% audits.forEach(function(audit) { %>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                        <% if (audit.userId === req.user.userId) { %>
+                          You <span class="text-neutral-400">(<%= audit.userId %>)</span>
+                        <% } else { %>
+                          <%= audit.username %>  <span class="text-neutral-400">(<%= audit.userId %>)</span>
+                        <% } %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500"><%= audit.action %></td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500"><%= audit.ip %></td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500"><%= new Date(audit.timestamp).toLocaleString() %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            <% } else { %>
+              <p>No audit logs available.</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include('../components/footer') %>

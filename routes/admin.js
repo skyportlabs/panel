@@ -600,4 +600,15 @@ async function deleteInstance(instance) {
   }
 }
 
+router.get('/admin/auditlogs', isAdmin, async (req, res) => {
+  try {
+    let audits = await db.get('audits');
+    audits = audits ? JSON.parse(audits) : [];
+    res.render('admin/auditlogs', { req, user: req.user, audits, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  } catch (err) {
+    console.error('Error fetching audits:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 module.exports = router;
