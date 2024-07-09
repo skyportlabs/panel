@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
+const axios = require('axios');
 const { db } = require('../handlers/db.js');
 
 const saltRounds = 10;
@@ -30,6 +31,16 @@ async function validateApiKey(req, res, next) {
 }
 
 // Users
+router.get('/api/users', validateApiKey, async (req, res) => {
+  try {
+    const users = await db.get('users') || [];
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve user' });
+  }
+});
+
 router.post('/api/users/create', validateApiKey, async (req, res) => {
   try {
     const { username, password, admin } = req.body;
@@ -63,22 +74,191 @@ router.post('/api/users/create', validateApiKey, async (req, res) => {
   }
 });
 
-router.get('/api/users', validateApiKey, async (req, res) => {
-  try {
-    const users = await db.get('users') || [];
+// Work but bugged by sessions.db 
+// router.delete('/api/users/delete', validateApiKey, async (req, res) => {
+//   try {
+//     const { username } = req.body;
+// 
+//     if (!username) {
+//       return res.status(400).json({ error: 'Username is required' });
+//     }
+// 
+//     let users = await db.get('users') || [];
+//     const userIndex = users.findIndex(user => user.username === username);
+// 
+//     if (userIndex === -1) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
+// 
+//     users.splice(userIndex, 1);
+//     await db.set('users', users);
+// 
+//     res.status(200).json({ message: 'User deleted successfully' });
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to delete user' });
+//   }
+// });
 
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to retrieve user' });
-  }
-});
-
+// Instance
 router.get('/api/instances', validateApiKey, async (req, res) => {
   try {
     const instances = await db.get('instances') || [];
     res.json(instances);
   } catch (error) {
     res.status(500).json({ error: 'Failed to retrieve instances' });
+  }
+});
+
+router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
+  const {
+    image,
+    memory,
+    cpu,
+    ports,
+    nodeId,
+    name,
+    user,
+    primary,
+  } = req.body;
+
+  if (!image || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) {
+    return res.status(400).json({ error: 'Missing parameters' });
+  }
+
+  const NodeId = nodeId;
+  const Memory = parseInt(memory);
+  const Cpu = parseInt(cpu);
+  const ExposedPorts = {};
+  const PortBindings = {};
+  const PrimaryPort = primary;
+
+  let rawImage = await db.get('images');
+  rawImage = rawImage.find(i => i.Image === image);
+  const Env = rawImage ? rawImage.Env : undefined;
+  const Scripts = rawImage ? rawImage.Scripts : undefined;
+
+  const Node = await db.get(NodeId + '_node');
+  if (!Node) return res.status(400).json({ error: 'Invalid node' });
+
+  const RequestData = {
+    method: 'post',
+    url: `http://${Node.address}:${Node.port}/instances/create`,
+    auth: {
+      username: 'Skyport',
+      password: Node.apiKey
+    },
+    headers: { 
+      'Content-Type': 'application/json'
+    },
+    data: {
+      Name: name,
+      Image: image,
+      Env,
+      Scripts,
+      Memory,
+      Cpu,
+      ExposedPorts: {},
+      PortBindings: {}
+    }
+  };
+
+  // Process ports
+  if (ports) {
+    ports.split(',').forEach(portMapping => {
+      const [containerPort, hostPort] = portMapping.split(':');
+      const key = `${containerPort}/tcp`;
+      RequestData.data.ExposedPorts[key] = {};
+      RequestData.data.PortBindings[key] = [{ HostPort: hostPort }];
+    });
+  }
+
+  try {
+    const response = await axios(RequestData);
+
+    // Attempt to get the user's current server list
+    const userId = user;
+    const userServers = await db.get(`${userId}_instances`) || [];
+    const globalServers = await db.get('instances') || [];
+
+    // Append the new server ID to the user's server list
+    userServers.push({
+      Name: name,
+      Node,
+      User: userId,
+      ContainerId: response.data.containerId,
+      VolumeId: response.data.volumeId,
+      Memory,
+      Cpu,
+      Ports: ports,
+      Primary: PrimaryPort,
+      ExposedPorts,
+      PortBindings
+    });
+
+    globalServers.push({
+      Name: name,
+      Node,
+      User: userId,
+      ContainerId: response.data.containerId,
+      VolumeId: response.data.volumeId,
+      Memory,
+      Cpu,
+      Ports: ports,
+      Primary: PrimaryPort,
+      ExposedPorts,
+      PortBindings
+    });
+
+    // Save the updated list back to the database
+    await db.set(`${userId}_instances`, userServers);
+    await db.set(`instances`, globalServers);
+
+    await db.set(`${response.data.containerId}_instance`, {
+      Name: name,
+      Node,
+      Image: image,
+      User: userId,
+      ContainerId: response.data.containerId,
+      VolumeId: response.data.volumeId,
+      Memory,
+      Cpu,
+      Ports: ports,
+      Primary: PrimaryPort,
+      ExposedPorts,
+      PortBindings
+    });
+
+    res.status(201).json({
+      Message: 'Container created successfully and added to user\'s servers',
+      ContainerId: response.data.containerId,
+      VolumeId: response.data.volumeId
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      error: 'Failed to create container',
+      details: error.response ? error.response.data : 'No additional error info'
+    });
+  }
+});
+
+router.delete('/api/instance/delete', validateApiKey, async (req, res) => {
+  const { id } = req.body;
+  
+  try {
+    if (!id) {
+      return res.status(400).json({ error: 'Missing ID parameter' });
+    }
+    
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+      return res.status(400).json({ error: 'Instance not found' });
+    }
+    
+    await deleteInstance(instance);
+    res.status(201).json({ Message: 'The instance has successfully been deleted.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete instances' });
   }
 });
 
@@ -102,5 +282,95 @@ router.get('/api/nodes', validateApiKey, async (req, res) => {
     res.status(500).json({ error: 'Failed to retrieve nodes' });
   }
 });
+
+router.post('/api/nodes/create', validateApiKey, async (req, res) => {
+  const node = {
+    id: uuidv4(),
+    name: req.body.name,
+    tags: req.body.tags,
+    ram: req.body.ram,
+    disk: req.body.disk,
+    processor: req.body.processor,
+    address: req.body.address,
+    port: req.body.port,
+    apiKey: req.body.apiKey,
+    status: 'Unknown' // Default status
+  };
+
+  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.port || !req.body.apiKey) {
+    return res.status(400).json({ error: 'Missing parameters' });
+  }
+
+  await db.set(node.id + '_node', node); // Save the initial node info
+  const updatedNode = await checkNodeStatus(node); // Check and update status
+
+  const nodes = await db.get('nodes') || [];
+  nodes.push(node.id);
+  await db.set('nodes', nodes);
+
+  res.status(201).json({ Message: updatedNode });
+});
+
+// Helper function to delete an instance
+async function deleteInstance(instance) {
+  try {
+    await axios.get(`http://Skyport:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}/delete`);
+    
+    // Update user's instances
+    let userInstances = await db.get(instance.User + '_instances') || [];
+    userInstances = userInstances.filter(obj => obj.ContainerId !== instance.ContainerId);
+    await db.set(instance.User + '_instances', userInstances);
+    
+    // Update global instances
+    let globalInstances = await db.get('instances') || [];
+    globalInstances = globalInstances.filter(obj => obj.ContainerId !== instance.ContainerId);
+    await db.set('instances', globalInstances);
+    
+    // Delete instance-specific data
+    await db.delete(instance.ContainerId + '_instance');
+  } catch (error) {
+    console.error(`Error deleting instance ${instance.ContainerId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Checks the operational status of a node by making an HTTP request to its API.
+ * Updates the node's status based on the response or sets it as 'Offline' if the request fails.
+ * This status check and update are persisted in the database.
+ *
+ * @param {Object} node - The node object containing details such as address, port, and API key.
+ * @returns {Promise<Object>} Returns the updated node object after attempting to verify its status.
+ */
+async function checkNodeStatus(node) {
+  try {
+    const RequestData = {
+      method: 'get',
+      url: 'http://' + node.address + ':' + node.port + '/',
+      auth: {
+        username: 'Skyport',
+        password: node.apiKey
+      },
+      headers: { 
+        'Content-Type': 'application/json'
+      }
+    };
+    const response = await axios(RequestData);
+    const { versionFamily, versionRelease, online, remote, docker } = response.data;
+
+    node.status = 'Online';
+    node.versionFamily = versionFamily;
+    node.versionRelease = versionRelease;
+    node.remote = remote;
+    node.docker = docker;
+
+    await db.set(node.id + '_node', node); // Update node info with new details
+    return node;
+  } catch (error) {
+    node.status = 'Offline';
+    await db.set(node.id + '_node', node); // Update node as offline if there's an error
+    return node;
+  }
+}
 
 module.exports = router;
