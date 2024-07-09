@@ -318,6 +318,7 @@ if (userExists) {
 let users = await db.get('users') || [];
 users.push(user);
 await db.set('users', users);
+logAudit(req.user.userId, req.user.username, 'user:create', req.ip);
 
 console.log(user)
 
@@ -336,6 +337,7 @@ router.delete('/user/delete', isAdmin, async (req, res) => {
 
   users.splice(userIndex, 1);
   await db.set('users', users);
+  logAudit(req.user.userId, req.user.username, 'user:delete', req.ip);
   res.status(204).send();
 });
 
@@ -399,6 +401,7 @@ router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
   const name = req.body.name;
   try {
   await db.set('name', [name]);
+  logAudit(req.user.userId, req.user.username, 'name:edit', req.ip);
   res.redirect('/admin/settings?changednameto=' + name);
 } catch (err) {
   console.error(err);
@@ -442,6 +445,7 @@ router.post('/admin/settings/change/logo', isAdmin, upload.single('logo'), async
         fs.unlinkSync(logoPath);
       }
       await db.set('logo', false);
+      logAudit(req.user.userId, req.user.username, 'logo:edit', req.ip);
       res.redirect('/admin/settings');
     } else {
       res.status(400).send('Invalid request');
