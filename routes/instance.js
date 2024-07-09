@@ -60,9 +60,13 @@ router.get("/instance/:id", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
+    const config = require('../config.json');
+    const port = config.port;
+    const domain = config.domain;
+
     if (!instance || !id) return res.redirect('../instances')
 
-    res.render('instance', { req, instance, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    res.render('instance', { req, instance, port, domain, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 /**

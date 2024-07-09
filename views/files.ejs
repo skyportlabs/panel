@@ -1,85 +1,86 @@
 <%- include('components/template') %>
 <main id="content">
-<%
-function formatLastUpdated(dateString) {
-   const date = new Date(dateString);
-   const now = new Date();
-   const diffTime = Math.abs(now - date);
-   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-   if (diffDays > 30) {
-     return date.toLocaleString('en-US', { 
-       year: 'numeric', 
-       month: 'short', 
-       day: 'numeric', 
-       hour: 'numeric', 
-       minute: '2-digit', 
-       hour12: true 
-     });
-   } else {
-     return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
-   }
- }
- %>
- <%
- function getFileIcon(purpose) {
-   const icons = {
-     programming: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
-      <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v11.5A2.25 2.25 0 0 0 4.25 18h11.5A2.25 2.25 0 0 0 18 15.75V4.25A2.25 2.25 0 0 0 15.75 2H4.25Zm4.03 6.28a.75.75 0 0 0-1.06-1.06L4.97 9.47a.75.75 0 0 0 0 1.06l2.25 2.25a.75.75 0 0 0 1.06-1.06L6.56 10l1.72-1.72Zm4.5-1.06a.75.75 0 1 0-1.06 1.06L13.44 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06l2.25-2.25a.75.75 0 0 0 0-1.06l-2.25-2.25Z" clip-rule="evenodd" />
-    </svg>
-    `,
-     webDevelopment: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
-      <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v11.5A2.25 2.25 0 0 0 4.25 18h11.5A2.25 2.25 0 0 0 18 15.75V4.25A2.25 2.25 0 0 0 15.75 2H4.25Zm4.03 6.28a.75.75 0 0 0-1.06-1.06L4.97 9.47a.75.75 0 0 0 0 1.06l2.25 2.25a.75.75 0 0 0 1.06-1.06L6.56 10l1.72-1.72Zm4.5-1.06a.75.75 0 1 0-1.06 1.06L13.44 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06l2.25-2.25a.75.75 0 0 0 0-1.06l-2.25-2.25Z" clip-rule="evenodd" />
-    </svg>
-    `,
-     textDocument: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
-      <path fill-rule="evenodd" d="M4.5 2A1.5 1.5 0 0 0 3 3.5v13A1.5 1.5 0 0 0 4.5 18h11a1.5 1.5 0 0 0 1.5-1.5V7.621a1.5 1.5 0 0 0-.44-1.06l-4.12-4.122A1.5 1.5 0 0 0 11.378 2H4.5Zm2.25 8.5a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Zm0 3a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />
-     </svg>`,
-     other: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-neutral-400">
-      <path fill-rule="evenodd" d="M4.25 12a.75.75 0 0 1 .75-.75h14a.75.75 0 0 1 0 1.5H5a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
-    </svg>
-    `
-   };
- 
-   return icons[purpose] || icons.other;
- }
- %>
-    <div class="bg-transparent">
-        <div class="sm:flex sm:items-center px-8 pt-4">
-           <div class="sm:flex-auto">
-              <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
-              <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
-           </div>
-           <% let query = req.query.path ? '?path=' + req.query.path : ''; %>
-           <div class="mt-4 sm:ml-16 sm:mt-0 flex space-x-4">
-              <a href="/instance/<%= req.params.id %>/files/create<%= query %>" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Create File
-              </a>
-              <a href="/instance/<%= req.params.id %>/files/folder/create<%= query %>" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Create Folder
-             </a>
-             <button id="uploadBtn" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-               Upload File(s)
-             </button>
-             <input type="file" id="fileInput" multiple style="display: none;">
-           </div>
-        </div>
-    </div>
-    <%- include('components/instance') %>
-    <div class="px-4 sm:px-6 lg:px-8">
+   <%
+      function formatLastUpdated(dateString) {
+         const date = new Date(dateString);
+         const now = new Date();
+         const diffTime = Math.abs(now - date);
+         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+         if (diffDays > 30) {
+           return date.toLocaleString('en-US', { 
+             year: 'numeric', 
+             month: 'short', 
+             day: 'numeric', 
+             hour: 'numeric', 
+             minute: '2-digit', 
+             hour12: true 
+           });
+         } else {
+           return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+         }
+       }
+       %>
+   <%
+      function getFileIcon(purpose) {
+        const icons = {
+          programming: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+           <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v11.5A2.25 2.25 0 0 0 4.25 18h11.5A2.25 2.25 0 0 0 18 15.75V4.25A2.25 2.25 0 0 0 15.75 2H4.25Zm4.03 6.28a.75.75 0 0 0-1.06-1.06L4.97 9.47a.75.75 0 0 0 0 1.06l2.25 2.25a.75.75 0 0 0 1.06-1.06L6.56 10l1.72-1.72Zm4.5-1.06a.75.75 0 1 0-1.06 1.06L13.44 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06l2.25-2.25a.75.75 0 0 0 0-1.06l-2.25-2.25Z" clip-rule="evenodd" />
+         </svg>
+         `,
+          webDevelopment: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+           <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v11.5A2.25 2.25 0 0 0 4.25 18h11.5A2.25 2.25 0 0 0 18 15.75V4.25A2.25 2.25 0 0 0 15.75 2H4.25Zm4.03 6.28a.75.75 0 0 0-1.06-1.06L4.97 9.47a.75.75 0 0 0 0 1.06l2.25 2.25a.75.75 0 0 0 1.06-1.06L6.56 10l1.72-1.72Zm4.5-1.06a.75.75 0 1 0-1.06 1.06L13.44 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06l2.25-2.25a.75.75 0 0 0 0-1.06l-2.25-2.25Z" clip-rule="evenodd" />
+         </svg>
+         `,
+          textDocument: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+           <path fill-rule="evenodd" d="M4.5 2A1.5 1.5 0 0 0 3 3.5v13A1.5 1.5 0 0 0 4.5 18h11a1.5 1.5 0 0 0 1.5-1.5V7.621a1.5 1.5 0 0 0-.44-1.06l-4.12-4.122A1.5 1.5 0 0 0 11.378 2H4.5Zm2.25 8.5a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Zm0 3a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />
+          </svg>`,
+          other: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 text-neutral-400">
+           <path fill-rule="evenodd" d="M4.25 12a.75.75 0 0 1 .75-.75h14a.75.75 0 0 1 0 1.5H5a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+         </svg>
+         `
+        };
+      
+        return icons[purpose] || icons.other;
+      }
+      %>
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+            <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
+            <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
+         </div>
+         <% let query = req.query.path ? '?path=' + req.query.path : ''; %>
+         <div class="mt-4 sm:ml-16 sm:mt-0 flex space-x-4">
+            <input type="text" id="searchInput" placeholder="Search files..." class="px-3 py-2 bg-transparent border border-white/5 shadow-lg focus:scale-105 transition rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-600 focus:ring-neutral-600 mr-2 w-64">
+            <a href="/instance/<%= req.params.id %>/files/create<%= query %>" class="block rounded-lg bg-white px-4 py-3 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            Create File
+            </a>
+            <a href="/instance/<%= req.params.id %>/files/folder/create<%= query %>" class="block rounded-lg bg-white px-4 py-3 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            Create Folder
+            </a>
+            <button id="uploadBtn" class="block rounded-lg bg-white px-4 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            Upload File(s)
+            </button>
+            <input type="file" id="fileInput" multiple style="display: none;">
+         </div>
+      </div>
+   </div>
+   <%- include('components/instance') %>
+   <div class="px-4 sm:px-6 lg:px-8">
       <div class="flex">
          <div class="flex-grow">
-           <h1 class="text-white text-sm"><a class="text-neutral-300 hover:text-neutral-200 transition" href="./files">/app/data/</a><%= req.query.path %></h1>
+            <h1 class="text-white text-sm"><a class="text-neutral-300 hover:text-neutral-200 transition" href="./files">/app/data/</a><%= req.query.path %></h1>
          </div>
          <p id="diskUsage" class="text-sm text-neutral-400"></p>
-       </div>
-       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-6">
-       <% files.filter(file => file.isDirectory).forEach(function(directory) { %>
+      </div>
+      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-6">
+         <% files.filter(file => file.isDirectory).forEach(function(directory) { %>
          <% let currentPath; %>
          <% if (req.query.path) { %>
-            <% currentPath = req.query.path + '/' %>
+         <% currentPath = req.query.path + '/' %>
          <% } else { %>
-            <% currentPath = '' %>
+         <% currentPath = '' %>
          <% } %>
          <a href="/instance/<%= req.params.id %>/files?path=<%= currentPath %><%= directory.name %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-3 lg:p-5">
             <div class="lg:flex lg:items-center lg:justify-between">
@@ -87,17 +88,20 @@ function formatLastUpdated(dateString) {
                   <h2 class="text-md font-medium text-white tracking-tight">
                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mb-0.5 inline-flex mr-1.5">
                         <path d="M3.75 3A1.75 1.75 0 0 0 2 4.75v3.26a3.235 3.235 0 0 1 1.75-.51h12.5c.644 0 1.245.188 1.75.51V6.75A1.75 1.75 0 0 0 16.25 5h-4.836a.25.25 0 0 1-.177-.073L9.823 3.513A1.75 1.75 0 0 0 8.586 3H3.75ZM3.75 9A1.75 1.75 0 0 0 2 10.75v4.5c0 .966.784 1.75 1.75 1.75h12.5A1.75 1.75 0 0 0 18 15.25v-4.5A1.75 1.75 0 0 0 16.25 9H3.75Z" />
-                      </svg>
-                      <%= directory.name %>
+                     </svg>
+                     <%= directory.name %>
                   </h2>
                </div>
             </div>
          </a>
-       <% }); %>
-       </dl>
-       <table class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl">
+         <% }); %>
+      </dl>
+      <table class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl">
          <thead class="text-white">
             <tr>
+               <th class="px-6 py-3 text-left">
+                  <input type="checkbox" id="selectAll" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/10 border border-white/15 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox">
+               </th>
                <th class="px-6 py-3 text-left">File Name</th>
                <th class="px-6 py-3 text-left">Size</th>
                <th class="px-6 py-3 text-left">Last Updated</th>
@@ -105,217 +109,367 @@ function formatLastUpdated(dateString) {
             </tr>
          </thead>
          <tbody>
-           <% files.filter(file => !file.isDirectory).forEach(function(file) { %>
-              <% let extension; %>
-              <% if (req.query.path) { %>
-                 <% extension = '?path=' + req.query.path %>
-              <% } else { %>
-                 <% extension = '' %>
-              <% } %>
-             <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+            <% files.filter(file => !file.isDirectory).forEach(function(file) { %>
+            <% let extension; %>
+            <% if (req.query.path) { %>
+            <% extension = '?path=' + req.query.path %>
+            <% } else { %>
+            <% extension = '' %>
+            <% } %>
+            <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
+                  <input type="checkbox" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/5 border border-white/10 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox" data-filename="<%= file.name %>">
+               </td>
                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
                   <a href="/instance/<%= req.params.id %>/files/view/<%= file.name %><%= extension %>" class="flex items-center">
-                     <span class="mr-2">
-                        <%- getFileIcon(file.purpose) %>
-                     </span>
-                     <%= file.name %>
+                  <span class="mr-2">
+                  <%- getFileIcon(file.purpose) %>
+                  </span>
+                  <%= file.name %>
                   </a>
                </td>
                <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
-                 <%= file.size %>
+                  <%= file.size %>
                </td>
                <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
-                 <%= formatLastUpdated(file.lastUpdated) %>
+                  <%= formatLastUpdated(file.lastUpdated) %>
                </td>
-               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-none">
-                  <button onclick="openRenameModal('<%= file.name %>', '<%= extension %>')" class="text-neutral-400 hover:text-white transition mr-4">Rename</button>
-                 <button onclick="openDeleteModal('<%= file.name %>', '<%= extension %>')" class="text-red-500 hover:text-red-400 transition">Delete</button>
+               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-none relative">
+                  <button onclick="toggleDropdown(event, '<%= file.name %>')" class="text-neutral-400 hover:text-white transition">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                     </svg>
+                  </button>
+                  <div id="dropdown-<%= file.name %>" class="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 transform opacity-0 scale-95 transition-all duration-200 ease-out pointer-events-none">
+                     <div class="p-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                        <a href="#" onclick="openRenameModal('<%= file.name %>', '<%= extension %>')" class="transition rounded-lg block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 text-left" role="menuitem">Rename</a>
+                        <a href="#" onclick="openDeleteModal('<%= file.name %>', '<%= extension %>')" class="transition rounded-lg block px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left" role="menuitem">Delete</a>
+                     </div>
+                  </div>
                </td>
-             </tr>
-           <% }); %>
+            </tr>
+            <% }); %>
          </tbody>
       </table>
-    </div>
-
-    <!-- End of files -->
-      <!-- Delete Confirmation Modal -->
-        <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-         <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
-           <h2 class="text-2xl font-semibold mb-4 text-gray-800">Confirm Deletion</h2>
-           <p id="deleteMessage" class="mb-6 text-gray-600"></p>
-           <div class="flex justify-end space-x-4">
-             <button onclick="closeDeleteModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Cancel</button>
-             <button id="confirmDelete" class="px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Delete</button>
-           </div>
+      <!-- prevent action bar from hiding files -->
+      <div class="pb-12"></div>
+   </div>
+   <!-- End of files -->
+   <!-- Floating Action Bar -->
+   <div id="floatingActionBar" class="fixed bottom-0 left-0 right-0 bg-neutral-900/70 backdrop-blur text-white py-4 px-6 transform translate-y-full transition-transform duration-300 ease-in-out flex justify-between items-center">
+      <span id="selectedFilesCount">0 files selected</span>
+      <button id="massDeleteBtn" class="bg-red-500 hover:bg-red-600 text-white font-normal py-2 px-4 rounded-lg transition">
+      Delete Selected
+      </button>
+   </div>
+   <!-- Mass Delete Confirmation Modal -->
+   <div id="massDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+      <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+         <h2 class="text-2xl font-semibold mb-4 text-gray-800">Confirm Mass Deletion</h2>
+         <p id="massDeleteMessage" class="mb-6 text-gray-600"></p>
+         <div class="flex justify-end space-x-4">
+            <button onclick="closeMassDeleteModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+            <button id="confirmMassDelete" class="px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Delete</button>
          </div>
       </div>
-
-      <!-- Rename file -->
-      <div id="renameModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-         <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
-           <h2 class="text-2xl font-semibold mb-1 text-gray-800">Rename File</h2>
-           <p class="mb-6 text-gray-600">Please choose a new name for this file.</p>
-           <input type="text" id="newFileName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500 transition mb-4" placeholder="Enter new file name">
-           <p id="extensionWarning" class="text-yellow-600 mb-4 hidden">Warning: Changing the file extension may affect file functionality.</p>
-           <div class="flex justify-end space-x-4">
-             <button onclick="closeRenameModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Cancel</button>
-             <button onclick="confirmRename()" class="px-5 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition">Rename</button>
-           </div>
-         </div>
-       </div>
-
-<!-- File Upload Modal -->
-<div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-   <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
-     <h2 class="text-2xl font-semibold mb-4 text-gray-800">Uploading File(s)</h2>
-     <div class="mb-4">
-       <div class="w-full bg-gray-200 rounded-full h-2.5">
-         <div id="uploadProgress" class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>
-       </div>
-     </div>
-     <p id="uploadStatus" class="text-center text-gray-600">Preparing upload...</p>
    </div>
- </div>
-    <script>
-document.getElementById('uploadBtn').addEventListener('click', function() {
-    document.getElementById('fileInput').click();
-});
-
-document.getElementById('fileInput').addEventListener('change', function(event) {
-    const files = event.target.files;
-    if (files.length === 0) return;
-
-    const formData = new FormData();
-    Array.from(files).forEach(file => formData.append('files', file));
-
-    // Open the upload modal
-    const modal = document.getElementById('uploadModal');
-    modal.classList.remove('opacity-0', 'pointer-events-none');
-    modal.querySelector('div').classList.remove('scale-95');
-    modal.querySelector('div').classList.add('scale-100');
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/instance/<%= req.params.id %>/files/upload<%= query %>', true);
-    xhr.upload.onprogress = function(e) {
-        if (e.lengthComputable) {
-            const percentComplete = (e.loaded / e.total) * 100;
-            document.getElementById('uploadProgress').style.width = percentComplete + '%';
-            document.getElementById('uploadStatus').textContent = 'Uploading: ' + Math.floor(percentComplete) + '%';
-        }
-    };
-    xhr.onload = function() {
-        if (xhr.status == 200) {
-            document.getElementById('uploadStatus').textContent = 'Upload complete!';
-            setTimeout(() => {
-                // Close the modal
-                modal.classList.add('opacity-0', 'pointer-events-none');
-                modal.querySelector('div').classList.remove('scale-100');
-                modal.querySelector('div').classList.add('scale-95');
-                // Reload the page
-                window.location.reload();
-            }, 1000);
-        } else {
-            document.getElementById('uploadStatus').textContent = 'Upload failed. Server responded with status ' + xhr.status;
-            setTimeout(() => {
-                // Close the modal
-                modal.classList.add('opacity-0', 'pointer-events-none');
-                modal.querySelector('div').classList.remove('scale-100');
-                modal.querySelector('div').classList.add('scale-95');
-            }, 3000);
-        }
-    };
-    xhr.send(formData);
-    document.getElementById('fileInput').value = ''; // Reset file input
-});
-
-      let deleteUrl = '';
-
-function openDeleteModal(fileName, extension) {
-  const modal = document.getElementById('deleteModal');
-  const message = document.getElementById('deleteMessage');
-  deleteUrl = `/instance/<%= req.params.id %>/files/delete/${fileName}${extension}`;
-  
-  message.textContent = `Are you sure you want to delete ${fileName}? This is a permanent action and cannot be reversed.`;
-  
-  modal.classList.remove('opacity-0', 'pointer-events-none');
-  modal.querySelector('div').classList.remove('scale-95');
-  modal.querySelector('div').classList.add('scale-100');
-}
-
-function closeDeleteModal() {
-  const modal = document.getElementById('deleteModal');
-  modal.classList.add('opacity-0', 'pointer-events-none');
-  modal.querySelector('div').classList.remove('scale-100');
-  modal.querySelector('div').classList.add('scale-95');
-}
-
-document.getElementById('confirmDelete').addEventListener('click', function() {
-  window.location.href = deleteUrl;
-});
-
-let currentFileName = '';
-      let currentExtension = '';
-
-      function openRenameModal(fileName, extension) {
-        const modal = document.getElementById('renameModal');
-        const input = document.getElementById('newFileName');
-        currentFileName = fileName;
-        currentExtension = extension;
+   <!-- Delete Confirmation Modal -->
+   <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+      <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+         <h2 class="text-2xl font-semibold mb-4 text-gray-800">Confirm Deletion</h2>
+         <p id="deleteMessage" class="mb-6 text-gray-600"></p>
+         <div class="flex justify-end space-x-4">
+            <button onclick="closeDeleteModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+            <button id="confirmDelete" class="px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Delete</button>
+         </div>
+      </div>
+   </div>
+   <!-- Rename file -->
+   <div id="renameModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+      <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+         <h2 class="text-2xl font-semibold mb-1 text-gray-800">Rename File</h2>
+         <p class="mb-6 text-gray-600">Please choose a new name for this file.</p>
+         <input type="text" id="newFileName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500 transition mb-4" placeholder="Enter new file name">
+         <p id="extensionWarning" class="text-yellow-600 mb-4 hidden">Warning: Changing the file extension may affect file functionality.</p>
+         <div class="flex justify-end space-x-4">
+            <button onclick="closeRenameModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+            <button onclick="confirmRename()" class="px-5 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition">Rename</button>
+         </div>
+      </div>
+   </div>
+   <!-- File Upload Modal -->
+   <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+      <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+         <h2 class="text-2xl font-semibold mb-4 text-gray-800">Uploading File(s)</h2>
+         <div class="mb-4">
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+               <div id="uploadProgress" class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+         </div>
+         <p id="uploadStatus" class="text-center text-gray-600">Preparing upload...</p>
+      </div>
+   </div>
+   <script>
+      function toggleDropdown(event, fileName) {
+        event.stopPropagation();
+        const dropdown = document.getElementById(`dropdown-${fileName}`);
         
-        input.value = fileName;
+        // Close other open dropdowns with animation
+        document.querySelectorAll('[id^="dropdown-"]').forEach((el) => {
+          if (el.id !== `dropdown-${fileName}` && !el.classList.contains('pointer-events-none')) {
+            closeDropdown(el);
+          }
+        });
+      
+        // Toggle the clicked dropdown
+        if (dropdown.classList.contains('pointer-events-none')) {
+          openDropdown(dropdown);
+        } else {
+          closeDropdown(dropdown);
+        }
+      }
+      
+      function openDropdown(dropdown) {
+        dropdown.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+        dropdown.classList.add('opacity-100', 'scale-100');
+      }
+      
+      function closeDropdown(dropdown) {
+        dropdown.classList.remove('opacity-100', 'scale-100');
+        dropdown.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+      }
+      
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('td')) {
+          document.querySelectorAll('[id^="dropdown-"]').forEach((dropdown) => {
+            if (!dropdown.classList.contains('pointer-events-none')) {
+              closeDropdown(dropdown);
+            }
+          });
+        }
+      });
+      
+      const searchInput = document.getElementById('searchInput');
+      const fileRows = document.querySelectorAll('tbody tr');
+      
+      searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        fileRows.forEach(row => {
+          const fileName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+          if (fileName.includes(searchTerm)) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      });
+      
+      document.getElementById('uploadBtn').addEventListener('click', function() {
+          document.getElementById('fileInput').click();
+      });
+      
+      document.getElementById('fileInput').addEventListener('change', function(event) {
+          const files = event.target.files;
+          if (files.length === 0) return;
+      
+          const formData = new FormData();
+          Array.from(files).forEach(file => formData.append('files', file));
+      
+          // Open the upload modal
+          const modal = document.getElementById('uploadModal');
+          modal.classList.remove('opacity-0', 'pointer-events-none');
+          modal.querySelector('div').classList.remove('scale-95');
+          modal.querySelector('div').classList.add('scale-100');
+      
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/instance/<%= req.params.id %>/files/upload<%= query %>', true);
+          xhr.upload.onprogress = function(e) {
+              if (e.lengthComputable) {
+                  const percentComplete = (e.loaded / e.total) * 100;
+                  document.getElementById('uploadProgress').style.width = percentComplete + '%';
+                  document.getElementById('uploadStatus').textContent = 'Uploading: ' + Math.floor(percentComplete) + '%';
+              }
+          };
+          xhr.onload = function() {
+              if (xhr.status == 200) {
+                  document.getElementById('uploadStatus').textContent = 'Upload complete!';
+                  setTimeout(() => {
+                      // Close the modal
+                      modal.classList.add('opacity-0', 'pointer-events-none');
+                      modal.querySelector('div').classList.remove('scale-100');
+                      modal.querySelector('div').classList.add('scale-95');
+                      // Reload the page
+                      window.location.reload();
+                  }, 1000);
+              } else {
+                  document.getElementById('uploadStatus').textContent = 'Upload failed. Server responded with status ' + xhr.status;
+                  setTimeout(() => {
+                      // Close the modal
+                      modal.classList.add('opacity-0', 'pointer-events-none');
+                      modal.querySelector('div').classList.remove('scale-100');
+                      modal.querySelector('div').classList.add('scale-95');
+                  }, 3000);
+              }
+          };
+          xhr.send(formData);
+          document.getElementById('fileInput').value = ''; // Reset file input
+      });
+      
+      let deleteUrl = '';
+      
+      function openDeleteModal(fileName, extension) {
+        const modal = document.getElementById('deleteModal');
+        const message = document.getElementById('deleteMessage');
+        deleteUrl = `/instance/<%= req.params.id %>/files/delete/${fileName}${extension}`;
+        
+        message.textContent = `Are you sure you want to delete ${fileName}? This is a permanent action and cannot be reversed.`;
         
         modal.classList.remove('opacity-0', 'pointer-events-none');
         modal.querySelector('div').classList.remove('scale-95');
         modal.querySelector('div').classList.add('scale-100');
-
-        input.focus();
-        input.setSelectionRange(0, fileName.lastIndexOf('.'));
       }
-
-      function closeRenameModal() {
-        const modal = document.getElementById('renameModal');
+      
+      function closeDeleteModal() {
+        const modal = document.getElementById('deleteModal');
         modal.classList.add('opacity-0', 'pointer-events-none');
         modal.querySelector('div').classList.remove('scale-100');
         modal.querySelector('div').classList.add('scale-95');
       }
-
-      function confirmRename() {
-        const newFileName = document.getElementById('newFileName').value.trim();
-        if (newFileName && newFileName !== currentFileName) {
-          const encodedNewFileName = encodeURIComponent(newFileName);
-          const renameUrl = `/instance/<%= req.params.id %>/files/rename/${currentFileName}/${encodedNewFileName}${currentExtension}`;
-          window.location.href = renameUrl;
-        } else {
-          closeRenameModal();
-        }
-      }
-
-      document.getElementById('newFileName').addEventListener('input', function(event) {
-        const warningElement = document.getElementById('extensionWarning');
-        const newExtension = event.target.value.split('.').pop();
-        const originalExtension = currentFileName.split('.').pop();
-        
-        if (newExtension !== originalExtension) {
-          warningElement.classList.remove('hidden');
-        } else {
-          warningElement.classList.add('hidden');
-        }
+      
+      document.getElementById('confirmDelete').addEventListener('click', function() {
+        window.location.href = deleteUrl;
       });
-      </script>
-<script>
-function getCookie(name) {
-    let cookies = document.cookie.split(';');
-    for(let i = 0; i < cookies.length; i++) {
-        let cookie = cookies[i].trim();
-        if (cookie.indexOf(name + "=") === 0) {
-            return cookie.substring(name.length + 1);
-        }
-    }
-    return "";
-}
-
-let disk = getCookie("disk");
-document.getElementById('diskUsage').textContent = disk + ' disk usage';
-</script>
+      
+      let currentFileName = '';
+            let currentExtension = '';
+      
+            function openRenameModal(fileName, extension) {
+              const modal = document.getElementById('renameModal');
+              const input = document.getElementById('newFileName');
+              currentFileName = fileName;
+              currentExtension = extension;
+              
+              input.value = fileName;
+              
+              modal.classList.remove('opacity-0', 'pointer-events-none');
+              modal.querySelector('div').classList.remove('scale-95');
+              modal.querySelector('div').classList.add('scale-100');
+      
+              input.focus();
+              input.setSelectionRange(0, fileName.lastIndexOf('.'));
+            }
+      
+            function closeRenameModal() {
+              const modal = document.getElementById('renameModal');
+              modal.classList.add('opacity-0', 'pointer-events-none');
+              modal.querySelector('div').classList.remove('scale-100');
+              modal.querySelector('div').classList.add('scale-95');
+            }
+      
+            function confirmRename() {
+              const newFileName = document.getElementById('newFileName').value.trim();
+              if (newFileName && newFileName !== currentFileName) {
+                const encodedNewFileName = encodeURIComponent(newFileName);
+                const renameUrl = `/instance/<%= req.params.id %>/files/rename/${currentFileName}/${encodedNewFileName}${currentExtension}`;
+                window.location.href = renameUrl;
+              } else {
+                closeRenameModal();
+              }
+            }
+      
+            document.getElementById('newFileName').addEventListener('input', function(event) {
+              const warningElement = document.getElementById('extensionWarning');
+              const newExtension = event.target.value.split('.').pop();
+              const originalExtension = currentFileName.split('.').pop();
+              
+              if (newExtension !== originalExtension) {
+                warningElement.classList.remove('hidden');
+              } else {
+                warningElement.classList.add('hidden');
+              }
+            });
+      
+            // Mass actions functionality
+          const selectAllCheckbox = document.getElementById('selectAll');
+          const fileCheckboxes = document.querySelectorAll('.file-checkbox');
+          const floatingActionBar = document.getElementById('floatingActionBar');
+          const selectedFilesCount = document.getElementById('selectedFilesCount');
+          const massDeleteBtn = document.getElementById('massDeleteBtn');
+          const massDeleteModal = document.getElementById('massDeleteModal');
+          const massDeleteMessage = document.getElementById('massDeleteMessage');
+          const confirmMassDeleteBtn = document.getElementById('confirmMassDelete');
+      
+          let selectedFiles = [];
+      
+          function updateSelectedFiles() {
+            selectedFiles = Array.from(fileCheckboxes)
+              .filter(checkbox => checkbox.checked)
+              .map(checkbox => checkbox.dataset.filename);
+      
+            selectedFilesCount.textContent = `${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''} selected`;
+      
+            if (selectedFiles.length > 0) {
+              floatingActionBar.classList.remove('translate-y-full');
+            } else {
+              floatingActionBar.classList.add('translate-y-full');
+            }
+          }
+      
+          selectAllCheckbox.addEventListener('change', function() {
+            fileCheckboxes.forEach(checkbox => checkbox.checked = this.checked);
+            updateSelectedFiles();
+          });
+      
+          fileCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedFiles);
+          });
+      
+          massDeleteBtn.addEventListener('click', function() {
+            massDeleteMessage.textContent = `Are you sure you want to delete ${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''}? This is a permanent action and cannot be reversed.`;
+            massDeleteModal.classList.remove('opacity-0', 'pointer-events-none');
+            massDeleteModal.querySelector('div').classList.remove('scale-95');
+            massDeleteModal.querySelector('div').classList.add('scale-100');
+          });
+      
+          function closeMassDeleteModal() {
+            massDeleteModal.classList.add('opacity-0', 'pointer-events-none');
+            massDeleteModal.querySelector('div').classList.remove('scale-100');
+            massDeleteModal.querySelector('div').classList.add('scale-95');
+          }
+      
+          confirmMassDeleteBtn.addEventListener('click', async function() {
+            closeMassDeleteModal();
+            
+            const deletePromises = selectedFiles.map(fileName => 
+              fetch(`/instance/<%= req.params.id %>/files/delete/${fileName}<%= query %>`, { method: 'GET' })
+            );
+      
+            try {
+              await Promise.all(deletePromises);
+              window.location.reload();
+            } catch (error) {
+              console.error('Error deleting files:', error);
+              alert('An error occurred while deleting files. Please try again.');
+            }
+          });
+            
+   </script>
+   <script>
+      function getCookie(name) {
+          let cookies = document.cookie.split(';');
+          for(let i = 0; i < cookies.length; i++) {
+              let cookie = cookies[i].trim();
+              if (cookie.indexOf(name + "=") === 0) {
+                  return cookie.substring(name.length + 1);
+              }
+          }
+          return "";
+      }
+      
+      let disk = getCookie("disk");
+      document.getElementById('diskUsage').textContent = disk + ' disk usage';
+   </script>
 </main>
 <%- include('components/footer') %>

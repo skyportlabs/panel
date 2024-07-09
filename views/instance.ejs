@@ -15,7 +15,7 @@
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
             <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
-            <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
+            <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel. <%= instance.Node.address %> </p>
          </div>
          <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex gap-2.5">
             <button id="startButton" type="button" class="block rounded-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-emerald-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -56,7 +56,55 @@
          </div>
       </div>
    </div>
-   <div class="mt-8 ml-8 mb-8">
+   <div class="mt-8 ml-8 mb-4">
+      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 mr-8">
+         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+            <div class="flex-grow">
+                <dt class="truncate text-sm font-medium text-neutral-400">IP Address</dt>
+                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                  <span>
+                     <%= instance.Node.address %><span class="text-neutral-400">:<%= instance.Primary %></span>
+                  </span>
+                </dd>
+            </div>
+            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z" />
+                </svg>                                          
+            </div>
+         </div>
+         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+            <div class="flex-grow">
+                <dt class="truncate text-sm font-medium text-neutral-400">Image</dt>
+                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                  <span>
+                     <%= instance.Image %>
+                  </span>
+                </dd>
+            </div>
+            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                </svg>                                                     
+            </div>
+         </div>
+         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+            <div class="flex-grow">
+                <dt class="truncate text-sm font-medium text-neutral-400">Disk Usage</dt>
+                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                  <span id="diskUsage"></span>
+                </dd>
+            </div>
+            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+                </svg>                                                                
+            </div>
+         </div>
+      </dl>
+   </div>
+   <div class="ml-8 mb-8">
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5 mr-8">
          <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
             <div class="flex-grow">
@@ -184,7 +232,7 @@
       var ws;
 
       function initWebSocket() {
-          ws = new WebSocket(`ws://localhost:3001/console/<%= req.params.id %>`);
+          ws = new WebSocket(`ws://<%= domain %>:<%= port %>/console/<%= req.params.id %>`);
           ws.onopen = () => {
               console.log('WebSocket connected!');
           };
@@ -296,7 +344,7 @@
               containerId: '<%= req.params.id %>'
           }));
       });
-      const statsWs = new WebSocket(`ws://localhost:3001/stats/<%= req.params.id %>`);
+      const statsWs = new WebSocket(`ws://<%= domain %>:<%= port %>/stats/<%= req.params.id %>`);
 
       function formatBytes(bytes, decimals = 2) {
           if (bytes === 0) return '0 Bytes';
@@ -345,5 +393,20 @@
           document.getElementById('networkOut').textContent = networkOut;
       };
    </script>
+      <script>
+         function getCookie(name) {
+             let cookies = document.cookie.split(';');
+             for(let i = 0; i < cookies.length; i++) {
+                 let cookie = cookies[i].trim();
+                 if (cookie.indexOf(name + "=") === 0) {
+                     return cookie.substring(name.length + 1);
+                 }
+             }
+             return "";
+         }
+         
+         let disk = getCookie("disk");
+         document.getElementById('diskUsage').textContent = disk;
+      </script>
 </main>
 <%- include('components/footer') %>
