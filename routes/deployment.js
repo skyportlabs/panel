@@ -32,14 +32,11 @@ router.get('/instances/list', basicAuth({
 
 /**
  * GET /images/list
- * Provides a list of all images available in the database.
+ * Provides a list of all images available in the database. This does not need auth, no sensitive info is here.
  *
  * @returns {Response} Sends a JSON response containing an array of images.
  */
-router.get('/images/list', basicAuth({
-  users: { 'Skyport': config.key },
-  challenge: true, // we'll disable this in prod
-}), async (req, res) => {
+router.get('/images/list', async (req, res) => {
   let images = await db.get('images');
   res.json(images);
 });

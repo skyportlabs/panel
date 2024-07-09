@@ -80,12 +80,16 @@
             </td>
             <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"><%= set[node.id] || 0 %></td>
 			<td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3">
+        <div class="inner"><button onclick="configureNode('<%= node.id %>')" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Configure</button></div>
 				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</button></a></div>
 				<div class="inner"><button id="removeButton" onclick="location.href='/admin/nodes/delete/<%= node.id %>'" type="button" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</button></div>
           </tr>
           <% }); %>
         </tbody>
       </table>
+      <div id="notification" class="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transform transition-all duration-300 translate-y-full opacity-0">
+        Command copied to clipboard!
+      </div>
       </div>
       <div id="nodeForm" class="mt-6 px-8 w-full hidden">
         <form>
@@ -145,6 +149,31 @@ function createBadge(text, container, inputField) {
     badge.appendChild(removeBtn);
     container.appendChild(badge);
     inputField.value = '';
+  }
+
+  async function configureNode(nodeId) {
+    try {
+      const response = await fetch(`/admin/node/${nodeId}/configure-command`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch configure command');
+      }
+      const data = await response.json();
+      
+      // Copy command to clipboard
+      await navigator.clipboard.writeText(data.configureCommand);
+      
+      // Show notification
+      const notification = document.getElementById('notification');
+      notification.classList.remove('translate-y-full', 'opacity-0');
+      
+      // Hide notification after 3 seconds
+      setTimeout(() => {
+        notification.classList.add('translate-y-full', 'opacity-0');
+      }, 3000);
+    } catch (error) {
+      console.error('Error configuring node:', error);
+      alert('Failed to configure node. Please try again.');
+    }
   }
 
   function setupBadgeInput(inputId, containerId, validator) {

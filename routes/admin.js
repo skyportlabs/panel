@@ -148,6 +148,44 @@ router.get('/account/debug', isAdmin, async (req, res) => {
 });
 
 /**
+ * GET /admin/node/:id/configure-command
+ * Generates a configuration command for a specific node.
+ */
+router.get('/admin/node/:id/configure-command', isAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch the node from the database
+    const node = await db.get(id + '_node');
+
+    if (!node) {
+      return res.status(404).json({ error: 'Node not found' });
+    }
+
+    // Generate a new configure key
+    const configureKey = uuidv4();
+
+    // Update the node with the new configure key
+    node.configureKey = configureKey;
+    await db.set(id + '_node', node);
+
+    // Construct the configuration command
+    const panelUrl = `${req.protocol}://${req.get('host')}`;
+    const configureCommand = `npm run configure -- --panel ${panelUrl} --key ${configureKey}`;
+
+    // Return the configuration command
+    res.json({
+      nodeId: id,
+      configureCommand: configureCommand
+    });
+
+  } catch (error) {
+    console.error('Error generating configure command:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
  * GET /admin/overview
  * Retrieves counts of users, nodes, images, and instances from the database.
  * Available only to administrators and renders an overview page displaying the counts.
@@ -217,11 +255,7 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
  * The request must include a valid authKey from config.json for security.
  */
 router.post('/nodes/configure', async (req, res) => {
-  const { authKey, configureKey, accessKey } = req.query;
-
-  if (authKey !== config.key) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  const { configureKey, accessKey } = req.query;
 
   if (!configureKey || !accessKey) {
     return res.status(400).json({ error: 'Missing configureKey or accessKey' });
