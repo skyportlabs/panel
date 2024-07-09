@@ -4,6 +4,8 @@ const express = require('express');
 const router = express.Router();
 const { db, userdb } = require('../handlers/db.js');
 const { dir } = require('console');
+const CatLoggr = require('cat-loggr')
+const log = new CatLoggr();
 
 const pluginList = [];
 const pluginNames = [];
@@ -44,7 +46,7 @@ function loadAndActivateplugins() {
                 manifest.manifestpath = manifestPath;
                 pluginList.push(manifest);
                 pluginNames.push(manifest.name);
-                console.log(`Loaded plugin: ${manifest.name}`);
+                log.init(`loaded plugin: ${manifest.name}`);
                 
                 if (pluginsJson[pluginName] === undefined || pluginsJson[pluginName].enabled) {
                     const mainFilePath = path.join(pluginPath, manifest.main).replace(/\\/g, '/');
@@ -58,7 +60,7 @@ function loadAndActivateplugins() {
 
                     if (pluginModule.router) {
                         router.use(`/${manifest.router}`, pluginModule.router);
-                        console.log(`Routes for plugin ${manifest.name} added.`);
+                        log.init(`routes for plugin ${manifest.name} added`);
                     } else {
                         console.log(`Error: plugin ${manifest.name} has no 'router' property.`);
                     }
@@ -80,8 +82,6 @@ function loadAndActivateplugins() {
             }
         }
     });
-
-    console.log('Loaded plugins:', pluginNames);
 
     const pluginsInJson = Object.keys(pluginsJson);
     pluginNames.forEach(pluginName => {

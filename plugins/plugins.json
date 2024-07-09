@@ -1,7 +1,4 @@
 {
-    "Interactive Desktop": {
-        "enabled": true
-    },
     "Example Plugin": {
         "enabled": true
     }
