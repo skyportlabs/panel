@@ -64,6 +64,22 @@ app.use(
   })
 );
 
+
+/* remove the comments for faster loading
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '5');
+  next();
+});
+
+
+app.use('/assets', (req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=1');
+  next();
+});
+*/
+
 app.use(passport.initialize());
 app.use(passport.session());
 

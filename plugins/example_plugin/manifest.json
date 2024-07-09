@@ -1,12 +1,12 @@
 {
-    "name": "Interactive Desktop",
+    "name": "Example Plugin",
     "version": "1.0.0",
     "description": "A Interactive Desktop Plugin",
     "author": "privt00",
     "main": "index.js",
     "router": "desktop",
     "adminsidebar": {
-        "Interactive Desktop": "/"
+        "example url": "/test"
     },
     "sidebar": {
         "Interactive Desktop": "/desktop"
