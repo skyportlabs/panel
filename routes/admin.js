@@ -82,38 +82,6 @@ async function checkNodeStatus(node) {
   }
 }
 
-/**
- * POST /nodes/configure
- * Allows a node to set its own access key after creation.
- * The request must include a valid authKey from config.json for security.
- */
-router.post('/nodes/configure', async (req, res) => {
-  const { authKey, nodeId, accessKey } = req.query;
-
-  if (authKey !== config.key) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  if (!nodeId || !accessKey) {
-    return res.status(400).json({ error: 'Missing nodeId or accessKey' });
-  }
-
-  try {
-    const node = await db.get(nodeId + '_node');
-    if (!node) {
-      return res.status(404).json({ error: 'Node not found' });
-    }
-
-    node.apiKey = accessKey;
-    await db.set(nodeId + '_node', node);
-
-    res.status(200).json({ message: 'Node configured successfully' });
-  } catch (error) {
-    console.error('Error configuring node:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
 router.get('/admin/apikeys', isAdmin, async (req, res) => {
   try {
     const apiKeys = await db.get('apiKeys') || [];
@@ -205,15 +173,13 @@ router.get('/admin/overview', isAdmin, async (req, res) => {
   }
 });
 
+
 /**
  * POST /nodes/create
- * Creates a new node with specified parameters from the request body, such as name, hardware specifications,
- * and API credentials. After creation, the node's operational status is checked and updated. The new node is
- * then saved in the database. This route is secured and available only to administrators.
- *
- * @returns {Response} Sends the newly created and status-updated node data.
+ * Creates a new node with a unique configureKey for secure configuration.
  */
 router.post('/nodes/create', isAdmin, async (req, res) => {
+  const configureKey = uuidv4(); // Generate a unique configureKey
   const node = {
     id: uuidv4(),
     name: req.body.name,
@@ -223,8 +189,9 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
     processor: req.body.processor,
     address: req.body.address,
     port: req.body.port,
-    apiKey: null,
-    status: 'Unconfigured'
+    apiKey: null, // Set to null initially
+    configureKey: configureKey, // Add the configureKey
+    status: 'Unconfigured' // Status to indicate pending configuration
   };
 
   if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.port) {
@@ -237,7 +204,57 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
   nodes.push(node.id);
   await db.set('nodes', nodes);
 
-  res.status(201).send(node);
+  // Return the node object including the configureKey
+  res.status(201).json({
+    ...node,
+    configureKey: configureKey // Include configureKey in the response
+  });
+});
+
+/**
+ * POST /nodes/configure
+ * Allows a node to set its own access key using the configureKey.
+ * The request must include a valid authKey from config.json for security.
+ */
+router.post('/nodes/configure', async (req, res) => {
+  const { authKey, configureKey, accessKey } = req.query;
+
+  if (authKey !== config.key) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  if (!configureKey || !accessKey) {
+    return res.status(400).json({ error: 'Missing configureKey or accessKey' });
+  }
+
+  try {
+    // Find the node with the matching configureKey
+    const nodes = await db.get('nodes') || [];
+    let foundNode = null;
+    for (const nodeId of nodes) {
+      const node = await db.get(nodeId + '_node');
+      if (node && node.configureKey === configureKey) {
+        foundNode = node;
+        break;
+      }
+    }
+
+    if (!foundNode) {
+      return res.status(404).json({ error: 'Node not found' });
+    }
+
+    // Update the node with the new accessKey
+    foundNode.apiKey = accessKey;
+    foundNode.status = 'Configured';
+    foundNode.configureKey = null; // Remove the configureKey after successful configuration
+
+    await db.set(foundNode.id + '_node', foundNode);
+
+    res.status(200).json({ message: 'Node configured successfully' });
+  } catch (error) {
+    console.error('Error configuring node:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 router.post('/users/create', isAdmin, async (req, res) => {
