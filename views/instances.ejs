@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   instances.forEach(instance => {
     const containerId = instance.dataset.instanceId;
-    const socket = new WebSocket(`ws://localhost:3001/stats/${containerId}`);
+    const socket = new WebSocket(`ws://<%= config.domain %>:<%= config.port %>/stats/${containerId}`);
 
     const statusElement = instance.querySelector('[data-status]');
     const statusBg = instance.querySelector('[data-status-bg]');

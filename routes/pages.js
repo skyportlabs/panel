@@ -7,6 +7,7 @@
 const express = require('express');
 const fs = require('fs').promises;
 const router = express.Router();
+const config = require('../config.json')
 
 const { isAuthenticated } = require('../handlers/auth.js');
 const { db } = require('../handlers/db.js');
@@ -31,7 +32,7 @@ async function setupRoutes() {
             if (page.requiresAuth) {
                 router.get(page.path, isAuthenticated, async (req, res) => {
                     const instances = await db.get(req.user.userId + '_instances') || [];
-                    res.render(page.template, { req, user: req.user, instances, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+                    res.render(page.template, { config, req, user: req.user, instances, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
                 });
             } else {
                 router.get(page.path, async (req, res) => {
