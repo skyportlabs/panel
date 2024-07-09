@@ -10,6 +10,11 @@
    </div>
    <div class="px-4 sm:px-6 lg:px-8">
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <% if (instances.length === 0) { %>
+          <div class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8">
+            <p class="text-base font-semibold leading-6 text-white">You don't have an instance yet</p>
+          </div>
+      <% } else { %>
       <% instances.forEach(function(instance) { %>
          <a data-instance-id="<%= instance.ContainerId %>" href="../instance/<%= instance.ContainerId %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8">
             <div class="flex items-center justify-between">
@@ -113,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
       </script>
       <% }); %>
-   </div>
+    <% } %>
+    </div>
 </main>
 <%- include('components/footer') %>
