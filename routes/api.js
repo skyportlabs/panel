@@ -31,6 +31,16 @@ async function validateApiKey(req, res, next) {
 }
 
 // Users
+router.get('/api/users', validateApiKey, async (req, res) => {
+  try {
+    const users = await db.get('users') || [];
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve user' });
+  }
+});
+
 router.post('/api/users/create', validateApiKey, async (req, res) => {
   try {
     const { username, password, admin } = req.body;
@@ -88,16 +98,6 @@ router.post('/api/users/create', validateApiKey, async (req, res) => {
 //     res.status(500).json({ error: 'Failed to delete user' });
 //   }
 // });
-
-router.get('/api/users', validateApiKey, async (req, res) => {
-  try {
-    const users = await db.get('users') || [];
-
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to retrieve user' });
-  }
-});
 
 // Instance
 router.get('/api/instances', validateApiKey, async (req, res) => {
@@ -242,6 +242,26 @@ router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
   }
 });
 
+router.delete('/api/instance/delete', validateApiKey, async (req, res) => {
+  const { id } = req.body;
+  
+  try {
+    if (!id) {
+      return res.status(400).json({ error: 'Missing ID parameter' });
+    }
+    
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+      return res.status(400).json({ error: 'Instance not found' });
+    }
+    
+    await deleteInstance(instance);
+    res.status(201).json({ Message: 'The instance has successfully been deleted.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete instances' });
+  }
+});
+
 // Images
 router.get('/api/images', validateApiKey, async (req, res) => {
   try {
@@ -262,5 +282,95 @@ router.get('/api/nodes', validateApiKey, async (req, res) => {
     res.status(500).json({ error: 'Failed to retrieve nodes' });
   }
 });
+
+router.post('/api/nodes/create', validateApiKey, async (req, res) => {
+  const node = {
+    id: uuidv4(),
+    name: req.body.name,
+    tags: req.body.tags,
+    ram: req.body.ram,
+    disk: req.body.disk,
+    processor: req.body.processor,
+    address: req.body.address,
+    port: req.body.port,
+    apiKey: req.body.apiKey,
+    status: 'Unknown' // Default status
+  };
+
+  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.port || !req.body.apiKey) {
+    return res.status(400).json({ error: 'Missing parameters' });
+  }
+
+  await db.set(node.id + '_node', node); // Save the initial node info
+  const updatedNode = await checkNodeStatus(node); // Check and update status
+
+  const nodes = await db.get('nodes') || [];
+  nodes.push(node.id);
+  await db.set('nodes', nodes);
+
+  res.status(201).json({ Message: updatedNode });
+});
+
+// Helper function to delete an instance
+async function deleteInstance(instance) {
+  try {
+    await axios.get(`http://Skyport:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}/delete`);
+    
+    // Update user's instances
+    let userInstances = await db.get(instance.User + '_instances') || [];
+    userInstances = userInstances.filter(obj => obj.ContainerId !== instance.ContainerId);
+    await db.set(instance.User + '_instances', userInstances);
+    
+    // Update global instances
+    let globalInstances = await db.get('instances') || [];
+    globalInstances = globalInstances.filter(obj => obj.ContainerId !== instance.ContainerId);
+    await db.set('instances', globalInstances);
+    
+    // Delete instance-specific data
+    await db.delete(instance.ContainerId + '_instance');
+  } catch (error) {
+    console.error(`Error deleting instance ${instance.ContainerId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Checks the operational status of a node by making an HTTP request to its API.
+ * Updates the node's status based on the response or sets it as 'Offline' if the request fails.
+ * This status check and update are persisted in the database.
+ *
+ * @param {Object} node - The node object containing details such as address, port, and API key.
+ * @returns {Promise<Object>} Returns the updated node object after attempting to verify its status.
+ */
+async function checkNodeStatus(node) {
+  try {
+    const RequestData = {
+      method: 'get',
+      url: 'http://' + node.address + ':' + node.port + '/',
+      auth: {
+        username: 'Skyport',
+        password: node.apiKey
+      },
+      headers: { 
+        'Content-Type': 'application/json'
+      }
+    };
+    const response = await axios(RequestData);
+    const { versionFamily, versionRelease, online, remote, docker } = response.data;
+
+    node.status = 'Online';
+    node.versionFamily = versionFamily;
+    node.versionRelease = versionRelease;
+    node.remote = remote;
+    node.docker = docker;
+
+    await db.set(node.id + '_node', node); // Update node info with new details
+    return node;
+  } catch (error) {
+    node.status = 'Offline';
+    await db.set(node.id + '_node', node); // Update node as offline if there's an error
+    return node;
+  }
+}
 
 module.exports = router;
