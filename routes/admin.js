@@ -16,6 +16,7 @@ const saltRounds = 10;
 const multer = require('multer');
 const path = require('path')
 const fs = require('node:fs')
+const {logAudit} = require('../handlers/auditlog');
 
 /**
  * Middleware to verify if the user is an administrator.
@@ -243,6 +244,7 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
   await db.set('nodes', nodes);
 
   // Return the node object including the configureKey
+  logAudit(req.user.userId, req.user.username, 'node:create', req.ip);
   res.status(201).json({
     ...node,
     configureKey: configureKey // Include configureKey in the response
@@ -316,6 +318,7 @@ if (userExists) {
 let users = await db.get('users') || [];
 users.push(user);
 await db.set('users', users);
+logAudit(req.user.userId, req.user.username, 'user:create', req.ip);
 
 console.log(user)
 
@@ -334,6 +337,7 @@ router.delete('/user/delete', isAdmin, async (req, res) => {
 
   users.splice(userIndex, 1);
   await db.set('users', users);
+  logAudit(req.user.userId, req.user.username, 'user:delete', req.ip);
   res.status(204).send();
 });
 
@@ -354,7 +358,7 @@ router.delete('/nodes/delete', isAdmin, async (req, res) => {
 
   await db.set('nodes', newNodes);
   await db.delete(nodeId + '_node');
-
+  logAudit(req.user.userId, req.user.username, 'node:delete', req.ip);
   res.status(204).send();
 });
 
@@ -397,6 +401,7 @@ router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
   const name = req.body.name;
   try {
   await db.set('name', [name]);
+  logAudit(req.user.userId, req.user.username, 'name:edit', req.ip);
   res.redirect('/admin/settings?changednameto=' + name);
 } catch (err) {
   console.error(err);
@@ -440,6 +445,7 @@ router.post('/admin/settings/change/logo', isAdmin, upload.single('logo'), async
         fs.unlinkSync(logoPath);
       }
       await db.set('logo', false);
+      logAudit(req.user.userId, req.user.username, 'logo:edit', req.ip);
       res.redirect('/admin/settings');
     } else {
       res.status(400).send('Invalid request');
@@ -553,6 +559,7 @@ router.get('/admin/instance/delete/:id', isAdmin, async (req, res) => {
     }
     
     await deleteInstance(instance);
+    logAudit(req.user.userId, req.user.username, 'instance:delete', req.ip);
     res.redirect('/admin/instances');
   } catch (error) {
     console.error('Error in delete instance endpoint:', error);

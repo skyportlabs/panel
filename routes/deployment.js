@@ -11,6 +11,7 @@ const { v4: uuidv4 } = require('uuid');
 const { db } = require('../handlers/db.js'); // Import the custom database handler
 const basicAuth = require('express-basic-auth');
 const config = require('../config.json')
+const {logAudit} = require('../handlers/auditlog');
 
 const router = express.Router();
 
@@ -176,7 +177,8 @@ router.get('/instances/deploy', async (req, res) => {
       ExposedPorts,
       PortBindings
     });
-
+    
+    logAudit(req.user.userId, req.user.username, 'instance:create', req.ip);
     res.status(201).json({
       Message: 'Container created successfully and added to user\'s servers',
       ContainerId: response.data.containerId,
