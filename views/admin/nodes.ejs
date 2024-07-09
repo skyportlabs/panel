@@ -105,10 +105,7 @@
          <input id="nodeAddress" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="192.168.1.1 or my.hostnamehere.com">
 
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Daemon Port:</label>
-         <input id="nodePort" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8080">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Access Key:</label>
-         <input id="nodeApiKey" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="skyportd_xxxxxxxxxxxxxxxx">
+         <input id="nodePort" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="3000">
     
          <label class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
          <div id="tagContainer" class="flex flex-wrap gap-2 mb-2"></div>
@@ -176,7 +173,6 @@ function createBadge(text, container, inputField) {
     const disk = document.getElementById('nodeDisk').value;
     const processor = document.getElementById('nodeProcessor').value;
     const address = document.getElementById('nodeAddress').value;
-    const apiKey = document.getElementById('nodeApiKey').value;
     const port = document.getElementById('nodePort').value;
 
     const nodeData = {
@@ -186,8 +182,7 @@ function createBadge(text, container, inputField) {
       disk,
       processor,
       address,
-      port,
-      apiKey
+      port
     };
 
     fetch('/nodes/create', {

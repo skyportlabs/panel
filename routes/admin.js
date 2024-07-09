@@ -82,6 +82,38 @@ async function checkNodeStatus(node) {
   }
 }
 
+/**
+ * POST /nodes/configure
+ * Allows a node to set its own access key after creation.
+ * The request must include a valid authKey from config.json for security.
+ */
+router.post('/nodes/configure', async (req, res) => {
+  const { authKey, nodeId, accessKey } = req.query;
+
+  if (authKey !== config.key) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  if (!nodeId || !accessKey) {
+    return res.status(400).json({ error: 'Missing nodeId or accessKey' });
+  }
+
+  try {
+    const node = await db.get(nodeId + '_node');
+    if (!node) {
+      return res.status(404).json({ error: 'Node not found' });
+    }
+
+    node.apiKey = accessKey;
+    await db.set(nodeId + '_node', node);
+
+    res.status(200).json({ message: 'Node configured successfully' });
+  } catch (error) {
+    console.error('Error configuring node:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.get('/admin/apikeys', isAdmin, async (req, res) => {
   try {
     const apiKeys = await db.get('apiKeys') || [];
@@ -191,20 +223,21 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
     processor: req.body.processor,
     address: req.body.address,
     port: req.body.port,
-    apiKey: req.body.apiKey,
-    status: 'Unknown' // Default status
+    apiKey: null,
+    status: 'Unconfigured'
   };
 
-  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.port || !req.body.apiKey) return res.send('Form validation failure.')
+  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.port) {
+    return res.status(400).send('Form validation failure.');
+  }
 
-  await db.set(node.id + '_node', node); // Save the initial node info
-  const updatedNode = await checkNodeStatus(node); // Check and update status
+  await db.set(node.id + '_node', node);
 
   const nodes = await db.get('nodes') || [];
   nodes.push(node.id);
   await db.set('nodes', nodes);
 
-  res.status(201).send(updatedNode);
+  res.status(201).send(node);
 });
 
 router.post('/users/create', isAdmin, async (req, res) => {
