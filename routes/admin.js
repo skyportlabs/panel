@@ -16,6 +16,7 @@ const saltRounds = 10;
 const multer = require('multer');
 const path = require('path')
 const fs = require('node:fs')
+const {logAudit} = require('../handlers/auditlog');
 
 /**
  * Middleware to verify if the user is an administrator.
@@ -553,6 +554,7 @@ router.get('/admin/instance/delete/:id', isAdmin, async (req, res) => {
     }
     
     await deleteInstance(instance);
+    logAudit(req.user.userId, req.user.username, 'instance:delete', req.ip);
     res.redirect('/admin/instances');
   } catch (error) {
     console.error('Error in delete instance endpoint:', error);
