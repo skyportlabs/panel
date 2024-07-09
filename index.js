@@ -28,6 +28,7 @@ const ascii = fs.readFileSync('./handlers/ascii.txt', 'utf8');
 const app = express();
 const chalk = require('chalk');
 const expressWs = require('express-ws')(app);
+const { db } = require('./handlers/db.js')
 
 const sqlite = require("better-sqlite3");
 const SqliteStore = require("better-sqlite3-session-store")(session);
@@ -92,3 +93,7 @@ routes.forEach(routeFile => {
  */
 app.use(express.static('public'));
 app.listen(config.port, () => log.info(`skyport is listening on port ${config.port}`));
+
+app.get('*', async function(req, res){
+  res.render('404', { req, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false })
+});
