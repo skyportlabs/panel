@@ -96,23 +96,29 @@ function formatLastUpdated(dateString) {
        <% }); %>
        </dl>
        <table class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl">
-         <thead class="text-white">
-            <tr>
-               <th class="px-6 py-3 text-left">File Name</th>
-               <th class="px-6 py-3 text-left">Size</th>
-               <th class="px-6 py-3 text-left">Last Updated</th>
-               <th class="px-6 py-3 text-left">&nbsp;</th>
-            </tr>
-         </thead>
-         <tbody>
-           <% files.filter(file => !file.isDirectory).forEach(function(file) { %>
-              <% let extension; %>
-              <% if (req.query.path) { %>
-                 <% extension = '?path=' + req.query.path %>
-              <% } else { %>
-                 <% extension = '' %>
-              <% } %>
-             <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+        <thead class="text-white">
+          <tr>
+            <th class="px-6 py-3 text-left">
+              <input type="checkbox" id="selectAll" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/10 border border-white/15 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox">
+            </th>
+            <th class="px-6 py-3 text-left">File Name</th>
+            <th class="px-6 py-3 text-left">Size</th>
+            <th class="px-6 py-3 text-left">Last Updated</th>
+            <th class="px-6 py-3 text-left">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% files.filter(file => !file.isDirectory).forEach(function(file) { %>
+            <% let extension; %>
+            <% if (req.query.path) { %>
+              <% extension = '?path=' + req.query.path %>
+            <% } else { %>
+              <% extension = '' %>
+            <% } %>
+            <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
+                <input type="checkbox" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/5 border border-white/10 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox" data-filename="<%= file.name %>">
+              </td>
                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
                   <a href="/instance/<%= req.params.id %>/files/view/<%= file.name %><%= extension %>" class="flex items-center">
                      <span class="mr-2">
@@ -135,9 +141,31 @@ function formatLastUpdated(dateString) {
            <% }); %>
          </tbody>
       </table>
+      <!-- prevent action bar from hiding files -->
+      <div class="pb-12"></div>
     </div>
 
     <!-- End of files -->
+  <!-- Floating Action Bar -->
+  <div id="floatingActionBar" class="fixed bottom-0 left-0 right-0 bg-neutral-900/70 backdrop-blur text-white py-4 px-6 transform translate-y-full transition-transform duration-300 ease-in-out flex justify-between items-center">
+    <span id="selectedFilesCount">0 files selected</span>
+    <button id="massDeleteBtn" class="bg-red-500 hover:bg-red-600 text-white font-normal py-2 px-4 rounded-lg transition">
+      Delete Selected
+    </button>
+  </div>
+
+  <!-- Mass Delete Confirmation Modal -->
+  <div id="massDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">Confirm Mass Deletion</h2>
+      <p id="massDeleteMessage" class="mb-6 text-gray-600"></p>
+      <div class="flex justify-end space-x-4">
+        <button onclick="closeMassDeleteModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+        <button id="confirmMassDelete" class="px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Delete</button>
+      </div>
+    </div>
+  </div>
+
       <!-- Delete Confirmation Modal -->
         <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
          <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
@@ -301,6 +329,70 @@ let currentFileName = '';
           warningElement.classList.add('hidden');
         }
       });
+
+      // Mass actions functionality
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const fileCheckboxes = document.querySelectorAll('.file-checkbox');
+    const floatingActionBar = document.getElementById('floatingActionBar');
+    const selectedFilesCount = document.getElementById('selectedFilesCount');
+    const massDeleteBtn = document.getElementById('massDeleteBtn');
+    const massDeleteModal = document.getElementById('massDeleteModal');
+    const massDeleteMessage = document.getElementById('massDeleteMessage');
+    const confirmMassDeleteBtn = document.getElementById('confirmMassDelete');
+
+    let selectedFiles = [];
+
+    function updateSelectedFiles() {
+      selectedFiles = Array.from(fileCheckboxes)
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.dataset.filename);
+
+      selectedFilesCount.textContent = `${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''} selected`;
+
+      if (selectedFiles.length > 0) {
+        floatingActionBar.classList.remove('translate-y-full');
+      } else {
+        floatingActionBar.classList.add('translate-y-full');
+      }
+    }
+
+    selectAllCheckbox.addEventListener('change', function() {
+      fileCheckboxes.forEach(checkbox => checkbox.checked = this.checked);
+      updateSelectedFiles();
+    });
+
+    fileCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', updateSelectedFiles);
+    });
+
+    massDeleteBtn.addEventListener('click', function() {
+      massDeleteMessage.textContent = `Are you sure you want to delete ${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''}? This is a permanent action and cannot be reversed.`;
+      massDeleteModal.classList.remove('opacity-0', 'pointer-events-none');
+      massDeleteModal.querySelector('div').classList.remove('scale-95');
+      massDeleteModal.querySelector('div').classList.add('scale-100');
+    });
+
+    function closeMassDeleteModal() {
+      massDeleteModal.classList.add('opacity-0', 'pointer-events-none');
+      massDeleteModal.querySelector('div').classList.remove('scale-100');
+      massDeleteModal.querySelector('div').classList.add('scale-95');
+    }
+
+    confirmMassDeleteBtn.addEventListener('click', async function() {
+      closeMassDeleteModal();
+      
+      const deletePromises = selectedFiles.map(fileName => 
+        fetch(`/instance/<%= req.params.id %>/files/delete/${fileName}<%= query %>`, { method: 'GET' })
+      );
+
+      try {
+        await Promise.all(deletePromises);
+        window.location.reload();
+      } catch (error) {
+        console.error('Error deleting files:', error);
+        alert('An error occurred while deleting files. Please try again.');
+      }
+    });
       </script>
 <script>
 function getCookie(name) {
