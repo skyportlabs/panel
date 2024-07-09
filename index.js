@@ -26,6 +26,7 @@ const fs = require('node:fs');
 const config = require('./config.json')
 const ascii = fs.readFileSync('./handlers/ascii.txt', 'utf8');
 const app = express();
+const path = require('path');
 const chalk = require('chalk');
 const expressWs = require('express-ws')(app);
 const { db } = require('./handlers/db.js')
@@ -77,13 +78,25 @@ console.log(chalk.gray(ascii) + chalk.white(`version v${config.version}\n`));
  * Logs the loaded routes and mounts them to the Express application under the root path. This allows for
  * modular route definitions that can be independently maintained and easily scaled.
  */
-let routes = fs.readdirSync("./routes");
+const routesDir = path.join(__dirname, 'routes');
+const routes = fs.readdirSync(routesDir);
 routes.forEach(routeFile => {
-  const route = require(`./routes/${routeFile}`);
-  log.init('loaded route: ' + routeFile)
-  expressWs.applyTo(route)
+  const routePath = path.join(routesDir, routeFile);
+  const route = require(routePath);
+  log.init('loaded route: ' + routeFile);
+  expressWs.applyTo(route);
   app.use("/", route);
 });
+
+
+const pluginroutes = require('./plugins/pluginmanager.js');
+app.use("/", pluginroutes);
+
+
+
+const pluginDir = path.join(__dirname, 'plugins');
+const PluginViewsDir = fs.readdirSync(pluginDir).map(addonName => path.join(pluginDir, addonName, 'views'));
+app.set('views', [path.join(__dirname, 'views'), ...PluginViewsDir]);
 
 /**
  * Configures the Express application to serve static files from the 'public' directory, providing
