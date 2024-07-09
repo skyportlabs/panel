@@ -311,6 +311,19 @@ router.post('/api/nodes/create', validateApiKey, async (req, res) => {
   res.status(201).json({ Message: updatedNode });
 });
 
+router.delete('/api/nodes/delete', validateApiKey, async (req, res) => {
+  const nodeId = req.body.nodeId;
+  const nodes = await db.get('nodes') || [];
+  const newNodes = nodes.filter(id => id !== nodeId);
+
+  if (!nodeId) return res.send('Invalid node')
+
+  await db.set('nodes', newNodes);
+  await db.delete(nodeId + '_node');
+
+  res.status(201).json({ Message: "The node has successfully deleted." });
+});
+
 // Helper function to delete an instance
 async function deleteInstance(instance) {
   try {
