@@ -244,6 +244,7 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
   await db.set('nodes', nodes);
 
   // Return the node object including the configureKey
+  logAudit(req.user.userId, req.user.username, 'node:create', req.ip);
   res.status(201).json({
     ...node,
     configureKey: configureKey // Include configureKey in the response
@@ -355,7 +356,7 @@ router.delete('/nodes/delete', isAdmin, async (req, res) => {
 
   await db.set('nodes', newNodes);
   await db.delete(nodeId + '_node');
-
+  logAudit(req.user.userId, req.user.username, 'node:delete', req.ip);
   res.status(204).send();
 });
 
