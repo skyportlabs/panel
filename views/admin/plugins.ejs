@@ -1,0 +1,20 @@
+<%- include('../components/admin_addons_template') %>
+<main id="content">
+  <div class="bg-transparent">
+    <div class="sm:flex sm:items-center px-8 pt-4">
+      <div class="sm:flex-auto">
+        <h1 class="text-base font-semibold leading-6 text-white">Addons Overview</h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500">
+          A list of all the Plugins installed on the panel.
+        </p>
+        <div class="mt-4 text-neutral-500">
+          <p>Number of Add-ons installed: <%= plugins.length %></p>
+          <% plugins.forEach(function(plugin) { %>
+            <p><%= plugin.name %></p>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include('../components/footer') %>
