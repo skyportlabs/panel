@@ -34,9 +34,8 @@ async function writePluginsJson(plugins) {
 async function loadAndActivatePlugins() {
     pluginList = [];
     pluginNames = [];
-    pluginsidebar = {}; // Reset the sidebar
+    pluginsidebar = {};
 
-    // Clear the require cache for plugins to reload them
     Object.keys(require.cache).forEach(key => {
         if (key.startsWith(pluginsDir)) {
             delete require.cache[key];
