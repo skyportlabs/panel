@@ -1,4 +1,4 @@
-<%- include('components/template') %>
+<%- include('../components/template') %>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js" integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css" integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -39,7 +39,7 @@
          </div>
       </div>
    </div>
-   <%- include('components/instance') %>
+   <%- include('../components/instance') %>
    <div class="rounded-lg bg-red-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8 hidden" id="daemonIsDown">
       <div class="flex">
          <div class="flex-shrink-0 ml-1.5">
@@ -409,4 +409,4 @@
          document.getElementById('diskUsage').textContent = disk;
       </script>
 </main>
-<%- include('components/footer') %>
+<%- include('../components/footer') %>

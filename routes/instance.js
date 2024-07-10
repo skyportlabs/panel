@@ -66,7 +66,7 @@ router.get("/instance/:id", async (req, res) => {
 
     if (!instance || !id) return res.redirect('../instances')
 
-    res.render('instance', { req, instance, port, domain, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    res.render('instance/instance', { req, instance, port, domain, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 /**
@@ -115,7 +115,7 @@ router.get("/instance/:id/network", async (req, res) => {
         });
     }
 
-    res.render('network', {
+    res.render('instance/network', {
         req,
         instance,
         ports,
@@ -182,7 +182,7 @@ router.get("/instance/:id/files", async (req, res) => {
             const response = await axios(RequestData);
             const files = response.data.files || [];
 
-            res.render('files', { req, files, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+            res.render('instance/files', { req, files, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
         } catch (error) {
             const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
             res.status(500).render('500', { error: errorMessage, req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
@@ -248,7 +248,7 @@ router.get("/instance/:id/files/view/:file", async (req, res) => {
             const response = await axios(RequestData);
             const file = response.data.content || [];
 
-            res.render('file', { req, file, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+            res.render('instance/file', { req, file, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
         } catch (error) {
             const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
             res.status(500).render('500', { error: errorMessage, req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
@@ -290,7 +290,7 @@ router.get("/instance/:id/files/create", async (req, res) => {
         return res.redirect('../instances');
     }
 
-    res.render('createFile', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    res.render('instance/createFile', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 /**
@@ -425,7 +425,7 @@ router.get("/instance/:id/files/folder/create", async (req, res) => {
         return res.redirect('../instances');
     }
 
-    res.render('createFolder', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    res.render('instance/createFolder', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 /**
@@ -750,7 +750,7 @@ router.get("/instance/:id/settings", async (req, res) => {
         return res.redirect('../instances');
     }
 
-    res.render('settings', { req, instance, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    res.render('instance/settings', { req, instance, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 /**
@@ -898,7 +898,7 @@ router.get("/instance/:id/ftp", async (req, res) => {
             const response = await axios(RequestData);
             const logindata = response.data || [];
 
-            res.render('ftp', { req, logindata, user: req.user, instance_name: instance.Name, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, settings });
+            res.render('instance/ftp', { req, logindata, user: req.user, instance_name: instance.Name, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, settings });
         } catch (error) {
             const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
             res.status(500).send({ message: errorMessage })
