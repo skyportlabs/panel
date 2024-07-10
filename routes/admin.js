@@ -558,7 +558,6 @@ router.post('/admin/images/upload', isAdmin, async (req, res) => {
   }
 });
 
-
 router.post('/admin/images/delete', isAdmin, async (req, res) => {
   try {
     let { id } = req.body;

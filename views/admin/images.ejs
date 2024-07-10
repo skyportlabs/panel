@@ -7,7 +7,7 @@
            <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the images on the Skyport panel.</p>
          </div>
          <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
-          <button id="uploadimage" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Upload Image</button>
+          <button id="uploadimage" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Import Image</button>
         </div>
        </div>
       <div style="display: block;" id="nodeTable" class="mt-6 w-full">
@@ -23,14 +23,14 @@
           <tr>
             <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
             <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Author</th>
-			<th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker Image</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker Image</th>
             <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
          <% images.forEach(function(image) { %>
-          <tr>
-            <td class="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
+          <tr class="image-row" data-image='<%= JSON.stringify(image) %>'>
+            <td class="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8 cursor-pointer">
               <div class="flex items-center gap-x-4">
                 <div class="truncate text-sm font-medium leading-6 text-white"><%= image.Name %></div>
               </div>
@@ -47,7 +47,7 @@
             </td>
             <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
               <div class="flex gap-x-3">
-                <div onclick="deleteImage('<%= image.Id %>')" class="font-mono leading-6 text-white bg-red-600 hover:bg-red-500 text-center text-sm font-semibold px-3 py-1 cursor-pointer block transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 rounded-lg">Delete</div>
+                <div onclick="deleteImage('<%= image.Id %>')" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</div>
               </div>
             </td>
           </tr>
@@ -55,13 +55,41 @@
         </tbody>
       </table>
       </div>
+      <div style="display: none;" id="imageDetail" class="mt-6 pl-8 w-full text-white">
+        <button id="backButton" class="block rounded-lg bg-neutral-800 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-neutral-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Back</button>
+        <h1 id="imageName" class="text-2xl font-bold mt-4"></h1>
+        <p id="imageDescription" class="mt-2 text-neutral-400"></p>
+        <div class="mt-4">
+          <span id="dockerImage" class="bg-white/5 text-white text-sm font-mono mr-2 px-2.5 py-1 rounded-lg"></span>
+          <span id="envVars" class="bg-white/5 text-white text-sm font-mono mr-2 px-2.5 py-1 rounded-lg"></span>
+        </div>
+        <div class="mt-4">
+          <p id="authorInfo" class="text-neutral-400"></p>
+        </div>
+        <div class="mt-4 flex">
+          <button id="deleteImageButton" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Delete Image</button>
+          <button id="replaceImageButton" class="block rounded-lg ml-2 bg-neutral-800 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-neutral-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Replace Image</button>
+        </div>
+      </div>
     </div>
 </main>
 <%- include('../components/footer') %>
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     var uploadBtn = document.getElementById('uploadimage');
-    
+    var imageRows = document.querySelectorAll('.image-row');
+    var nodeTable = document.getElementById('nodeTable');
+    var imageDetail = document.getElementById('imageDetail');
+    var backButton = document.getElementById('backButton');
+    var imageName = document.getElementById('imageName');
+    var imageDescription = document.getElementById('imageDescription');
+    var dockerImage = document.getElementById('dockerImage');
+    var envVars = document.getElementById('envVars');
+    var authorInfo = document.getElementById('authorInfo');
+    var deleteImageButton = document.getElementById('deleteImageButton');
+    var replaceImageButton = document.getElementById('replaceImageButton');
+    var currentImage = null;
+
     uploadBtn.addEventListener('click', function() {
       var input = document.createElement('input');
       input.type = 'file';
@@ -97,26 +125,86 @@
         }
       });
     });
-  });
 
-  function deleteImage(id) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/admin/images/delete', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        console.log('image deleted successfully.');
-        setTimeout(function() {
-          window.location.reload();
-        }, 500);
-      } else {
-        console.error('Error deleting image.');
+    imageRows.forEach(function(row) {
+      row.addEventListener('click', function() {
+        var image = JSON.parse(this.dataset.image);
+        currentImage = image;
+        imageName.textContent = image.Name;
+        imageDescription.textContent = image.Description;
+        dockerImage.textContent = image.Image;
+        envVars.textContent = image.Env.join(', ');
+        authorInfo.textContent = image.Author + ' (' + image.AuthorName + ')';
+        nodeTable.style.display = 'none';
+        imageDetail.style.display = 'block';
+      });
+    });
+
+    backButton.addEventListener('click', function() {
+      nodeTable.style.display = 'block';
+      imageDetail.style.display = 'none';
+    });
+
+    deleteImageButton.addEventListener('click', function() {
+      if (currentImage) {
+        deleteImage(currentImage.Id);
       }
-    };
-    xhr.onerror = function() {
-      console.error('Network error.');
-    };
-    xhr.send(JSON.stringify({ id: id }));
-  }
-  </script>
-  
+    });
+
+    replaceImageButton.addEventListener('click', function() {
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.click();
+      input.addEventListener('change', function(event) {
+        var file = event.target.files[0];
+        if (file && file.type === 'application/json') {
+          var reader = new FileReader();
+          reader.onload = function(event) {
+            var jsonData = event.target.result;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/admin/images/upload', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+              if (xhr.status === 200) {
+                console.log('image uploaded successfully.');
+                setTimeout(function() {
+                  deleteImage(currentImage.Id);
+                }, 500);
+              } else {
+                console.error('Error uploading image.');
+              }
+            };
+            xhr.onerror = function() {
+              console.error('Network error.');
+            };
+            xhr.send(jsonData);
+          };
+          reader.readAsText(file);
+        } else {
+          alert('Please select a JSON file.');
+        }
+      });
+    });
+
+    function deleteImage(id) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/admin/images/delete', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          console.log('image deleted successfully.');
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        } else {
+          console.error('Error deleting image.');
+        }
+      };
+      xhr.onerror = function() {
+        console.error('Network error.');
+      };
+      xhr.send(JSON.stringify({ id: id }));
+    }
+  });
+</script>
