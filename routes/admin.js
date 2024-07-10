@@ -298,6 +298,7 @@ router.post('/users/create', isAdmin, async (req, res) => {
     userId: uuidv4(),
     username: req.body.username,
     password: await bcrypt.hash(req.body.password, saltRounds),
+    Accesto: [],
     admin: req.body.admin, 
 };
 
