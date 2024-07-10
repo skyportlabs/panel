@@ -161,6 +161,7 @@ function createBadge(text, container, inputField) {
       
       // Copy command to clipboard
       await navigator.clipboard.writeText(data.configureCommand);
+      console.log('Configure command: ' + data.configureCommand)
       
       // Show notification
       const notification = document.getElementById('notification');
@@ -172,7 +173,7 @@ function createBadge(text, container, inputField) {
       }, 3000);
     } catch (error) {
       console.error('Error configuring node:', error);
-      alert('Failed to configure node. Please try again.');
+      alert('Failed to copy text to clipboard, it will not work unless the Panel is SSL secured. Instead, please check the browser console for the skyportd configure command.');
     }
   }
 
