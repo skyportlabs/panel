@@ -1,12 +1,19 @@
 <%- include('../components/admin_addons_template') %>
-<main id="content">
+<main id="content" class="px-8 pt-4">
   <div class="bg-transparent">
-    <div class="sm:flex sm:items-center px-8 pt-4">
+    <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-white">Plugins Overview</h1>
-        <p class="mt-1 tracking-tight text-sm text-neutral-500">
-          A list of all the Plugins installed on the panel.
-        </p>
+        <h1 class="text-base font-semibold leading-6 text-white">Instances</h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the instances deployed on the Skyport panel.</p>
+      </div>
+      <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
+        <button id="reload" type="button" class="block rounded-lg bg-green-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-green-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" onclick="location.href='/admin/plugins/reload'"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+        </svg>
+        </button>
+      </div>
+    </div>
+        
         <div class="mt-4 text-neutral-500">
 
         <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5 mr-8">
