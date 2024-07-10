@@ -1,0 +1,84 @@
+<%- include('../components/template') %>
+<main id="content">
+    <div class="bg-transparent">
+        <div class="sm:flex sm:items-center px-8 pt-4">
+            <div class="sm:flex-auto">
+                <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
+                <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update, and manage an instance on the Skyport panel.</p>
+            </div>
+            <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
+                <button id="addSubuser" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">add SubUser</button>
+            </div>
+        </div>
+    </div>
+    <div id="createUserModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+        <div class="bg-[#181818] rounded-lg p-8 max-w-md w-full">
+            <div class="flex flex-row justify-between">
+            <h2 class="text-lg font-semibold mb-4 text-white">Create New User</h2>
+            <button id="closeModal" class="mb-6 text-white hover:text-gray-600 focus:outline-none">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            </div>
+            <form action="/instance/<%= req.params.id %>/users/add" method="POST" class="space-y-4">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-neutral-400">Username</label>
+                    <input type="text" id="username" name="username" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                </div>
+                <div>
+                    <button type="submit" class="mt-6 w-full bg-white text-black py-2 px-4 rounded-md hover:bg-white-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Add SubUser</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<%- include('../components/instance') %>
+    <div class="px-4 sm:px-6 lg:px-8">
+        <table class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl">
+            <thead class="text-white">
+                <tr>
+                    <th class="px-6 py-3 text-left">User Name</th>
+                    <th class="px-6 py-3 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(function(user) { %>
+                    <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+                        <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-white border-none">
+                            <%= user.username %><span class="text-neutral-300">(<%= user.userId %>)</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap font-mono text-sm text-white border-none">
+                            <button class="text-white bg-red-600 px-3 py-1.5 rounded-lg text-sm" onclick="location.href='/instance/<%= req.params.id %>/users/remove/<%= user.username %>'">Remove</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</main>
+<%- include('../components/footer') %>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const createSubuserButton = document.getElementById('addSubuser');
+        const createUserModal = document.getElementById('createUserModal');
+        const closeModalButton = document.getElementById('closeModal');
+
+        createSubuserButton.addEventListener('click', function() {
+            createUserModal.classList.remove('hidden');
+        });
+
+        closeModalButton.addEventListener('click', function() {
+            createUserModal.classList.add('hidden');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === createUserModal) {
+                createUserModal.classList.add('hidden');
+            }
+        });
+        createUserModal.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    });
+</script>
