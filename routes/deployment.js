@@ -16,20 +16,21 @@ const {logAudit} = require('../handlers/auditlog');
 const router = express.Router();
 
 /**
- * GET /instances/list
- * Provides a list of all instances available in the database. Access to this route is restricted
- * with basic authentication, requiring a username and password. The authentication challenge and
- * realm can be configured within the route setup.
+ * Middleware to verify if the user is an administrator.
+ * Checks if the user object exists and if the user has admin privileges. If not, redirects to the
+ * home page. If the user is an admin, proceeds to the next middleware or route handler.
  *
- * @returns {Response} Sends a JSON response containing an array of instances.
+ * @param {Object} req - The request object, containing user data.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware or route handler to be executed.
+ * @returns {void} Either redirects or proceeds by calling next().
  */
-router.get('/instances/list', basicAuth({
-  users: { 'Skyport': config.key },
-  challenge: true, // we'll disable this in prod
-}), async (req, res) => {
-  let instances = await db.get('instances');
-  res.json(instances);
-});
+function isAdmin(req, res, next) {
+  if (!req.user || req.user.admin !== true) {
+    return res.redirect('../');
+  }
+  next();
+}
 
 /**
  * GET /images/list
@@ -61,7 +62,8 @@ router.get('/images/list', async (req, res) => {
  * @returns {Response} Sends a 201 status with instance deployment details if successful, or an error status if deployment fails.
  */
 
-router.get('/instances/deploy', async (req, res) => {
+// ... this route didn't have an admin check?
+router.get('/instances/deploy', isAdmin, async (req, res) => {
   const {
     image,
     memory,
@@ -190,6 +192,87 @@ router.get('/instances/deploy', async (req, res) => {
       error: 'Failed to create container',
       details: error ? error.data : 'No additional error info'
     });
+  }
+});
+
+router.put('/edit/:id', isAdmin, async (req, res) => {
+  if (!req.user) {
+      return res.status(401).json({ message: 'Authentication required' });
+  }
+
+  const { id } = req.params;
+  const { Image, Memory, Cpu } = req.body;
+
+  try {
+      // Fetch the existing instance
+      const instance = await db.get(`${id}_instance`);
+      if (!instance) {
+          return res.status(404).json({ message: 'Instance not found' });
+      }
+
+      // Prepare the request to the node
+      const node = instance.Node;
+      const RequestData = {
+          method: 'put',
+          url: `http://${node.address}:${node.port}/instances/edit/${id}`,
+          auth: {
+              username: 'Skyport',
+              password: node.apiKey
+          },
+          headers: { 
+              'Content-Type': 'application/json'
+          },
+          data: {
+              Image: Image || instance.Image,
+              Memory: Memory || instance.Memory,
+              Cpu: Cpu || instance.Cpu,
+              VolumeId: instance.VolumeId
+          }
+      };
+
+      // Send the edit request to the node
+      const response = await axios(RequestData);
+
+      // Update the instance in the database
+      const updatedInstance = {
+          ...instance,
+          Image: Image || instance.Image,
+          Memory: Memory || instance.Memory,
+          Cpu: Cpu || instance.Cpu,
+          ContainerId: response.data.newContainerId
+      };
+
+      // Update the instance in the user's instances list
+      const userInstances = await db.get(`${instance.User}_instances`) || [];
+      const updatedUserInstances = userInstances.map(inst => 
+          inst.ContainerId === id ? {...inst, ...updatedInstance} : inst
+      );
+      await db.set(`${instance.User}_instances`, updatedUserInstances);
+
+      // Update the instance in the global instances list
+      const globalInstances = await db.get('instances') || [];
+      const updatedGlobalInstances = globalInstances.map(inst => 
+          inst.ContainerId === id ? {...inst, ...updatedInstance} : inst
+      );
+      await db.set('instances', updatedGlobalInstances);
+
+      // Update the individual instance record
+      await db.set(`${response.data.newContainerId}_instance`, updatedInstance);
+
+      // Delete the old instance record
+      await db.del(`${id}_instance`);
+
+      logAudit(req.user.userId, req.user.username, 'instance:edit', req.ip);
+
+      res.status(200).json({
+          message: 'Instance updated successfully',
+          oldContainerId: id,
+          newContainerId: response.data.newContainerId
+      });
+
+  } catch (error) {
+      console.error('Error updating instance:', error);
+      res.status(500).json({ message: 'Failed to update instance', error: error.message });
   }
 });
 
