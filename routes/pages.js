@@ -31,8 +31,12 @@ async function setupRoutes() {
         pages.forEach(async page => {
             if (page.requiresAuth) {
                 router.get(page.path, isAuthenticated, async (req, res) => {
-                    const instances = await db.get(req.user.userId + '_instances') || [];
-                    res.render(page.template, { config, req, user: req.user, instances, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+                    let adminInstances;
+                    let instances = await db.get(req.user.userId + '_instances') || [];
+                    if (await req.user.admin === true) {
+                        adminInstances = await db.get('instances') || [];
+                    }
+                    res.render(page.template, { config, req, user: req.user, instances, adminInstances, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
                 });
             } else {
                 router.get(page.path, async (req, res) => {
