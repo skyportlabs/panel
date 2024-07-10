@@ -3,6 +3,7 @@ const { db } = require('../handlers/db');
 const CatLoggr = require('cat-loggr');
 const log = new CatLoggr();
 const readline = require('readline');
+const { v4: uuidv4 } = require('uuid');
 const config = require('../config.json');
 
 const rl = readline.createInterface({
@@ -45,7 +46,9 @@ async function performSeeding() {
       log.init('fetching image data...');
       try {
         const imageDataResponse = await axios.get(url);
-        const imageData = imageDataResponse.data;
+        let imageData = imageDataResponse.data;
+        imageData.Id = uuidv4();
+
       
         log.init('seeding: ' + imageData.Name);
         imageDataArray.push(imageData);

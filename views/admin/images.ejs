@@ -6,6 +6,9 @@
            <h1 class="text-base font-semibold leading-6 text-white">Images</h1>
            <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the images on the Skyport panel.</p>
          </div>
+         <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
+          <button id="uploadimage" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Upload Image</button>
+        </div>
        </div>
       <div style="display: block;" id="nodeTable" class="mt-6 w-full">
       <table class="mt-6 w-full whitespace-nowrap text-left">
@@ -21,6 +24,7 @@
             <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
             <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Author</th>
 			<th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker Image</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
@@ -41,6 +45,11 @@
                 <div class="font-mono text-sm leading-6 text-neutral-400"><%= image.Image %></div>
               </div>
             </td>
+            <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+              <div class="flex gap-x-3">
+                <div onclick="deleteImage('<%= image.Id %>')" class="font-mono leading-6 text-white bg-red-600 hover:bg-red-500 text-center text-sm font-semibold px-3 py-1 cursor-pointer block transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 rounded-lg">Delete</div>
+              </div>
+            </td>
           </tr>
           <% }); %>
         </tbody>
@@ -49,3 +58,65 @@
     </div>
 </main>
 <%- include('../components/footer') %>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var uploadBtn = document.getElementById('uploadimage');
+    
+    uploadBtn.addEventListener('click', function() {
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.click();
+      input.addEventListener('change', function(event) {
+        var file = event.target.files[0];
+        if (file && file.type === 'application/json') {
+          var reader = new FileReader();
+          reader.onload = function(event) {
+            var jsonData = event.target.result;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/admin/images/upload', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+              if (xhr.status === 200) {
+                console.log('image uploaded successfully.');
+                setTimeout(function() {
+                  window.location.reload();
+                }, 500);
+              } else {
+                console.error('Error uploading image.');
+              }
+            };
+            xhr.onerror = function() {
+              console.error('Network error.');
+            };
+            xhr.send(jsonData);
+          };
+          reader.readAsText(file);
+        } else {
+          alert('Please select a JSON file.');
+        }
+      });
+    });
+  });
+
+  function deleteImage(id) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/admin/images/delete', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        console.log('image deleted successfully.');
+        setTimeout(function() {
+          window.location.reload();
+        }, 500);
+      } else {
+        console.error('Error deleting image.');
+      }
+    };
+    xhr.onerror = function() {
+      console.error('Network error.');
+    };
+    xhr.send(JSON.stringify({ id: id }));
+  }
+  </script>
+  
