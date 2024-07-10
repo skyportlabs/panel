@@ -6,22 +6,179 @@
             <h1 class="text-base font-semibold leading-6 text-white">Instances</h1>
             <p class="mt-1 tracking-tight text-sm text-neutral-500">View the instances that you have access to.</p>
          </div>
+         <% if (req.user.admin === true) { %>
+          <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+            <button
+              id="switchButton" 
+              onclick="changeButtonName()"
+              type="button"
+              class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+            See all instances
+            </button>
+          </div>
+          <script>
+            function changeButtonName() {
+              var nameElement = document.getElementById("switchButton");
+              if (nameElement.textContent === "Showing your instances") {
+                  nameElement.textContent = "See all instances";
+              } else {
+                  nameElement.textContent = "Showing your instances";
+              }
+            }
+
+          document.addEventListener('DOMContentLoaded', function() {
+              const toggleButton = document.getElementById('switchButton');
+              const AdminInstancesContainer = document.getElementById('AdminInstancesContainer');
+              AdminInstancesContainer.classList.add('hidden');
+              <% if (instances.length == 0) { %>
+              const noInstancesContainer = document.getElementById('noInstancesContainer');
+              <% } else { %>
+              const instancesContainer = document.getElementById('instancesContainer');
+              <% } %>
+              toggleButton.addEventListener('click', function() {
+                  if (AdminInstancesContainer.classList.contains('hidden')) {
+                    AdminInstancesContainer.classList.remove('hidden');
+                      <% if (instances.length == 0) { %>
+                      noInstancesContainer.classList.add('hidden');
+                      <% } else { %>
+                      instancesContainer.classList.add('hidden');
+                      <% } %>
+                  } else {
+                    AdminInstancesContainer.classList.add('hidden');
+                    <% if (instances.length == 0) { %>
+                    noInstancesContainer.classList.remove('hidden');
+                    <% } else { %>
+                    instancesContainer.classList.remove('hidden');
+                    <% } %>
+                  }
+              });
+          });
+          </script>
+
+         <% } %>
       </div>
    </div>
    <div class="px-4 sm:px-6 lg:px-8">
     <% if (instances.length == 0) { %>
-<!-- No instances -->
-<div class="text-center mt-64">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="mx-auto h-12 w-12 text-neutral-500">
-    <path fill-rule="evenodd" d="M11.622 1.602a.75.75 0 0 1 .756 0l2.25 1.313a.75.75 0 0 1-.756 1.295L12 3.118 10.128 4.21a.75.75 0 1 1-.756-1.295l2.25-1.313ZM5.898 5.81a.75.75 0 0 1-.27 1.025l-1.14.665 1.14.665a.75.75 0 1 1-.756 1.295L3.75 8.806v.944a.75.75 0 0 1-1.5 0V7.5a.75.75 0 0 1 .372-.648l2.25-1.312a.75.75 0 0 1 1.026.27Zm12.204 0a.75.75 0 0 1 1.026-.27l2.25 1.312a.75.75 0 0 1 .372.648v2.25a.75.75 0 0 1-1.5 0v-.944l-1.122.654a.75.75 0 1 1-.756-1.295l1.14-.665-1.14-.665a.75.75 0 0 1-.27-1.025Zm-9 5.25a.75.75 0 0 1 1.026-.27L12 11.882l1.872-1.092a.75.75 0 1 1 .756 1.295l-1.878 1.096V15a.75.75 0 0 1-1.5 0v-1.82l-1.878-1.095a.75.75 0 0 1-.27-1.025ZM3 13.5a.75.75 0 0 1 .75.75v1.82l1.878 1.095a.75.75 0 1 1-.756 1.295l-2.25-1.312a.75.75 0 0 1-.372-.648v-2.25A.75.75 0 0 1 3 13.5Zm18 0a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.372.648l-2.25 1.312a.75.75 0 1 1-.756-1.295l1.878-1.096V14.25a.75.75 0 0 1 .75-.75Zm-9 5.25a.75.75 0 0 1 .75.75v.944l1.122-.654a.75.75 0 1 1 .756 1.295l-2.25 1.313a.75.75 0 0 1-.756 0l-2.25-1.313a.75.75 0 1 1 .756-1.295l1.122.654V19.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
-  </svg>  
-  <h3 class="mt-4 text-md font-medium text-white">No instances</h3>
-  <p class="mt-1 text-sm text-neutral-400">There are no instances on your account.</p>
-</div>
+      <!-- No instances -->
+      <div id="noInstancesContainer" class="text-center mt-64">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="mx-auto h-12 w-12 text-neutral-500">
+          <path fill-rule="evenodd" d="M11.622 1.602a.75.75 0 0 1 .756 0l2.25 1.313a.75.75 0 0 1-.756 1.295L12 3.118 10.128 4.21a.75.75 0 1 1-.756-1.295l2.25-1.313ZM5.898 5.81a.75.75 0 0 1-.27 1.025l-1.14.665 1.14.665a.75.75 0 1 1-.756 1.295L3.75 8.806v.944a.75.75 0 0 1-1.5 0V7.5a.75.75 0 0 1 .372-.648l2.25-1.312a.75.75 0 0 1 1.026.27Zm12.204 0a.75.75 0 0 1 1.026-.27l2.25 1.312a.75.75 0 0 1 .372.648v2.25a.75.75 0 0 1-1.5 0v-.944l-1.122.654a.75.75 0 1 1-.756-1.295l1.14-.665-1.14-.665a.75.75 0 0 1-.27-1.025Zm-9 5.25a.75.75 0 0 1 1.026-.27L12 11.882l1.872-1.092a.75.75 0 1 1 .756 1.295l-1.878 1.096V15a.75.75 0 0 1-1.5 0v-1.82l-1.878-1.095a.75.75 0 0 1-.27-1.025ZM3 13.5a.75.75 0 0 1 .75.75v1.82l1.878 1.095a.75.75 0 1 1-.756 1.295l-2.25-1.312a.75.75 0 0 1-.372-.648v-2.25A.75.75 0 0 1 3 13.5Zm18 0a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.372.648l-2.25 1.312a.75.75 0 1 1-.756-1.295l1.878-1.096V14.25a.75.75 0 0 1 .75-.75Zm-9 5.25a.75.75 0 0 1 .75.75v.944l1.122-.654a.75.75 0 1 1 .756 1.295l-2.25 1.313a.75.75 0 0 1-.756 0l-2.25-1.313a.75.75 0 1 1 .756-1.295l1.122.654V19.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+        </svg>  
+        <h3 class="mt-4 text-md font-medium text-white">No instances</h3>
+        <p class="mt-1 text-sm text-neutral-400">There are no instances on your account.</p>
+      </div>
     <% } %>
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <% if (req.user.admin === true) { %>
+            <% adminInstances.forEach(function(instance) { %>
+              <a id="AdminInstancesContainer" data-instance-id="<%= instance.ContainerId %>" href="../instance/<%= instance.ContainerId %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8">
+                 <div class="flex items-center justify-between">
+                   <div class="flex items-center space-x-3">
+                     <div class="rounded-lg border border-white/5 inline-flex">
+                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 mt-2.5 mb-2.5 mr-2.5 ml-2.5 text-white">
+                          <path d="M12.378 1.602a.75.75 0 0 0-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03ZM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 0 0 .372-.648V7.93ZM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 0 0 .372.648l8.628 5.033Z" />
+                        </svg>                                
+                     </div>
+                     <h2 class="text-lg font-medium pl-3 text-white tracking-tight"><%= instance.Name %></h2> 
+                   </div>
+                   <div class="flex items-center space-x-2">
+                     <span data-status-bg class="bg-neutral-600/20 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center">
+                       <span data-status>
+                          <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                           </svg>
+                          loading...
+                       </span>
+                     </span>
+                     <span class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center">
+                       <span data-ram-usage>
+                          <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                           </svg>
+                          loading...
+                       </span>
+                     </span>
+                     <span class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center">
+                       <span data-cpu-usage>
+                          <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                           </svg>
+                          loading...
+                       </span>
+                     </span>
+                   </div>
+                 </div>
+               </a>
+           <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const adminInstances = document.querySelectorAll('[data-instance-id]');
+            
+              adminInstances.forEach(instance => {
+                const containerId = instance.dataset.instanceId;
+                const socket = new WebSocket(`ws://<%= config.domain %>:<%= config.port %>/stats/${containerId}`);
+              
+                const statusElement = instance.querySelector('[data-status]');
+                const statusBg = instance.querySelector('[data-status-bg]');
+                const ramUsageElement = instance.querySelector('[data-ram-usage]');
+                const ramLimitElement = instance.querySelector('[data-ram-limit]');
+                const cpuUsageElement = instance.querySelector('[data-cpu-usage]');
+              
+                function formatBytes(bytes, decimals = 2) {
+                  if (bytes === 0) return '0.00 B';
+                  const k = 1024;
+                  const dm = decimals < 0 ? 0 : decimals;
+                  const sizes = ['B', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+                  const i = Math.floor(Math.log(bytes) / Math.log(k));
+                  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+                }
+              
+                socket.onmessage = event => {
+                  const stats = JSON.parse(event.data);
+                
+                  if (stats.error) {
+                    console.error('Error fetching stats:', stats.error);
+                    return;
+                  }
+                
+                  // Update RAM usage
+                  const ramUsageRaw = stats.memory_stats.usage / 1024;
+                  const ramUsage = isNaN(ramUsageRaw) ? '0 B' : formatBytes(ramUsageRaw);
+                  const ramLimitRaw = stats.memory_stats.limit / 1024;
+                  const ramLimit = isNaN(ramLimitRaw) ? '0 B' : formatBytes(ramLimitRaw);
+                  ramUsageElement.textContent = ramUsage + ' RAM Usage';
+                
+                  // Determine status based on RAM usage
+                  if (isNaN(ramUsageRaw)) {
+                    statusElement.className = 'text-neutral-500';
+                    statusElement.textContent = 'Offline';
+                  } else if (ramUsageRaw > 1) {
+                    statusBg.classList.remove('bg-neutral-600/20');
+                    statusBg.classList.add('bg-emerald-600/10');
+                    statusElement.className = 'text-emerald-500';
+                    statusElement.textContent = 'Online';
+                  }
+                
+                  // Update CPU usage
+                  const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
+                  const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
+                  const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta))
+                    ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%'
+                    : '0%';
+                  cpuUsageElement.textContent = cpuUsagePercent + ' CPU Usage';
+                };
+              });
+            });
+     
+           </script>
+           <% }); %>
+          <% } %>
       <% instances.forEach(function(instance) { %>
-         <a data-instance-id="<%= instance.ContainerId %>" href="../instance/<%= instance.ContainerId %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8">
+         <a id="instancesContainer" data-instance-id="<%= instance.ContainerId %>" href="../instance/<%= instance.ContainerId %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
                 <div class="rounded-lg border border-white/5 inline-flex">
