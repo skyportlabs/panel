@@ -16,7 +16,7 @@ const saltRounds = 10;
 const multer = require('multer');
 const path = require('path')
 const fs = require('node:fs')
-const {logAudit} = require('../handlers/auditlog');
+const {logAudit} = require('../handlers/auditlog.js');
 
 /**
  * Middleware to verify if the user is an administrator.
