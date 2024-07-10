@@ -544,6 +544,35 @@ router.get('/admin/images', isAdmin, async (req, res) => {
   res.render('admin/images', { req, user: req.user, images, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
+router.post('/admin/images/upload', isAdmin, async (req, res) => {
+  try {
+    let jsonData = req.body;
+    jsonData.Id = uuidv4();
+    let images = await db.get('images') || [];
+    images.push(jsonData);
+    await db.set('images', images);
+    res.status(200).send('image uploaded successfully.');
+  } catch (err) {
+    console.error('Error uploading image:', err);
+    res.status(500).send('Error uploading image.');
+  }
+});
+
+
+router.post('/admin/images/delete', isAdmin, async (req, res) => {
+  try {
+    let { id } = req.body;
+    let images = await db.get('images') || [];
+    images = images.filter(image => image.Id !== id);
+    await db.set('images', images);
+    res.status(200).send('image deleted successfully.');
+  } catch (err) {
+    console.error('Error deleting image:', err);
+    res.status(500).send('Error deleting image.');
+  }
+});
+
+
 // Endpoint to delete a single instance
 router.get('/admin/instance/delete/:id', isAdmin, async (req, res) => {
   const { id } = req.params;
