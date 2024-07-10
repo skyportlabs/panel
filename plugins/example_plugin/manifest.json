@@ -1,14 +1,14 @@
 {
     "name": "Example Plugin",
     "version": "1.0.0",
-    "description": "A Interactive Desktop Plugin",
+    "description": "The Description of the Example Plugin",
     "author": "privt00",
     "main": "index.js",
-    "router": "desktop",
+    "router": "example",
     "adminsidebar": {
-        "example url": "/test"
+        "example url": "/example"
     },
     "sidebar": {
-        "Interactive Desktop": "/desktop"
+        "example url": "/example"
     }
 }
