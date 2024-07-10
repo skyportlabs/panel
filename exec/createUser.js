@@ -25,7 +25,7 @@ async function doesUserExist(username) {
 async function initializeUsersTable(username, password) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const userId = uuidv4();
-    const users = [{ userId, username, password: hashedPassword, admin: true }];
+    const users = [{ userId, username, password: hashedPassword, "Accesto":[], admin: true }];
     return db.set('users', users);
 }
 
@@ -34,7 +34,7 @@ async function addUserToUsersTable(username, password) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const userId = uuidv4();
     const users = await db.get('users') || [];
-    users.push({ userId, username, password: hashedPassword, admin: true });
+    users.push({ userId, username, password: hashedPassword, "Accesto":[], admin: true });
     return db.set('users', users);
 }
 
