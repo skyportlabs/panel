@@ -95,20 +95,30 @@ console.log(chalk.gray(ascii) + chalk.white(`version v${config.version}\n`));
  * modular route definitions that can be independently maintained and easily scaled.
  */
 const routesDir = path.join(__dirname, 'routes');
-const routes = fs.readdirSync(routesDir);
-routes.forEach(routeFile => {
-  const routePath = path.join(routesDir, routeFile);
-  const route = require(routePath);
-  log.init('loaded route: ' + routeFile);
-  expressWs.applyTo(route);
-  app.use("/", route);
-});
 
+function loadRoutes(directory) {
+  fs.readdirSync(directory).forEach(file => {
+    const fullPath = path.join(directory, file);
+    const stat = fs.statSync(fullPath);
+
+    if (stat.isDirectory()) {
+      // Recursively load routes from subdirectories
+      loadRoutes(fullPath);
+    } else if (stat.isFile() && path.extname(file) === '.js') {
+      // Only require .js files
+      const route = require(fullPath);
+      //log.init('loaded route: ' + fullPath);
+      expressWs.applyTo(route);
+      app.use("/", route);
+    }
+  });
+}
+
+// Start loading routes from the root routes directory
+loadRoutes(routesDir);
 
 const pluginroutes = require('./plugins/pluginmanager.js');
 app.use("/", pluginroutes);
-
-
 
 const pluginDir = path.join(__dirname, 'plugins');
 const PluginViewsDir = fs.readdirSync(pluginDir).map(addonName => path.join(pluginDir, addonName, 'views'));
