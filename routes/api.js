@@ -41,11 +41,41 @@ router.get('/api/users', validateApiKey, async (req, res) => {
   }
 });
 
+router.get('/api/getUser', validateApiKey, async (req, res) => {
+  try {
+    const { type, value } = req.body;
+
+    if (!type || !value) {
+      return res.status(400).json({ error: 'Type and value are required' });
+    }
+
+    const users = await db.get('users') || [];
+    
+    let user;
+    if (type === 'email') {
+      user = users.find(user => user.email === value);
+    } else if (type === 'username') {
+      user = users.find(user => user.username === value);
+    } else {
+      return res.status(400).json({ error: 'Invalid search type. Use "email" or "username".' });
+    }
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json(user);
+  } catch (error) {
+    console.error('Error retrieving user:', error);
+    res.status(500).json({ error: 'Failed to retrieve user' });
+  }
+});
+
 router.post('/api/users/create', validateApiKey, async (req, res) => {
   try {
-    const { username, password, admin } = req.body;
+    const { username, email, password, admin } = req.body;
     
-    if (!username || !password) {
+    if (!username || !email || !password) {
       return res.status(400).json({ error: 'Username and password are required' });
     }
 
@@ -60,7 +90,9 @@ router.post('/api/users/create', validateApiKey, async (req, res) => {
     const user = {
       userId: uuidv4(),
       username,
+      email,
       password: await bcrypt.hash(password, saltRounds),
+      Accesto: [],
       admin: admin === true
     };
 
@@ -68,7 +100,7 @@ router.post('/api/users/create', validateApiKey, async (req, res) => {
     users.push(user);
     await db.set('users', users);
 
-    res.status(201).json({ userId: user.userId, username: user.username, admin: user.admin });
+    res.status(201).json({ userId: user.userId, email, username: user.username, admin: user.admin });
   } catch (error) {
     res.status(500).json({ error: 'Failed to create user' });
   }
@@ -237,6 +269,21 @@ router.delete('/api/instance/delete', validateApiKey, async (req, res) => {
   }
 });
 
+router.get('/api/getInstance', validateApiKey, async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'Parameter "userId" is required' });
+  }
+
+  try {
+    const userInstances = await db.get(`${userId}_instances`) || [];
+    res.json(userInstances);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve user instances' });
+  }
+});
+
 // Images
 router.get('/api/images', validateApiKey, async (req, res) => {
   try {
@@ -268,11 +315,12 @@ router.post('/api/nodes/create', validateApiKey, async (req, res) => {
     processor: req.body.processor,
     address: req.body.address,
     port: req.body.port,
-    apiKey: req.body.apiKey,
-    status: 'Unknown' // Default status
+    apiKey: null, // Set to null initially
+    configureKey: configureKey, // Add the configureKey
+    status: 'Unconfigured' // Status to indicate pending configuration
   };
 
-  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.port || !req.body.apiKey) {
+  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.port) {
     return res.status(400).json({ error: 'Missing parameters' });
   }
 
@@ -298,6 +346,8 @@ router.delete('/api/nodes/delete', validateApiKey, async (req, res) => {
 
   res.status(201).json({ Message: "The node has successfully deleted." });
 });
+
+// Function
 
 // Helper function to delete an instance
 async function deleteInstance(instance) {
