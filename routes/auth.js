@@ -9,6 +9,7 @@ const express = require('express');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const { db } = require('../handlers/db.js');
+const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -49,6 +50,38 @@ passport.use(new LocalStrategy(
     }
   }
 ));
+
+async function doesUserExist(username) {
+  const users = await db.get('users');
+  if (users) {
+      return users.some(user => user.username === username);
+  } else {
+      return false; // If no users found, return false
+  }
+}
+
+
+async function doesEmailExist(email) {
+  const users = await db.get('users');
+  if (users) {
+      return users.some(user => user.email === email);
+  } else {
+      return false; // If no users found, return false
+  }
+}
+
+async function createUser(username, email, password) {
+      return addUserToUsersTable(username, email, password);
+}
+
+async function addUserToUsersTable(username, email, password) {
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  const userId = uuidv4();
+  const users = await db.get('users') || [];
+  users.push({ userId, username, email, password: hashedPassword, "Accesto":[], admin: false });
+  return db.set('users', users);
+}
+
 
 
 /**
@@ -98,6 +131,67 @@ router.get('/auth/login', passport.authenticate('local', {
     successRedirect: '/instances',
     failureRedirect: '/login?err=InvalidCredentials&state=failed',
 }));
+
+
+async function initializeRoutes() {
+  async function updateRoutes() {
+    try {
+      const settings = await db.get('settings');
+
+      if (!settings) {
+      db.set('settings', { register: false });
+      } else {
+        if (settings.register === true) {
+          router.get('/register', async (req, res) => {
+            try {
+              res.render('auth/register', {
+                req,
+                user: req.user,
+                name:await db.get('name') || 'Skyport',
+                logo: await db.get('logo') || false
+              });
+            } catch (error) {
+              console.error('Error fetching name or logo:', error);
+              res.status(500).send('Internal server error');
+            }
+          });
+
+          router.post('/auth/register', async (req, res) => {
+            const { username, email, password } = req.body;
+
+            try {
+              const users = await db.get('users');
+              const userExists = await doesUserExist(username);
+              const emailExists = await doesEmailExist(email);
+
+              if (userExists || emailExists) {
+                res.send('User already exists');
+                return;
+              }
+
+              await createUser(username, email, password);
+              res.redirect('/instances');
+            } catch (error) {
+              console.error('Error handling registration:', error);
+              res.status(500).send('Internal server error');
+            }
+          });
+        } else {
+          router.stack = router.stack.filter(
+            r => !(r.route && (r.route.path === '/register' || r.route.path === '/auth/register'))
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+    }
+  }
+  await updateRoutes();
+  setInterval(updateRoutes, 1000);
+}
+
+initializeRoutes();
+
 
 /**
  * GET /auth/logout
