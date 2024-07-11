@@ -21,7 +21,7 @@ router.use(passport.session());
 
 /**
  * Configures Passport's local strategy for user authentication. It checks the provided
- * username and password against stored credentials in the database. If the credentials
+ * username (or email) and password against stored credentials in the database. If the credentials
  * match, the user is authenticated; otherwise, appropriate error messages are returned.
  *
  * @returns {void} No return value but configures the local authentication strategy.
@@ -34,9 +34,18 @@ passport.use(new LocalStrategy(
         return done(null, false, { message: 'No users found.' });
       }
 
-      const user = users.find(user => user.username === username);
+      // Check if the input is an email
+      const isEmail = username.includes('@');
+
+      let user;
+      if (isEmail) {
+        user = users.find(user => user.email === username);
+      } else {
+        user = users.find(user => user.username === username);
+      }
+
       if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
+        return done(null, false, { message: 'Incorrect username or email.' });
       }
 
       const match = await bcrypt.compare(password, user.password);
@@ -54,24 +63,23 @@ passport.use(new LocalStrategy(
 async function doesUserExist(username) {
   const users = await db.get('users');
   if (users) {
-      return users.some(user => user.username === username);
+    return users.some(user => user.username === username);
   } else {
-      return false; // If no users found, return false
+    return false; // If no users found, return false
   }
 }
-
 
 async function doesEmailExist(email) {
   const users = await db.get('users');
   if (users) {
-      return users.some(user => user.email === email);
+    return users.some(user => user.email === email);
   } else {
-      return false; // If no users found, return false
+    return false; // If no users found, return false
   }
 }
 
 async function createUser(username, email, password) {
-      return addUserToUsersTable(username, email, password);
+  return addUserToUsersTable(username, email, password);
 }
 
 async function addUserToUsersTable(username, email, password) {
@@ -81,8 +89,6 @@ async function addUserToUsersTable(username, email, password) {
   users.push({ userId, username, email, password: hashedPassword, "Accesto":[], admin: false });
   return db.set('users', users);
 }
-
-
 
 /**
  * Serializes the user to the session, storing only the username to manage login sessions.
@@ -119,7 +125,6 @@ passport.deserializeUser(async (username, done) => {
   }
 });
 
-
 /**
  * GET /auth/login
  * Authenticates a user using Passport's local strategy. If authentication is successful, the user
@@ -128,10 +133,9 @@ passport.deserializeUser(async (username, done) => {
  * @returns {Response} Redirects based on the success or failure of the authentication attempt.
  */
 router.get('/auth/login', passport.authenticate('local', {
-    successRedirect: '/instances',
-    failureRedirect: '/login?err=InvalidCredentials&state=failed',
+  successRedirect: '/instances',
+  failureRedirect: '/login?err=InvalidCredentials&state=failed',
 }));
-
 
 async function initializeRoutes() {
   async function updateRoutes() {
@@ -139,7 +143,7 @@ async function initializeRoutes() {
       const settings = await db.get('settings');
 
       if (!settings) {
-      db.set('settings', { register: false });
+        db.set('settings', { register: false });
       } else {
         if (settings.register === true) {
           router.get('/register', async (req, res) => {
@@ -147,7 +151,7 @@ async function initializeRoutes() {
               res.render('auth/register', {
                 req,
                 user: req.user,
-                name:await db.get('name') || 'Skyport',
+                name: await db.get('name') || 'Skyport',
                 logo: await db.get('logo') || false
               });
             } catch (error) {
@@ -192,7 +196,6 @@ async function initializeRoutes() {
 
 initializeRoutes();
 
-
 /**
  * GET /auth/logout
  * Logs out the user by ending the session and then redirects the user.
@@ -201,7 +204,7 @@ initializeRoutes();
  */
 router.get("/auth/logout", (req, res) => {
   req.logout(req.user, err => {
-    if(err) return next(err);
+    if (err) return next(err);
     res.redirect("/");
   });
 });
