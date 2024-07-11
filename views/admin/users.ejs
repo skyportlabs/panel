@@ -24,6 +24,7 @@
           <col class="w-full sm:w-4/12" />
           <col class="lg:w-4/12" />
           <col class="lg:w-2/12" />
+          <col class="lg:w-4/12" />
           <col class="lg:w-1/12" />
           <col class="lg:w-1/12" />
         </colgroup>
@@ -35,6 +36,12 @@
             >
               Name
             </th>
+            <th
+            scope="col"
+            class="py-2 pl-0 pr-8 font-semibold sm:pl-80 lg:pl-8"
+          >
+            Email
+          </th>
             <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">
               Information
             </th>
@@ -65,6 +72,15 @@
 
                 <div class="truncate text-sm font-medium leading-6 text-white">
                   <%= user.username %>
+                </div>
+              </div>
+            </td>
+            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+              <div class="flex gap-x-3">
+                <div
+                  class="rounded-lg bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
+                >
+                  <%= user.email %>
                 </div>
               </div>
             </td>
