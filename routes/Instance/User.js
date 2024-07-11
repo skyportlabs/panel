@@ -46,7 +46,7 @@ router.post('/instance/:id/users/add', async (req, res) => {
             user.Accesto.push(id);
         }
         await db.set('users', usersData);
-        return res.redirect
+        return res.redirect('/instance/' + id + '/users');
     } catch (error) {
         console.error('Error updating user access:', error);
         return res.status(500).send('Internal Server Error');
@@ -77,9 +77,5 @@ router.get('/instance/:id/users/remove/:username', async (req, res) => {
         return res.status(500).send('Internal Server Error');
     }
 });
-
-
-
-
 
 module.exports = router;
