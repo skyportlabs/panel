@@ -67,7 +67,7 @@ async function setupRoutes() {
                 
             } else {
                 router.get(page.path, async (req, res) => {
-                    res.render(page.template, { req, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+                    res.render(page.template, { settings: await db.get('settings'), req, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
                 });
             }
         });
