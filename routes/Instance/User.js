@@ -1,0 +1,81 @@
+const express = require('express');
+const router = express.Router();
+const { db } = require('../../handlers/db.js');
+const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
+
+router.get('/instance/:id/users', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const instance = await db.get(`${id}_instance`);
+        if (!instance) {
+            return res.status(404).send('Instance not found.');
+        }
+
+        const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+        if (!isAuthorized) {
+            return res.status(403).send('Unauthorized access to this instance.');
+        }
+
+        let users = await db.get('users') || [];
+        users = users.filter(user => user && user.Accesto && user.Accesto.includes(instance.ContainerId));
+        const instanceName = instance.Name;
+
+        res.render('instance/users', { req, users, user: req.user, instance_name: instanceName, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    } catch (err) {
+        console.error('Error fetching data:', err);
+        res.status(500).send('Internal Server Error.');
+    }
+});
+
+router.post('/instance/:id/users/add', async (req, res) => {
+    const { id } = req.params;
+    const { username } = req.body;
+
+    try {
+        let usersData = await db.get('users');
+        if (typeof usersData !== 'object') {
+            throw new Error('Users data is not in the expected format.');
+        }
+        let user = usersData.find(user => user.username === username);
+
+        if (!user) {
+            return res.redirect('/instance/' + id + '/users?err=usernotfound.');
+        }
+        if (!user.Accesto.includes(id)) {
+            user.Accesto.push(id);
+        }
+        await db.set('users', usersData);
+        return res.redirect('/instance/' + id + '/users');
+    } catch (error) {
+        console.error('Error updating user access:', error);
+        return res.status(500).send('Internal Server Error');
+    }
+});
+
+router.get('/instance/:id/users/remove/:username', async (req, res) => {
+    const { id } = req.params;
+    const { username } = req.params;
+
+    try {
+        let usersData = await db.get('users');
+        if (typeof usersData !== 'object') {
+            throw new Error('Users data is not in the expected format.');
+        }
+        let user = usersData.find(user => user.username === username);
+
+        if (!user) {
+            return res.redirect(`/instance/${id}/users?err=usernotfound.`);
+        }
+        user.Accesto = user.Accesto.filter(accessId => accessId !== id);
+
+        await db.set('users', usersData);
+
+        return res.redirect(`/instance/${id}/users`);
+    } catch (error) {
+        console.error('Error updating user access:', error);
+        return res.status(500).send('Internal Server Error');
+    }
+});
+
+module.exports = router;

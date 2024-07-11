@@ -21,32 +21,42 @@ async function doesUserExist(username) {
     }
 }
 
+
+async function doesEmailExist(email) {
+    const users = await db.get('users');
+    if (users) {
+        return users.some(user => user.email === email);
+    } else {
+        return false; // If no users found, return false
+    }
+}
+
 // Function to create the users table and add the first user
-async function initializeUsersTable(username, password) {
+async function initializeUsersTable(username, email, password) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const userId = uuidv4();
-    const users = [{ userId, username, password: hashedPassword, admin: true }];
+    const users = [{ userId, username, email, password: hashedPassword, "Accesto":[], admin: true }];
     return db.set('users', users);
 }
 
 // Function to add a new user to the existing users table
-async function addUserToUsersTable(username, password) {
+async function addUserToUsersTable(username, email, password) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const userId = uuidv4();
     const users = await db.get('users') || [];
-    users.push({ userId, username, password: hashedPassword, admin: true });
+    users.push({ userId, username, email, password: hashedPassword, "Accesto":[], admin: true });
     return db.set('users', users);
 }
 
 // Function to create a new user
-async function createUser(username, password) {
+async function createUser(username, email, password) {
     const users = await db.get('users');
     if (!users) {
         // If users table doesn't exist, initialize it with the first user
-        return initializeUsersTable(username, password);
+        return initializeUsersTable(username, email, password);
     } else {
         // If users table exists, add the new user to it
-        return addUserToUsersTable(username, password);
+        return addUserToUsersTable(username, email, password);
     }
 }
 
@@ -62,16 +72,18 @@ async function main() {
     log.init('create a new *admin* user for the skyport panel:')
     log.init('you can make regular users from the admin -> users page!')
     const username = await askQuestion("username: ");
+    const email = await askQuestion("email: ");
     const password = await askQuestion("password: ");
 
     const userExists = await doesUserExist(username);
-    if (userExists) {
+    const emailExists = await doesEmailExist(email);
+    if (userExists || emailExists) {
         log.error("user already exists!");
         rl.close();
         return;
     }
 
-    await createUser(username, password);
+    await createUser(username, email, password);
     log.info("done! user created.");
     rl.close();
 }

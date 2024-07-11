@@ -11,12 +11,19 @@ const { db } = require('../handlers/db.js');
 async function isUserAuthorizedForContainer(userId, containerId) {
     try {
         const userInstances = await db.get(userId + '_instances');
-        if (!userInstances) {
+        const users = await db.get('users');
+        const subUserInstances = users.find(user => user.userId === userId).Accesto;
+        if (!userInstances && !subUserInstances.includes(containerId)) {
+            console.log(subUserInstances);
             console.error('No instances found for user:', userId);
             return false;
         }
         
-        return userInstances.some(instance => instance.ContainerId === containerId);
+        if (!subUserInstances.includes(containerId)) {
+            return userInstances.some(instance => instance.ContainerId === containerId);
+        } else if (subUserInstances.includes(containerId)) {
+            return true;
+        }
     } catch (error) {
         console.error('Error fetching user instances:', error);
         return false;

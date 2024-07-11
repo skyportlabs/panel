@@ -24,6 +24,7 @@
           <col class="w-full sm:w-4/12" />
           <col class="lg:w-4/12" />
           <col class="lg:w-2/12" />
+          <col class="lg:w-4/12" />
           <col class="lg:w-1/12" />
           <col class="lg:w-1/12" />
         </colgroup>
@@ -35,6 +36,12 @@
             >
               Name
             </th>
+            <th
+            scope="col"
+            class="py-2 pl-0 pr-8 font-semibold sm:pl-80 lg:pl-8"
+          >
+            Email
+          </th>
             <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">
               Information
             </th>
@@ -65,6 +72,15 @@
 
                 <div class="truncate text-sm font-medium leading-6 text-white">
                   <%= user.username %>
+                </div>
+              </div>
+            </td>
+            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+              <div class="flex gap-x-3">
+                <div
+                  class="rounded-lg bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
+                >
+                  <%= user.email %>
                 </div>
               </div>
             </td>
@@ -138,6 +154,13 @@
           name="username"
           class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
           placeholder="JohnDoe"
+        />
+        <input
+          id="email"
+          type="email"
+          name="email"
+          class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          placeholder="your@email.tld"
         />
 
         <label class="text-neutral-400 text-sm tracking-tight mb-2"
@@ -214,6 +237,7 @@
     .getElementById("createNodeBtn")
     .addEventListener("click", function () {
       const username = document.getElementById("userName").value;
+      const email = document.getElementById("email").value;
       const password = document.getElementById("userPass").value;
       const adminString = document.getElementById("userAdmin").value; // Get the admin value as a string
 
@@ -222,6 +246,7 @@ const admin = adminString === "true";
 
       const nodeData = {
         username,
+        email,
         password,
         admin,
       };

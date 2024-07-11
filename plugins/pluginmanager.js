@@ -125,7 +125,7 @@ router.get('/admin/plugins', isAdmin, async (req, res) => {
     });
 });
 
-router.get('/admin/plugins/:name/toggle', isAdmin, async (req, res) => {
+router.post('/admin/plugins/:name/toggle', isAdmin, async (req, res) => {
     const name = req.params.name;
     const pluginsJson = await readPluginsJson();
 
@@ -134,8 +134,7 @@ router.get('/admin/plugins/:name/toggle', isAdmin, async (req, res) => {
         await writePluginsJson(pluginsJson);
         await loadAndActivatePlugins();
     }
-
-    res.redirect('/admin/plugins');
+    res.send('OK');
 });
 
 router.get('/admin/plugins/:dir/edit', isAdmin, async (req, res) => {
@@ -162,7 +161,7 @@ router.post('/admin/plugins/:dir/save', isAdmin, async (req, res) => {
     res.redirect(`/admin/plugins/${dir}/edit`);
 });
 
-router.get('/admin/plugins/reload', isAdmin, async (req, res) => {
+router.post('/admin/plugins/reload', isAdmin, async (req, res) => {
     await loadAndActivatePlugins();
     res.redirect('/admin/plugins');
 });

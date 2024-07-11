@@ -44,6 +44,15 @@ async function doesUserExist(username) {
   }
 }
 
+async function doesEmailExist(email) {
+  const users = await db.get('users');
+  if (users) {
+      return users.some(user => user.email === email);
+  } else {
+      return false; // If no users found, return false
+  }
+}
+
 /**
  * Checks the operational status of a node by making an HTTP request to its API.
  * Updates the node's status based on the response or sets it as 'Offline' if the request fails.
@@ -297,11 +306,13 @@ router.post('/users/create', isAdmin, async (req, res) => {
   const user = {
     userId: uuidv4(),
     username: req.body.username,
+    email: req.body.email,
     password: await bcrypt.hash(req.body.password, saltRounds),
+    Accesto: [],
     admin: req.body.admin, 
 };
 
-if (!req.body.username || !req.body.password) {
+if (!req.body.username || !req.body.email || !req.body.password) {
   return res.send('Username and password are required.');
 }
 
@@ -313,6 +324,11 @@ if (req.body.admin !== true && req.body.admin !== false) {
 const userExists = await doesUserExist(req.body.username);
 if (userExists) {
   return res.send("user already exists!");
+}
+
+const emailExists = await doesEmailExist(req.body.email);
+if (emailExists) {
+  return res.send("email already exists!");
 }
 
 let users = await db.get('users') || [];
@@ -394,7 +410,7 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
  * @returns {Response} Renders the 'nodes' view with node data and user information.
  */
 router.get('/admin/settings', isAdmin, async (req, res) => {
-  res.render('admin/settings', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  res.render('admin/settings', { req, user: req.user, settings: await db.get('settings'), name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
@@ -456,6 +472,13 @@ router.post('/admin/settings/change/logo', isAdmin, upload.single('logo'), async
   }
 });
 
+router.post('/admin/settings/toggle/register', isAdmin, upload.single('logo'), async (req, res) => {
+  let settings = await db.get('settings');
+  settings.register = !settings.register;
+  await db.set('settings', settings);
+  logAudit(req.user.userId, req.user.username, 'register:edit', req.ip);
+  res.redirect('/admin/settings');
+});
 /**
  * GET /admin/instances
  * Retrieves a list of all instances, checks their statuses, and renders an admin page to display these instances.

@@ -1,0 +1,74 @@
+<!doctype html>
+<html class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= name %></title>
+  <link href="../assets/tailwind.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+</head>
+<body style="font-family: 'IBM Plex Sans'" class="bg-[#181818] h-full">
+<div class="min-h-full flex">
+  <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+    <div class="mx-auto w-full max-w-sm lg:w-96">
+      <div>
+        <img class="h-12 w-auto rounded-lg" src="<%= settings.logo %>" alt="">
+        <h2 class="mt-6 text-3xl font-semibold text-white">Register to <%= name %></h2>
+        <p class="mt-2 text-sm text-neutral-500">
+          Please enter your details below.
+        </p>
+      </div>
+
+      <div class="mt-8">
+        <div class="mt-6">
+          <form method="POST" action="/auth/register" class="space-y-6">
+            <div>
+              <label for="username" class="block text-sm font-medium text-neutral-400"> Username </label>
+              <div class="mt-1">
+                <input placeholder="example" id="username" name="username" autocomplete="username" required class="appearance-none block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg shadow-sm placeholder-neutral-500 focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 text-white transition sm:text-sm">
+              </div>
+            </div>
+
+            <div>
+              <label for="email" class="block text-sm font-medium text-neutral-400"> Email </label>
+              <div class="mt-1">
+                <input placeholder="example@domain.com" id="email" name="email" autocomplete="email" required class="appearance-none block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg shadow-sm placeholder-neutral-500 focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 text-white transition sm:text-sm">
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <label for="password" class="block text-sm font-medium text-neutral-400"> Password </label>
+              <div class="mt-1">
+                <input placeholder="********" id="password" name="password" type="password" autocomplete="new-password" required class="appearance-none block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg shadow-sm placeholder-neutral-500 focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 text-white transition sm:text-sm">
+              </div>
+            </div>
+
+            <div>
+              <button type="submit" class="w-full flex transition justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-neutral-800 bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">Register</button>
+            </div>
+            
+            <% if (req.query.err && req.query.err == "InvalidCredentials") { %>
+              <div class="mt-2"></div>
+              <span class="text-amber-600 pt-4 font-normal text-sm">Invalid credentials. Please try again.</span>
+            <% } %>
+
+            <% if (req.query.err && req.query.err == "UpdatedCredentials") { %>
+              <div class="mt-2"></div>
+              <span class="text-emerald-600 pt-8 font-normal text-sm">Your account has been updated, please enter your new credentials.</span>
+            <% } %>
+          </form>
+        </div>
+      </div>
+      <div class="mt-6 text-sm text-neutral-500">
+        Already have an account? <a href="/login" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Sign in</a>
+      </div>
+    </div>
+  </div>
+  <div class="hidden lg:block relative w-0 flex-1">
+    <img class="absolute inset-0 h-full w-full object-cover" src="https://i.imgur.com/j9BodUY.jpeg" alt="">
+  </div>
+</div>
+</body>
+</html>
