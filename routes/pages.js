@@ -37,6 +37,7 @@ async function setupRoutes() {
                         let adminInstances;
                         if (await req.user.admin === true) {
                             adminInstances = await db.get('instances') || [];
+                            adminInstances = adminInstances.filter(instance => instance.User !== req.user.id);
                         }
                 
                         const users = await db.get('users') || [];
