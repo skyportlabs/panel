@@ -15,7 +15,7 @@
     <div class="mx-auto w-full max-w-sm lg:w-96">
       <div>
         <img class="h-12 w-auto rounded-lg" src="<%= settings.logo %>" alt="">
-        <h2 class="mt-6 text-3xl font-semibold text-white">Register to <%= name %></h2>
+        <h2 class="mt-6 text-3xl font-semibold text-white">Register an account</h2>
         <p class="mt-2 text-sm text-neutral-500">
           Please enter your details below.
         </p>
@@ -53,11 +53,6 @@
               <div class="mt-2"></div>
               <span class="text-amber-600 pt-4 font-normal text-sm">Invalid credentials. Please try again.</span>
             <% } %>
-
-            <% if (req.query.err && req.query.err == "UpdatedCredentials") { %>
-              <div class="mt-2"></div>
-              <span class="text-emerald-600 pt-8 font-normal text-sm">Your account has been updated, please enter your new credentials.</span>
-            <% } %>
           </form>
         </div>
       </div>
@@ -67,7 +62,7 @@
     </div>
   </div>
   <div class="hidden lg:block relative w-0 flex-1">
-    <img class="absolute inset-0 h-full w-full object-cover" src="https://i.imgur.com/j9BodUY.jpeg" alt="">
+    <img class="absolute inset-0 h-full w-full object-cover" src="https://i.imgur.com/8G5eRWX.jpeg" alt="">
   </div>
 </div>
 </body>
