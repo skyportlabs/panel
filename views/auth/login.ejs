@@ -45,7 +45,9 @@
               </div>
 
               <div class="text-sm">
-                <a href="#" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105"> Forgot your password? </a>
+                <% if (settings.register == true) { %>
+                    <a href="/register" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Register an account</a>
+                  <% } %>
               </div>
             </div>
 
@@ -65,11 +67,6 @@
           </form>
         </div>
       </div>
-      <% if (settings.register == true) { %>
-      <div class="mt-6 text-sm text-neutral-500">
-        Dont have an account? <a href="/register" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Register</a>
-      </div>
-      <% } %>
     </div>
   </div>
   <div class="hidden lg:block relative w-0 flex-1">

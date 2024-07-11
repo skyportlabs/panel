@@ -7,32 +7,27 @@
                 <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update, and manage an instance on the Skyport panel.</p>
             </div>
             <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
-                <button id="addSubuser" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">add SubUser</button>
+                <button id="addSubuser" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add User</button>
             </div>
         </div>
     </div>
-    <div id="createUserModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
-        <div class="bg-[#181818] rounded-lg p-8 max-w-md w-full">
-            <div class="flex flex-row justify-between">
-            <h2 class="text-lg font-semibold mb-4 text-white">Create New User</h2>
-            <button id="closeModal" class="mb-6 text-white hover:text-gray-600 focus:outline-none">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
+    <div id="createUserModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+            <div class="relative">
+                <h2 class="text-2xl font-semibold mb-1 text-gray-800">Add User</h2>
+                <p class="mb-6 text-gray-600">Add a sub-user to this instance.</p>
             </div>
             <form action="/instance/<%= req.params.id %>/users/add" method="POST" class="space-y-4">
                 <div>
-                    <label for="username" class="block text-sm font-medium text-neutral-400">Username</label>
-                    <input type="text" id="username" name="username" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    <input type="text" id="username" name="username" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500 transition mb-4" placeholder="Enter a username" required>
                 </div>
                 <div>
-                    <button type="submit" class="mt-6 w-full bg-white text-black py-2 px-4 rounded-md hover:bg-white-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Add SubUser</button>
+                    <button type="submit" class="px-5 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition">Add User</button>
                 </div>
             </form>
         </div>
     </div>
-<%- include('../components/instance') %>
+    <%- include('../components/instance') %>
     <div class="px-4 sm:px-6 lg:px-8">
         <table class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl">
             <thead class="text-white">
@@ -60,24 +55,32 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const createSubuserButton = document.getElementById('addSubuser');
+        const addSubuserButton = document.getElementById('addSubuser');
         const createUserModal = document.getElementById('createUserModal');
         const closeModalButton = document.getElementById('closeModal');
 
-        createSubuserButton.addEventListener('click', function() {
-            createUserModal.classList.remove('hidden');
-        });
+        function openModal() {
+            createUserModal.classList.remove('opacity-0', 'pointer-events-none');
+            createUserModal.querySelector('div').classList.remove('scale-95');
+            createUserModal.querySelector('div').classList.add('scale-100');
+        }
 
-        closeModalButton.addEventListener('click', function() {
-            createUserModal.classList.add('hidden');
-        });
+        function closeModal() {
+            createUserModal.classList.add('opacity-0', 'pointer-events-none');
+            createUserModal.querySelector('div').classList.remove('scale-100');
+            createUserModal.querySelector('div').classList.add('scale-95');
+        }
+
+        addSubuserButton.addEventListener('click', openModal);
+        closeModalButton.addEventListener('click', closeModal);
 
         window.addEventListener('click', function(event) {
             if (event.target === createUserModal) {
-                createUserModal.classList.add('hidden');
+                closeModal();
             }
         });
-        createUserModal.addEventListener('click', function(event) {
+
+        createUserModal.querySelector('div').addEventListener('click', function(event) {
             event.stopPropagation();
         });
     });

@@ -42,8 +42,22 @@ async function loadAndActivatePlugins() {
         }
     });
 
-    const pluginsJson = await readPluginsJson();
+    let pluginsJson = await readPluginsJson();
     const pluginDirs = await fs.promises.readdir(pluginsDir);
+
+    for (const pluginName of pluginDirs) {
+        const pluginPath = path.join(pluginsDir, pluginName);
+        const manifestPath = path.join(pluginPath, 'manifest.json');
+
+        if (fs.existsSync(manifestPath)) {
+            const manifest = require(manifestPath);
+            if (!pluginsJson[manifest.name]) {
+                pluginsJson[manifest.name] = { enabled: true };
+            }
+        }
+    }
+
+    await writePluginsJson(pluginsJson);
 
     for (const pluginName of pluginDirs) {
         const pluginPath = path.join(pluginsDir, pluginName);
@@ -88,14 +102,6 @@ async function loadAndActivatePlugins() {
             }
         }
     }
-
-    for (const pluginName of pluginNames) {
-        if (!pluginsJson[pluginName]) {
-            pluginsJson[pluginName] = { enabled: true };
-        }
-    }
-
-    await writePluginsJson(pluginsJson);
 }
 
 function isAdmin(req, res, next) {
