@@ -34,6 +34,10 @@ async function setupRoutes() {
                     try {
                         const userId = req.user.userId;
                         let instances = await db.get(userId + '_instances') || [];
+                        let adminInstances;
+                        if (await req.user.admin === true) {
+                            adminInstances = await db.get('instances') || [];
+                        }
                 
                         const users = await db.get('users') || [];
                 
@@ -55,6 +59,7 @@ async function setupRoutes() {
                             req, 
                             user: req.user, 
                             instances, 
+                            adminInstances,
                             name: await db.get('name') || 'Skyport', 
                             logo: await db.get('logo') || false 
                         });
