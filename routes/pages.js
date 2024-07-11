@@ -50,6 +50,7 @@ async function setupRoutes() {
                         }
                 
                         res.render(page.template, { 
+                            settings: await db.get('settings'),
                             config, 
                             req, 
                             user: req.user, 
