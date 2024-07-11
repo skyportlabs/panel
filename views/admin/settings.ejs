@@ -31,6 +31,23 @@
   </form>
 </div>
 
+<div id="registerpage" class="mt-6 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-5 ml-5 w-96">
+  <form action="/admin/settings/toggle/register" method="POST" enctype="multipart/form-data">
+    <div class="flex items-center mb-4">
+      <% if (settings.register === true) { %>
+      <span class="ml-2 text-sm font-medium text-neutral-400">Turn off Register Page</span>
+      <% } else { %>
+      <span class="ml-2 text-sm font-medium text-neutral-400">Turn on Register Page</span>
+      <% } %>
+    </div>
+    <% if (settings.register === true) { %>
+    <button id="toggleregister" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Turn off</button>
+    <% } else { %>
+    <button id="toggleregister" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Turn on</button>
+    <% } %>
+  </form>
+</div>
+
 <script>
   document.getElementById('useImage').addEventListener('change', function() {
     const imageUploadBox = document.getElementById('imageUploadBox');
