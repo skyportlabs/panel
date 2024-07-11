@@ -30,7 +30,6 @@
           document.addEventListener('DOMContentLoaded', function() {
               const toggleButton = document.getElementById('switchButton');
               const AdminInstancesContainer = document.getElementById('AdminInstancesContainer');
-              AdminInstancesContainer.classList.add('hidden');
               <% if (instances.length == 0) { %>
               const noInstancesContainer = document.getElementById('noInstancesContainer');
               <% } else { %>
@@ -72,7 +71,7 @@
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
         <% if (req.user.admin === true) { %>
             <% adminInstances.forEach(function(instance) { %>
-              <a id="AdminInstancesContainer" data-instance-id="<%= instance.ContainerId %>" href="../instance/<%= instance.ContainerId %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8">
+              <a id="AdminInstancesContainer" data-instance-id="<%= instance.ContainerId %>" href="../instance/<%= instance.ContainerId %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8 hidden">
                  <div class="flex items-center justify-between">
                    <div class="flex items-center space-x-3">
                      <div class="rounded-lg border border-white/5 inline-flex">
