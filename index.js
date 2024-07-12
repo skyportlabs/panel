@@ -49,6 +49,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.set('view engine', 'ejs');
+app.use((req,res,next) => {
+  console.log(req.ip, req.path)
+  next();
+})
 app.use(
   session({
     store: new SqliteStore({

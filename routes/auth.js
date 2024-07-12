@@ -174,7 +174,7 @@ async function initializeRoutes() {
               }
 
               await createUser(username, email, password);
-              res.redirect('/instances');
+              res.redirect('/login?r');
             } catch (error) {
               console.error('Error handling registration:', error);
               res.status(500).send('Internal server error');
