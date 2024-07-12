@@ -4,6 +4,11 @@ const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const axios = require('axios');
 
+const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const path = require('path');
+
+const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
+
 router.get("/instance/:id/files/folder/create", async (req, res) => {
     if (!req.user) {
         return res.redirect('/');
@@ -28,7 +33,11 @@ router.get("/instance/:id/files/folder/create", async (req, res) => {
         return res.redirect('../instances');
     }
 
-    res.render('instance/createFolder', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    const allPluginData = Object.values(plugins).map(plugin => plugin.config);
+
+    res.render('instance/createFolder', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, addons: {
+        plugins: allPluginData
+    } });
 });
 
 router.post("/instance/:id/files/folder/create/:foldername", async (req, res) => {

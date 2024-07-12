@@ -4,6 +4,11 @@ const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { createFile } = require('../../utils/fileHelper');
 
+const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const path = require('path');
+
+const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
+
 router.post("/instance/:id/files/create/:filename", async (req, res) => {
     if (!req.user) return res.status(401).send('Authentication required');
 
@@ -58,7 +63,11 @@ router.get("/instance/:id/files/create", async (req, res) => {
         return res.redirect('../instances');
     }
 
-    res.render('instance/createFile', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    const allPluginData = Object.values(plugins).map(plugin => plugin.config);
+
+    res.render('instance/createFile', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, addons: {
+        plugins: allPluginData
+    } });
 });
 
 module.exports = router;

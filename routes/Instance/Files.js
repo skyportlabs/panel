@@ -4,6 +4,11 @@ const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { fetchFiles } = require('../../utils/fileHelper');
 
+const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const path = require('path');
+
+const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
+
 router.get("/instance/:id/files", async (req, res) => {
     if (!req.user) return res.redirect('/');
 
@@ -22,6 +27,8 @@ router.get("/instance/:id/files", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
+    const allPluginData = Object.values(plugins).map(plugin => plugin.config);
+
     try {
         const files = await fetchFiles(instance, req.query.path);
         res.render('instance/files', { 
@@ -29,7 +36,10 @@ router.get("/instance/:id/files", async (req, res) => {
             files, 
             user: req.user, 
             name: await db.get('name') || 'Skyport', 
-            logo: await db.get('logo') || false 
+            logo: await db.get('logo') || false ,
+            addons: {
+                plugins: allPluginData
+            }
         });
     } catch (error) {
         const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
@@ -38,7 +48,10 @@ router.get("/instance/:id/files", async (req, res) => {
             req, 
             user: req.user, 
             name: await db.get('name') || 'Skyport', 
-            logo: await db.get('logo') || false 
+            logo: await db.get('logo') || false,
+            addons: {
+                plugins: allPluginData
+            }
         });
     }
 });
