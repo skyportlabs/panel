@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= name %></title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="../assets/tailwind.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +13,7 @@
 <body style="font-family: 'IBM Plex Sans'" class="bg-[#181818] h-full">
 <div class="min-h-full flex">
   <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-    <div class="mx-auto w-full max-w-sm lg:w-96">
+    <div class="mx-auto w-full max-w-sm lg:w-96 bg-white/10 p-6 rounded-lg backdrop-blur-lg">
       <div>
         <img class="h-12 w-auto rounded-lg" src="<%= settings.logo %>" alt="">
         <h2 class="mt-6 text-3xl font-semibold text-white">Register an account</h2>
@@ -59,11 +60,51 @@
       <div class="mt-6 text-sm text-neutral-500">
         Already have an account? <a href="/login" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Sign in</a>
       </div>
+      <div class="mt-6 text-sm text-neutral-500 flex justify-between">
+        <a href="/policy" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">
+          <i class="fas fa-user-shield"></i> Privacy Policy
+        </a>
+        <a href="/tos" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">
+          Terms of Service <i class="fas fa-file-contract"></i>
+        </a>
+      </div>
+      
     </div>
   </div>
   <div class="hidden lg:block relative w-0 flex-1">
-    <img class="absolute inset-0 h-full w-full object-cover" src="https://i.imgur.com/8G5eRWX.jpeg" alt="">
+    <img class="absolute inset-0 h-full w-full object-cover" src="../assets/bg.jpg" alt="">
   </div>
+  <script>
+  async function submitForm() {
+    let username = encodeURIComponent(document.getElementById("username").value);
+    let password = encodeURIComponent(document.getElementById("password").value);
+    document.location.href = `/auth/login?username=${username}&password=${password}`;
+  }
+
+  // Function to display PNotify alert
+  function showAlert(type, text) {
+    PNotify.info({
+      title: "An error occured.",
+      text: text,
+      delay: 3000,
+      styling: 'brighttheme',
+      icons: 'brighttheme'
+    });
+  }
+
+  // Check for URL parameters and display notifications
+  document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('err')) {
+      const err = urlParams.get('err');
+      if (err === 'InvalidCredentials') {
+        showAlert('error', 'Invalid credentials. Please try again.');
+      } else if (err === 'UpdatedCredentials') {
+        showAlert('success', 'Your account has been updated, please enter your new credentials.');
+      }
+    }
+  });
+</script>
 </div>
 </body>
 </html>

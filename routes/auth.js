@@ -133,7 +133,7 @@ passport.deserializeUser(async (username, done) => {
  * @returns {Response} Redirects based on the success or failure of the authentication attempt.
  */
 router.get('/auth/login', passport.authenticate('local', {
-  successRedirect: '/instances',
+  successRedirect: '/instances?n',
   failureRedirect: '/login?err=InvalidCredentials&state=failed',
 }));
 
