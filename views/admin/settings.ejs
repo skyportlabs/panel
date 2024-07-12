@@ -13,7 +13,7 @@
   <form action="/admin/settings/change/name" method="POST">
     <label class="text-neutral-400 text-sm tracking-tight mb-2">Panel Name:</label>
     <input id="name" name="name" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-88 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" value="<%= name %>" placeholder="<%= name %>" required>
-    <button id="Save-Name" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+    <button id="Save-Name" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Update</button>
   </form>
 </div>
 
@@ -35,15 +35,15 @@
   <form action="/admin/settings/toggle/register" method="POST" enctype="multipart/form-data">
     <div class="flex items-center mb-4">
       <% if (settings.register === true) { %>
-      <span class="ml-2 text-sm font-medium text-neutral-400">Turn off Register Page</span>
+      <span class="ml-2 text-sm font-medium text-neutral-400">Disable Regestration</span>
       <% } else { %>
-      <span class="ml-2 text-sm font-medium text-neutral-400">Turn on Register Page</span>
+      <span class="ml-2 text-sm font-medium text-neutral-400">Enable Regestration</span>
       <% } %>
     </div>
     <% if (settings.register === true) { %>
-    <button id="toggleregister" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Turn off</button>
+    <button id="toggleregister" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Disable</button>
     <% } else { %>
-    <button id="toggleregister" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Turn on</button>
+    <button id="toggleregister" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Enable</button>
     <% } %>
   </form>
 </div>
@@ -56,7 +56,7 @@
     
     if (this.checked) {
       imageUploadBox.classList.remove('hidden');
-      logoButton.textContent = 'Save new logo';
+      logoButton.textContent = 'Update logo';
       logoType.value = 'image';
     } else {
       imageUploadBox.classList.add('hidden');
