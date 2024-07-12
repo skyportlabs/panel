@@ -10,7 +10,6 @@
           <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <button
               id="switchButton" 
-              onclick="changeButtonName()"
               type="button"
               class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
@@ -18,42 +17,41 @@
             </button>
           </div>
           <script>
-            function changeButtonName() {
-              var nameElement = document.getElementById("switchButton");
-              if (nameElement.textContent === "Showing your instances") {
-                  nameElement.textContent = "See all instances";
-              } else {
-                  nameElement.textContent = "Showing your instances";
-              }
-            }
-
-          document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function() {
               const toggleButton = document.getElementById('switchButton');
               const AdminInstancesContainer = document.getElementById('AdminInstancesContainer');
-              <% if (instances.length == 0) { %>
               const noInstancesContainer = document.getElementById('noInstancesContainer');
-              <% } else { %>
               const instancesContainer = document.getElementById('instancesContainer');
-              <% } %>
+          
               toggleButton.addEventListener('click', function() {
-                  if (AdminInstancesContainer.classList.contains('hidden')) {
-                    AdminInstancesContainer.classList.remove('hidden');
-                      <% if (instances.length == 0) { %>
-                      noInstancesContainer.classList.add('hidden');
-                      <% } else { %>
-                      instancesContainer.classList.add('hidden');
-                      <% } %>
-                  } else {
-                    AdminInstancesContainer.classList.add('hidden');
-                    <% if (instances.length == 0) { %>
+                AdminInstancesContainer.classList.toggle('hidden');
+                if (AdminInstancesContainer.classList.contains('hidden')) {
+                  toggleButton.textContent = "See all instances";
+                  if (instances.length == 0) {
                     noInstancesContainer.classList.remove('hidden');
-                    <% } else { %>
+                    instancesContainer.classList.add('hidden');
+                  } else {
                     instancesContainer.classList.remove('hidden');
-                    <% } %>
+                    noInstancesContainer.classList.add('hidden');
                   }
+                } else {
+                  toggleButton.textContent = "Showing your instances";
+                  if (instances.length == 0) {
+                    noInstancesContainer.classList.add('hidden');
+                    instancesContainer.classList.add('hidden');
+                  } else {
+                    instancesContainer.classList.add('hidden');
+                    noInstancesContainer.classList.add('hidden');
+                  }
+                }
               });
-          });
-          </script>
+          
+              // Function to change button name
+              function changeButtonName() {
+                toggleButton.textContent = (toggleButton.textContent === "Showing your instances") ? "See all instances" : "Showing your instances";
+              }
+            });
+          </script>          
          <% } %>
       </div>
    </div>
@@ -69,6 +67,7 @@
       </div>
     <% } %>
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+
         <% if (req.user.admin === true) { %>
             <% adminInstances.forEach(function(instance) { %>
               <a id="AdminInstancesContainer" data-instance-id="<%= instance.ContainerId %>" href="../instance/<%= instance.ContainerId %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8 hidden">
@@ -278,6 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
       </script>
       <% }); %>
+    </dl>
     </div>
 </main>
 <%- include('components/footer') %>

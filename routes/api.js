@@ -61,7 +61,7 @@ router.get('/api/getUser', validateApiKey, async (req, res) => {
     }
     
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(400).json({ error: 'User not found' });
     }
     
     res.json(user);
@@ -73,7 +73,7 @@ router.get('/api/getUser', validateApiKey, async (req, res) => {
 
 router.post('/api/users/create', validateApiKey, async (req, res) => {
   try {
-    const { username, email, password, admin } = req.body;
+    const { username, email, password, userId, admin } = req.body;
     
     if (!username || !email || !password) {
       return res.status(400).json({ error: 'Username and password are required' });
@@ -87,8 +87,12 @@ router.post('/api/users/create', validateApiKey, async (req, res) => {
       return res.status(409).json({ error: 'User already exists' });
     }
 
+    if (!req.body.userId) {
+      userId = uuidv4();
+    }
+
     const user = {
-      userId: uuidv4(),
+      userId: userId,
       username,
       email,
       password: await bcrypt.hash(password, saltRounds),
@@ -274,6 +278,14 @@ router.get('/api/getInstance', validateApiKey, async (req, res) => {
 
   if (!userId) {
     return res.status(400).json({ error: 'Parameter "userId" is required' });
+  }
+
+  const userExists = await db.get('users').then(users => 
+    users && users.some(user => user.userId === userId)
+  );
+
+  if (!userExists) {
+    return res.status(400).json({ error: 'User not found' });
   }
 
   try {
