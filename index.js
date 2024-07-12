@@ -49,10 +49,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.set('view engine', 'ejs');
+if (config.debugging === true) {
 app.use((req,res,next) => {
-  console.log(req.ip, req.path)
+  console.log(`IP: ${req.ip}, Path: ${req.path}`)
   next();
-})
+})}
 app.use(
   session({
     store: new SqliteStore({

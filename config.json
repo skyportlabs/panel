@@ -1,5 +1,6 @@
 {
     "port": 3001,
     "domain": "localhost",
-    "version": "0.1.0-beta6"
+    "version": "0.1.0-beta6",
+    "debugging": false
 } 

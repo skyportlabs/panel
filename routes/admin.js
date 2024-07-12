@@ -205,6 +205,7 @@ router.get('/admin/node/:id/configure-command', isAdmin, async (req, res) => {
 const os = require("os")
 router.get('/admin/overview', isAdmin, async (req, res) => {
   try {
+     const debug = config.debugging
       const users = await db.get('users') || [];
       const nodes = await db.get('nodes') || [];
       const images = await db.get('images') || [];
@@ -220,7 +221,7 @@ router.get('/admin/overview', isAdmin, async (req, res) => {
       const imagesTotal = images.length;
       const instancesTotal = instances.length;
 
-      res.render('admin/overview', { req, user: req.user, usersTotal, nodesTotal, imagesTotal, instancesTotal, version: config.version, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false,freeMemory, cpuCount, totalMemory,usedMemory});
+      res.render('admin/overview', { req, user: req.user, usersTotal, nodesTotal, imagesTotal, instancesTotal, version: config.version, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false,freeMemory, cpuCount, totalMemory,usedMemory, debug});
   } catch (error) {
       res.status(500).send({ error: 'Failed to retrieve data from the database.' });
   }
@@ -340,8 +341,6 @@ let users = await db.get('users') || [];
 users.push(user);
 await db.set('users', users);
 logAudit(req.user.userId, req.user.username, 'user:create', req.ip);
-
-console.log(user)
 
 res.status(201).send(user);
 });
