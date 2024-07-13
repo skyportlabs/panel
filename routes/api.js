@@ -41,7 +41,7 @@ router.get('/api/users', validateApiKey, async (req, res) => {
   }
 });
 
-router.get('/api/getUser', validateApiKey, async (req, res) => {
+router.post('/api/getUser', validateApiKey, async (req, res) => {
   try {
     const { type, value } = req.body;
 
@@ -64,7 +64,7 @@ router.get('/api/getUser', validateApiKey, async (req, res) => {
       return res.status(400).json({ error: 'User not found' });
     }
     
-    res.json(user);
+    res.status(201).json(user);
   } catch (error) {
     console.error('Error retrieving user:', error);
     res.status(500).json({ error: 'Failed to retrieve user' });
@@ -273,7 +273,7 @@ router.delete('/api/instance/delete', validateApiKey, async (req, res) => {
   }
 });
 
-router.get('/api/getInstance', validateApiKey, async (req, res) => {
+router.post('/api/getInstance', validateApiKey, async (req, res) => {
   const { userId } = req.body;
 
   if (!userId) {
