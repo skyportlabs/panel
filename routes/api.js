@@ -273,7 +273,7 @@ router.delete('/api/instance/delete', validateApiKey, async (req, res) => {
   }
 });
 
-router.post('/api/getInstance', validateApiKey, async (req, res) => {
+router.post('/api/getUserInstance', validateApiKey, async (req, res) => {
   const { userId } = req.body;
 
   if (!userId) {
@@ -293,6 +293,29 @@ router.post('/api/getInstance', validateApiKey, async (req, res) => {
     res.json(userInstances);
   } catch (error) {
     res.status(500).json({ error: 'Failed to retrieve user instances' });
+  }
+});
+
+router.post('/api/getInstance', validateApiKey, async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: 'Parameter "id" is required' });
+  }
+
+  const instanceExists = await db.get('instances').then(server => 
+    server && server.some(server => server.ContainerId === id)
+  );
+
+  if (!instanceExists) {
+    return res.status(400).json({ error: 'Instance not found' });
+  }
+
+  try {
+    const instances = await db.get(`${id}_instance`) || [];
+    res.json(instances);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve instances' });
   }
 });
 
