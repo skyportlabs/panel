@@ -12,6 +12,10 @@ async function isUserAuthorizedForContainer(userId, containerId) {
     try {
         const userInstances = await db.get(userId + '_instances');
         const users = await db.get('users');
+        const isAdmin = users.find(user => user.userId === userId).admin;
+        if (isAdmin == true) {
+            return true;
+        }
         const subUserInstances = users.find(user => user.userId === userId).Accesto;
         if (!userInstances && !subUserInstances.includes(containerId)) {
             console.log(subUserInstances);
