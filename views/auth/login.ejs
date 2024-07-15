@@ -76,6 +76,18 @@
     <img class="absolute inset-0 h-full w-full object-cover" src="../assets/bg.jpg" alt="">
   </div>
 </div>
+<script>
+  const style = document.createElement('style');
+style.innerHTML = `
+  .custom-pnotify-text {
+    color: var(--text-neutral-700) !important; /* Replace with the appropriate neutral text color class */
+    font-weight: 500; /* Match font-medium */
+    letter-spacing: -0.025em; /* Match tracking-tight */
+    font-size: 1.125rem; /* Match text-lg */
+  }
+`;
+document.head.appendChild(style);
+</script>
 
 <!-- Include PNotify JS -->
 <script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.js"></script>
@@ -88,23 +100,25 @@
   }
 
   function registered(type, text) {
-    PNotify.info({
-      title: "Registered.",
-      text: text,
-      delay: 3000,
-      styling: 'brighttheme',
-      icons: 'brighttheme'
-    });
-  }
-  function showAlert(type, text) {
-    PNotify.info({
-      title: "An error occured.",
-      text: text,
-      delay: 3000,
-      styling: 'brighttheme',
-      icons: 'brighttheme'
-    });
-  }
+  PNotify.info({
+    title: "Registered.",
+    text: '<h1 class="custom-pnotify-text">Please use the login information you just set up to login.</h1>',
+    textTrusted: true,  // This allows HTML in the text
+    delay: 3000,
+    styling: 'brighttheme',
+    icons: 'brighttheme'
+  });
+}
+function showAlert(type, text) {
+  PNotify.info({
+    title: "An Error occured.",
+    text: `<h1 class="custom-pnotify-text">${text}</h1>`,
+    textTrusted: true,  // This allows HTML in the text
+    delay: 3000,
+    styling: 'brighttheme',
+    icons: 'brighttheme'
+  });
+}
 
   // Check for URL parameters and display notifications
   document.addEventListener("DOMContentLoaded", function() {
