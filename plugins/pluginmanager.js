@@ -9,6 +9,7 @@ const log = new CatLoggr();
 let pluginList = [];
 let pluginNames = [];
 let pluginsidebar = {};
+let sidebar = {};
 
 const pluginsDir = path.join(__dirname, '../plugins');
 const pluginsJsonPath = path.join(pluginsDir, 'plugins.json');
@@ -31,10 +32,12 @@ async function writePluginsJson(plugins) {
     }
 }
 
+
 async function loadAndActivatePlugins() {
     pluginList = [];
     pluginNames = [];
     pluginsidebar = {};
+    sidebar = {};
 
     Object.keys(require.cache).forEach(key => {
         if (key.startsWith(pluginsDir)) {
@@ -96,6 +99,7 @@ async function loadAndActivatePlugins() {
 
                 if (manifest.adminsidebar) {
                     Object.assign(pluginsidebar, manifest.adminsidebar);
+                    Object.assign(sidebar, manifest.sidebar);
                 }
             } catch (error) {
                 log.error(`Error loading plugin ${pluginName}:`, error);

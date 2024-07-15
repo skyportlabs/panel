@@ -3,6 +3,11 @@ const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 
+const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const path = require('path');
+
+const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
+
 router.get("/instance/:id/network", async (req, res) => {
     if (!req.user) return res.redirect('/');
 
@@ -21,6 +26,7 @@ router.get("/instance/:id/network", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
+    const allPluginData = Object.values(plugins).map(plugin => plugin.config);
     const ports = processPorts(instance.Ports, instance);
 
     res.render('instance/network', {
@@ -29,7 +35,10 @@ router.get("/instance/:id/network", async (req, res) => {
         ports,
         user: req.user,
         name: await db.get('name') || 'Skyport',
-        logo: await db.get('logo') || false
+        logo: await db.get('logo') || false,
+        addons: {
+            plugins: allPluginData
+        }
     });
 });
 

@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
+const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const path = require('path');
+
+const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
 
 router.get('/instance/:id/users', async (req, res) => {
     const { id } = req.params;
@@ -20,8 +24,11 @@ router.get('/instance/:id/users', async (req, res) => {
         let users = await db.get('users') || [];
         users = users.filter(user => user && user.Accesto && user.Accesto.includes(instance.ContainerId));
         const instanceName = instance.Name;
+        const allPluginData = Object.values(plugins).map(plugin => plugin.config);
 
-        res.render('instance/users', { req, users, user: req.user, instance_name: instanceName, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+        res.render('instance/users', { req, users, user: req.user, instance_name: instanceName, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, addons: {
+            plugins: allPluginData
+        } });
     } catch (err) {
         console.error('Error fetching data:', err);
         res.status(500).send('Internal Server Error.');
