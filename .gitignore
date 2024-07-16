@@ -3,3 +3,5 @@ skyport.db
 sessions.db
 package-lock.json
 tmp/
+nodemon.json
+bs-config.json
