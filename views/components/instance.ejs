@@ -59,7 +59,7 @@
                       <% Object.entries(plugin.instancesidebar).forEach(([key, value]) => { %>
 
                 <li class="hover:scale-105 transition">
-                  <a href="(value.url).replace('%id%', req.params.id) %>" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
+                  <a href="<%= (value.url).replace('%id%', req.params.id) %>" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
                      <i class="size-4 mb-0.5 inline-flex mr-1 <%= value.icon %>"></i>
                      <%= key %>
                  </a>
