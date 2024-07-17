@@ -11,18 +11,21 @@
   </div>
 
   <%- include('../../components/settings') %>
+<!--div class="grid grid-cols-1 md:lg:grid-cols-2 gap-2 md-lg"-->
 
-  <div class="flex flex-row">
+  <div class="flex flex-col bg-[#181818] m-6 pt-0 py-5 rounded-lg">
+    <h1 class="text-white text-[18px] font-mono px-5 p-1 mb-1 w-full bg-[#1f1e1e] rounded-t-lg font-semibold">Appearance</h1>
+    <div class="grid grid-cols-3">
 
-<div id="changenameform" class="mt-6 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-5 ml-5 w-96">
+<div id="changenameform" class="mt-4 ml-5">
   <form action="/admin/settings/change/name" method="POST">
     <label for="name" class="text-neutral-400 text-sm tracking-tight mb-2">Panel Name:</label>
     <input id="name" name="name" type="text" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-88 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" value="<%= name %>" placeholder="<%= name %>" required>
-    <button id="Save-Name" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600">Save</button>
+    <button id="Save-Name" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2">Save</button>
   </form>
 </div>
 
-<div id="changelogoform" class="mt-6 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-5 ml-5 w-96">
+<div id="changelogoform" class="mt-4 ml-5">
   <form action="/admin/settings/change/logo" method="POST" enctype="multipart/form-data">
     <div class="flex items-center mb-4">
       <input id="useImage" name="useImage" type="checkbox" class="w-4 h-4 text-neutral-600 bg-transparent border-white/5 rounded focus:ring-neutral-500 focus:ring-2">
@@ -33,26 +36,36 @@
       <input type="file" name="logo" id="logo" accept="image/*" class="block w-full text-sm text-neutral-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-white/5 file:text-neutral-300 hover:file:bg-white/10 transition">
     </div>
     <input type="hidden" name="type" id="logoType" value="none">
-    <button id="logoButton" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600">Remove logo</button>
+    <button id="logoButton" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2">Remove logo</button>
   </form>
 </div>
 
-<div id="registerpage" class="mt-6 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-5 ml-5 w-96">
+<div id="registerpage" class="mt-4">
   <form action="/admin/settings/toggle/register" method="POST">
     <div class="flex items-center mb-4">
       <% if (settings.register === true) { %>
-      <span class="ml-2 text-sm font-medium text-neutral-400">Turn off Register Page</span>
+      <span class="text-sm font-medium text-neutral-400">Register Page: <strong class="text-green-500">Enabled</strong></span>
       <% } else { %>
-      <span class="ml-2 text-sm font-medium text-neutral-400">Turn on Register Page</span>
+      <span class="text-sm font-medium text-neutral-400">Register Page: <strong class="text-red-500">Disabled</strong></span>
       <% } %>
     </div>
-    <% if (settings.register === true) { %>
-    <button id="toggleregister" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600">Turn off</button>
-    <% } else { %>
-    <button id="toggleregister" type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600">Turn on</button>
-    <% } %>
+
+    <div class="flex flex-row">
+    <% if (settings.register === true) { %>  
+      <button id="toggleregister" type="submit" class="block rounded-l-lg bg-white px-3 py-2 text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2">Disable</button>
+      <button id="toggleregister" type="submit" class="block rounded-r-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-lg hover:bg-green-500 transition focus:outline focus:outline-2 focus:outline-offset-2 opacity-[0.7]" disabled>Enable</button>
+        <% } else { %>
+          <button id="toggleregister" type="submit" class="block rounded-l-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus:outline focus:outline-2 focus:outline-offset-2 opacity-[0.7]" disabled>Disable</button>
+          <button id="toggleregister" type="submit" class="block rounded-r-lg bg-white px-3 py-2 text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2">Enable</button>
+    <% } %>  
+  </div>
+
   </form>
 </div>
+</div>
+<!--/div-->
+
+
 </div>
 </main>
 
