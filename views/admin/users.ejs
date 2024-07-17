@@ -55,6 +55,12 @@
               scope="col"
               class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
             >
+              Verification Status
+            </th>
+            <th
+              scope="col"
+              class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
+            >
               Actions
             </th>
           </tr>
@@ -106,6 +112,20 @@
             >
               Regular user
             </td>
+            <% } %>
+
+            <% if (user.verified==true) { %>
+              <td
+                class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
+              >
+                Verified
+              </td>
+              <% } else if (user.verified==false) { %>
+              <td
+                class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
+              >
+                Unverified
+              </td>
             <% } else { %>
             <td
               class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
@@ -117,7 +137,7 @@
               class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3"
             >
               <div class="inner">
-                <a href="./user/<%= user.userId %>"
+                <a href="/users/edit/<%= user.userId %>"
                   ><button
                     id="editButton"
                     type="button"
@@ -180,6 +200,16 @@
         <select
           id="userAdmin"
           name="admin"
+          class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+        >
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
+
+        <label class="text-neutral-400 text-sm tracking-tight mb-2">Verified:</label>
+        <select
+          id="userVerified"
+          name="verified"
           class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
         >
           <option value="true">True</option>
@@ -249,6 +279,7 @@ const admin = adminString === "true";
         email,
         password,
         admin,
+        verified: false,
       };
 
       console.log(nodeData);

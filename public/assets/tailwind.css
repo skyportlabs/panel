@@ -2988,3 +2988,45 @@ select {
     background-color: rgb(23 23 23 / var(--tw-bg-opacity));
   }
 }
+
+/* Custom styles for password strength meter */
+.password-strength-meter {
+  margin-top: 8px;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.password-strength-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.strength-weak {
+  background-color: #f44336; /* Red */
+}
+
+.strength-medium {
+  background-color: #ffc107; /* Yellow */
+}
+
+.strength-strong {
+  background-color: #4caf50; /* Green */
+}
+
+.strength-label {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  color: #ffffff;
+  text-align: right;
+}
+
+/* Custom styles for toggle password visibility */
+.eye-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
