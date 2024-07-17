@@ -49,11 +49,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.set('view engine', 'ejs');
-if (config.debugging === true) {
-app.use((req,res,next) => {
-  console.log(`IP: ${req.ip}, Path: ${req.path}`)
-  next();
-})}
 app.use(
   session({
     store: new SqliteStore({
@@ -136,9 +131,7 @@ app.set('views', [path.join(__dirname, 'views'), ...PluginViewsDir]);
  * number to indicate successful startup.
  */
 app.use(express.static('public'));
-app.listen(config.port, () => {
-  log.info(`skyport is listening on port ${config.port}`)}
-);
+app.listen(config.port, () => log.info(`skyport is listening on port ${config.port}`));
 
 app.get('*', async function(req, res){
   res.render('errors/404', { req, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false })
