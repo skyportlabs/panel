@@ -5,7 +5,7 @@ module.exports = {
     ui: {
       port: 3002
     },
-    open: true,
+    open: false,
     notify: false
   };
   
