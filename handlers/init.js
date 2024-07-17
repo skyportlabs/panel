@@ -30,8 +30,9 @@ async function init() {
         await db.set('skyport_instance', info)
         log.info('initialized skyport panel with id: ' + skyportId)
     }        
-
+    log.info(`Debug mode: ${config.debugging}`)
     log.info('init complete!')
+
 }
 
 module.exports = { init }

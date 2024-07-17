@@ -199,7 +199,7 @@ router.post('/auth/login', passport.authenticate('local', {
 });
 
 router.get('/auth/login', passport.authenticate('local', {
-  successRedirect: '/instances',
+  successRedirect: '/instances?n',
   failureRedirect: '/login?err=InvalidCredentials&state=failed',
 }));
 
@@ -304,8 +304,7 @@ async function initializeRoutes() {
               if (userExists || emailExists) {
                 res.send('User already exists');
                 return;
-              }
-          
+              }          
               const settings = await db.get('settings') || {};
               const emailVerificationEnabled = settings.emailVerification || false;
           

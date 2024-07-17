@@ -204,20 +204,26 @@ router.get('/admin/node/:id/configure-command', isAdmin, async (req, res) => {
  *
  * @returns {Response} Renders the 'overview' view with the total counts.
  */
+const os = require("os")
 router.get('/admin/overview', isAdmin, async (req, res) => {
   try {
+     const debug = config.debugging
       const users = await db.get('users') || [];
       const nodes = await db.get('nodes') || [];
       const images = await db.get('images') || [];
       const instances = await db.get('instances') || [];
-
+      const cpuCount = os.cpus().length;
+      const totalMemory = (os.totalmem() / (1024 * 1024 * 1024)).toFixed(2); // Convert bytes to GB
+      const freeMemory = (os.freemem() / (1024 * 1024 * 1024)).toFixed(2); // Convert bytes to GB
+      const usedMem = (totalMemory - freeMemory)
       // Calculate the total number of each type of object
+      const usedMemory = usedMem.toFixed(2)
       const usersTotal = users.length;
       const nodesTotal = nodes.length;
       const imagesTotal = images.length;
       const instancesTotal = instances.length;
 
-      res.render('admin/overview', { req, user: req.user, usersTotal, nodesTotal, imagesTotal, instancesTotal, version: config.version, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+      res.render('admin/overview', { req, user: req.user, usersTotal, nodesTotal, imagesTotal, instancesTotal, version: config.version, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false,freeMemory, cpuCount, totalMemory,usedMemory, debug});
   } catch (error) {
       res.status(500).send({ error: 'Failed to retrieve data from the database.' });
   }
@@ -337,7 +343,6 @@ router.post('/users/create', isAdmin, async (req, res) => {
     admin,
     verified: verified || false,
   };
-
   let users = await db.get('users') || [];
   users.push(newUser);
   await db.set('users', users);

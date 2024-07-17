@@ -41,6 +41,34 @@
                   <%= imagesTotal %>
                </dd>
             </div>
+            <% if (debug) { %>
+            <!-- New System Information for CPU and Memory -->
+<div class="overflow-hidden rounded-lg bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+   <dt class="truncate text-sm font-medium text-neutral-400">CPU Cores</dt>
+   <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+      <%= cpuCount %>
+   </dd>
+</div>
+<div class="overflow-hidden rounded-lg bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+   <dt class="truncate text-sm font-medium text-neutral-400">Used Memory (GB)</dt>
+   <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+      <%= usedMemory %> / <%= totalMemory %>
+   </dd>
+</div>
+<div class="overflow-hidden rounded-lg bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+   <dt class="truncate text-sm font-medium text-neutral-400">Available Memory (GB)</dt>
+   <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+      <%= freeMemory %>
+   </dd>
+</div>
+<div class="overflow-hidden rounded-lg bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+   <dt class="truncate text-sm font-medium text-neutral-400">Debug Mode</dt>
+   <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+      <%=debug   %>
+   </dd>
+</div>
+<% } %>
+
          </dl>
           <div class="bg-neutral-700/10 rounded-lg py-8 mt-5">
             <script>
@@ -77,10 +105,9 @@
                     console.error('Error fetching latest version:', error);
                   });
               </script>
-             <img src="https://i.imgur.com/Ac3KqJ4.png" class="pl-8 h-28 mb-4">
              <h1 class="text-white text-lg font-semibold tracking-tight pl-8">System information</h1>
              <p class="text-sm mt-1 font-normal text-neutral-300 mb-2 pl-8">
-                You are running Skyport version <span id="currentVersion"></span>. <span id="versionStatus"></span>
+                You are running Skyport <%= version %>
               </p>
           </div>
           <div class="mt-5 flex justify-between space-x-8">
@@ -108,7 +135,6 @@
                 Support the Project
             </a>
          </div>
-       </div>
+        </div>
     </div>
-</main>
-<%- include('../components/footer') %>
+  </main>
