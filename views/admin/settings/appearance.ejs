@@ -59,8 +59,29 @@
           <button id="toggleregister" type="submit" class="block rounded-r-lg bg-white px-3 py-2 text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2">Enable</button>
     <% } %>  
   </div>
-
   </form>
+
+  <div id="forceverifyform" class="mt-4">
+    <form action="/admin/settings/toggle/force-verify" method="POST">
+      <div class="flex items-center mb-4">
+        <% if (settings.forceVerify === true) { %>
+          <span class="text-sm font-medium text-neutral-400">Force Verify Email: <strong class="text-green-500">Enabled</strong></span>
+        <% } else { %>
+          <span class="text-sm font-medium text-neutral-400">Force Verify Email: <strong class="text-red-500">Disabled</strong></span>
+        <% } %>
+      </div>
+
+      <div class="flex flex-row">
+        <% if (settings.forceVerify === true) { %>
+          <button id="toggleforceverify" type="submit" class="block rounded-l-lg bg-white px-3 py-2 text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2">Disable</button>
+          <button id="toggleforceverify" type="submit" class="block rounded-r-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-lg hover:bg-green-500 transition focus:outline focus:outline-2 focus:outline-offset-2 opacity-[0.7]" disabled>Enable</button>
+        <% } else { %>
+          <button id="toggleforceverify" type="submit" class="block rounded-l-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus:outline focus:outline-2 focus:outline-offset-2 opacity-[0.7]" disabled>Disable</button>
+          <button id="toggleforceverify" type="submit" class="block rounded-r-lg bg-white px-3 py-2 text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2">Enable</button>
+        <% } %>
+      </div>
+    </form>
+  </div>
 </div>
 </div>
 <!--/div-->
