@@ -7,9 +7,11 @@
 
 const express = require('express');
 const passport = require('passport');
+const config = require('../config.json');
 const LocalStrategy = require('passport-local').Strategy;
-const { db } = require('../handlers/db.js');
 const { v4: uuidv4 } = require('uuid');
+const { db } = require('../handlers/db.js');
+const { sendWelcomeEmail, sendPasswordResetEmail, sendVerificationEmail } = require('../handlers/email.js');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -29,12 +31,12 @@ router.use(passport.session());
 passport.use(new LocalStrategy(
   async (username, password, done) => {
     try {
+      const settings = await db.get('settings') || {};
       const users = await db.get('users');
       if (!users) {
         return done(null, false, { message: 'No users found.' });
       }
 
-      // Check if the input is an email
       const isEmail = username.includes('@');
 
       let user;
@@ -48,6 +50,10 @@ passport.use(new LocalStrategy(
         return done(null, false, { message: 'Incorrect username or email.' });
       }
 
+      if (!user.verified && (settings.emailVerification || false)) {
+        return done(null, false, { message: 'Email not verified. Please verify your email.', userNotVerified: true });
+      }
+
       const match = await bcrypt.compare(password, user.password);
       if (match) {
         return done(null, user);
@@ -59,6 +65,7 @@ passport.use(new LocalStrategy(
     }
   }
 ));
+
 
 async function doesUserExist(username) {
   const users = await db.get('users');
@@ -79,15 +86,46 @@ async function doesEmailExist(email) {
 }
 
 async function createUser(username, email, password) {
-  return addUserToUsersTable(username, email, password);
+  const settings = await db.get('settings') || {};
+  const emailVerificationEnabled = settings.emailVerification || false;
+
+  if (emailVerificationEnabled) {
+    return addUserToUsersTable(username, email, password, false);
+  } else {
+    return addUserToUsersTable(username, email, password, true);
+  }
 }
 
-async function addUserToUsersTable(username, email, password) {
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-  const userId = uuidv4();
-  const users = await db.get('users') || [];
-  users.push({ userId, username, email, password: hashedPassword, "Accesto":[], admin: false });
-  return db.set('users', users);
+async function addUserToUsersTable(username, email, password, verified) {
+  try {
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const userId = uuidv4();
+    const verificationToken = verified ? null : generateRandomCode(30);
+    let users = await db.get('users') || [];
+    const newUser = { userId, username, email, password: hashedPassword, "Accesto":[], admin: false, welcomeEmailSent: false, verified, verificationToken };
+    users.push(newUser);
+    await db.set('users', users);
+
+    if (!newUser.welcomeEmailSent) {
+      await sendWelcomeEmail(email, username, password);
+      newUser.welcomeEmailSent = true;
+
+      if (!verified) {
+        await sendVerificationEmail(email, verificationToken);
+        users = await db.get('users') || [];
+        const index = users.findIndex(u => u.userId === newUser.userId);
+        if (index !== -1) {
+          users[index] = newUser;
+          await db.set('users', users);
+        }
+      }
+    }
+
+    return users;
+  } catch (error) {
+    console.error('Error adding user to database:', error);
+    throw error;
+  }
 }
 
 /**
@@ -109,7 +147,7 @@ passport.deserializeUser(async (username, done) => {
   try {
     const users = await db.get('users');
     if (!users) {
-      throw new Error('No users found');
+      throw new Error('User not found');
     }
     
     // Search for the user with the provided username in the users array
@@ -132,10 +170,106 @@ passport.deserializeUser(async (username, done) => {
  *
  * @returns {Response} Redirects based on the success or failure of the authentication attempt.
  */
+router.get('/auth/login', async (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) { return next(err); }
+    if (!user) {
+      if (info.userNotVerified) {
+        return res.redirect('/login?err=UserNotVerified');
+      }
+      return res.redirect('/login?err=InvalidCredentials&state=failed');
+    }
+    req.logIn(user, (err) => {
+      if (err) { return next(err); }
+      return res.redirect('/instances');
+    });
+  })(req, res, next);
+});
+
+router.post('/auth/login', passport.authenticate('local', { 
+  failureRedirect: '/login?err=InvalidCredentials&state=failed' 
+}), async (req, res) => {
+  if (req.user && req.user.twoFactorEnabled) {
+    req.session.tempUser = req.user;
+    req.logout();
+    return res.redirect('/2fa');
+  } else {
+    return res.redirect('/instances');
+  }
+});
+
 router.get('/auth/login', passport.authenticate('local', {
   successRedirect: '/instances?n',
   failureRedirect: '/login?err=InvalidCredentials&state=failed',
 }));
+
+router.get('/verify/:token', async (req, res) => {
+  const { token } = req.params;
+  try {
+    let users = await db.get('users') || [];
+    const user = users.find(u => u.verificationToken === token);
+    if (user) {
+      user.verified = true;
+      user.verificationToken = null;
+      await db.set('users', users);
+      res.redirect('/login?msg=EmailVerified');
+    } else {
+      res.redirect('/login?msg=InvalidVerificationToken');
+    }
+  } catch (error) {
+    console.error('Error verifying email:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+router.get('/resend-verification', async (req, res) => {
+  try {
+    const name = await db.get('name') || 'Skyport';
+    const logo = await db.get('logo') || false;
+
+    res.render('auth/resend-verification', {
+      req: req,
+      name: name,
+      logo: logo
+    });
+  } catch (error) {
+    console.error('Error fetching name or logo:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+router.post('/resend-verification', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    let users = await db.get('users') || [];
+    const userIndex = users.findIndex(u => u.email === email);
+
+    if (userIndex === -1) {
+      res.redirect('/login?msg=UserNotFound');
+      return;
+    }
+
+    const user = users[userIndex];
+
+    if (user.verified) {
+      res.redirect('/login?msg=UserAlreadyVerified');
+      return;
+    }
+    const newVerificationToken = generateRandomCode(30);
+    user.verificationToken = newVerificationToken;
+
+    users[userIndex] = user;
+    await db.set('users', users);
+
+    await sendVerificationEmail(email, newVerificationToken);
+
+    res.redirect('/login?msg=VerificationEmailResent');
+  } catch (error) {
+    console.error('Error resending verification email:', error);
+    res.status(500).send('Internal server error');
+  }
+});
 
 async function initializeRoutes() {
   async function updateRoutes() {
@@ -162,19 +296,25 @@ async function initializeRoutes() {
 
           router.post('/auth/register', async (req, res) => {
             const { username, email, password } = req.body;
-
+          
             try {
-              const users = await db.get('users');
               const userExists = await doesUserExist(username);
               const emailExists = await doesEmailExist(email);
-
+          
               if (userExists || emailExists) {
                 res.send('User already exists');
                 return;
+              }          
+              const settings = await db.get('settings') || {};
+              const emailVerificationEnabled = settings.emailVerification || false;
+          
+              if (emailVerificationEnabled) {
+                await createUser(username, email, password);
+                res.redirect('/login?msg=AccountcreateEmailSent');
+              } else {
+                await addUserToUsersTable(username, email, password, true); 
+                res.redirect('/login?msg=AccountCreated');
               }
-
-              await createUser(username, email, password);
-              res.redirect('/login?r');
             } catch (error) {
               console.error('Error handling registration:', error);
               res.status(500).send('Internal server error');
@@ -187,7 +327,7 @@ async function initializeRoutes() {
         }
       }
     } catch (error) {
-      console.error('Error fetching settings:', error);
+      console.error('Error initializing routes:', error);
     }
   }
   await updateRoutes();
@@ -195,6 +335,111 @@ async function initializeRoutes() {
 }
 
 initializeRoutes();
+
+router.get('/auth/reset-password', async (req, res) => {
+  try {
+    const name = await db.get('name') || 'Skyport';
+    const logo = await db.get('logo') || false;
+
+    res.render('auth/reset-password', {
+      req: req,
+      name: name,
+      logo: logo
+    });
+  } catch (error) {
+    console.error('Error rendering reset password page:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+router.post('/auth/reset-password', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const users = await db.get('users') || [];
+    const user = users.find(u => u.email === email);
+
+    if (!user) {
+      res.redirect('/auth/reset-password?err=EmailNotFound');
+      return;
+    }
+
+    const resetToken = generateRandomCode(30);
+    user.resetToken = resetToken;
+    await db.set('users', users);
+
+    await sendPasswordResetEmail(email, resetToken);
+
+    res.redirect('/auth/reset-password?msg=PasswordSent');
+  } catch (error) {
+    console.error('Error handling password reset:', error);
+    res.redirect('/auth/reset-password?msg=PasswordResetFailed');
+  }
+});
+
+router.get('/auth/reset/:token', async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const users = await db.get('users') || [];
+    const name = await db.get('name') || 'Skyport';
+    const logo = await db.get('logo') || false;
+    const user = users.find(u => u.resetToken === token);
+
+    if (!user) {
+      res.send('Invalid or expired token.');
+      return;
+    }
+
+    res.render('auth/password-reset-form', {
+      req: req,
+      name: name,
+      logo: logo,
+      token: token
+    });
+  } catch (error) {
+    console.error('Error rendering password reset form:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+router.post('/auth/reset/:token', async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  try {
+    const users = await db.get('users') || [];
+    if (!users) {
+      throw new Error('No users found');
+    }
+
+    const user = users.find(user => user.resetToken === token);
+
+    if (!user) {
+      res.redirect('/login?msg=PasswordReset&state=failed');
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    user.password = hashedPassword;
+    delete user.resetToken;
+    await db.set('users', users);
+
+    res.redirect('/login?msg=PasswordReset&state=success');
+  } catch (error) {
+    console.error('Error handling password reset:', error);
+    res.redirect('/login?msg=PasswordReset&state=failed');
+  }
+});
+
+function generateRandomCode(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
 
 /**
  * GET /auth/logout
@@ -208,5 +453,10 @@ router.get("/auth/logout", (req, res) => {
     res.redirect("/");
   });
 });
+
+initializeRoutes().catch(error => {
+  console.error('Error initializing routes:', error);
+});
+
 
 module.exports = router;
