@@ -363,7 +363,7 @@ router.delete('/user/delete', isAdmin, async (req, res) => {
   res.status(204).send();
 });
 
-router.get('/users/edit/:userId', isAdmin, async (req, res) => {
+router.get('/admin/users/edit/:userId', isAdmin, async (req, res) => {
   const userId = req.params.userId;
   const users = await db.get('users') || [];
   const user = users.find(user => user.userId === userId);
@@ -381,7 +381,7 @@ router.get('/users/edit/:userId', isAdmin, async (req, res) => {
   });
 });
 
-router.post('/users/edit/:userId', isAdmin, async (req, res, next) => {
+router.post('/admin/users/edit/:userId', isAdmin, async (req, res, next) => {
   const userId = req.params.userId;
   const { username, email, password, admin, verified } = req.body;
 
