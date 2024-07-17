@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "It's skyport.",
   "main": "index.js",
+  "bin": {
+    "skyport": "./exec/bin/index.js"
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "concurrently \"npm run start\" \"npm run watch\"",
@@ -23,6 +26,7 @@
     "body-parser": "^1.20.2",
     "cat-loggr": "^1.2.2",
     "chalk": "^4.1.2",
+    "commander": "^12.1.0",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "express-basic-auth": "^1.2.1",
