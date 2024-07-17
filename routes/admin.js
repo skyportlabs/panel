@@ -489,22 +489,14 @@ router.get('/admin/settings', isAdmin, async (req, res) => {
   try {
     const settings = {
       ...await db.get('settings'),
-      smtpSettings: await db.get('smtp_settings') 
     };
 
-    const { smtpServer, smtpPort, smtpUser, smtpFromName, smtpFromAddress } = settings.smtpSettings || {};
-
-    res.render('admin/settings', {
-      req,
-      user: req.user,
-      settings,
-      name: await db.get('name') || 'Skyport',
+    res.render('admin/settings/appearance', { 
+      req, 
+      user: req.user, 
+      settings: await db.get('settings'), 
+      name: await db.get('name') || 'Skyport', 
       logo: await db.get('logo') || false,
-      smtpServer: smtpServer || '',
-      smtpPort: smtpPort || '',
-      smtpUser: smtpUser || '',
-      smtpFromName: smtpFromName || '',
-      smtpFromAddress: smtpFromAddress || ''
     });
   } catch (error) {
     console.error('Error fetching settings:', error);
@@ -512,19 +504,41 @@ router.get('/admin/settings', isAdmin, async (req, res) => {
   }
 });
 
-router.post('/admin/settings/toggle/email-verification', isAdmin, async (req, res) => {
+router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
+  try {
+    const settings = await db.get('settings');
+    const smtpSettings = await db.get('smtp_settings') || {};
+    
+    res.render('admin/settings/smtp', {
+      req,
+      user: req.user,
+      settings,
+      name: await db.get('name') || 'Skyport',
+      logo: await db.get('logo') || false,
+      smtpSettings
+    });
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    res.status(500).send('Failed to fetch settings. Please try again later.');
+  }
+});
+
+
+router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => {
   try {
     const settings = await db.get('settings') || {};
-    settings.emailVerification = !settings.emailVerification;
+    settings.forceVerify = !settings.forceVerify;
 
     await db.set('settings', settings);
-    logAudit(req.user.userId, req.user.username, 'verification:edit', req.ip);
+    logAudit(req.user.userId, req.user.username, 'force-verify:edit', req.ip); // Adjust as per your logging needs
+
     res.redirect('/admin/settings');
   } catch (err) {
-    console.error('Error toggling email verification:', err);
+    console.error('Error toggling force verify:', err);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
   const name = req.body.name;
@@ -538,7 +552,7 @@ router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
 }
 });
 
-router.post('/saveSmtpSettings', async (req, res) => {
+router.post('/admin/settings/saveSmtpSettings', async (req, res) => {
   const { smtpServer, smtpPort, smtpUser, smtpPass, smtpFromName, smtpFromAddress } = req.body;
 
   try {
@@ -552,12 +566,13 @@ router.post('/saveSmtpSettings', async (req, res) => {
     });
 
     logAudit(req.user.userId, req.user.username, 'SMTP:edit', req.ip);
-    res.redirect('/admin/settings');
+    res.redirect('/admin/settings/smtp?msg=SmtpSaveSuccess');
   } catch (error) {
     console.error('Error saving SMTP settings:', error);
-    res.status(500).send('Failed to save SMTP settings. Please try again later.');
+    res.redirect('/admin/settings/smtp?err=SmtpSaveFailed');
   }
 });
+
 
 router.post('/sendTestEmail', async (req, res) => {
   try {
@@ -566,13 +581,13 @@ router.post('/sendTestEmail', async (req, res) => {
     const emailSent = await sendTestEmail(recipientEmail);
 
     if (emailSent) {
-      res.redirect('/admin/settings?msg=TestemailSentsuccess');
+      res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
     } else {
-      res.redirect('/admin/settings?err=TestemailSentfailed'); 
+      res.redirect('/admin/settings/smtp?err=TestemailSentfailed'); 
     }
   } catch (error) {
     console.error('Error sending test email:', error);
-    res.redirect('/admin/settings?err=TestemailSentfailed');
+    res.redirect('/admin/settings/smtp?err=TestemailSentfailed');
   }
 });
 
