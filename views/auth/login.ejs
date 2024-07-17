@@ -1,9 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= name %></title>
+  <title><%= name %> - Login</title>
   <link href="../assets/tailwind.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,9 +45,7 @@
               </div>
 
               <div class="text-sm">
-                <% if (settings.register == true) { %>
-                    <a href="/register" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Register an account</a>
-                  <% } %>
+                <a href="/auth/reset-password" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Forgot your password?</a>
               </div>
             </div>
 
@@ -55,6 +53,12 @@
               <a onclick="submitForm()" class="w-full cursor-pointer flex transition justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-neutral-800 bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">Sign in</a>
             </div>
             
+            <% if (settings.register) { %>
+            <div class="text-center mt-4">
+              <a href="/register" class="w-full cursor-pointer flex transition justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">Register</a>
+            </div>
+            <% } %>
+
             <% if (req.query.err && req.query.err == "InvalidCredentials") { %>
               <div class="mt-2"></div>
               <span class="text-amber-600 pt-4 font-normal text-sm">Invalid credentials. Please try again.</span>
@@ -63,6 +67,52 @@
             <% if (req.query.err && req.query.err == "UpdatedCredentials") { %>
               <div class="mt-2"></div>
               <span class="text-emerald-600 pt-8 font-normal text-sm">Your account has been updated, please enter your new credentials.</span>
+            <% } %>
+
+            <% if (req.query.msg && req.query.msg == "EmailVerified") { %>
+              <div class="mt-2"></div>
+              <span class="text-emerald-600 pt-8 font-normal text-sm">Your account has been Verified, you can login now.</span>
+            <% } %>
+            <% if (req.query.msg && req.query.msg == "InvalidVerificationToken") { %>
+              <div class="mt-2"></div>
+              <span class="text-amber-600 pt-4 font-normal text-sm">Your verification link invalid or expire, please try again.</span>
+            <% } %>
+            <% if (req.query.msg && req.query.msg == "VerificationEmailResent") { %>
+              <div class="mt-2"></div>
+              <span class="text-emerald-600 pt-8 font-normal text-sm">Your verification link resent successfully, check your email.</span>
+            <% } %>
+            <% if (req.query.msg && req.query.msg == "UserNotFound") { %>
+              <div class="mt-2"></div>
+              <span class="text-amber-600 pt-4 font-normal text-sm">User not found, please try again.</span>
+            <% } %>
+            <% if (req.query.msg && req.query.msg == "UserAlreadyVerified") { %>
+              <div class="mt-2"></div>
+              <span class="text-amber-600 pt-4 font-normal text-sm">User Already Verified, Login With Your Account.</span>
+            <% } %>
+            <% if (req.query.msg && req.query.msg == "AccountcreateEmailSent") { %>
+              <div class="mt-2"></div>
+              <span class="text-emerald-600 pt-8 font-normal text-sm">Your Account successfully create and please check your email for verify your account.</span>
+            <% } %>
+            <% if (req.query.msg && req.query.msg == "AccountCreated") { %>
+              <div class="mt-2"></div>
+              <span class="text-emerald-600 pt-8 font-normal text-sm">Your Account successfully create, login with your username/email and password.</span>
+            <% } %>
+            <% if (req.query.err && req.query.err === "UserNotVerified") { %>
+              <div class="mt-6 text-center">
+                <p class="text-red-500 text-lg font-semibold mb-2">Oops! Your Account Isn't Verified Yet.</p>
+                <p class="text-white text-sm mb-4">Please verify your account to proceed.</p>
+                <a href="/resend-verification" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 inline-block">
+                  Click Here to Resend Verification Email
+                </a>
+              </div>
+            <% } %>                                                                                 
+
+            <% if (req.query.msg && req.query.msg === 'PasswordReset') { %>
+              <% if (req.query.state && req.query.state === 'success') { %>
+                <span class="text-emerald-600 pt-8 font-normal text-sm">Your password has been successfully updated.</span>
+              <% } else if (req.query.state && req.query.state === 'failed') { %>
+                <span class="text-red-500 pt-4 font-normal text-sm">Password reset failed. Please try again.</span>
+              <% } %>
             <% } %>
           </form>
         </div>
@@ -74,13 +124,13 @@
   </div>
 </div>
 
-           <script>
-            async function submitForm() {
-             let username = encodeURIComponent(document.getElementById("username").value);
-             let password = encodeURIComponent(document.getElementById("password").value);
-             document.location.href = `/auth/login?username=${username}&password=${password}`;
-            }
-           </script>
-        </div>
+<script>
+  async function submitForm() {
+    let username = encodeURIComponent(document.getElementById("username").value);
+    let password = encodeURIComponent(document.getElementById("password").value);
+    document.location.href = `/auth/login?username=${username}&password=${password}`;
+  }
+</script>
+
 </body>
 </html>

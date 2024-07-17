@@ -17,6 +17,8 @@ const multer = require('multer');
 const path = require('path')
 const fs = require('node:fs')
 const {logAudit} = require('../handlers/auditlog.js');
+const nodemailer = require('nodemailer');
+const { sendTestEmail } = require('../handlers/email.js');
 
 /**
  * Middleware to verify if the user is an administrator.
@@ -303,42 +305,46 @@ router.post('/nodes/configure', async (req, res) => {
 });
 
 router.post('/users/create', isAdmin, async (req, res) => {
-  const user = {
-    userId: uuidv4(),
-    username: req.body.username,
-    email: req.body.email,
-    password: await bcrypt.hash(req.body.password, saltRounds),
-    Accesto: [],
-    admin: req.body.admin, 
-};
+  const { username, email, password, admin, verified } = req.body;
 
-if (!req.body.username || !req.body.email || !req.body.password) {
-  return res.send('Username and password are required.');
-}
+  if (!username || !email || !password) {
+    return res.status(400).send('Username, email, and password are required.');
+  }
 
-if (req.body.admin !== true && req.body.admin !== false) {
-  return res.send('Other values as true or false are not allowed!');
-}
+  if (typeof admin !== 'boolean') {
+    return res.status(400).send('Admin field must be true or false.');
+  }
 
+  const userExists = await doesUserExist(username);
+  if (userExists) {
+    return res.status(400).send('User already exists.');
+  }
 
-const userExists = await doesUserExist(req.body.username);
-if (userExists) {
-  return res.send("user already exists!");
-}
+  const emailExists = await doesEmailExist(email);
+  if (emailExists) {
+    return res.status(400).send('Email already exists.');
+  }
 
-const emailExists = await doesEmailExist(req.body.email);
-if (emailExists) {
-  return res.send("email already exists!");
-}
+  const userId = uuidv4();
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-let users = await db.get('users') || [];
-users.push(user);
-await db.set('users', users);
-logAudit(req.user.userId, req.user.username, 'user:create', req.ip);
+  const newUser = {
+    userId,
+    username,
+    email,
+    password: hashedPassword,
+    accessTo: [],
+    admin,
+    verified: verified || false,
+  };
 
-console.log(user)
+  let users = await db.get('users') || [];
+  users.push(newUser);
+  await db.set('users', users);
 
-res.status(201).send(user);
+  logAudit(req.user.userId, req.user.username, 'user:create', req.ip);
+
+  res.status(201).send(newUser);
 });
 
 router.delete('/user/delete', isAdmin, async (req, res) => {
@@ -356,6 +362,76 @@ router.delete('/user/delete', isAdmin, async (req, res) => {
   logAudit(req.user.userId, req.user.username, 'user:delete', req.ip);
   res.status(204).send();
 });
+
+router.get('/admin/users/edit/:userId', isAdmin, async (req, res) => {
+  const userId = req.params.userId;
+  const users = await db.get('users') || [];
+  const user = users.find(user => user.userId === userId);
+
+  if (!user) {
+    return res.status(404).send('User not found');
+  }
+
+  res.render('admin/edit-user', {
+    req,
+    user: req.user,
+    editUser: user,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false
+  });
+});
+
+router.post('/admin/users/edit/:userId', isAdmin, async (req, res, next) => {
+  const userId = req.params.userId;
+  const { username, email, password, admin, verified } = req.body;
+
+  if (!username || !email) {
+    return res.status(400).send('Username and email are required.');
+  }
+
+  const users = await db.get('users') || [];
+  const userIndex = users.findIndex(user => user.userId === userId);
+
+  if (userIndex === -1) {
+    return res.status(404).send('User not found');
+  }
+
+  const userExists = users.some(user => user.username === username && user.userId !== userId);
+  const emailExists = users.some(user => user.email === email && user.userId !== userId);
+
+  if (userExists) {
+    return res.status(400).send('Username already exists.');
+  }
+
+  if (emailExists) {
+    return res.status(400).send('Email already exists.');
+  }
+
+  users[userIndex].username = username;
+  users[userIndex].email = email;
+  users[userIndex].admin = admin === 'true';
+  users[userIndex].verified = verified === 'true';
+
+  if (password) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    users[userIndex].password = hashedPassword;
+  }
+
+  await db.set('users', users);
+
+  logAudit(req.user.userId, req.user.username, 'user:edit', req.ip);
+
+  if (req.user.userId === userId) {
+    return req.logout(err => {
+      if (err) return next(err);
+      res.redirect('/login?err=UpdatedCredentials');
+    });
+  }
+
+  res.redirect('/admin/users');
+});
+
 
 
 /**
@@ -413,6 +489,42 @@ router.get('/admin/settings', isAdmin, async (req, res) => {
   res.render('admin/settings/appearance', { req, user: req.user, settings: await db.get('settings'), name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
+router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
+  try {
+    const settings = await db.get('settings');
+    const smtpSettings = await db.get('smtp_settings') || {};
+    
+    res.render('admin/settings/smtp', {
+      req,
+      user: req.user,
+      settings,
+      name: await db.get('name') || 'Skyport',
+      logo: await db.get('logo') || false,
+      smtpSettings
+    });
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    res.status(500).send('Failed to fetch settings. Please try again later.');
+  }
+});
+
+
+router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => {
+  try {
+    const settings = await db.get('settings') || {};
+    settings.forceVerify = !settings.forceVerify;
+
+    await db.set('settings', settings);
+    logAudit(req.user.userId, req.user.username, 'force-verify:edit', req.ip); // Adjust as per your logging needs
+
+    res.redirect('/admin/settings');
+  } catch (err) {
+    console.error('Error toggling force verify:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
   const name = req.body.name;
   try {
@@ -424,6 +536,46 @@ router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
   res.status(500).send("Database error");
 }
 });
+
+router.post('/admin/settings/saveSmtpSettings', async (req, res) => {
+  const { smtpServer, smtpPort, smtpUser, smtpPass, smtpFromName, smtpFromAddress } = req.body;
+
+  try {
+    await db.set('smtp_settings', {
+      server: smtpServer,
+      port: smtpPort,
+      username: smtpUser,
+      password: smtpPass,
+      fromName: smtpFromName,
+      fromAddress: smtpFromAddress
+    });
+
+    logAudit(req.user.userId, req.user.username, 'SMTP:edit', req.ip);
+    res.redirect('/admin/settings/smtp?msg=SmtpSaveSuccess');
+  } catch (error) {
+    console.error('Error saving SMTP settings:', error);
+    res.redirect('/admin/settings/smtp?err=SmtpSaveFailed');
+  }
+});
+
+
+router.post('/sendTestEmail', async (req, res) => {
+  try {
+    const { recipientEmail } = req.body;
+
+    const emailSent = await sendTestEmail(recipientEmail);
+
+    if (emailSent) {
+      res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
+    } else {
+      res.redirect('/admin/settings/smtp?err=TestemailSentfailed'); 
+    }
+  } catch (error) {
+    console.error('Error sending test email:', error);
+    res.redirect('/admin/settings/smtp?err=TestemailSentfailed');
+  }
+});
+
 
 // Configure multer for file upload
 const upload = multer({
