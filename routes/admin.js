@@ -410,7 +410,7 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
  * @returns {Response} Renders the 'nodes' view with node data and user information.
  */
 router.get('/admin/settings', isAdmin, async (req, res) => {
-  res.render('admin/settings', { req, user: req.user, settings: await db.get('settings'), name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  res.render('admin/settings/appearance', { req, user: req.user, settings: await db.get('settings'), name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
