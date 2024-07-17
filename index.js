@@ -141,5 +141,5 @@ app.listen(config.port, () => {
 );
 
 app.get('*', async function(req, res){
-  res.render('404', { req, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false })
+  res.render('errors/404', { req, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false })
 });

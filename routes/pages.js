@@ -34,10 +34,10 @@ async function setupRoutes() {
                     try {
                         const userId = req.user.userId;
                         let instances = await db.get(userId + '_instances') || [];
-                        let adminInstances;
-                        if (await req.user.admin === true) {
-                            adminInstances = await db.get('instances') || [];
-                            adminInstances = adminInstances.filter(instance => instance.User !== req.user.id);
+                        let adminInstances = [];
+                        if (req.user.admin) {
+                            const allInstances = await db.get('instances') || [];
+                            adminInstances = allInstances.filter(instance => instance.User == userId);
                         }
                 
                         const users = await db.get('users') || [];

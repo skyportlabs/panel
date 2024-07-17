@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
+const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const path = require('path');
+
+const plugins = loadPlugins(path.join(__dirname, '../../plugins'));  // Correct import
 
 router.get("/instance/:id", async (req, res) => {
     if (!req.user) return res.redirect('/');
@@ -20,15 +24,22 @@ router.get("/instance/:id", async (req, res) => {
     const config = require('../../config.json');
     const { port, domain } = config;
 
-    res.render('instance/instance', { 
-        req, 
-        instance, 
-        port, 
-        domain, 
-        user: req.user, 
-        name: await db.get('name') || 'Skyport', 
-        logo: await db.get('logo') || false 
+    const allPluginData = Object.values(plugins).map(plugin => plugin.config);
+
+    res.render('instance/instance', {
+        req,
+        instance,
+        port,
+        domain,
+        user: req.user,
+        name: await db.get('name') || 'Skyport',
+        logo: await db.get('logo') || false,
+        addons: {
+            plugins: allPluginData
+        }
     });
+
+    console.log('Loaded Plugins:', allPluginData);
 });
 
 module.exports = router;

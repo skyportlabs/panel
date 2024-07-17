@@ -4,6 +4,11 @@ const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 
+const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const path = require('path');
+
+const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
+
 router.get("/instance/:id/ftp", async (req, res) => {
     if (!req.user) {
         return res.redirect('/');
@@ -42,6 +47,8 @@ router.get("/instance/:id/ftp", async (req, res) => {
         };
 
         try {
+
+            const allPluginData = Object.values(plugins).map(plugin => plugin.config);
             const response = await axios(RequestData);
             const logindata = response.data || [];
 
@@ -53,6 +60,9 @@ router.get("/instance/:id/ftp", async (req, res) => {
                 instance_name: instance.Name, 
                 name: await db.get('name') || 'Skyport', 
                 logo: await db.get('logo') || false, 
+                addons: {
+                    plugins: allPluginData
+                },
                 settings 
             });
         } catch (error) {

@@ -68,11 +68,23 @@ function askQuestion(question) {
     });
 }
 
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
 async function main() {
     log.init('create a new *admin* user for the skyport panel:')
     log.init('you can make regular users from the admin -> users page!')
     const username = await askQuestion("username: ");
     const email = await askQuestion("email: ");
+
+    if (!isValidEmail(email)) {
+        log.error("invalid email!");
+        rl.close();
+        return;
+    }
+
     const password = await askQuestion("password: ");
 
     const userExists = await doesUserExist(username);

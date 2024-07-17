@@ -45,7 +45,13 @@ require(['vs/editor/editor.main'], function () {
 
     // Save the editor instance globally for accessing in the saveFile function
     window.editor = editor;
-});
+    window.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveFile();
+            }
+        });
+    });
 
 function saveFile() {
     var button = document.getElementById('saveButton');

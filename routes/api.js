@@ -41,7 +41,7 @@ router.get('/api/users', validateApiKey, async (req, res) => {
   }
 });
 
-router.get('/api/getUser', validateApiKey, async (req, res) => {
+router.post('/api/getUser', validateApiKey, async (req, res) => {
   try {
     const { type, value } = req.body;
 
@@ -61,10 +61,10 @@ router.get('/api/getUser', validateApiKey, async (req, res) => {
     }
     
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(400).json({ error: 'User not found' });
     }
     
-    res.json(user);
+    res.status(201).json(user);
   } catch (error) {
     console.error('Error retrieving user:', error);
     res.status(500).json({ error: 'Failed to retrieve user' });
@@ -73,7 +73,7 @@ router.get('/api/getUser', validateApiKey, async (req, res) => {
 
 router.post('/api/users/create', validateApiKey, async (req, res) => {
   try {
-    const { username, email, password, admin } = req.body;
+    const { username, email, password, userId, admin } = req.body;
     
     if (!username || !email || !password) {
       return res.status(400).json({ error: 'Username and password are required' });
@@ -87,8 +87,12 @@ router.post('/api/users/create', validateApiKey, async (req, res) => {
       return res.status(409).json({ error: 'User already exists' });
     }
 
+    if (!req.body.userId) {
+      userId = uuidv4();
+    }
+
     const user = {
-      userId: uuidv4(),
+      userId: userId,
       username,
       email,
       password: await bcrypt.hash(password, saltRounds),
@@ -269,11 +273,19 @@ router.delete('/api/instance/delete', validateApiKey, async (req, res) => {
   }
 });
 
-router.get('/api/getInstance', validateApiKey, async (req, res) => {
+router.post('/api/getUserInstance', validateApiKey, async (req, res) => {
   const { userId } = req.body;
 
   if (!userId) {
     return res.status(400).json({ error: 'Parameter "userId" is required' });
+  }
+
+  const userExists = await db.get('users').then(users => 
+    users && users.some(user => user.userId === userId)
+  );
+
+  if (!userExists) {
+    return res.status(400).json({ error: 'User not found' });
   }
 
   try {
@@ -281,6 +293,29 @@ router.get('/api/getInstance', validateApiKey, async (req, res) => {
     res.json(userInstances);
   } catch (error) {
     res.status(500).json({ error: 'Failed to retrieve user instances' });
+  }
+});
+
+router.post('/api/getInstance', validateApiKey, async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: 'Parameter "id" is required' });
+  }
+
+  const instanceExists = await db.get('instances').then(server => 
+    server && server.some(server => server.ContainerId === id)
+  );
+
+  if (!instanceExists) {
+    return res.status(400).json({ error: 'Instance not found' });
+  }
+
+  try {
+    const instances = await db.get(`${id}_instance`) || [];
+    res.json(instances);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve instances' });
   }
 });
 

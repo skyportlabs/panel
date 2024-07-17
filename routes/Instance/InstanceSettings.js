@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
+const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const path = require('path');
+
+const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
 
 router.get("/instance/:id/settings", async (req, res) => {
     if (!req.user) {
@@ -27,7 +31,10 @@ router.get("/instance/:id/settings", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-    res.render('instance/settings', { req, instance, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    const allPluginData = Object.values(plugins).map(plugin => plugin.config);
+    res.render('instance/settings', { req, instance, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, addons: {
+        plugins: allPluginData
+    } });
 });
 
 router.get("/instance/:id/change/name/:name", async (req, res) => {
