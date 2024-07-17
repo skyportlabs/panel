@@ -1,22 +1,4 @@
 <%- include('components/template') %>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/BrightTheme.css">
-<script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotify.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@pnotify/core/dist/PNotifyButtons.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<script>
-  const style = document.createElement('style');
-style.innerHTML = `
-  .custom-pnotify-text {
-    color: var(--text-neutral-700) !important; /* Replace with the appropriate neutral text color class */
-    font-weight: 500; /* Match font-medium */
-    letter-spacing: -0.025em; /* Match tracking-tight */
-    font-size: 1.125rem; /* Match text-lg */
-  }
-`;
-document.head.appendChild(style);
-</script>
-
 <main id="content">
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
@@ -297,29 +279,5 @@ document.addEventListener('DOMContentLoaded', function() {
       <% }); %>
     </dl>
     </div>
-    <script>
-      async function submitForm() {
-        let username = encodeURIComponent(document.getElementById("username").value);
-        let password = encodeURIComponent(document.getElementById("password").value);
-        document.location.href = `/auth/login?username=${username}&password=${password}`;
-      }
-    
-      // Function to display PNotify alert
-      function welcome(type, text) {
-  PNotify.info({
-    text: '<h1 class="text-white font-medium tracking-tight text-lg">Welcome to <%= name %>!</h1>',
-    textTrusted: true,  // This allows HTML in the text
-    delay: 3000,
-    styling: 'brighttheme',
-    icons: 'brighttheme'
-  });
-}
-    
-      // Check for URL parameters and display notifications
-      document.addEventListener("DOMContentLoaded", function() {
-        if (window.location.search === "?n") {
-        welcome()}
-      });
-    </script>
 </main>
 <%- include('components/footer') %>
