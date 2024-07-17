@@ -486,22 +486,7 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
  * @returns {Response} Renders the 'nodes' view with node data and user information.
  */
 router.get('/admin/settings', isAdmin, async (req, res) => {
-  try {
-    const settings = {
-      ...await db.get('settings'),
-    };
-
-    res.render('admin/settings/appearance', { 
-      req, 
-      user: req.user, 
-      settings: await db.get('settings'), 
-      name: await db.get('name') || 'Skyport', 
-      logo: await db.get('logo') || false,
-    });
-  } catch (error) {
-    console.error('Error fetching settings:', error);
-    res.status(500).send('Failed to fetch settings. Please try again later.');
-  }
+  res.render('admin/settings/appearance', { req, user: req.user, settings: await db.get('settings'), name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
 router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
