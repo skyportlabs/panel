@@ -107,21 +107,28 @@ async function addUserToUsersTable(username, email, password, verified) {
     users.push(newUser);
     await db.set('users', users);
 
-    const VerifyEmailContant = `
-      Thank you for registering on ${appName}. Please click the button below to verify your email address:
-      <a href="${config.baseURL}/verify/${verificationToken}">${config.baseURL}/verify/${verificationToken}</a>
-    `;
-
     if (!newUser.welcomeEmailSent) {
-      await sendEmail(email, 'Verify Your Email', { message: emailMessage });    
+      await sendEmail(email, 'Verify Your Email', { 
+          subject: 'We',
+          message: `Thank you for registering on Skyport. Please click the button below to verify your email address:`,
+          buttonUrl: `${config.baseURL}/verify/${verificationToken}`,
+          buttonText: 'Verify Email Address',
+          message_2: `If you're having trouble clicking the button above, you can also verify your email by copying and pasting the following link into your browser:`,
+          message_2_link: `${config.baseURL}/verify/${verificationToken}`,
+          footer: `If you didn't create an account on Skyport, please disregard this email.`,
+          name: appName,
+       });    
       newUser.welcomeEmailSent = true;
 
       if (!verified) {
         await sendEmail(email, 'Verify Your Email', {
           subject: 'Verify Your Email',
-          message: VerifyEmailContant,
+          message: `Thank you for registering on Skyport. Please click the button below to verify your email address:`,
           buttonUrl: `${config.baseURL}/verify/${verificationToken}`,
-          buttonText: 'Verify Email',
+          buttonText: 'Verify Email Address',
+          message_2: `If you're having trouble clicking the button above, you can also verify your email by copying and pasting the following link into your browser:`,
+          message_2_link: `${config.baseURL}/verify/${verificationToken}`,
+          footer: `If you didn't create an account on Skyport, please disregard this email.`,
           name: appName,
         });
         users = await db.get('users') || [];
