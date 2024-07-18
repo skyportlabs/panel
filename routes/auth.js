@@ -108,14 +108,12 @@ async function addUserToUsersTable(username, email, password, verified) {
     await db.set('users', users);
 
     if (!newUser.welcomeEmailSent) {
-      await sendEmail(email, 'Verify Your Email', { 
-          subject: 'We',
-          message: `Thank you for registering on Skyport. Please click the button below to verify your email address:`,
-          buttonUrl: `${config.baseURL}/verify/${verificationToken}`,
-          buttonText: 'Verify Email Address',
-          message_2: `If you're having trouble clicking the button above, you can also verify your email by copying and pasting the following link into your browser:`,
-          message_2_link: `${config.baseURL}/verify/${verificationToken}`,
-          footer: `If you didn't create an account on Skyport, please disregard this email.`,
+      await sendEmail(email, `Welcome to ${appName}`, { 
+          subject: `Welcome to ${appName}`,
+          message: `You Just Creating Account With Us, Here is Login link:`,
+          buttonUrl: `${config.baseURL}/login`,
+          buttonText: 'Login Now',
+          footer: `We hope you enjoy using ${appName}`,
           name: appName,
        });    
       newUser.welcomeEmailSent = true;
@@ -142,7 +140,7 @@ async function addUserToUsersTable(username, email, password, verified) {
 
     return users;
   } catch (error) {
-    console.error('Error adding user to database:', error);
+    log.error('Error adding user to database:', error);
     throw error;
   }
 }
@@ -241,7 +239,7 @@ router.get('/verify/:token', async (req, res) => {
       res.redirect('/login?msg=InvalidVerificationToken');
     }
   } catch (error) {
-    console.error('Error verifying email:', error);
+    log.error('Error verifying email:', error);
     res.status(500).send('Internal server error');
   }
 });
@@ -257,7 +255,7 @@ router.get('/resend-verification', async (req, res) => {
       logo: logo
     });
   } catch (error) {
-    console.error('Error fetching name or logo:', error);
+    log.error('Error fetching name or logo:', error);
     res.status(500).send('Internal server error');
   }
 });
@@ -324,7 +322,7 @@ async function initializeRoutes() {
                 logo: await db.get('logo') || false
               });
             } catch (error) {
-              console.error('Error fetching name or logo:', error);
+              log.error('Error fetching name or logo:', error);
               res.status(500).send('Internal server error');
             }
           });
@@ -344,7 +342,7 @@ async function initializeRoutes() {
               await createUser(username, email, password);
               res.redirect('/login?msg=AccountcreateEmailSent');
             } catch (error) {
-              console.error('Error handling registration:', error);
+              log.error('Error handling registration:', error);
               res.status(500).send('Internal server error');
             }
           });
@@ -355,7 +353,7 @@ async function initializeRoutes() {
         }
       }
     } catch (error) {
-      console.error('Error initializing routes:', error);
+      log.error('Error initializing routes:', error);
     }
   }
 
@@ -377,7 +375,7 @@ router.get('/auth/reset-password', async (req, res) => {
       logo: logo
     });
   } catch (error) {
-    console.error('Error rendering reset password page:', error);
+    log.error('Error rendering reset password page:', error);
     res.status(500).send('Internal server error');
   }
 });
@@ -386,6 +384,7 @@ router.post('/auth/reset-password', async (req, res) => {
   const { email } = req.body;
 
   try {
+    const appName = await db.get('name') || 'Skyport';
     const users = await db.get('users') || [];
     const user = users.find(u => u.email === email);
 
@@ -398,7 +397,16 @@ router.post('/auth/reset-password', async (req, res) => {
     user.resetToken = resetToken;
     await db.set('users', users);
 
-    await sendEmail(email, 'Password Reset Request', { message: 'You requested a password reset. Click the button below to reset your password.', buttonText: 'Reset Password', buttonUrl: `${config.baseURL}/auth/reset/${resetToken}` });
+    await sendEmail(email, 'Password Reset Request', {
+      subject: 'Password Reset Request',
+      message: `You requested a password reset. Click the button below to reset your password:`,
+      buttonUrl: `${config.baseURL}/auth/reset/${resetToken}`,
+      buttonText: 'Reset Password',
+      message_2: `If the button above does not work, click the link below:`,
+      message_2_link: `${config.baseURL}/verify/${resetToken}`,
+      footer: `If you did not request a password reset, please ignore this email. Your password will remain unchanged.`,
+      name: appName,
+    });
 
     res.redirect('/auth/reset-password?msg=PasswordSent');
   } catch (error) {
@@ -428,7 +436,7 @@ router.get('/auth/reset/:token', async (req, res) => {
       token: token
     });
   } catch (error) {
-    console.error('Error rendering password reset form:', error);
+    log.error('Error rendering password reset form:', error);
     res.status(500).send('Internal server error');
   }
 });
@@ -457,7 +465,7 @@ router.post('/auth/reset/:token', async (req, res) => {
 
     res.redirect('/login?msg=PasswordReset&state=success');
   } catch (error) {
-    console.error('Error handling password reset:', error);
+    log.error('Error handling password reset:', error);
     res.redirect('/login?msg=PasswordReset&state=failed');
   }
 });
@@ -485,7 +493,7 @@ router.get("/auth/logout", (req, res) => {
 });
 
 initializeRoutes().catch(error => {
-  console.error('Error initializing routes:', error);
+  log.error('Error initializing routes:', error);
 });
 
 

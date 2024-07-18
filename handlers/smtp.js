@@ -4,18 +4,23 @@ const path = require('path');
 const Handlebars = require('handlebars');
 const { db } = require('./db.js');
 
+const CatLoggr = require('cat-loggr');
+const log = new CatLoggr();
 async function getSMTPSettings() {
   const smtpSettings = await db.get('smtp_settings');
   const name = await db.get('name') || 'Skyport';
 
   if (!smtpSettings) {
-    throw new Error('SMTP settings not found');
+    log.error('SMTP settings not found');
   }
+
+  const securePorts = [25, 465, 587, 2525]; 
+  const secure = securePorts.includes(smtpSettings.port);
 
   const transporter = nodemailer.createTransport({
     host: smtpSettings.server,
     port: smtpSettings.port,
-    secure: true,
+    secure: secure, 
     auth: {
       user: smtpSettings.username,
       pass: smtpSettings.password,
@@ -46,10 +51,8 @@ async function sendEmail(to, subject, templateData) {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`Email sent to ${to}`);
   } catch (error) {
-    console.error('Error sending email:', error);
-    throw new Error('Failed to send email');
+    log.error('Error sending email:', error);
   }
 }
 
