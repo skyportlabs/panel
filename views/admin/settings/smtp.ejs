@@ -12,7 +12,12 @@
 
   <%- include('../../components/settings') %>
 
-  <div class="bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6">
+  <div class="flex flex-col bg-[#181818] m-6 pt-0 py-5 rounded-lg">
+    <h1 class="text-white text-[18px] font-mono px-5 p-1 mb-1 w-full bg-[#1f1e1e] rounded-t-lg font-semibold">SMTP Settings</h1>
+    <div class="grid grid-cols-3">
+
+
+  <div class="mt-4 ml-5">
     <form action="/admin/settings/saveSmtpSettings" method="POST">
       <label for="smtpServer" class="text-neutral-400 text-sm block">SMTP Server:</label>
       <input type="text" id="smtpServer" name="smtpServer" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.server || '' %>" placeholder="SMTP Server" required>
