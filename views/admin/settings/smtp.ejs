@@ -12,58 +12,66 @@
 
   <%- include('../../components/settings') %>
 
-  <div class="flex flex-col bg-[#181818] m-6 pt-0 py-5 rounded-lg">
-    <h1 class="text-white text-[18px] font-mono px-5 p-1 mb-1 w-full bg-[#1f1e1e] rounded-t-lg font-semibold">SMTP Settings</h1>
-    <div class="bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6">
-      <form action="/admin/settings/saveSmtpSettings" method="POST">
-        <label for="smtpServer" class="text-neutral-400 text-sm block">SMTP Server:</label>
-        <input type="text" id="smtpServer" name="smtpServer" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.server || '' %>" placeholder="SMTP Server" required>
-        
-        <label for="smtpPort" class="text-neutral-400 text-sm block mt-4">SMTP Port:</label>
-        <input type="number" id="smtpPort" name="smtpPort" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.port || '' %>" placeholder="SMTP Port" required>
-        
-        <label for="smtpUser" class="text-neutral-400 text-sm block mt-4">SMTP Username:</label>
-        <input type="text" id="smtpUser" name="smtpUser" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.username || '' %>" placeholder="SMTP Username" required>
-        
-        <label for="smtpPass" class="text-neutral-400 text-sm block mt-4">SMTP Password:</label>
-        <input type="password" id="smtpPass" name="smtpPass" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.password || '' %>" placeholder="SMTP Password" required>
+  <div class="bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6">
+    <form action="/admin/settings/saveSmtpSettings" method="POST">
+      <label for="smtpServer" class="text-neutral-400 text-sm block">SMTP Server:</label>
+      <input type="text" id="smtpServer" name="smtpServer" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.server || '' %>" placeholder="SMTP Server" required>
+      
+      <label for="smtpPort" class="text-neutral-400 text-sm block mt-4">SMTP Port:</label>
+      <input type="number" id="smtpPort" name="smtpPort" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.port || '' %>" placeholder="SMTP Port" required>
+    
 
-        <label for="smtpFromName" class="text-neutral-400 text-sm block mt-4">Mail From Name:</label>
-        <input type="text" id="smtpFromName" name="smtpFromName" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.fromName || '' %>" placeholder="Mail From Name" required>
+        <div class="flex items-center mt-2">
+          <input  name="forceSecure" id="default-checkbox forceSecure" type="checkbox" class="w-4 h-4 text-neutral-700 bg-neutral-900 border-gray-300 rounded focus:ring-gray-500 dark:focus:ring-gray-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"  <% if (smtpSettings.forceSecure) { %>checked<% } else{ %>value="off" <% } %> >
+          <label for="default-checkbox" class="ms-2 text-sm font-medium text-neutral-500">Check this to enforce secure connection regardless of the port.</label>
+      </div>
+  
+  
 
-        <label for="smtpFromAddress" class="text-neutral-400 text-sm block mt-4">Mail From Address:</label>
-        <input type="email" id="smtpFromAddress" name="smtpFromAddress" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.fromAddress || '' %>" placeholder="Mail From Address" required>
-        
-        <button type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">Save SMTP Settings</button>
-      </form>
-
-      <!-- Test SMTP Settings Form -->
-      <form action="/sendTestEmail" method="POST">
-        <label for="recipientEmail" class="text-neutral-400 text-sm block mt-6">Recipient Email:</label>
-        <input type="email" id="recipientEmail" name="recipientEmail" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" required>
-        <button type="submit" class="mt-4 block rounded-lg bg-blue-500 text-white px-3 py-2 text-sm font-semibold shadow-lg hover:bg-blue-600 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">Send Test Email</button>
-        <% if (req.query.msg && req.query.msg == "TestemailSentsuccess") { %>
-          <div class="mt-2">
-            <span class="text-emerald-600 font-normal text-sm">Test Mail Sent Successfully. Your SMTP Server is Working!</span>
-          </div>
-        <% } %>
-        <% if (req.query.err && req.query.err == "TestemailSentfailed") { %>
-          <div class="mt-2">
-            <span class="text-red-500 font-normal text-sm">Test Mail Sending Failed. Please Check Your SMTP Settings and Try Again.</span>
-          </div>
-        <% } %>
-        <% if (req.query.msg && req.query.msg == "SmtpSaveSuccess") { %>
-            <div class="mt-2">
-              <span class="text-emerald-600 font-normal text-sm">SMTP Details Save Successfully.</span>
-            </div>
-          <% } %>
-          <% if (req.query.err && req.query.err == "SmtpSaveFailed") { %>
-            <div class="mt-2">
-              <span class="text-red-500 font-normal text-sm">SMTP Details Save Failed, Please try again.</span>
-            </div>
-          <% } %>
-      </form>
-    </div>
+  
+      <label for="smtpUser" class="text-neutral-400 text-sm block mt-4">SMTP Username:</label>
+      <input type="text" id="smtpUser" name="smtpUser" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.username || '' %>" placeholder="SMTP Username" required>
+      
+      <label for="smtpPass" class="text-neutral-400 text-sm block mt-4">SMTP Password:</label>
+      <input type="password" id="smtpPass" name="smtpPass" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.password || '' %>" placeholder="SMTP Password" required>
+  
+      <label for="smtpFromName" class="text-neutral-400 text-sm block mt-4">Mail From Name:</label>
+      <input type="text" id="smtpFromName" name="smtpFromName" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.fromName || '' %>" placeholder="Mail From Name" required>
+  
+      <label for="smtpFromAddress" class="text-neutral-400 text-sm block mt-4">Mail From Address:</label>
+      <input type="email" id="smtpFromAddress" name="smtpFromAddress" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" value="<%= smtpSettings.fromAddress || '' %>" placeholder="Mail From Address" required>
+      
+      <button type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">Save SMTP Settings</button>
+    </form>
+  
+    <!-- Test SMTP Settings Form -->
+    <form action="/sendTestEmail" method="POST">
+      <label for="recipientEmail" class="text-neutral-400 text-sm block mt-6">Recipient Email:</label>
+      <input type="email" id="recipientEmail" name="recipientEmail" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-neutral-900" required>
+      <button type="submit" class="mt-6 block rounded-lg bg-white px-3 py-2 text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">Send Test Email</button>
+      <% if (req.query.msg && req.query.msg == "TestemailSentsuccess") { %>
+        <div class="mt-2">
+          <span class="text-emerald-600 font-normal text-sm">Test Mail Sent Successfully. Your SMTP Server is Working!</span>
+        </div>
+      <% } %>
+      <% if (req.query.err && req.query.err == "TestemailSentfailed") { %>
+        <div class="mt-2">
+          <span class="text-red-500 font-normal text-sm">Test Mail Sending Failed. Please Check Your SMTP Settings and Try Again.</span>
+        </div>
+      <% } %>
+      <% if (req.query.msg && req.query.msg == "SmtpSaveSuccess") { %>
+        <div class="mt-2">
+          <span class="text-emerald-600 font-normal text-sm">SMTP Details Save Successfully.</span>
+        </div>
+      <% } %>
+      <% if (req.query.err && req.query.err == "SmtpSaveFailed") { %>
+        <div class="mt-2">
+          <span class="text-red-500 font-normal text-sm">SMTP Details Save Failed, Please try again.</span>
+        </div>
+      <% } %>
+    </form>
+  </div>
+  
   </div>
 </main>
 

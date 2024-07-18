@@ -538,17 +538,20 @@ router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
 });
 
 router.post('/admin/settings/saveSmtpSettings', async (req, res) => {
-  const { smtpServer, smtpPort, smtpUser, smtpPass, smtpFromName, smtpFromAddress } = req.body;
+  const { smtpServer, smtpPort, smtpUser, smtpPass, smtpFromName, smtpFromAddress, forceSecure } = req.body;
 
   try {
     await db.set('smtp_settings', {
       server: smtpServer,
-      port: smtpPort,
+      port: Number(smtpPort),
       username: smtpUser,
       password: smtpPass,
       fromName: smtpFromName,
-      fromAddress: smtpFromAddress
+      fromAddress: smtpFromAddress,
+      forceSecure: forceSecure,
     });
+
+    console.log(forceSecure)
 
     logAudit(req.user.userId, req.user.username, 'SMTP:edit', req.ip);
     res.redirect('/admin/settings/smtp?msg=SmtpSaveSuccess');
