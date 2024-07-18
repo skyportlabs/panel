@@ -42,7 +42,7 @@ async function fetchFileContent(instance, filename, path = '') {
 }
 
 /**
- * Creates a new file.
+ * Creates a new file on the daemon.
  * @param {Object} instance - The instance object.
  * @param {string} filename - The name of the file to create.
  * @param {string} content - The content of the file.

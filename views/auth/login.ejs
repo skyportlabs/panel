@@ -23,7 +23,7 @@
 
       <div class="mt-8">
         <div class="mt-6">
-          <form class="space-y-6">
+          <form id="login-form" class="space-y-6" onsubmit="event.preventDefault(); submitForm();">
             <div>
               <label for="email" class="block text-sm font-medium text-neutral-400"> Username or Email </label>
               <div class="mt-1">
@@ -54,8 +54,13 @@
             </div>
             
             <% if (settings.register) { %>
-            <div class="text-center mt-4">
+            <!-- <div class="text-center mt-4">
               <a href="/register" class="w-full cursor-pointer flex transition justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">Register</a>
+            </div> -->
+
+            <div class=" mt-6 text-sm text-neutral-500 text-center py-[-50px] translate-y-[-70%]">
+              <!-- <a href="/register" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Don't have an account? Create one!</a> -->
+              Don't have an account? <a href="/register" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Create one</a>
             </div>
             <% } %>
 
@@ -129,6 +134,35 @@
     let username = encodeURIComponent(document.getElementById("username").value);
     let password = encodeURIComponent(document.getElementById("password").value);
     document.location.href = `/auth/login?username=${username}&password=${password}`;
+  }
+  
+  document.getElementById('login-form').addEventListener('keypress', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    let username = document.getElementById("username").value.trim();
+    let password = document.getElementById("password").value.trim();
+
+    if (username !== "" && password === "") {
+      document.getElementById("password").focus();
+    } else {
+      submitForm();
+    }
+  }
+});
+
+  async function submitForm() {
+    let username = document.getElementById("username").value.trim();
+    let password = document.getElementById("password").value.trim();
+    
+    if (username === "" || password === "") {
+      document.location.href = `/auth/login?err=InvalidCredentials&state=failed`;
+      return;
+    }
+    
+    let encodedUsername = encodeURIComponent(username);
+    let encodedPassword = encodeURIComponent(password);
+    
+    document.location.href = `/auth/login?username=${encodedUsername}&password=${encodedPassword}`;
   }
 </script>
 
