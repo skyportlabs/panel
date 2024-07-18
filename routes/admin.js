@@ -644,6 +644,102 @@ router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => 
 });
 
 /**
+ * GET /admin/settings/templates
+ * Renders the template management page. Only accessible to administrators.
+ */
+router.get('/admin/settings/templates', isAdmin, async (req, res) => {
+  try {
+    const templates = await db.get('templates') || [];
+    res.render('admin/settings/templates', { req, user: req.user, templates, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve templates' });
+  }
+});
+
+/**
+ * POST /admin/settings/templates/add
+ * Adds a new template to the database. Only accessible to administrators.
+ */
+router.post('/admin/settings/templates/add', isAdmin, async (req, res) => {
+  try {
+    const { name, description } = req.body;
+    if (!name || !description) {
+      return res.status(400).json({ error: 'Name and description are required' });
+    }
+
+    const newTemplate = {
+      id: uuidv4(),
+      name,
+      description
+    };
+
+    let templates = await db.get('templates') || [];
+    templates.push(newTemplate);
+    await db.set('templates', templates);
+
+    res.status(201).json(newTemplate);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to add template' });
+  }
+});
+
+/**
+ * DELETE /admin/settings/templates/delete
+ * Deletes a template from the database. Only accessible to administrators.
+ */
+router.delete('/admin/settings/templates/delete', isAdmin, async (req, res) => {
+  try {
+    const { templateId } = req.body;
+    let templates = await db.get('templates') || [];
+    templates = templates.filter(template => template.id !== templateId);
+    await db.set('templates', templates);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete template' });
+  }
+});
+
+/**
+ * GET /admin/settings/templates/edit/:templateId
+ * Renders the edit template page for a specific template. Only accessible to administrators.
+ */
+router.get('/admin/settings/templates/edit/:templateId', isAdmin, async (req, res) => {
+  const { templateId } = req.params;
+  try {
+    const templates = await db.get('templates') || [];
+    const template = templates.find(template => template.id === templateId);
+    if (!template) {
+      return res.status(404).json({ error: 'Template not found' });
+    }
+    res.render('admin/settings/edit-template', { req, user: req.user, template, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve template' });
+  }
+});
+
+/**
+ * POST /admin/settings/templates/edit/:templateId
+ * Updates the details of a template in the database. Only accessible to administrators.
+ */
+router.post('/admin/settings/templates/edit/:templateId', isAdmin, async (req, res) => {
+  const { templateId } = req.params;
+  const { name, description } = req.body;
+  try {
+    let templates = await db.get('templates') || [];
+    const templateIndex = templates.findIndex(template => template.id === templateId);
+    if (templateIndex === -1) {
+      return res.status(404).json({ error: 'Template not found' });
+    }
+    templates[templateIndex].name = name;
+    templates[templateIndex].description = description;
+    await db.set('templates', templates);
+    res.status(200).json(templates[templateIndex]);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update template' });
+  }
+});
+
+/**
  * GET /admin/instances
  * Retrieves a list of all instances, checks their statuses, and renders an admin page to display these instances.
  * This route is protected and allows only administrators to view the instance management page.

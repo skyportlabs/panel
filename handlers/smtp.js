@@ -34,7 +34,7 @@ async function sendEmail(to, subject, templateData) {
   try {
     const { transporter, smtpSettings, name } = await getSMTPSettings();
 
-    const templatePath = path.resolve(__dirname, '../emailTemplates/Lite&Green.html');
+    const templatePath = path.resolve(__dirname, '../public/emailTemplates/Lite&Green.html');
     const templateSource = fs.readFileSync(templatePath, 'utf8');
     const template = Handlebars.compile(templateSource);
 
