@@ -508,23 +508,6 @@ router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
   }
 });
 
-
-router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => {
-  try {
-    const settings = await db.get('settings') || {};
-    settings.forceVerify = !settings.forceVerify;
-
-    await db.set('settings', settings);
-    logAudit(req.user.userId, req.user.username, 'force-verify:edit', req.ip); // Adjust as per your logging needs
-
-    res.redirect('/admin/settings');
-  } catch (err) {
-    console.error('Error toggling force verify:', err);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-
 router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
   const name = req.body.name;
   try {
@@ -588,7 +571,7 @@ router.post('/sendTestEmail', async (req, res) => {
       if (emailSent) {
           res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
       } else {
-          res.redirect('/admin/settings/smtp?err=TestemailSentsuccess');
+          res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
       }
   } catch (error) {
       log.error('Error sending test email:', error);
@@ -651,6 +634,15 @@ router.post('/admin/settings/toggle/register', isAdmin, upload.single('logo'), a
   logAudit(req.user.userId, req.user.username, 'register:edit', req.ip);
   res.redirect('/admin/settings');
 });
+
+router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => {
+    let settings = await db.get('settings');
+    settings.forceVerify = !settings.forceVerify;
+    await db.set('settings', settings);
+    logAudit(req.user.userId, req.user.username, 'force-verify:edit', req.ip); 
+    res.redirect('/admin/settings');
+});
+
 /**
  * GET /admin/instances
  * Retrieves a list of all instances, checks their statuses, and renders an admin page to display these instances.

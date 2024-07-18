@@ -33,13 +33,14 @@ passport.use(new LocalStrategy(
     try {
       const settings = await db.get('settings') || {};
       const users = await db.get('users');
+
       if (!users) {
         return done(null, false, { message: 'No users found.' });
       }
 
       const isEmail = username.includes('@');
-
       let user;
+
       if (isEmail) {
         user = users.find(user => user.email === username);
       } else {
@@ -66,23 +67,15 @@ passport.use(new LocalStrategy(
   }
 ));
 
-
 async function doesUserExist(username) {
   const users = await db.get('users');
-  if (users) {
-    return users.some(user => user.username === username);
-  } else {
-    return false; // If no users found, return false
-  }
+  return users && users.some(user => user.username === username);
 }
+
 
 async function doesEmailExist(email) {
   const users = await db.get('users');
-  if (users) {
-    return users.some(user => user.email === email);
-  } else {
-    return false; // If no users found, return false
-  }
+  return users && users.some(user => user.email === email);
 }
 
 async function createUser(username, email, password) {
@@ -103,19 +96,19 @@ async function addUserToUsersTable(username, email, password, verified) {
     const userId = uuidv4();
     const verificationToken = verified ? null : generateRandomCode(30);
     let users = await db.get('users') || [];
-    const newUser = { userId, username, email, password: hashedPassword, "Accesto":[], admin: false, verified, verificationToken, welcomeEmailSent: false };
+    const newUser = { userId, username, email, password: hashedPassword, "Accesto":[], admin: false, welcomeEmailSent: false, verified, verificationToken };
     users.push(newUser);
     await db.set('users', users);
 
     if (!newUser.welcomeEmailSent) {
-      await sendEmail(email, `Welcome to ${appName}`, { 
-          subject: `Welcome to ${appName}`,
-          message: `You Just Creating Account With Us, Here is Login link:`,
-          buttonUrl: `${config.baseURL}/login`,
-          buttonText: 'Login Now',
-          footer: `We hope you enjoy using ${appName}`,
-          name: appName,
-       });    
+      await sendEmail(email, `Welcome to ${appName}`, {
+        subject: `Welcome to ${appName}`,
+        message: `You just created an account with us. Here is your login link:`,
+        buttonUrl: `${config.baseURL}/login`,
+        buttonText: 'Login Now',
+        footer: `We hope you enjoy using ${appName}`,
+        name: appName,
+      });
       newUser.welcomeEmailSent = true;
 
       if (!verified) {
@@ -140,7 +133,7 @@ async function addUserToUsersTable(username, email, password, verified) {
 
     return users;
   } catch (error) {
-    log.error('Error adding user to database:', error);
+    console.error('Error adding user to database:', error);
     throw error;
   }
 }
@@ -152,7 +145,7 @@ async function addUserToUsersTable(username, email, password, verified) {
  */
 passport.serializeUser((user, done) => {
   done(null, user.username);
-});
+})
 
 /**
  * Deserializes the user from the session by retrieving the full user details from the database
@@ -166,15 +159,14 @@ passport.deserializeUser(async (username, done) => {
     if (!users) {
       throw new Error('User not found');
     }
-    
-    // Search for the user with the provided username in the users array
+
     const foundUser = users.find(user => user.username === username);
 
     if (!foundUser) {
       throw new Error('User not found');
     }
 
-    done(null, foundUser); // Deserialize user by retrieving full user details from the database
+    done(null, foundUser);
   } catch (error) {
     done(error);
   }
@@ -310,9 +302,9 @@ async function initializeRoutes() {
       const settings = await db.get('settings');
 
       if (!settings) {
-        await db.set('settings', { forceVerify: false });
+        db.set('settings', { register: false });
       } else {
-        if (settings.forceVerify === true) {
+        if (settings.register === true) {
           router.get('/register', async (req, res) => {
             try {
               res.render('auth/register', {
@@ -322,27 +314,35 @@ async function initializeRoutes() {
                 logo: await db.get('logo') || false
               });
             } catch (error) {
-              log.error('Error fetching name or logo:', error);
+              console.error('Error fetching name or logo:', error);
               res.status(500).send('Internal server error');
             }
           });
 
           router.post('/auth/register', async (req, res) => {
             const { username, email, password } = req.body;
-
+          
             try {
               const userExists = await doesUserExist(username);
               const emailExists = await doesEmailExist(email);
-
+          
               if (userExists || emailExists) {
                 res.send('User already exists');
                 return;
               }
-
-              await createUser(username, email, password);
-              res.redirect('/login?msg=AccountcreateEmailSent');
+          
+              const settings = await db.get('settings') || {};
+              const emailVerificationEnabled = settings.forceVerify || false;
+          
+              if (emailVerificationEnabled) {
+                await createUser(username, email, password);
+                res.redirect('/login?msg=AccountCreateEmailSent');
+              } else {
+                await addUserToUsersTable(username, email, password, true);
+                res.redirect('/login?msg=AccountCreated');
+              }
             } catch (error) {
-              log.error('Error handling registration:', error);
+              console.error('Error handling registration:', error);
               res.status(500).send('Internal server error');
             }
           });
@@ -353,10 +353,9 @@ async function initializeRoutes() {
         }
       }
     } catch (error) {
-      log.error('Error initializing routes:', error);
+      console.error('Error initializing routes:', error);
     }
   }
-
   await updateRoutes();
   setInterval(updateRoutes, 1000);
 }
