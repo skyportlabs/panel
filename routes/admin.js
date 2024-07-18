@@ -18,7 +18,7 @@ const path = require('path')
 const fs = require('node:fs')
 const {logAudit} = require('../handlers/auditlog.js');
 const nodemailer = require('nodemailer');
-const { sendTestEmail } = require('../handlers/email.js');
+const { sendTestEmail } = require('../handlers/smtp.js');
 
 /**
  * Middleware to verify if the user is an administrator.

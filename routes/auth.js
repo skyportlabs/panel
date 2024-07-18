@@ -11,7 +11,7 @@ const config = require('../config.json');
 const LocalStrategy = require('passport-local').Strategy;
 const { v4: uuidv4 } = require('uuid');
 const { db } = require('../handlers/db.js');
-const { sendWelcomeEmail, sendPasswordResetEmail, sendVerificationEmail } = require('../handlers/email.js');
+const { sendEmail } = require('../handlers/smtp.js');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -50,7 +50,7 @@ passport.use(new LocalStrategy(
         return done(null, false, { message: 'Incorrect username or email.' });
       }
 
-      if (!user.verified && (settings.emailVerification || false)) {
+      if (settings.forceVerify && !user.verified) {
         return done(null, false, { message: 'Email not verified. Please verify your email.', userNotVerified: true });
       }
 
@@ -87,7 +87,7 @@ async function doesEmailExist(email) {
 
 async function createUser(username, email, password) {
   const settings = await db.get('settings') || {};
-  const emailVerificationEnabled = settings.emailVerification || false;
+  const emailVerificationEnabled = settings.forceVerify || false;
 
   if (emailVerificationEnabled) {
     return addUserToUsersTable(username, email, password, false);
@@ -98,20 +98,32 @@ async function createUser(username, email, password) {
 
 async function addUserToUsersTable(username, email, password, verified) {
   try {
+    const appName = await db.get('name') || 'Skyport';
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const userId = uuidv4();
     const verificationToken = verified ? null : generateRandomCode(30);
     let users = await db.get('users') || [];
-    const newUser = { userId, username, email, password: hashedPassword, "Accesto":[], admin: false, welcomeEmailSent: false, verified, verificationToken };
+    const newUser = { userId, username, email, password: hashedPassword, "Accesto":[], admin: false, verified, verificationToken, welcomeEmailSent: false };
     users.push(newUser);
     await db.set('users', users);
 
+    const VerifyEmailContant = `
+      Thank you for registering on ${appName}. Please click the button below to verify your email address:
+      <a href="${config.baseURL}/verify/${verificationToken}">${config.baseURL}/verify/${verificationToken}</a>
+    `;
+
     if (!newUser.welcomeEmailSent) {
-      await sendWelcomeEmail(email, username, password);
+      await sendEmail(email, 'Verify Your Email', { message: emailMessage });    
       newUser.welcomeEmailSent = true;
 
       if (!verified) {
-        await sendVerificationEmail(email, verificationToken);
+        await sendEmail(email, 'Verify Your Email', {
+          subject: 'Verify Your Email',
+          message: VerifyEmailContant,
+          buttonUrl: `${config.baseURL}/verify/${verificationToken}`,
+          buttonText: 'Verify Email',
+          name: appName,
+        });
         users = await db.get('users') || [];
         const index = users.findIndex(u => u.userId === newUser.userId);
         if (index !== -1) {
@@ -163,6 +175,23 @@ passport.deserializeUser(async (username, done) => {
   }
 });
 
+router.post('/auth/login', async (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) { return next(err); }
+    if (!user) {
+      if (info.userNotVerified) {
+        return res.redirect('/login?err=UserNotVerified');
+      }
+      return res.redirect('/login?err=InvalidCredentials&state=failed');
+    }
+    req.logIn(user, (err) => {
+      if (err) { return next(err); }
+      return res.redirect('/instances');
+    });
+  })(req, res, next);
+});
+
+
 /**
  * GET /auth/login
  * Authenticates a user using Passport's local strategy. If authentication is successful, the user
@@ -184,18 +213,6 @@ router.get('/auth/login', async (req, res, next) => {
       return res.redirect('/instances');
     });
   })(req, res, next);
-});
-
-router.post('/auth/login', passport.authenticate('local', { 
-  failureRedirect: '/login?err=InvalidCredentials&state=failed' 
-}), async (req, res) => {
-  if (req.user && req.user.twoFactorEnabled) {
-    req.session.tempUser = req.user;
-    req.logout();
-    return res.redirect('/2fa');
-  } else {
-    return res.redirect('/instances');
-  }
 });
 
 router.get('/auth/login', passport.authenticate('local', {
@@ -242,6 +259,7 @@ router.post('/resend-verification', async (req, res) => {
   const { email } = req.body;
 
   try {
+    const appName = await db.get('name') || 'Skyport';
     let users = await db.get('users') || [];
     const userIndex = users.findIndex(u => u.email === email);
 
@@ -256,17 +274,27 @@ router.post('/resend-verification', async (req, res) => {
       res.redirect('/login?msg=UserAlreadyVerified');
       return;
     }
+
     const newVerificationToken = generateRandomCode(30);
     user.verificationToken = newVerificationToken;
 
     users[userIndex] = user;
     await db.set('users', users);
 
-    await sendVerificationEmail(email, newVerificationToken);
+    await sendEmail(email, 'Verify Your Email', {
+      subject: 'Verify Your Email',
+      message: `Thank you for registering on Skyport. Please click the button below to verify your email address:`,
+      buttonUrl: `${config.baseURL}/verify/${newVerificationToken}`,
+      buttonText: 'Verify Email Address',
+      message_2: `If you're having trouble clicking the button above, you can also verify your email by copying and pasting the following link into your browser:`,
+      message_2_link: `${config.baseURL}/verify/${newVerificationToken}`,
+      footer: `If you didn't create an account on Skyport, please disregard this email.`,
+      name: appName,
+    });
 
     res.redirect('/login?msg=VerificationEmailResent');
   } catch (error) {
-    console.error('Error resending verification email:', error);
+    log.error('Error resending verification email:', error);
     res.status(500).send('Internal server error');
   }
 });
@@ -277,9 +305,9 @@ async function initializeRoutes() {
       const settings = await db.get('settings');
 
       if (!settings) {
-        db.set('settings', { register: false });
+        await db.set('settings', { forceVerify: false });
       } else {
-        if (settings.register === true) {
+        if (settings.forceVerify === true) {
           router.get('/register', async (req, res) => {
             try {
               res.render('auth/register', {
@@ -296,26 +324,18 @@ async function initializeRoutes() {
 
           router.post('/auth/register', async (req, res) => {
             const { username, email, password } = req.body;
-          
+
             try {
               const userExists = await doesUserExist(username);
               const emailExists = await doesEmailExist(email);
-          
+
               if (userExists || emailExists) {
                 res.send('User already exists');
                 return;
               }
-          
-              const settings = await db.get('settings') || {};
-              const emailVerificationEnabled = settings.emailVerification || false;
-          
-              if (emailVerificationEnabled) {
-                await createUser(username, email, password);
-                res.redirect('/login?msg=AccountcreateEmailSent');
-              } else {
-                await addUserToUsersTable(username, email, password, true); 
-                res.redirect('/login?msg=AccountCreated');
-              }
+
+              await createUser(username, email, password);
+              res.redirect('/login?msg=AccountcreateEmailSent');
             } catch (error) {
               console.error('Error handling registration:', error);
               res.status(500).send('Internal server error');
@@ -331,9 +351,11 @@ async function initializeRoutes() {
       console.error('Error initializing routes:', error);
     }
   }
+
   await updateRoutes();
   setInterval(updateRoutes, 1000);
 }
+
 
 initializeRoutes();
 
@@ -369,7 +391,7 @@ router.post('/auth/reset-password', async (req, res) => {
     user.resetToken = resetToken;
     await db.set('users', users);
 
-    await sendPasswordResetEmail(email, resetToken);
+    await sendEmail(email, 'Password Reset Request', { message: 'You requested a password reset. Click the button below to reset your password.', buttonText: 'Reset Password', buttonUrl: `${config.baseURL}/auth/reset/${resetToken}` });
 
     res.redirect('/auth/reset-password?msg=PasswordSent');
   } catch (error) {
