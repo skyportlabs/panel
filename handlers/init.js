@@ -45,6 +45,7 @@ async function init() {
         log.info('Init complete!');
       })();
 
+    log.info('init complete!')
 }
 
 module.exports = { init }

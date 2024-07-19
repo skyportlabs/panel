@@ -53,6 +53,7 @@ async function setupRoutes() {
                                 instances.push(instanceData);
                             }
                         }
+                
                         res.render(page.template, { 
                             settings: await db.get('settings'),
                             config, 

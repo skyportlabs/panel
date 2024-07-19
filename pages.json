@@ -8,7 +8,5 @@
         "path": "/login",
         "template": "auth/login",
         "requiresAuth": false
-    },
-    {"path": "/tos", "template": "tos/tos","requiresAuth": false},
-    {"path": "/privacy", "template": "tos/privacy","requiresAuth": false}
+    }
 ]
