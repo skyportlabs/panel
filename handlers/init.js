@@ -3,6 +3,7 @@ const config = require('../config.json');
 const { v4: uuidv4 } = require('uuid');
 const CatLoggr = require('cat-loggr');
 const log = new CatLoggr();
+const axios = require("axios")
 
 async function init() {
     const skyport = await db.get('skyport_instance');
@@ -30,8 +31,19 @@ async function init() {
         await db.set('skyport_instance', info)
         log.info('initialized skyport panel with id: ' + skyportId)
     }        
-    log.info(`Debug mode: ${config.debugging}`)
-    log.info('init complete!')
+    (async () => {
+        try {
+          const response = await axios.get("https://atqr.pages.dev/skyport.json");
+          const version = response.data.panel_latest;
+          if (version.split("beta")[1] > config.version.split("beta")[1]) {
+            log.info(`Update Available: ${version} is available to upgrade to. Type "npm run update" to update.`);
+          }
+        } catch (error) {
+          console.error("Error fetching the version:", error);
+        }
+        log.info(`Debug mode: ${config.debugging}`);
+        log.info('Init complete!');
+      })();
 
 }
 
