@@ -35,7 +35,9 @@ async function init() {
         try {
           const response = await axios.get("https://atqr.pages.dev/skyport.json");
           const version = response.data.panel_latest;
-          if (version.split("beta")[1] > config.version.split("beta")[1]) {
+          latest = `${version.split("-beta")[0]}.${version.split("-beta")[1]}`
+          current = `${config.version.split("-beta")[0]}.${config.version.split("-beta")[1]}`
+          if (latest > current) {
             log.info(`Update Available: ${version} is available to upgrade to. Type "npm run update" to update.`);
           }
         } catch (error) {
@@ -44,8 +46,6 @@ async function init() {
         log.info(`Debug mode: ${config.debugging}`);
         log.info('Init complete!');
       })();
-
-    log.info('init complete!')
 }
 
 module.exports = { init }

@@ -2,7 +2,25 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-
+const CatLoggr = require('cat-loggr');
+const log = new CatLoggr();
+(async () => {
+    try {
+      const response = await axios.get("https://atqr.pages.dev/skyport.json");
+      const version = response.data.panel_latest;
+      latest = `${version.split("-beta")[0]}.${version.split("-beta")[1]}`
+      current = `${config.version.split("-beta")[0]}.${config.version.split("-beta")[1]}`
+      if (latest > current) {
+        log.info(`Updating to version ${update}`);
+      }
+      else {
+        log.info("There is no update required. Goodbye")
+        process.exit()
+      }
+    } catch (error) {
+      console.error("Error fetching the version:", error);
+    }
+})
 const DEST_DIR = path.join(os.tmpdir(), 'skyport');
 
 if (!fs.existsSync(DEST_DIR)) {

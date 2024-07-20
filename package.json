@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "update": "rm -rf /tmp/skyport && curl https://raw.githubusercontent.com/thatdevwolfy/skyport/main/main.sh | bash",
+    "update": "node exec/update.js",
     "dev": "concurrently \"npm run start\" \"npm run watch\"",
     "watch": "browser-sync start --config bs-config.js",
     "seed": "node exec/seed.js",
