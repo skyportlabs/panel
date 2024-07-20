@@ -5,19 +5,19 @@ const os = require('os');
 const axios = require('axios');
 const CatLoggr = require('cat-loggr');
 const log = new CatLoggr();
+const config = require("../config.json")
 
-// Version check function
-const checkVersionAndUpdate = async () => {
+const versionCheck = async () => {
   try {
     const response = await axios.get("https://atqr.pages.dev/skyport.json");
     const version = response.data.panel_latest;
     const latest = `${version.split("-beta")[0]}.${version.split("-beta")[1]}`;
     const current = `${config.version.split("-beta")[0]}.${config.version.split("-beta")[1]}`;
     if (latest > current) {
-      log.info(`Updating to version ${version}`);
+      log.info(`Updating from ${config.version} to  ${version}`);
       return true;
     } else {
-      log.info("There is no update required. Goodbye");
+      log.info("There is no update required. Goodbye!");
       process.exit();
       return false;
     }
@@ -28,7 +28,7 @@ const checkVersionAndUpdate = async () => {
 };
 
 (async () => {
-  const shouldUpdate = await checkVersionAndUpdate();
+  const shouldUpdate = await versionCheck();
   if (!shouldUpdate) return;
 
   const DEST_DIR = path.join(os.tmpdir(), 'skyport');
