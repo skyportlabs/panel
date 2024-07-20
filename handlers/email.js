@@ -2,24 +2,33 @@ const nodemailer = require('nodemailer');
 const { db } = require('./db.js');
 const config = require('../config.json');
 
+// Add nicer logs
+const CatLoggr = require('cat-loggr');
+const log = new CatLoggr();
 
 async function getSMTPSettings() {
   const smtpSettings = await db.get('smtp_settings');
   const name = await db.get('name') || 'Skyport';
 
   if (!smtpSettings) {
-    throw new Error('SMTP settings not found');
+    log.error('SMTP settings not found');
   }
 
-  const transporter = nodemailer.createTransport({
-    host: smtpSettings.server,
-    port: smtpSettings.port,
-    secure: true,
-    auth: {
-      user: smtpSettings.username,
-      pass: smtpSettings.password,
-    },
-  });
+  // Make it so it looks for the SMTP port, and if it is TLS, it set the secure to false ( 25, 465, 587, and 2525)
+
+  const securePorts = [25, 465, 587, 2525]; 
+  const secure = securePorts.includes(smtpSettings.port);
+
+const transporter = nodemailer.createTransport({
+  host: smtpSettings.server,
+  port: smtpSettings.port,
+  secure: secure, 
+  auth: {
+    user: smtpSettings.username,
+    pass: smtpSettings.password,
+  },
+});
+
 
   return { transporter, smtpSettings, name };
 }
@@ -93,7 +102,7 @@ async function sendWelcomeEmail(email, username, password) {
 
     await transporter.sendMail(mailOptions);
   } catch (error) {
-    console.error('Error sending welcome email:', error);
+    log.error('Failed to send welcome email:', error);
   }
 }
 
@@ -125,8 +134,7 @@ async function sendVerificationEmail(email, token) {
 
     await transporter.sendMail(mailOptions);
   } catch (error) {
-    console.error('Error sending verification email:', error);
-    throw new Error('Failed to send verification email');
+    log.error('Failed to send verification email:', error);
   }
 }
 
@@ -140,7 +148,6 @@ async function sendVerificationEmail(email, token) {
 async function sendTestEmail(recipientEmail) {
     try {
       const { transporter, smtpSettings, name } = await getSMTPSettings();
-  
       const mailOptions = {
         from: `${smtpSettings.fromName} <${smtpSettings.fromAddress}>`,
         to: recipientEmail,
@@ -218,10 +225,10 @@ async function sendTestEmail(recipientEmail) {
       };
   
       const info = await transporter.sendMail(mailOptions);
-      console.log(`Test Email sent to ${recipientEmail}`);
+      log.info(`A test mail has been send to: ${recipientEmail}`);
       return true;
     } catch (error) {
-      console.error('Error sending test email:', error);
+      log.error(`Failed to send test email to: ${recipientEmail}\nError: ${error}`);
       return false;
     }
   }
@@ -255,8 +262,7 @@ async function sendTestEmail(recipientEmail) {
   
       await transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error('Error sending password reset email:', error);
-      throw new Error('Failed to send password reset email');
+      log.error('Failed to send password reset email:', error);
     }
   }
 
@@ -289,8 +295,7 @@ async function sendTestEmail(recipientEmail) {
   
       await transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error('Error sending password reset email:', error);
-      throw new Error('Failed to send password reset email');
+      log.error('Failed to send password reset email:', error);
     }
   }
 
