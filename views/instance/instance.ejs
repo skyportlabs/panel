@@ -230,9 +230,9 @@
           brightWhite: '#ffffff',
       };
       var ws;
-
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
       function initWebSocket() {
-          ws = new WebSocket(`ws://<%= domain %>:<%= port %>/console/<%= req.params.id %>`);
+          const ws = new WebSocket(`${protocol}://<%= domain %>:<%= port %>/console/<%= req.params.id %>`);
           ws.onopen = () => {
               console.log('WebSocket connected!');
           };
@@ -344,7 +344,7 @@
               containerId: '<%= req.params.id %>'
           }));
       });
-      const statsWs = new WebSocket(`ws://<%= domain %>:<%= port %>/stats/<%= req.params.id %>`);
+      const statsWs = new WebSocket(`${protocol}://<%= domain %>:<%= port %>/stats/<%= req.params.id %>`);
 
       function formatBytes(bytes, decimals = 2) {
           if (bytes === 0) return '0 Bytes';
