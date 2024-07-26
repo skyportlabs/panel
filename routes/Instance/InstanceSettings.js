@@ -31,6 +31,16 @@ router.get("/instance/:id/settings", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
+
+    if(!instance.suspended) {
+        instance.suspended = false;
+        db.set(id + '_instance', instance);
+    }
+
+    if(instance.suspended === true) {
+                return res.redirect('../../instance/' + id + '/suspended');
+    }
+
     const allPluginData = Object.values(plugins).map(plugin => plugin.config);
     res.render('instance/settings', { req, instance, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, addons: {
         plugins: allPluginData
@@ -64,6 +74,16 @@ router.get("/instance/:id/change/name/:name", async (req, res) => {
     const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
     if (!isAuthorized) {
         return res.status(403).send('Unauthorized access to this instance.');
+    }
+
+
+    if(!instance.suspended) {
+        instance.suspended = false;
+        db.set(id + '_instance', instance);
+    }
+
+    if(instance.suspended === true) {
+                return res.redirect('../../instance/' + id + '/suspended');
     }
 
     const trimmedName = name.trim();

@@ -787,22 +787,84 @@ router.get('/admin/instances/purge/all', isAdmin, async (req, res) => {
   }
 });
 
-// Helper function to delete an instance
+router.post('/admin/instances/suspend/:id', isAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      return res.redirect('/admin/instances');
+    }
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+      return res.status(404).send('Instance not found');
+    }
+
+    instance.suspended = true;
+    await db.set(id + '_instance', instance);
+    let instances = await db.get('instances') || [];
+
+    let instanceToSuspend = instances.find(obj => obj.ContainerId === instance.ContainerId);
+    if (instanceToSuspend) {
+      instanceToSuspend.suspended = true;
+    }
+
+    await db.set('instances', instances);
+
+    logAudit(req.user.userId, req.user.username, 'instance:suspend', req.ip);
+    res.redirect('/admin/instances');
+  } catch (error) {
+    console.error('Error in suspend instance endpoint:', error);
+    res.status(500).send('An error occurred while suspending the instance');
+  }
+});
+
+router.post('/admin/instances/unsuspend/:id', isAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      return res.redirect('/admin/instances');
+    }
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+      return res.status(404).send('Instance not found');
+    }
+
+    instance.suspended = false;
+
+    await db.set(id + '_instance', instance);
+
+    let instances = await db.get('instances') || [];
+
+    let instanceToUnsuspend = instances.find(obj => obj.ContainerId === instance.ContainerId);
+    if (instanceToUnsuspend) {
+      instanceToUnsuspend.suspended = false;
+    }
+
+    await db.set('instances', instances);
+
+    logAudit(req.user.userId, req.user.username, 'instance:unsuspend', req.ip);
+
+    res.redirect('/admin/instances');
+  } catch (error) {
+    console.error('Error in unsuspend instance endpoint:', error);
+    res.status(500).send('An error occurred while unsuspending the instance');
+  }
+});
+
+
 async function deleteInstance(instance) {
   try {
     await axios.get(`http://Skyport:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}/delete`);
     
-    // Update user's instances
     let userInstances = await db.get(instance.User + '_instances') || [];
     userInstances = userInstances.filter(obj => obj.ContainerId !== instance.ContainerId);
     await db.set(instance.User + '_instances', userInstances);
     
-    // Update global instances
     let globalInstances = await db.get('instances') || [];
     globalInstances = globalInstances.filter(obj => obj.ContainerId !== instance.ContainerId);
     await db.set('instances', globalInstances);
     
-    // Delete instance-specific data
     await db.delete(instance.ContainerId + '_instance');
   } catch (error) {
     console.error(`Error deleting instance ${instance.ContainerId}:`, error);

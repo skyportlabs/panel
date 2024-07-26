@@ -29,6 +29,16 @@ router.get("/instance/:id/files/folder/create", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
+
+    if(!instance.suspended) {
+        instance.suspended = false;
+        db.set(id + '_instance', instance);
+    }
+
+    if(instance.suspended === true) {
+                return res.redirect('../../instance/' + id + '/suspended');
+    }
+
     if (!instance || !instance.VolumeId) {
         return res.redirect('../instances');
     }
@@ -55,6 +65,16 @@ router.post("/instance/:id/files/folder/create/:foldername", async (req, res) =>
     const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
     if (!isAuthorized) {
         return res.status(403).send('Unauthorized access to this instance.');
+    }
+
+
+    if(!instance.suspended) {
+        instance.suspended = false;
+        db.set(id + '_instance', instance);
+    }
+
+    if(instance.suspended === true) {
+                return res.redirect('../../instance/' + id + '/suspended');
     }
 
     if (!instance.Node || !instance.Node.address || !instance.Node.port) {

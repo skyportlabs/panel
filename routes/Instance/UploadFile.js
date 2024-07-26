@@ -31,6 +31,16 @@ router.post("/instance/:id/files/upload", upload.array('files'), async (req, res
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
+
+    if(!instance.suspended) {
+        instance.suspended = false;
+        db.set(id + '_instance', instance);
+    }
+
+    if(instance.suspended === true) {
+                return res.redirect('../../instance/' + id + '/suspended');
+    }
+
     const apiUrl = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/upload?path=${encodeURIComponent(subPath)}`;
     const formData = new FormData();
 

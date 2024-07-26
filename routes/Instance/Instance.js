@@ -13,12 +13,22 @@ router.get("/instance/:id", async (req, res) => {
     const { id } = req.params;
     if (!id) return res.redirect('/');
 
-    const instance = await db.get(id + '_instance');
+    let instance = await db.get(id + '_instance');
     if (!instance) return res.redirect('../instances');
 
     const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
     if (!isAuthorized) {
         return res.status(403).send('Unauthorized access to this instance.');
+    }
+
+
+    if(!instance.suspended) {
+        instance.suspended = false;
+        db.set(id + '_instance', instance);
+    }
+
+    if(instance.suspended === true) {
+                return res.redirect('../../instance/' + id + '/suspended');
     }
 
     const config = require('../../config.json');
@@ -39,7 +49,7 @@ router.get("/instance/:id", async (req, res) => {
         }
     });
 
-    console.log('Loaded Plugins:', allPluginData);
+    
 });
 
 module.exports = router;
