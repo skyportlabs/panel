@@ -206,193 +206,217 @@
       <input placeholder="Send a command..." class="rounded-b-lg bg-[#101010]/30 w-full focus:ring-transparent focus:border-b focus:border-l focus:border-r focus:border-white/10 text-white text-sm mb-6 items-center transition justify-left gap-16 hover:bg-neutral-900 px-4 py-3 flex border-white/5 bg-transparent placeholder:text-neutral-300 text-white border-b border-l border-r border-black/10" id="input"></input>
    </div>
    <script>
-      console.log('<%= instance.VolumeId %>')
-      var baseTheme = {
-          foreground: '#c5c9d1',
-          background: '#101010',
-          selection: '#5DA5D533',
-          black: '#1E1E1D',
-          brightBlack: '#262625',
-          red: '#E54B4B',
-          green: '#9ECE58',
-          yellow: '#FAED70',
-          blue: '#396FE2',
-          magenta: '#BB80B3',
-          cyan: '#2DDAFD',
-          white: '#d0d0d0',
-          brightBlack: 'rgba(255, 255, 255, 0.2)',
-          brightRed: '#FF5370',
-          brightGreen: '#C3E88D',
-          brightYellow: '#FFCB6B',
-          brightBlue: '#82AAFF',
-          brightMagenta: '#C792EA',
-          brightCyan: '#89DDFF',
-          brightWhite: '#ffffff',
-      };
-      var ws;
-      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-      function initWebSocket() {
-          const ws = new WebSocket(`${protocol}://<%= domain %>:<%= port %>/console/<%= req.params.id %>`);
-          ws.onopen = () => {
-              console.log('WebSocket connected!');
-          };
-          ws.onmessage = handleWebSocketMessage;
-          ws.onclose = () => {
-              console.log('WebSocket connection closed, attempting to reconnect...');
-              setTimeout(initWebSocket, 3000); // Reconnect after 3s or so
-          };
-          ws.onerror = (error) => {
-              console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
-              setTimeout(initWebSocket, 5000); // Reconnect after a delay on err
-          };
-      }
-      let daemonIsDown = document.getElementById('daemonIsDown');
+    console.log('<%= instance.VolumeId %>');
 
-      function handleWebSocketMessage(msg) {
-    const lines = msg.data.split('\n');
-    let isFirstLine = true;
-    let previousLineWasEmpty = false;
+    var baseTheme = {
+        foreground: '#c5c9d1',
+        background: '#101010',
+        selection: '#5DA5D533',
+        black: '#1E1E1D',
+        brightBlack: '#262625',
+        red: '#E54B4B',
+        green: '#9ECE58',
+        yellow: '#FAED70',
+        blue: '#396FE2',
+        magenta: '#BB80B3',
+        cyan: '#2DDAFD',
+        white: '#d0d0d0',
+        brightBlack: 'rgba(255, 255, 255, 0.2)',
+        brightRed: '#FF5370',
+        brightGreen: '#C3E88D',
+        brightYellow: '#FFCB6B',
+        brightBlue: '#82AAFF',
+        brightMagenta: '#C792EA',
+        brightCyan: '#89DDFF',
+        brightWhite: '#ffffff',
+    };
 
-    lines.forEach(line => {
-        const trimmedLine = line.trim();
-        
-        // Skip empty lines if the previous line was also empty
-        if (trimmedLine === '' && previousLineWasEmpty) {
+    let ws;
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+
+    function initWebSocket() {
+        ws = new WebSocket(`${protocol}://<%= domain %>:<%= port %>/console/<%= req.params.id %>`);
+        ws.onopen = () => {
+            console.log('WebSocket connected!');
+        };
+        ws.onmessage = handleWebSocketMessage;
+        ws.onclose = () => {
+            console.log('WebSocket connection closed, attempting to reconnect...');
+            setTimeout(initWebSocket, 3000); // Reconnect after 3s or so
+        };
+        ws.onerror = (error) => {
+            console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
+            setTimeout(initWebSocket, 5000); // Reconnect after a delay on error
+        };
+    }
+
+    let daemonIsDown = document.getElementById('daemonIsDown');
+    var term;
+
+    function handleWebSocketMessage(msg) {
+        const lines = msg.data.split('\n');
+        let isFirstLine = true;
+        let previousLineWasEmpty = false;
+
+        lines.forEach(line => {
+            const trimmedLine = line.trim();
+
+            // Skip empty lines if the previous line was also empty
+            if (trimmedLine === '' && previousLineWasEmpty) {
+                return;
+            }
+
+            // Add a newline character only if it's not the first line and the previous line wasn't empty
+            if (!isFirstLine && !previousLineWasEmpty) {
+                term.write('\r\n');
+            }
+
+            term.write('\x1b[0m' + trimmedLine);
+
+            if (trimmedLine.includes("state:")) {
+                term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
+                term.clear();
+                ws.close(); // Close the current connection to trigger onclose and reconnect
+            }
+
+            if (trimmedLine.includes("skyportd instance appears to be down")) {
+                ws.close();
+                daemonIsDown.classList.remove('hidden');
+            } else {
+                daemonIsDown.classList.add('hidden');
+            }
+
+            isFirstLine = false;
+            previousLineWasEmpty = (trimmedLine === '');
+        });
+    }
+
+    function setupTerminal() {
+        term = new Terminal({
+            disableStdin: true,
+            allowProposedApi: true,
+            lineHeight: 1.35,
+            rows: 19,
+            cols: 200,
+            fontFamily: 'Menlo, monospace',
+            theme: baseTheme,
+            allowTransparency: true,
+            fontSize: 12,
+        });
+        term.open(document.getElementById('terminal'));
+    }
+
+    function sendCommand() {
+        const inputElement = document.getElementById('input');
+        const command = inputElement.value.trim();
+        if (command && ws) {
+            term.write('\u001b[1m\u001b[33m~ \u001b[0m' + command + '\r\n');
+            ws.send(JSON.stringify({
+                event: 'cmd',
+                command: command,
+                containerId: '<%= req.params.id %>'
+            }));
+            inputElement.value = ''; // Clear the input after sending
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setupTerminal();
+        initWebSocket();
+
+        const inputElement = document.getElementById('input');
+        inputElement.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendCommand();
+            }
+        });
+
+        document.getElementById('startButton').addEventListener('click', function() {
+            if (ws) {
+                ws.send(JSON.stringify({
+                    event: 'power:start',
+                    containerId: '<%= req.params.id %>'
+                }));
+            }
+        });
+
+        document.getElementById('stopButton').addEventListener('click', function() {
+            if (ws) {
+                ws.send(JSON.stringify({
+                    event: 'power:stop',
+                    containerId: '<%= req.params.id %>'
+                }));
+            }
+        });
+
+        document.getElementById('restartButton').addEventListener('click', function() {
+            if (ws) {
+                ws.send(JSON.stringify({
+                    event: 'power:restart',
+                    containerId: '<%= req.params.id %>'
+                }));
+            }
+        });
+    });
+
+    const statsWs = new WebSocket(`${protocol}://<%= domain %>:<%= port %>/stats/<%= req.params.id %>`);
+
+    function formatBytes(bytes, decimals = 2) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['Bytes', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+
+    statsWs.onmessage = event => {
+        const stats = JSON.parse(event.data);
+        if (stats.error) {
+            console.error('Error fetching stats:', stats.error);
             return;
         }
 
-        // Add a newline character only if it's not the first line and the previous line wasn't empty
-        if (!isFirstLine && !previousLineWasEmpty) {
-            term.write('\r\n');
+        // Disk usage
+        const diskRaw = stats.volumeSize;
+        document.cookie = "disk=" + diskRaw + "; expires=Fri, 31 Dec 2024 23:59:59 GMT; path=/";
+
+        // Update RAM usage
+        const ramUsageRaw = stats.memory_stats.usage / 1024;
+        const ramUsage = isNaN(ramUsageRaw) ? '0 Bytes' : formatBytes(ramUsageRaw);
+        const ramLimitRaw = stats.memory_stats.limit / 1024;
+        const ramLimit = isNaN(ramLimitRaw) ? '0 Bytes' : formatBytes(ramLimitRaw);
+        document.getElementById('ramUsage').textContent = ramUsage;
+        document.getElementById('ramLimit').textContent = ' / ' + ramLimit;
+
+        // Determine status based on RAM usage
+        const statusElement = document.getElementById('status');
+        if (isNaN(ramUsageRaw)) {
+            statusElement.className = 'text-red-500';
+            statusElement.textContent = 'Offline';
+        } else if (ramUsageRaw > 1) {
+            statusElement.className = 'text-emerald-500';
+            statusElement.textContent = 'Online';
         }
 
-        term.write('\x1b[0m' + trimmedLine);
+        // Update CPU usage
+        const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
+        const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
+        const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta)) ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%' : '0%';
+        document.getElementById('cpuUsage').textContent = cpuUsagePercent;
 
-        if (trimmedLine.includes("state:")) {
-            term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
-            term.clear();
-            ws.close(); // Close the current connection to trigger onclose and reconnect
+        // Update Network stats
+        if(stats.networks) {
+            const networkInRaw = stats.networks.eth0.rx_bytes;
+            const networkOutRaw = stats.networks.eth0.tx_bytes;
+            const networkIn = isNaN(networkInRaw) ? '0 Bytes' : formatBytes(networkInRaw);
+            const networkOut = isNaN(networkOutRaw) ? '0 Bytes' : formatBytes(networkOutRaw);
+            document.getElementById('networkIn').textContent = networkIn;
+            document.getElementById('networkOut').textContent = networkOut;
         }
+    };
+</script>
 
-        if (trimmedLine.includes("skyportd instance appears to be down")) {
-            ws.close();
-            daemonIsDown.classList.remove('hidden');
-        } else {
-            daemonIsDown.classList.add('hidden');
-        }
-
-        isFirstLine = false;
-        previousLineWasEmpty = (trimmedLine === '');
-    });
-}
-
-      initWebSocket(); // Initialize WebSocket connection
-      // Terminal setup remains the same
-      var term = new Terminal({
-          disableStdin: true,
-          allowProposedApi: true,
-          lineHeight: 1.35,
-          rows: 19,
-          cols: 200,
-          fontFamily: 'Menlo, monospace',
-          theme: baseTheme,
-          allowTransparency: true,
-          fontSize: 12,
-      });
-      term.open(document.getElementById('terminal'));
-
-      let command = ""; // To accumulate command characters
-
-      document.addEventListener('DOMContentLoaded', function() {
-          const inputElement = document.getElementById('input');
-          function sendCommand() {
-              const command = inputElement.value.trim();
-              term.write('\u001b[1m\u001b[33m~ \u001b[0m' + command + '\r\n');
-              if (command) {
-                  ws.send(JSON.stringify({
-                      event: 'cmd',
-                      command: command,
-                      containerId: '<%= req.params.id %>'
-                  }));
-                  inputElement.value = ''; // Clear the input after sending
-              }
-          }
-          // Also allow pressing enter to send the command
-          inputElement.addEventListener('keypress', function(event) {
-              if (event.key === 'Enter') {
-                  sendCommand();
-              }
-          });
-      });
-
-      // Button event listeners remain the same
-      document.getElementById('startButton').addEventListener('click', function() {
-          ws.send(JSON.stringify({
-              event: 'power:start',
-              containerId: '<%= req.params.id %>'
-          }));
-      });
-      document.getElementById('stopButton').addEventListener('click', function() {
-          ws.send(JSON.stringify({
-              event: 'power:stop',
-              containerId: '<%= req.params.id %>'
-          }));
-      });
-      document.getElementById('restartButton').addEventListener('click', function() {
-          ws.send(JSON.stringify({
-              event: 'power:restart',
-              containerId: '<%= req.params.id %>'
-          }));
-      });
-      const statsWs = new WebSocket(`${protocol}://<%= domain %>:<%= port %>/stats/<%= req.params.id %>`);
-
-      function formatBytes(bytes, decimals = 2) {
-          if (bytes === 0) return '0 Bytes';
-          const k = 1024;
-          const dm = decimals < 0 ? 0 : decimals;
-          const sizes = ['Bytes', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-          const i = Math.floor(Math.log(bytes) / Math.log(k));
-          return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-      }
-      statsWs.onmessage = event => {
-          const stats = JSON.parse(event.data);
-          if (stats.error) {
-              console.error('Error fetching stats:', stats.error);
-              return;
-          }
-          // Disk usage
-          const diskRaw = stats.volumeSize;
-          document.cookie = "disk=" + diskRaw + "; expires=Fri, 31 Dec 2024 23:59:59 GMT; path=/";
-          // Update RAM usage
-          const ramUsageRaw = stats.memory_stats.usage / 1024;
-          const ramUsage = isNaN(ramUsageRaw) ? '0 Bytes' : formatBytes(ramUsageRaw);
-          const ramLimitRaw = stats.memory_stats.limit / 1024;
-          const ramLimit = isNaN(ramLimitRaw) ? '0 Bytes' : formatBytes(ramLimitRaw);
-          document.getElementById('ramUsage').textContent = ramUsage;
-          document.getElementById('ramLimit').textContent = ' / ' + ramLimit;
-          // Determine status based on RAM usage
-          const statusElement = document.getElementById('status');
-          if (isNaN(ramUsageRaw)) {
-              statusElement.className = 'text-red-500';
-              statusElement.textContent = 'Offline';
-          } else if (ramUsageRaw > 1) {
-              statusElement.className = 'text-emerald-500';
-              statusElement.textContent = 'Online';
-          }
-          // Update CPU usage
-          const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
-          const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
-          const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta)) ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%' : '0%';
-          document.getElementById('cpuUsage').textContent = cpuUsagePercent;
-          // Update Network stats
-          const networkInRaw = stats.networks.eth0.rx_bytes;
-          const networkOutRaw = stats.networks.eth0.tx_bytes;
-          const networkIn = isNaN(networkInRaw) ? '0 Bytes' : formatBytes(networkInRaw);
-          const networkOut = isNaN(networkOutRaw) ? '0 Bytes' : formatBytes(networkOutRaw);
-          document.getElementById('networkIn').textContent = networkIn;
-          document.getElementById('networkOut').textContent = networkOut;
-      };
-   </script>
       <script>
          function getCookie(name) {
              let cookies = document.cookie.split(';');
