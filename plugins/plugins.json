@@ -1,8 +1,5 @@
 {
     "Example Plugin": {
         "enabled": true
-    },
-    "Plugin Installer": {
-        "enabled": true
     }
 }

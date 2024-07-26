@@ -329,6 +329,15 @@ router.get('/api/images', validateApiKey, async (req, res) => {
   }
 });
 
+router.get('/api/name', validateApiKey, async (req, res) => {
+  try {
+    const name = await db.get('name') || 'Skyport';
+    res.json({ name });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve name' });
+  }
+});
+
 // Nodes
 router.get('/api/nodes', validateApiKey, async (req, res) => {
   try {
