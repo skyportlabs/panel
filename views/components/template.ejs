@@ -251,18 +251,24 @@
 
       <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
         <div class="relative flex flex-1 flex-col">
-          <input id="searchInput" 
-                 class="w-fit px-4 py-2 h-10 mt-3.5 rounded-lg text-white border border-white/5 hover:scale-105 active:scale-100 duration-200 bg-transparent border border-white/5 pr-0 text-white placeholder:text-zinc-500 focus:ring-0 sm:text-sm" 
-                 placeholder="Search..." 
-                 type="search" 
-                 name="search"
-                 autocomplete="off"
-                 onfocus="showSearchResults()">
-
-            <div id="searchResults" class="absolute bg-white w-[12.5rem] rounded-lg shadow-lg hidden mt-16 px-2 pb-2">
-             
+          <div class="flex items-center w-fit mt-3.5 px-4 py-2 h-10  rounded-lg border border-white/5 hover:scale-105 active:scale-100 duration-200 bg-transparent text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-400">
+              <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+            </svg>
+            <input id="searchInput" 
+                   class="bg-transparent border-transparent focus-visible:ring-transparent border-none ring-transparent sm:text-sm placeholder:text-zinc-500" 
+                   placeholder="Search..." 
+                   type="search" 
+                   name="search"
+                   autocomplete="off"
+                   onclick="input.blur()"
+                   onfocus="showSearchResults()">
+          </div>
+        
+          <div id="searchResults" class="absolute bg-white w-[12.5rem] rounded-lg shadow-lg hidden mt-20 px-2 pb-2">
           </div> 
-      </div>
+        </div>
+        
         <script src="/javascript/search/index.js"></script>
         <script>
           function showSearchResults() {
