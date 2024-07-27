@@ -90,64 +90,71 @@
         </tbody>
       </table>
       </div>
-      <div style="display: none;"  id="nodeForm" class="mt-6 px-8 w-full">
-        <form>
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
-         <input id="name" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My instance">
 
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">User:</label>
-         <select style="background: #171717;" id="user" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
-            <% users.forEach(function(user) { %>
-                <option value="<%= user.userId %>"><%= user.username %></option>
-            <% }); %>
-         </select>
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
-         <select style="background: #171717;" id="image" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
-          <% images.forEach(function(image) { %>
-              <option value="<%= image.Image %>" data-configfilepath="<%= image.ConfigFilePath %>" data-configfilecontent="<%= image.ConfigFileContent %>"><%= image.Name %> (<%= image.Image %>)</option>
-          <% }); %>
-          </select>      
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Node:</label>
-         <select style="background: #171717;" id="node" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
-            <% nodes.forEach(function(node) { %>
-                <option value="<%= node.id %>"><%= node.name %></option>
-            <% }); %>
-         </select>
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory (MiB):</label>
-         <input id="memory" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="2048">
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU Threads:</label>
-         <input id="cpu" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="1">
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports:</label>
-         <input id="ports" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="25565:25565,8080:8080">
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Primary Port:</label>
-         <input id="primary" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="25565">
+      <div style="display: none;" id="nodeForm" class="mt-6 px-8 w-full">
+        <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
+            <form>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
+                        <input id="name" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My instance">
+                    </div>
     
-         <div class="mb-6"></div>
-
-         <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
-      </form>
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">User:</label>
+                        <select style="background: #171717;" id="user" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                            <% users.forEach(function(user) { %>
+                                <option value="<%= user.userId %>"><%= user.username %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+    
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
+                        <select style="background: #171717;" id="image" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                            <% images.forEach(function(image) { %>
+                                <option value="<%= image.Image %>" data-configfilepath="<%= image.ConfigFilePath %>" data-configfilecontent="<%= image.ConfigFileContent %>"><%= image.Name %> (<%= image.Image %>)</option>
+                            <% }); %>
+                        </select>
+                    </div>
+    
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Node:</label>
+                        <select style="background: #171717;" id="node" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                            <% nodes.forEach(function(node) { %>
+                                <option value="<%= node.id %>"><%= node.name %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+    
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory (MiB):</label>
+                        <input id="memory" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="2048">
+                    </div>
+    
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU Threads:</label>
+                        <input id="cpu" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="1">
+                    </div>
+    
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports:</label>
+                        <input id="ports" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
+                    </div>
+    
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Primary Port:</label>
+                        <input id="primary" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565">
+                    </div>
+                </div>
+    
+                <div class="mt-4">
+                    <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
+                </div>
+            </form>
+        </div>
     </div>
-    </div>
+    
 </main>
 <script>
   document.getElementById('createButton').addEventListener('click', function() {
