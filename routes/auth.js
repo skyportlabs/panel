@@ -272,13 +272,6 @@ router.post('/resend-verification', async (req, res) => {
 });
 
 
-router.get('/twofactor', async (req, res) => {
-  res.render('auth/2fa', {
-    req: req,
-    user: req.user
-  });
-});
-
 async function initializeRoutes() {
   async function updateRoutes() {
     try {
