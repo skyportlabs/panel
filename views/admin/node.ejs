@@ -60,7 +60,7 @@ document.getElementById('saveNodeBtn').addEventListener('click', function() {
     })
     .then(data => {
         console.log('Node edited:', data);
-        window.location.href = '../nodes?err=SUCCESS'
+        window.location.href = '../nodes?err=none'
     })
     .catch(error => console.error('Error editing node:', error));
 });
