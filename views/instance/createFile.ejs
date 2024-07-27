@@ -45,8 +45,6 @@ require(['vs/editor/editor.main'], function () {
     var editor = monaco.editor.create(document.getElementById('editor'), {
         theme: 'vs-dark'
     });
-
-    // Save the editor instance globally for accessing in the saveFile function
     window.editor = editor;
 });
 

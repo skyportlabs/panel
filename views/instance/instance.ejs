@@ -242,11 +242,11 @@
         ws.onmessage = handleWebSocketMessage;
         ws.onclose = () => {
             console.log('WebSocket connection closed, attempting to reconnect...');
-            setTimeout(initWebSocket, 3000); // Reconnect after 3s or so
+            setTimeout(initWebSocket, 3000);
         };
         ws.onerror = (error) => {
             console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
-            setTimeout(initWebSocket, 5000); // Reconnect after a delay on error
+            setTimeout(initWebSocket, 5000);
         };
     }
 
@@ -260,13 +260,9 @@
 
         lines.forEach(line => {
             const trimmedLine = line.trim();
-
-            // Skip empty lines if the previous line was also empty
             if (trimmedLine === '' && previousLineWasEmpty) {
                 return;
             }
-
-            // Add a newline character only if it's not the first line and the previous line wasn't empty
             if (!isFirstLine && !previousLineWasEmpty) {
                 term.write('\r\n');
             }
@@ -276,7 +272,7 @@
             if (trimmedLine.includes("state:")) {
                 term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
                 term.clear();
-                ws.close(); // Close the current connection to trigger onclose and reconnect
+                ws.close();
             }
 
             if (trimmedLine.includes("skyportd instance appears to be down")) {
@@ -316,7 +312,7 @@
                 command: command,
                 containerId: '<%= req.params.id %>'
             }));
-            inputElement.value = ''; // Clear the input after sending
+            inputElement.value = '';
         }
     }
 

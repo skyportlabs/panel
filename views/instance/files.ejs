@@ -213,15 +213,11 @@
       function toggleDropdown(event, fileName) {
         event.stopPropagation();
         const dropdown = document.getElementById(`dropdown-${fileName}`);
-        
-        // Close other open dropdowns with animation
         document.querySelectorAll('[id^="dropdown-"]').forEach((el) => {
           if (el.id !== `dropdown-${fileName}` && !el.classList.contains('pointer-events-none')) {
             closeDropdown(el);
           }
         });
-      
-        // Toggle the clicked dropdown
         if (dropdown.classList.contains('pointer-events-none')) {
           openDropdown(dropdown);
         } else {
@@ -238,8 +234,6 @@
         dropdown.classList.remove('opacity-100', 'scale-100');
         dropdown.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
       }
-      
-      // Close dropdowns when clicking outside
       document.addEventListener('click', function(event) {
         if (!event.target.closest('td')) {
           document.querySelectorAll('[id^="dropdown-"]').forEach((dropdown) => {
@@ -277,7 +271,6 @@
           const formData = new FormData();
           Array.from(files).forEach(file => formData.append('files', file));
       
-          // Open the upload modal
           const modal = document.getElementById('uploadModal');
           modal.classList.remove('opacity-0', 'pointer-events-none');
           modal.querySelector('div').classList.remove('scale-95');
@@ -296,17 +289,14 @@
               if (xhr.status == 200) {
                   document.getElementById('uploadStatus').textContent = 'Upload complete!';
                   setTimeout(() => {
-                      // Close the modal
                       modal.classList.add('opacity-0', 'pointer-events-none');
                       modal.querySelector('div').classList.remove('scale-100');
                       modal.querySelector('div').classList.add('scale-95');
-                      // Reload the page
                       window.location.reload();
                   }, 1000);
               } else {
                   document.getElementById('uploadStatus').textContent = 'Upload failed. Server responded with status ' + xhr.status;
                   setTimeout(() => {
-                      // Close the modal
                       modal.classList.add('opacity-0', 'pointer-events-none');
                       modal.querySelector('div').classList.remove('scale-100');
                       modal.querySelector('div').classList.add('scale-95');
@@ -314,7 +304,7 @@
               }
           };
           xhr.send(formData);
-          document.getElementById('fileInput').value = ''; // Reset file input
+          document.getElementById('fileInput').value = '';
       });
       
       let deleteUrl = '';
@@ -391,7 +381,6 @@
               }
             });
       
-            // Mass actions functionality
           const selectAllCheckbox = document.getElementById('selectAll');
           const fileCheckboxes = document.querySelectorAll('.file-checkbox');
           const floatingActionBar = document.getElementById('floatingActionBar');

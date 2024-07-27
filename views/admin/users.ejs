@@ -269,9 +269,7 @@
       const username = document.getElementById("userName").value;
       const email = document.getElementById("email").value;
       const password = document.getElementById("userPass").value;
-      const adminString = document.getElementById("userAdmin").value; // Get the admin value as a string
-
-// Convert the admin value to a boolean
+      const adminString = document.getElementById("userAdmin").value;
 const admin = adminString === "true";
 
       const nodeData = {
@@ -311,36 +309,29 @@ const admin = adminString === "true";
 <script>
   document.querySelectorAll('.removeButton').forEach(button => {
     button.addEventListener('click', function() {
-      const userId = this.dataset.userId; // Get the user ID from the button's data attribute
-
-      // Check if there is only one user in the database
+      const userId = this.dataset.userId;
       const totalUsers = document.querySelectorAll('.removeButton').length;
       if (totalUsers === 1) {
         alert('Cannot delete the only user in the database.');
         return;
       }
-
-      // Check if the user being deleted is the current user
       const currentUserId = '<%= user.userId %>';
       if (userId === currentUserId) {
         alert('Cannot delete the current user.');
         return;
       }
-
-      // Confirm with the user before deleting
       const confirmation = confirm('Are you sure you want to delete this user?');
-      if (!confirmation) return; // If the user cancels, do nothing
+      if (!confirmation) return;
 
       fetch('/user/delete', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ userId }) // Send the user ID in the request body
+        body: JSON.stringify({ userId })
       })
       .then(response => {
         if (response.ok) {
-          // If deletion is successful, reload the page
           window.location.reload();
         } else {
           throw new Error('Failed to delete user');

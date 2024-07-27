@@ -62,10 +62,10 @@
        const currentPasswordInput = document.getElementById('currentPassword');
        const newPasswordInput = document.getElementById('newPassword');
        const currentPasswordFeedback = document.getElementById('current-password-feedback');
-       let currentPasswordValue = ''; // Variable to store the current password value
+       let currentPasswordValue = '';
        let currentPasswordTimeoutId;
-       let controller; // Variable to store the AbortController
-       let isLoading = true; // Set isLoading to true initially
+       let controller;
+       let isLoading = true;
    
        function showLoadingAnimation() {
            currentPasswordFeedback.innerHTML = `

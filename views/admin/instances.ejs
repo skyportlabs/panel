@@ -171,8 +171,8 @@
 <script>
 document.getElementById('createNodeBtn').addEventListener('click', function() {
     const createBtn = this;
-    createBtn.textContent = 'Working on it...'; // Change the button text
-    createBtn.disabled = true; // Disable the button
+    createBtn.textContent = 'Working on it...';
+    createBtn.disabled = true;
 
     const name = document.getElementById('name');
     const memory = document.getElementById('memory');
@@ -184,18 +184,15 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
     const configFilePath = selectedImage.getAttribute('data-configfilepath');
     let configFileContent = selectedImage.getAttribute('data-configfilecontent');
 
-    // Clear previous errors
     clearValidationErrors();
 
     let isValid = true;
 
-    // Validate name (no spaces allowed)
     if (name.value.includes(' ')) {
         showError(name, 'Name must not contain spaces.');
         isValid = false;
     }
 
-    // Validate memory and CPU (must be integers greater than 1)
     if (!isPositiveInteger(memory.value)) {
         showError(memory, 'Memory must be an integer greater than 1.');
         isValid = false;
@@ -206,19 +203,16 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
         isValid = false;
     }
 
-    // Validate ports (must match the format "port:port,port:port")
     const portPattern = /^(\d+:\d+)(,\d+:\d+)*$/;
     if (!ports.value.match(portPattern)) {
         showError(ports, 'Ports must be in the format "port:port,port:port".');
         isValid = false;
     }
 
-    // Validate primary port (must be a number)
     if (!primaryPort.value.match(/^\d+$/)) {
         showError(primaryPort, 'Primary port must be a valid number.');
         isValid = false;
     } else {
-        // Replace {{primaryPort}} in configFileContent
         configFileContent = configFileContent.replace('{{primaryPort}}', primaryPort.value);
     }
 
@@ -241,7 +235,6 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
         configFileContent: configFileContent
     };
 
-    // Proceed with sending data
     sendData(nodeData, createBtn);
 });
 
@@ -252,7 +245,6 @@ function clearValidationErrors() {
     messages.forEach(msg => msg.remove());
 }
 
-// Serialize and send request as before
 function serializeParams(params) {
     return Object.keys(params)
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))

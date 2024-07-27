@@ -42,8 +42,6 @@ require(['vs/editor/editor.main'], function () {
         value: '' + <%- JSON.stringify(file) %>,
         theme: 'vs-dark'
     });
-
-    // Save the editor instance globally for accessing in the saveFile function
     window.editor = editor;
     window.addEventListener('keydown', function(e) {
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {

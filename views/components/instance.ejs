@@ -100,27 +100,14 @@
 
  <script>
    document.addEventListener("DOMContentLoaded", function() {
-     // Use window.location.pathname to focus on the path part of the URL
      var currentPagePath = window.location.pathname;
-   
-     // Get all navigation links
      var navLinks2 = document.querySelectorAll('.nav-link2');
-   
-     // Loop through each navigation link
      navLinks2.forEach(function(link) {
-       // Get the href attribute of the link and adjust the relative path
        var linkPath = new URL(link.getAttribute('href'), window.location.origin).pathname;
-   
-       // Debugging outputs to see the paths being compared
        console.log(currentPagePath);
        console.log(linkPath);
-   
-       // Check if the current page path matches the link path
        if (currentPagePath === linkPath) {
-         // Remove all existing classes
          link.className = 'nav-link';
-   
-         // Add the specified classes
          link.classList.add('text-white', 'font-semibold', 'border', 'border-transparent', 'bg-white/5', 'font-semibold', 'py-2', 'px-2.5', 'rounded-lg', 'shadow-sm');
        }
      });

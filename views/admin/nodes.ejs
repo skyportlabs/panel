@@ -80,7 +80,7 @@
             </td>
             <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"><%= set[node.id] || 0 %></td>
 			<td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3">
-        <div class="inner"><button onclick="configureNode('<%= node.id %>')" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Configure</button></div>
+        <div class="inner"><button onclick="configureNodePoPUP('<%= node.id %>')" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Configure</button></div>
 				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</button></a></div>
 				<div class="inner"><button id="removeButton" onclick="location.href='/admin/nodes/delete/<%= node.id %>'" type="button" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</button></div>
           </tr>
@@ -92,33 +92,53 @@
       </div>
       </div>
       <div id="nodeForm" class="mt-6 px-8 w-full hidden">
-        <form>
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
-         <input id="nodeName" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My Node">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">RAM (GB):</label>
-         <input id="nodeRam" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="This is only for information purposes.">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (GB):</label>
-         <input id="nodeDisk" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="This is only for information purposes.">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU:</label>
-         <input id="nodeProcessor" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="This is only for information purposes.">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">IP Address:</label>
-         <input id="nodeAddress" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="192.168.1.1 or my.hostnamehere.com">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Daemon Port:</label>
-         <input id="nodePort" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="3000">
-    
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
-         <div id="tagContainer" class="flex flex-wrap gap-2 mb-2"></div>
-         <input id="tagInput" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="Add a tag and press Enter">
-
-         <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
-      </form>
-    </div>
-    </div>
+        <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
+          <form>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="nodeName" class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
+                <input id="nodeName" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-black/10" placeholder="My node">
+              </div>
+      
+              <div>
+                <label for="nodeRam" class="text-neutral-400 text-sm tracking-tight mb-2">RAM (GB):</label>
+                <input id="nodeRam" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-black/10" placeholder="This is only for information purposes.">
+              </div>
+      
+              <div>
+                <label for="nodeDisk" class="text-neutral-400 text-sm tracking-tight mb-2">Disk (GB):</label>
+                <input id="nodeDisk" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-black/10" placeholder="This is only for information purposes.">
+              </div>
+      
+              <div>
+                <label for="nodeProcessor" class="text-neutral-400 text-sm tracking-tight mb-2">CPU:</label>
+                <input id="nodeProcessor" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-black/10" placeholder="This is only for information purposes.">
+              </div>
+      
+              <div>
+                <label for="nodeAddress" class="text-neutral-400 text-sm tracking-tight mb-2">IP Address:</label>
+                <input id="nodeAddress" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-black/10" placeholder="192.168.1.1 or my.hostnamehere.com">
+              </div>
+      
+              <div>
+                <label for="nodePort" class="text-neutral-400 text-sm tracking-tight mb-2">Daemon Port:</label>
+                <input id="nodePort" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-black/10" placeholder="3000">
+              </div>
+      
+              <div class="col-span-2">
+                <label for="tagInput" class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
+                <div id="tagContainer" class="flex flex-wrap gap-2 mb-2"></div>
+                <input id="tagInput" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-black/10" placeholder="Add a tag and press Enter">
+              </div>
+      
+              <div class="col-span-2">
+                <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      
 </main>
 <script>
   document.getElementById('createButton').addEventListener('click', function() {
@@ -134,7 +154,132 @@
   });
 </script>
 <script>
-function createBadge(text, container, inputField) {
+
+
+  async function configureNodePoPUP(nodeId) {
+    const response = await fetch(`/admin/node/${nodeId}/configure-command`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch configure command');
+    }
+    const data = await response.json();
+    showPopup(data.configureCommand);
+  }
+
+  function showPopup(command) {
+    const popup = document.createElement('div');
+    popup.style.position = 'fixed';
+    popup.style.top = '50%';
+    popup.style.left = '50%';
+    popup.style.transform = 'translate(-50%, -50%)';
+    popup.style.padding = '20px';
+    popup.style.width = '550px';
+    popup.style.height = 'auto';
+    popup.style.maxHeight = '80vh';
+    popup.style.borderRadius = '10px';
+    popup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+    popup.style.backgroundColor = '#fff';
+
+    popup.classList.add('text-white', 'border', 'border-white/5', 'rounded-lg', 'shadow-xl');
+
+    popup.innerHTML = `
+        <div class="flex justify-center items-center mb-2" style="margin-top: 75px;">
+<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
+<linearGradient id="1ayUTr30BaMDjOG69N2fSa_xTkoPEFGI0P7_gr1" x1="21.241" x2="3.541" y1="39.241" y2="21.541" gradientUnits="userSpaceOnUse"><stop offset=".108" stop-color="#0d7044"></stop><stop offset=".433" stop-color="#11945a"></stop></linearGradient><path fill="url(#1ayUTr30BaMDjOG69N2fSa_xTkoPEFGI0P7_gr1)" d="M16.599,41.42L1.58,26.401c-0.774-0.774-0.774-2.028,0-2.802l4.019-4.019	c0.774-0.774,2.028-0.774,2.802,0L23.42,34.599c0.774,0.774,0.774,2.028,0,2.802l-4.019,4.019	C18.627,42.193,17.373,42.193,16.599,41.42z"></path><linearGradient id="1ayUTr30BaMDjOG69N2fSb_xTkoPEFGI0P7_gr2" x1="-15.77" x2="26.403" y1="43.228" y2="43.228" gradientTransform="rotate(134.999 21.287 38.873)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2ac782"></stop><stop offset="1" stop-color="#21b876"></stop></linearGradient><path fill="url(#1ayUTr30BaMDjOG69N2fSb_xTkoPEFGI0P7_gr2)" d="M12.58,34.599L39.599,7.58c0.774-0.774,2.028-0.774,2.802,0l4.019,4.019	c0.774,0.774,0.774,2.028,0,2.802L19.401,41.42c-0.774,0.774-2.028,0.774-2.802,0l-4.019-4.019	C11.807,36.627,11.807,35.373,12.58,34.599z"></path>
+</svg>
+        </div>
+        <p class="font-bold mb-2 mt-3 text-black" style="font-size:30px; text-align:center">Token created.</p>
+        <h3 class="mb-5 text-gray-600" style="text-align:center; margin-top: 25px;">To auto-configure your node, run the following command:</h3>
+        <pre class="bg-neutral-900 p-3 rounded-lg mb-4 mt-3" style="overflow-x: scroll"><code id="commandCode" class="text-emerald-500">${command}</code></pre>
+        <button id="doneBtn" class="block rounded-lg bg-black text-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4">Done</button>
+    `;
+    document.body.appendChild(popup);
+
+    const commandCode = document.getElementById('commandCode');
+    commandCode.addEventListener('click', function() {
+        const textarea = document.createElement('textarea');
+        textarea.value = commandCode.textContent;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      const notification = document.getElementById('notification');
+      notification.classList.remove('translate-y-full', 'opacity-0');
+      
+      setTimeout(() => {
+        notification.classList.add('translate-y-full', 'opacity-0');
+      }, 3000);
+    });
+
+    document.getElementById('doneBtn').addEventListener('click', function() {
+
+        document.body.removeChild(popup);
+    });
+}
+
+
+  
+
+  function setupBadgeInput(inputId, containerId, validator) {
+    const input = document.getElementById(inputId);
+    const container = document.getElementById(containerId);
+
+    function processInput() {
+        const value = input.value.trim();
+
+        const tags = value.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+
+        let allValid = true;
+        tags.forEach(tag => {
+            if (tag !== '' && (!validator || validator(tag))) {
+                createBadge(tag);
+            } else {
+                allValid = false;
+            }
+        });
+
+        if (!allValid) {
+            alert('Invalid format. Ports should be like this: 8080:8080 [external:internal]. For example, if you wanted to assign 8080 to the internal port 2022, you could do: 8080:2022.');
+        }
+
+        input.value = '';
+    }
+
+    input.addEventListener('blur', function() {
+        processInput();
+    });
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            processInput();
+        }
+    });
+
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const value = input.value.trim();
+
+            const tags = value.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+
+            let allValid = true;
+            tags.forEach(tag => {
+                if (tag !== '' && (!validator || validator(tag))) {
+                    createBadge(tag, container, input);
+                } else {
+                    allValid = false;
+                }
+            });
+
+            if (!allValid) {
+                alert('Invalid format. Ports should be like this: 8080:8080 [external:internal]. For example, if you wanted to assign 8080 to the internal port 2022, you could do: 8080:2022.');
+            }
+
+            input.value = '';
+        }
+    });
+
+
+    function createBadge(text, container, inputField) {
     const badge = document.createElement('span');
     badge.className = 'bg-white/5 text-neutral-300 text-xs font-medium mr-1 px-2.5 py-0.5 rounded-lg';
     badge.textContent = text;
@@ -150,48 +295,6 @@ function createBadge(text, container, inputField) {
     container.appendChild(badge);
     inputField.value = '';
   }
-
-  async function configureNode(nodeId) {
-    try {
-      const response = await fetch(`/admin/node/${nodeId}/configure-command`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch configure command');
-      }
-      const data = await response.json();
-      
-      // Copy command to clipboard
-      await navigator.clipboard.writeText(data.configureCommand);
-      console.log('Configure command: ' + data.configureCommand)
-      
-      // Show notification
-      const notification = document.getElementById('notification');
-      notification.classList.remove('translate-y-full', 'opacity-0');
-      
-      // Hide notification after 3 seconds
-      setTimeout(() => {
-        notification.classList.add('translate-y-full', 'opacity-0');
-      }, 3000);
-    } catch (error) {
-      console.error('Error configuring node:', error);
-      alert('Failed to copy text to clipboard, it will not work unless the Panel is SSL secured. Instead, please check the browser console for the skyportd configure command.');
-    }
-  }
-
-  function setupBadgeInput(inputId, containerId, validator) {
-    const input = document.getElementById(inputId);
-    const container = document.getElementById(containerId);
-
-    input.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const value = input.value.trim();
-        if (value !== '' && (!validator || validator(value))) {
-          createBadge(value, container, input);
-        } else {
-          alert('Invalid format. Ports should be like this: 8080:8080 [external:internal]. For example, if you wanted to assign 8080 to the internal port 2022, you could do: 8080:2022.');
-        }
-      }
-    });
   }
 
   setupBadgeInput('tagInput', 'tagContainer');

@@ -97,27 +97,22 @@
             event.stopPropagation();
         });
 
-        // Handle form submission
         const createDatabaseForm = document.getElementById('createDatabaseForm');
         createDatabaseForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
+            event.preventDefault();
 
             const databaseName = document.getElementById('databaseNameInput').value;
             const actionUrl = createDatabaseForm.action + '/' + encodeURIComponent(databaseName);
 
-            // Create a new form dynamically
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = actionUrl;
             
-            // Create a hidden input field to send the database name
             const input = document.createElement('input');
             input.type = 'hidden';
             input.name = 'databaseName';
             input.value = databaseName;
             form.appendChild(input);
-
-            // Append the form to the body and submit
             document.body.appendChild(form);
             form.submit();
         });

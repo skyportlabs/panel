@@ -44,14 +44,11 @@
          </dl>
           <div class="bg-neutral-700/10 rounded-lg py-8 mt-5">
             <script>
-                // Fetch the latest version from the site
                 fetch('https://atqr.pages.dev/skyport.json')
                   .then(response => response.json())
                   .then(data => {
                     const currentVersion = '<%= version %>';
                     const latestVersion = data.panel_latest;
-            
-                    // Update the version information in the content
                     const versionSpan = document.getElementById('currentVersion');
                     const releaseSpan = document.getElementById('releaseInfo');
                     const versionStatusSpan = document.getElementById('versionStatus');
