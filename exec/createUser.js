@@ -11,6 +11,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+// 7gv.png
 async function doesUserExist(username) {
     const users = await db.get('users');
     if (users) {
