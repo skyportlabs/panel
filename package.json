@@ -34,6 +34,7 @@
     "express-ws": "^5.0.2",
     "form-data": "^4.0.0",
     "fs": "^0.0.1-security",
+    "handlebars": "^4.7.8",
     "keyv": "^4.5.4",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.14",

@@ -1,0 +1,36 @@
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto; color: #333; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+  <div style="background-color: #ffffff; padding: 30px; border-radius: 10px;">
+      <h2 style="color: #4CAF50; text-align: center; font-size: 24px; margin-bottom: 20px;">{{subject}}</h2>
+      
+      <p style="font-size: 16px; text-align: center; margin-bottom: 20px;">Hello,</p>
+      
+      <div style="font-size: 16px; text-align: left; margin-bottom: 20px;">
+          <p>{{message}}</p>
+      </div>
+      
+      {{#if buttonUrl}}
+      <div style="text-align: center; margin-bottom: 20px;">
+          <a href="{{buttonUrl}}" style="display: inline-block; padding: 14px 28px; font-size: 16px; color: #ffffff; background-color: #4CAF50; text-decoration: none; border-radius: 30px; box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);">{{buttonText}}</a>
+      </div>
+      {{/if}}
+
+      {{#if message_2}}
+      <div style="font-size: 16px; text-align: left; margin-bottom: 20px;">
+        <p>{{message_2}}</p> <br>
+        <p>{{message_2_link}}</p>
+      </div>
+      {{/if}}
+
+      {{#if footer}}
+      <div style="font-size: 16px; text-align: left; margin-bottom: 20px;">
+        <p>{{footer}}</p>
+      </div>
+      {{/if}}
+      
+      <p style="font-size: 16px; text-align: center; margin-top: 20px;">Best Regards,<br/>The {{name}}</p>
+      
+      <hr style="border: none; border-top: 1px solid #f0f0f0; margin: 20px 0;">
+      
+      <p style="font-size: 14px; text-align: center; color: #666;">This email was sent automatically. Please do not reply to this email.</p>
+  </div>
+</div>

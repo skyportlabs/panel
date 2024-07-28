@@ -18,7 +18,7 @@ const path = require('path')
 const fs = require('node:fs')
 const {logAudit} = require('../handlers/auditlog.js');
 const nodemailer = require('nodemailer');
-const { sendTestEmail } = require('../handlers/email.js');
+const { sendEmail } = require('../handlers/smtp.js');
 
 /**
  * Middleware to verify if the user is an administrator.
@@ -508,23 +508,6 @@ router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
   }
 });
 
-
-router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => {
-  try {
-    const settings = await db.get('settings') || {};
-    settings.forceVerify = !settings.forceVerify;
-
-    await db.set('settings', settings);
-    logAudit(req.user.userId, req.user.username, 'force-verify:edit', req.ip); // Adjust as per your logging needs
-
-    res.redirect('/admin/settings');
-  } catch (err) {
-    console.error('Error toggling force verify:', err);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-
 router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
   const name = req.body.name;
   try {
@@ -538,17 +521,20 @@ router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
 });
 
 router.post('/admin/settings/saveSmtpSettings', async (req, res) => {
-  const { smtpServer, smtpPort, smtpUser, smtpPass, smtpFromName, smtpFromAddress } = req.body;
+  const { smtpServer, smtpPort, smtpUser, smtpPass, smtpFromName, smtpFromAddress, forceSecure } = req.body;
 
   try {
     await db.set('smtp_settings', {
       server: smtpServer,
-      port: smtpPort,
+      port: Number(smtpPort),
       username: smtpUser,
       password: smtpPass,
       fromName: smtpFromName,
-      fromAddress: smtpFromAddress
+      fromAddress: smtpFromAddress,
+      forceSecure: forceSecure,
     });
+
+    console.log(forceSecure)
 
     logAudit(req.user.userId, req.user.username, 'SMTP:edit', req.ip);
     res.redirect('/admin/settings/smtp?msg=SmtpSaveSuccess');
@@ -558,21 +544,38 @@ router.post('/admin/settings/saveSmtpSettings', async (req, res) => {
   }
 });
 
+const EmailOfTest = async (recipientEmail) => {
+  try {
+    const appName = await db.get('name') || 'Skyport';
+
+      const emailSent = await sendEmail(recipientEmail, 'Test Email', {
+        subject: 'Skyport Test Message',
+        message: `Hello from Skyport Panel!`,
+        message_2: `This is a test of the Skyport mail system. You're good to go!.`,
+        name: appName,
+      });
+
+      return emailSent;
+  } catch (error) {
+      log.error('Error sending test email:', error);
+      return false;
+  }
+};
 
 router.post('/sendTestEmail', async (req, res) => {
   try {
-    const { recipientEmail } = req.body;
+      const { recipientEmail } = req.body;
 
-    const emailSent = await sendTestEmail(recipientEmail);
+      const emailSent = await EmailOfTest(recipientEmail);
 
-    if (emailSent) {
-      res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
-    } else {
-      res.redirect('/admin/settings/smtp?err=TestemailSentfailed'); 
-    }
+      if (emailSent) {
+          res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
+      } else {
+          res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
+      }
   } catch (error) {
-    console.error('Error sending test email:', error);
-    res.redirect('/admin/settings/smtp?err=TestemailSentfailed');
+      log.error('Error sending test email:', error);
+      res.redirect('/admin/settings/smtp?err=TestemailSentfailed');
   }
 });
 
@@ -631,6 +634,15 @@ router.post('/admin/settings/toggle/register', isAdmin, upload.single('logo'), a
   logAudit(req.user.userId, req.user.username, 'register:edit', req.ip);
   res.redirect('/admin/settings');
 });
+
+router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => {
+    let settings = await db.get('settings');
+    settings.forceVerify = !settings.forceVerify;
+    await db.set('settings', settings);
+    logAudit(req.user.userId, req.user.username, 'force-verify:edit', req.ip); 
+    res.redirect('/admin/settings');
+});
+
 /**
  * GET /admin/instances
  * Retrieves a list of all instances, checks their statuses, and renders an admin page to display these instances.
