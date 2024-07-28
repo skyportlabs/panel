@@ -315,7 +315,6 @@ function sendData(nodeData, createBtn) {
         }
     })
     .then(data => {
-        alert('Done! Instance created successfully.');
 	window.location.href = '../admin/instances?err=none'
         console.log('Instance created:', data);
         createBtn.textContent = 'Create';
