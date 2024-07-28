@@ -20,6 +20,24 @@
            <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new instance</button>
          </div>
        </div>
+ <% if (req.query.err == "none") { %>
+      <div class="mt-6 w-full">
+        <div class="rounded-lg bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
+          <div class="flex">
+             <div class="flex-shrink-0 ml-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                </svg>                
+             </div>
+             <div class="ml-5">
+                <h3 class="text-sm font-semibold text-emerald-400">Success!</h3>
+                <div class="text-sm text-emerald-400/50">
+                   <p>The action was successfully completed.</p>
+                </div>
+             </div>
+          </div>
+       </div>
+      <% } %>	   
       <div style="display: block;" id="nodeTable" class="mt-6 w-full">
       <table class="mt-6 w-full whitespace-nowrap text-left">
         <colgroup>
@@ -298,6 +316,7 @@ function sendData(nodeData, createBtn) {
     })
     .then(data => {
         alert('Done! Instance created successfully.');
+	window.location.href = '../admin/instances?err=none'
         console.log('Instance created:', data);
         createBtn.textContent = 'Create';
         createBtn.disabled = false;
