@@ -12,6 +12,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const { v4: uuidv4 } = require('uuid');
 const { db } = require('../handlers/db.js');
 const { sendWelcomeEmail, sendPasswordResetEmail, sendVerificationEmail } = require('../handlers/email.js');
+const speakeasy = require('speakeasy');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -172,29 +173,105 @@ passport.deserializeUser(async (username, done) => {
  */
 router.get('/auth/login', async (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
-    if (err) { return next(err); }
+    if (err) {
+      return next(err);
+    }
     if (!user) {
       if (info.userNotVerified) {
         return res.redirect('/login?err=UserNotVerified');
       }
       return res.redirect('/login?err=InvalidCredentials&state=failed');
     }
-    req.logIn(user, (err) => {
-      if (err) { return next(err); }
-      return res.redirect('/instances');
+    req.logIn(user, async (err) => {
+      if (err) {
+        return next(err);
+      }
+      
+      const users = await db.get('users');
+      const dbUser = users.find(u => u.username === user.username);
+
+      if (dbUser && dbUser.twoFAEnabled) {
+        req.session.tempUser = user;
+        req.user = null;
+        return res.redirect('/2fa');
+      } else {
+        return res.redirect('/instances');
+      }
     });
   })(req, res, next);
 });
 
+
 router.post('/auth/login', passport.authenticate('local', { 
   failureRedirect: '/login?err=InvalidCredentials&state=failed' 
-}), async (req, res) => {
-  if (req.user && req.user.twoFactorEnabled) {
-    req.session.tempUser = req.user;
-    req.logout();
-    return res.redirect('/2fa');
+}), async (req, res, next) => {
+  try {
+    if (req.user) {
+      const users = await db.get('users');
+      const user = users.find(u => u.username === req.user.username);
+
+      if (user && user.verified) {
+        return res.redirect('/instances');
+      }
+
+      if (user && user.twoFAEnabled) {
+        req.session.tempUser = req.user;
+        req.logout(err => {
+          if (err) {
+            return next(err);
+          }
+          return res.redirect('/2fa');
+        });
+      } else {
+        return res.redirect('/instances');
+      }
+    } else {
+      return res.redirect('/login?err=InvalidCredentials&state=failed');
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
+router.get('/2fa', async (req, res) => {
+  if (!req.session.tempUser) {
+    return res.redirect('/login');
+  }
+  res.render('auth/2fa', {
+    req,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false
+    });
+});
+
+router.post('/2fa', async (req, res) => {
+  const { token } = req.body;
+  const tempUser = req.session.tempUser;
+
+  if (!tempUser) {
+    return res.redirect('/login');
+  }
+
+  const users = await db.get('users');
+  const currentUser = users.find(user => user.username === tempUser.username);
+
+  const verified = speakeasy.totp.verify({
+    secret: currentUser.twoFASecret,
+    encoding: 'base32',
+    token
+  });
+
+  if (verified) {
+    req.login(tempUser, err => {
+      if (err) {
+        return next(err);
+      }
+      req.session.tempUser = null;
+      return res.redirect('/instances');
+    });
   } else {
-    return res.redirect('/instances');
+    return res.status(400).redirect('/2fa?err=InvalidAuthCode');
   }
 });
 
@@ -270,7 +347,6 @@ router.post('/resend-verification', async (req, res) => {
     res.status(500).send('Internal server error');
   }
 });
-
 
 async function initializeRoutes() {
   async function updateRoutes() {
