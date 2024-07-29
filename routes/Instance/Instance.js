@@ -38,6 +38,7 @@ router.get("/instance/:id", async (req, res) => {
 
     res.render('instance/instance', {
         req,
+        ContainerId: instance.ContainerId,
         instance,
         port,
         domain,

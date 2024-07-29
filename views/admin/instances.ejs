@@ -82,18 +82,18 @@
             </td>
             <td class="py-4 pl-0 pr-4 text-right sm:pr-8 lg:pr-20">
               <div class="flex gap-x-3">
-                <button onclick="location.href='/admin/instance/delete/<%= instance.ContainerId %>'" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                <button onclick="location.href='/admin/instance/delete/<%= instance.Id %>'" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                   Remove
                 </button>
 
                 <% if (instance.suspended === true) { %>
-                  <form action="/admin/instances/unsuspend/<%= instance.ContainerId %>" method="POST">
+                  <form action="/admin/instances/unsuspend/<%= instance.Id %>" method="POST">
                     <button type="submit" class="block rounded-lg bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-green-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                       UnSuspend
                     </button>
                   </form>
                 <% } else { %>
-                  <form action="/admin/instances/suspend/<%= instance.ContainerId %>" method="POST">
+                  <form action="/admin/instances/suspend/<%= instance.Id %>" method="POST">
                     <button type="submit" class="block rounded-lg bg-yellow-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-yellow-400 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                       Suspend
                     </button>

@@ -65,7 +65,7 @@
       <% if (req.user.admin === true) { %>
         <% adminInstances.forEach(function (instance) { %>
           <a id="AdminInstancesContainer" data-instance-id="<%= instance.ContainerId %>"
-            href="../instance/<%= instance.ContainerId %>"
+            href="../instance/<%= instance.Id %>"
             class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8 hidden">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
@@ -203,7 +203,7 @@
       <% } %>
       <% instances.forEach(function (instance) { %>
         <a id="instancesContainer" data-instance-id="<%= instance.ContainerId %>"
-          href="../instance/<%= instance.ContainerId %>"
+          href="../instance/<%= instance.Id %>"
           class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">

@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditlog');
+const { v4: uuid } = require('uuid');
 
 const router = express.Router();
 
@@ -43,15 +44,17 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
   }
 
   try {
+    const Id = uuid().split('-')[0];
+    console.log(Id);
     const node = await db.get(`${nodeId}_node`);
     if (!node) {
       return res.status(400).json({ error: 'Invalid node' });
     }
 
-    const requestData = await prepareRequestData(image, memory, cpu, ports, name, node);
+    const requestData = await prepareRequestData(image, memory, cpu, ports, name, node, Id);
     const response = await axios(requestData);
 
-    await updateDatabaseWithNewInstance(response.data, user, node, image, memory, cpu, ports, primary, name);
+    await updateDatabaseWithNewInstance(response.data, user, node, image, memory, cpu, ports, primary, name, Id);
 
     logAudit(req.user.userId, req.user.username, 'instance:create', req.ip);
     res.status(201).json({
@@ -68,7 +71,7 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
   }
 });
 
-async function prepareRequestData(image, memory, cpu, ports, name, node) {
+async function prepareRequestData(image, memory, cpu, ports, name, node, Id) {
   const rawImage = await db.get('images');
   const imageData = rawImage.find(i => i.Image === image);
 
@@ -84,6 +87,7 @@ async function prepareRequestData(image, memory, cpu, ports, name, node) {
     },
     data: {
       Name: name,
+      Id,
       Image: image,
       Env: imageData ? imageData.Env : undefined,
       Scripts: imageData ? imageData.Scripts : undefined,
@@ -106,9 +110,10 @@ async function prepareRequestData(image, memory, cpu, ports, name, node) {
   return requestData;
 }
 
-async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name) {
+async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, Id) {
   const instanceData = {
     Name: name,
+    Id,
     Node: node,
     User: userId,
     ContainerId: responseData.containerId,
@@ -128,7 +133,7 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
   globalInstances.push(instanceData);
   await db.set('instances', globalInstances);
 
-  await db.set(`${responseData.containerId}_instance`, instanceData);
+  await db.set(`${Id}_instance`, instanceData);
 }
 
 module.exports = router;

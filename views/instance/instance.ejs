@@ -285,7 +285,7 @@
             </div>
             <script>
                 console.log('<%= instance.VolumeId %>');
-
+            
                 var baseTheme = {
                     foreground: '#c5c9d1',
                     background: '#101010',
@@ -308,10 +308,11 @@
                     brightCyan: '#89DDFF',
                     brightWhite: '#ffffff',
                 };
-
+            
                 let ws;
                 const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-
+                const instanceId = '<%= req.params.id %>'; // Make sure this line is added and defined correctly
+            
                 function initWebSocket() {
                     ws = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/console/${instanceId}`);
                     ws.onopen = () => {
@@ -327,15 +328,15 @@
                         setTimeout(initWebSocket, 5000);
                     };
                 }
-
+            
                 let daemonIsDown = document.getElementById('daemonIsDown');
                 var term;
-
+            
                 function handleWebSocketMessage(msg) {
                     const lines = msg.data.split('\n');
                     let isFirstLine = true;
                     let previousLineWasEmpty = false;
-
+            
                     lines.forEach(line => {
                         const trimmedLine = line.trim();
                         if (trimmedLine === '' && previousLineWasEmpty) {
@@ -344,27 +345,27 @@
                         if (!isFirstLine && !previousLineWasEmpty) {
                             term.write('\r\n');
                         }
-
+            
                         term.write('\x1b[0m' + trimmedLine);
-
+            
                         if (trimmedLine.includes("state:")) {
                             term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
                             term.clear();
                             ws.close();
                         }
-
+            
                         if (trimmedLine.includes("skyportd instance appears to be down")) {
                             ws.close();
                             daemonIsDown.classList.remove('hidden');
                         } else {
                             daemonIsDown.classList.add('hidden');
                         }
-
+            
                         isFirstLine = false;
                         previousLineWasEmpty = (trimmedLine === '');
                     });
                 }
-
+            
                 function setupTerminal() {
                     term = new Terminal({
                         disableStdin: true,
@@ -379,7 +380,7 @@
                     });
                     term.open(document.getElementById('terminal'));
                 }
-
+            
                 function sendCommand() {
                     const inputElement = document.getElementById('input');
                     const command = inputElement.value.trim();
@@ -393,19 +394,18 @@
                         inputElement.value = '';
                     }
                 }
-
+            
                 document.addEventListener('DOMContentLoaded', function () {
-                    const instanceId = '<%= req.params.id %>';
                     setupTerminal();
                     initWebSocket();
-
+            
                     const inputElement = document.getElementById('input');
                     inputElement.addEventListener('keypress', function (event) {
                         if (event.key === 'Enter') {
                             sendCommand();
                         }
                     });
-
+            
                     document.getElementById('startButton').addEventListener('click', function () {
                         if (ws) {
                             ws.send(JSON.stringify({
@@ -414,7 +414,7 @@
                             }));
                         }
                     });
-
+            
                     document.getElementById('stopButton').addEventListener('click', function () {
                         if (ws) {
                             ws.send(JSON.stringify({
@@ -423,7 +423,7 @@
                             }));
                         }
                     });
-
+            
                     document.getElementById('restartButton').addEventListener('click', function () {
                         if (ws) {
                             ws.send(JSON.stringify({
@@ -433,29 +433,29 @@
                         }
                     });
                 });
-
+            
                 const statsWs = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/stats/${instanceId}`);
-
+            
                 function formatBytes(bytes, decimals = 2) {
                     if (bytes === 0) return '0 Bytes';
                     const k = 1024;
                     const dm = decimals < 0 ? 0 : decimals;
-                    const sizes = ['Bytes', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
                     const i = Math.floor(Math.log(bytes) / Math.log(k));
                     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
                 }
-
+            
                 statsWs.onmessage = event => {
                     const stats = JSON.parse(event.data);
                     if (stats.error) {
                         console.error('Error fetching stats:', stats.error);
                         return;
                     }
-
+            
                     // Disk usage
                     const diskRaw = stats.volumeSize;
                     document.cookie = "disk=" + diskRaw + "; expires=Fri, 31 Dec 2024 23:59:59 GMT; path=/";
-
+            
                     // Update RAM usage
                     const ramUsageRaw = stats.memory_stats.usage / 1024;
                     const ramUsage = isNaN(ramUsageRaw) ? '0 Bytes' : formatBytes(ramUsageRaw);
@@ -463,7 +463,7 @@
                     const ramLimit = isNaN(ramLimitRaw) ? '0 Bytes' : formatBytes(ramLimitRaw);
                     document.getElementById('ramUsage').textContent = ramUsage;
                     document.getElementById('ramLimit').textContent = ' / ' + ramLimit;
-
+            
                     // Determine status based on RAM usage
                     const statusElement = document.getElementById('status');
                     if (isNaN(ramUsageRaw)) {
@@ -473,13 +473,13 @@
                         statusElement.className = 'text-emerald-500';
                         statusElement.textContent = 'Online';
                     }
-
+            
                     // Update CPU usage
                     const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
                     const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
                     const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta)) ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%' : '0%';
                     document.getElementById('cpuUsage').textContent = cpuUsagePercent;
-
+            
                     // Update Network stats
                     if (stats.networks) {
                         const networkInRaw = stats.networks.eth0.rx_bytes;
@@ -490,9 +490,7 @@
                         document.getElementById('networkOut').textContent = networkOut;
                     }
                 };
-            </script>
-
-            <script>
+            
                 function getCookie(name) {
                     let cookies = document.cookie.split(';');
                     for (let i = 0; i < cookies.length; i++) {
@@ -503,9 +501,9 @@
                     }
                     return "";
                 }
-
+            
                 let disk = getCookie("disk");
                 document.getElementById('diskUsage').textContent = disk;
-            </script>
+            </script>                
     </main>
     <%- include('../components/footer') %>
