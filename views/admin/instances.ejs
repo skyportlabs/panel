@@ -20,7 +20,7 @@
            <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new instance</button>
          </div>
        </div>
- <% if (req.query.err == "none") { %>
+ <% if (req.query.err == "CREATED") { %>
       <div class="mt-6 w-full">
         <div class="rounded-lg bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
           <div class="flex">
@@ -30,14 +30,15 @@
                 </svg>                
              </div>
              <div class="ml-5">
-                <h3 class="text-sm font-semibold text-emerald-400">Success!</h3>
+                <h3 class="text-sm font-semibold text-emerald-400">CREATED!</h3>
                 <div class="text-sm text-emerald-400/50">
-                   <p>The action was successfully completed.</p>
+                   <p>The Instance was Created successfully.</p>
                 </div>
              </div>
           </div>
        </div>
-      <% } %>	   
+      <% } %>	  
+ 
       <div style="display: block;" id="nodeTable" class="mt-6 w-full">
       <table class="mt-6 w-full whitespace-nowrap text-left">
         <colgroup>
@@ -315,7 +316,7 @@ function sendData(nodeData, createBtn) {
         }
     })
     .then(data => {
-	window.location.href = '../admin/instances?err=none'
+	window.location.href = '../admin/instances?err=CREATED'
         console.log('Instance created:', data);
         createBtn.textContent = 'Create';
         createBtn.disabled = false;
