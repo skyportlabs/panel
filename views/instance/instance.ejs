@@ -1,432 +1,511 @@
 <%- include('../components/template') %>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js" integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css" integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/attach/attach.min.js" integrity="sha512-43J76SR5UijcuJTzs73z8NpkyWon8a8EoV+dX6obqXW7O26Yb268H2vP6EiJjD7sWXqxS3G/YOqPyyLF9fmqgA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fit/fit.min.js" integrity="sha512-+wh8VA1djpWk3Dj9/IJDu6Ufi4vVQ0zxLv9Vmfo70AbmYFJm0z3NLnV98vdRKBdPDV4Kwpi7EZdr8mDY9L8JIA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fullscreen/fullscreen.min.css" integrity="sha512-Uowe00aPyi/0HrMR7lEu5Ot9HPayA6wIBueVcj3sCCbFV2dan8tMs2AbPmjPdHW5iDDjwRFMa5nvIwmOQQ/qaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fullscreen/fullscreen.min.js" integrity="sha512-a2UduN5n2FB1FMXX6b+R4EZsC+uEAco4KBuIDstE1Eq3NacUXhxNYeDcR+enLHDJBxrtffgjR6Z7gjx87668mw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/search/search.min.js" integrity="sha512-OkVnWNhmCMHw8pYndhQ+yEMJzD1VrgqF12deRfRcqR6iWL4s8IkxTBwSrJZ2WgpevhD71S68dAqBPHv/VHGDAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/terminado/terminado.min.js" integrity="sha512-TtKncBxqCuka3yQ40VKwx1Jm3cfx1JyWCbRjAFIu7gQ+pvi8b4RwDIbTfmckBi2hpTSdIxxIN2nn23U6tcoboQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/webLinks/webLinks.min.js" integrity="sha512-obszFFlN3K8h7hpqVwXAODf9IOnd1P4PuYRFAwZKTaykxzyMmizo9+eStvrFobjmFs6r6QVsXHMa7ksl34jecg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/zmodem/zmodem.min.js" integrity="sha512-bNnvEr5vJ3m5rknohyD4TK9GIfGYhZU9v8ScE5er0msHAJNnp4UYy+vspakf4xRfrfrQpqORwCpUKL89Dj85mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<main class="overflow-hidden" id="content">
-   <div class="bg-transparent">
-      <div class="sm:flex sm:items-center px-8 pt-4">
-         <div class="sm:flex-auto">
-            <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
-            <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel. <%= instance.Node.address %> </p>
-         </div>
-         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex gap-2.5">
-            <button id="startButton" type="button" class="block rounded-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-emerald-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 inline-flex mr-1 text-emerald-100 mb-0.5">
-                  <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
-                </svg>
-                Start
-            </button>
-            <button id="restartButton" type="button" class="block rounded-lg bg-white/20 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-white/25 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 inline-flex mr-1 text-zinc-200 mb-0.5">
-                  <path fill-rule="evenodd" d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z" clip-rule="evenodd" />
-                </svg>
-                Restart
-            </button>
-            <button id="stopButton" type="button" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 inline-flex mr-1 text-red-100 mb-0.5">
-                  <path fill-rule="evenodd" d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z" clip-rule="evenodd" />
-                </svg>
-                Stop
-            </button>
-         </div>
-      </div>
-   </div>
-   <%- include('../components/instance') %>
-   <div class="rounded-lg bg-red-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8 hidden" id="daemonIsDown">
-      <div class="flex">
-         <div class="flex-shrink-0 ml-1.5">
-            <svg class="animate-spin mt-2 h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-         </div>
-         <div class="ml-5">
-            <h3 class="text-sm font-semibold text-red-400">Connection failure</h3>
-            <div class="text-sm text-red-400/50">
-               <p>The node running this instance appears to be having issues. Please wait...</p>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js"
+        integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css"
+        integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/attach/attach.min.js"
+        integrity="sha512-43J76SR5UijcuJTzs73z8NpkyWon8a8EoV+dX6obqXW7O26Yb268H2vP6EiJjD7sWXqxS3G/YOqPyyLF9fmqgA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fit/fit.min.js"
+        integrity="sha512-+wh8VA1djpWk3Dj9/IJDu6Ufi4vVQ0zxLv9Vmfo70AbmYFJm0z3NLnV98vdRKBdPDV4Kwpi7EZdr8mDY9L8JIA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fullscreen/fullscreen.min.css"
+        integrity="sha512-Uowe00aPyi/0HrMR7lEu5Ot9HPayA6wIBueVcj3sCCbFV2dan8tMs2AbPmjPdHW5iDDjwRFMa5nvIwmOQQ/qaA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fullscreen/fullscreen.min.js"
+        integrity="sha512-a2UduN5n2FB1FMXX6b+R4EZsC+uEAco4KBuIDstE1Eq3NacUXhxNYeDcR+enLHDJBxrtffgjR6Z7gjx87668mw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/search/search.min.js"
+        integrity="sha512-OkVnWNhmCMHw8pYndhQ+yEMJzD1VrgqF12deRfRcqR6iWL4s8IkxTBwSrJZ2WgpevhD71S68dAqBPHv/VHGDAw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/terminado/terminado.min.js"
+        integrity="sha512-TtKncBxqCuka3yQ40VKwx1Jm3cfx1JyWCbRjAFIu7gQ+pvi8b4RwDIbTfmckBi2hpTSdIxxIN2nn23U6tcoboQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/webLinks/webLinks.min.js"
+        integrity="sha512-obszFFlN3K8h7hpqVwXAODf9IOnd1P4PuYRFAwZKTaykxzyMmizo9+eStvrFobjmFs6r6QVsXHMa7ksl34jecg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/zmodem/zmodem.min.js"
+        integrity="sha512-bNnvEr5vJ3m5rknohyD4TK9GIfGYhZU9v8ScE5er0msHAJNnp4UYy+vspakf4xRfrfrQpqORwCpUKL89Dj85mA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <main class="overflow-hidden" id="content">
+        <div class="bg-transparent">
+            <div class="sm:flex sm:items-center px-8 pt-4">
+                <div class="sm:flex-auto">
+                    <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
+                    <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the
+                        Skyport panel. <%= instance.Node.address %>
+                    </p>
+                </div>
+                <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex gap-2.5">
+                    <button id="startButton" type="button"
+                        class="block rounded-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-emerald-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="size-4 inline-flex mr-1 text-emerald-100 mb-0.5">
+                            <path fill-rule="evenodd"
+                                d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Start
+                    </button>
+                    <button id="restartButton" type="button"
+                        class="block rounded-lg bg-white/20 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-white/25 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="size-4 inline-flex mr-1 text-zinc-200 mb-0.5">
+                            <path fill-rule="evenodd"
+                                d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Restart
+                    </button>
+                    <button id="stopButton" type="button"
+                        class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="size-4 inline-flex mr-1 text-red-100 mb-0.5">
+                            <path fill-rule="evenodd"
+                                d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Stop
+                    </button>
+                </div>
             </div>
-         </div>
-      </div>
-   </div>
-   <div class="mt-8 ml-8 mb-4">
-      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 mr-8">
-         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-            <div class="flex-grow">
-                <dt class="truncate text-sm font-medium text-neutral-400">IP Address</dt>
-                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
-                  <span>
-                     <%= instance.Node.address %><span class="text-neutral-400">:<%= instance.Primary %></span>
-                  </span>
-                </dd>
+        </div>
+        <%- include('../components/instance') %>
+            <div class="rounded-lg bg-red-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8 hidden" id="daemonIsDown">
+                <div class="flex">
+                    <div class="flex-shrink-0 ml-1.5">
+                        <svg class="animate-spin mt-2 h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="ml-5">
+                        <h3 class="text-sm font-semibold text-red-400">Connection failure</h3>
+                        <div class="text-sm text-red-400/50">
+                            <p>The node running this instance appears to be having issues. Please wait...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z" />
-                </svg>                                          
+            <div class="mt-8 ml-8 mb-4">
+                <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 mr-8">
+                    <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                        <div class="flex-grow">
+                            <dt class="truncate text-sm font-medium text-neutral-400">IP Address</dt>
+                            <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                                <span>
+                                    <%= instance.Node.address %><span class="text-neutral-400">:<%= instance.Primary %>
+                                                </span>
+                                </span>
+                            </dd>
+                        </div>
+                        <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-neutral-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                        <div class="flex-grow">
+                            <dt class="truncate text-sm font-medium text-neutral-400">Image</dt>
+                            <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                                <span>
+                                    <%= instance.Image %>
+                                </span>
+                            </dd>
+                        </div>
+                        <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-neutral-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                        <div class="flex-grow">
+                            <dt class="truncate text-sm font-medium text-neutral-400">Disk Usage</dt>
+                            <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                                <span id="diskUsage"></span>
+                            </dd>
+                        </div>
+                        <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-neutral-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+                            </svg>
+                        </div>
+                    </div>
+                </dl>
             </div>
-         </div>
-         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-            <div class="flex-grow">
-                <dt class="truncate text-sm font-medium text-neutral-400">Image</dt>
-                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
-                  <span>
-                     <%= instance.Image %>
-                  </span>
-                </dd>
+            <div class="ml-8 mb-8">
+                <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5 mr-8">
+                    <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                        <div class="flex-grow">
+                            <dt class="truncate text-sm font-medium text-neutral-400">State</dt>
+                            <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                                <span id="status">
+                                    <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                </span>
+                            </dd>
+                        </div>
+                        <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-neutral-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                        <div class="flex-grow">
+                            <dt class="truncate text-sm font-medium text-neutral-400">RAM Usage</dt>
+                            <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                                <span id="ramUsage">
+                                    <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <span id="ramUsage"></span> <span class="text-xs text-neutral-400" id="ramLimit"></span>
+                            </dd>
+                        </div>
+                        <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-neutral-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                        <div class="flex-grow">
+                            <dt class="truncate text-sm font-medium text-neutral-400">CPU Usage</dt>
+                            <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                                <span id="cpuUsage">
+                                    <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                </span>
+                            </dd>
+                        </div>
+                        <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-neutral-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                        <div class="flex-grow">
+                            <dt class="truncate text-sm font-medium text-neutral-400">Network In</dt>
+                            <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                                <span id="networkIn">
+                                    <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                </span>
+                            </dd>
+                        </div>
+                        <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-neutral-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                        <div class="flex-grow">
+                            <dt class="truncate text-sm font-medium text-neutral-400">Network Out</dt>
+                            <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                                <span id="networkOut">
+                                    <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                </span>
+                            </dd>
+                        </div>
+                        <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-neutral-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </div>
+                    </div>
+                </dl>
             </div>
-            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                </svg>                                                     
+            <div class="ml-8 mr-8 bg-[#101010] rounded-t-lg p-4 border-t border-l border-r border-white/5 mx-3 mt-3">
+                <div id="terminal"></div>
             </div>
-         </div>
-         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-            <div class="flex-grow">
-                <dt class="truncate text-sm font-medium text-neutral-400">Disk Usage</dt>
-                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
-                  <span id="diskUsage"></span>
-                </dd>
+            <div class="ml-8 mr-8">
+                <input placeholder="Send a command..."
+                    class="rounded-b-lg bg-[#101010]/30 w-full focus:ring-transparent focus:border-b focus:border-l focus:border-r focus:border-white/10 text-white text-sm mb-6 items-center transition justify-left gap-16 hover:bg-neutral-900 px-4 py-3 flex border-white/5 bg-transparent placeholder:text-neutral-300 text-white border-b border-l border-r border-black/10"
+                    id="input"></input>
             </div>
-            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-                </svg>                                                                
-            </div>
-         </div>
-      </dl>
-   </div>
-   <div class="ml-8 mb-8">
-      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5 mr-8">
-         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-            <div class="flex-grow">
-                <dt class="truncate text-sm font-medium text-neutral-400">State</dt>
-                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
-                  <span id="status">
-                     <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                     </svg>
-                  </span>
-                </dd>
-            </div>
-            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
-                </svg>                           
-            </div>
-         </div>
-         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-            <div class="flex-grow">
-                <dt class="truncate text-sm font-medium text-neutral-400">RAM Usage</dt>
-                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
-                  <span id="ramUsage">
-                     <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                     </svg>
-                  </span>
-                  <span id="ramUsage"></span> <span class="text-xs text-neutral-400" id="ramLimit"></span>
-                </dd>
-            </div>
-            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
-                </svg>                             
-            </div>
-         </div>
-         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-            <div class="flex-grow">
-                <dt class="truncate text-sm font-medium text-neutral-400">CPU Usage</dt>
-                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
-                  <span id="cpuUsage">
-                     <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                     </svg>
-                  </span>
-                </dd>
-            </div>
-            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
-                </svg>                
-            </div>
-         </div>
-         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-            <div class="flex-grow">
-                <dt class="truncate text-sm font-medium text-neutral-400">Network In</dt>
-                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
-                  <span id="networkIn">
-                     <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                     </svg>
-                  </span>
-                </dd>
-            </div>
-            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>                      
-            </div>
-         </div>
-         <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-            <div class="flex-grow">
-                <dt class="truncate text-sm font-medium text-neutral-400">Network Out</dt>
-                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
-                  <span id="networkOut">
-                     <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                     </svg>
-                  </span>
-                </dd>
-            </div>
-            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-neutral-400">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>                            
-            </div>
-         </div>
-      </dl>
-   </div>
-   <div class="ml-8 mr-8 bg-[#101010] rounded-t-lg p-4 border-t border-l border-r border-white/5 mx-3 mt-3">
-      <div id="terminal"></div>
-   </div>
-   <div class="ml-8 mr-8">
-      <input placeholder="Send a command..." class="rounded-b-lg bg-[#101010]/30 w-full focus:ring-transparent focus:border-b focus:border-l focus:border-r focus:border-white/10 text-white text-sm mb-6 items-center transition justify-left gap-16 hover:bg-neutral-900 px-4 py-3 flex border-white/5 bg-transparent placeholder:text-neutral-300 text-white border-b border-l border-r border-black/10" id="input"></input>
-   </div>
-   <script>
-    console.log('<%= instance.VolumeId %>');
+            <script>
+                console.log('<%= instance.VolumeId %>');
 
-    var baseTheme = {
-        foreground: '#c5c9d1',
-        background: '#101010',
-        selection: '#5DA5D533',
-        black: '#1E1E1D',
-        brightBlack: '#262625',
-        red: '#E54B4B',
-        green: '#9ECE58',
-        yellow: '#FAED70',
-        blue: '#396FE2',
-        magenta: '#BB80B3',
-        cyan: '#2DDAFD',
-        white: '#d0d0d0',
-        brightBlack: 'rgba(255, 255, 255, 0.2)',
-        brightRed: '#FF5370',
-        brightGreen: '#C3E88D',
-        brightYellow: '#FFCB6B',
-        brightBlue: '#82AAFF',
-        brightMagenta: '#C792EA',
-        brightCyan: '#89DDFF',
-        brightWhite: '#ffffff',
-    };
+                var baseTheme = {
+                    foreground: '#c5c9d1',
+                    background: '#101010',
+                    selection: '#5DA5D533',
+                    black: '#1E1E1D',
+                    brightBlack: '#262625',
+                    red: '#E54B4B',
+                    green: '#9ECE58',
+                    yellow: '#FAED70',
+                    blue: '#396FE2',
+                    magenta: '#BB80B3',
+                    cyan: '#2DDAFD',
+                    white: '#d0d0d0',
+                    brightBlack: 'rgba(255, 255, 255, 0.2)',
+                    brightRed: '#FF5370',
+                    brightGreen: '#C3E88D',
+                    brightYellow: '#FFCB6B',
+                    brightBlue: '#82AAFF',
+                    brightMagenta: '#C792EA',
+                    brightCyan: '#89DDFF',
+                    brightWhite: '#ffffff',
+                };
 
-    let ws;
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+                let ws;
+                const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
 
-    function initWebSocket() {
-        ws = new WebSocket(`${protocol}://<%= domain %>:<%= port %>/console/<%= req.params.id %>`);
-        ws.onopen = () => {
-            console.log('WebSocket connected!');
-        };
-        ws.onmessage = handleWebSocketMessage;
-        ws.onclose = () => {
-            console.log('WebSocket connection closed, attempting to reconnect...');
-            setTimeout(initWebSocket, 3000);
-        };
-        ws.onerror = (error) => {
-            console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
-            setTimeout(initWebSocket, 5000);
-        };
-    }
+                function initWebSocket() {
+                    ws = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/console/${instanceId}`);
+                    ws.onopen = () => {
+                        console.log('WebSocket connected!');
+                    };
+                    ws.onmessage = handleWebSocketMessage;
+                    ws.onclose = () => {
+                        console.log('WebSocket connection closed, attempting to reconnect...');
+                        setTimeout(initWebSocket, 3000);
+                    };
+                    ws.onerror = (error) => {
+                        console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
+                        setTimeout(initWebSocket, 5000);
+                    };
+                }
 
-    let daemonIsDown = document.getElementById('daemonIsDown');
-    var term;
+                let daemonIsDown = document.getElementById('daemonIsDown');
+                var term;
 
-    function handleWebSocketMessage(msg) {
-        const lines = msg.data.split('\n');
-        let isFirstLine = true;
-        let previousLineWasEmpty = false;
+                function handleWebSocketMessage(msg) {
+                    const lines = msg.data.split('\n');
+                    let isFirstLine = true;
+                    let previousLineWasEmpty = false;
 
-        lines.forEach(line => {
-            const trimmedLine = line.trim();
-            if (trimmedLine === '' && previousLineWasEmpty) {
-                return;
-            }
-            if (!isFirstLine && !previousLineWasEmpty) {
-                term.write('\r\n');
-            }
+                    lines.forEach(line => {
+                        const trimmedLine = line.trim();
+                        if (trimmedLine === '' && previousLineWasEmpty) {
+                            return;
+                        }
+                        if (!isFirstLine && !previousLineWasEmpty) {
+                            term.write('\r\n');
+                        }
 
-            term.write('\x1b[0m' + trimmedLine);
+                        term.write('\x1b[0m' + trimmedLine);
 
-            if (trimmedLine.includes("state:")) {
-                term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
-                term.clear();
-                ws.close();
-            }
+                        if (trimmedLine.includes("state:")) {
+                            term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
+                            term.clear();
+                            ws.close();
+                        }
 
-            if (trimmedLine.includes("skyportd instance appears to be down")) {
-                ws.close();
-                daemonIsDown.classList.remove('hidden');
-            } else {
-                daemonIsDown.classList.add('hidden');
-            }
+                        if (trimmedLine.includes("skyportd instance appears to be down")) {
+                            ws.close();
+                            daemonIsDown.classList.remove('hidden');
+                        } else {
+                            daemonIsDown.classList.add('hidden');
+                        }
 
-            isFirstLine = false;
-            previousLineWasEmpty = (trimmedLine === '');
-        });
-    }
+                        isFirstLine = false;
+                        previousLineWasEmpty = (trimmedLine === '');
+                    });
+                }
 
-    function setupTerminal() {
-        term = new Terminal({
-            disableStdin: true,
-            allowProposedApi: true,
-            lineHeight: 1.35,
-            rows: 19,
-            cols: 200,
-            fontFamily: 'Menlo, monospace',
-            theme: baseTheme,
-            allowTransparency: true,
-            fontSize: 12,
-        });
-        term.open(document.getElementById('terminal'));
-    }
+                function setupTerminal() {
+                    term = new Terminal({
+                        disableStdin: true,
+                        allowProposedApi: true,
+                        lineHeight: 1.35,
+                        rows: 19,
+                        cols: 200,
+                        fontFamily: 'Menlo, monospace',
+                        theme: baseTheme,
+                        allowTransparency: true,
+                        fontSize: 12,
+                    });
+                    term.open(document.getElementById('terminal'));
+                }
 
-    function sendCommand() {
-        const inputElement = document.getElementById('input');
-        const command = inputElement.value.trim();
-        if (command && ws) {
-            term.write('\u001b[1m\u001b[33m~ \u001b[0m' + command + '\r\n');
-            ws.send(JSON.stringify({
-                event: 'cmd',
-                command: command,
-                containerId: '<%= req.params.id %>'
-            }));
-            inputElement.value = '';
-        }
-    }
+                function sendCommand() {
+                    const inputElement = document.getElementById('input');
+                    const command = inputElement.value.trim();
+                    if (command && ws) {
+                        term.write('\u001b[1m\u001b[33m~ \u001b[0m' + command + '\r\n');
+                        ws.send(JSON.stringify({
+                            event: 'cmd',
+                            command: command,
+                            containerId: instanceId
+                        }));
+                        inputElement.value = '';
+                    }
+                }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        setupTerminal();
-        initWebSocket();
+                document.addEventListener('DOMContentLoaded', function () {
+                    const instanceId = '<%= req.params.id %>';
+                    setupTerminal();
+                    initWebSocket();
 
-        const inputElement = document.getElementById('input');
-        inputElement.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                sendCommand();
-            }
-        });
+                    const inputElement = document.getElementById('input');
+                    inputElement.addEventListener('keypress', function (event) {
+                        if (event.key === 'Enter') {
+                            sendCommand();
+                        }
+                    });
 
-        document.getElementById('startButton').addEventListener('click', function() {
-            if (ws) {
-                ws.send(JSON.stringify({
-                    event: 'power:start',
-                    containerId: '<%= req.params.id %>'
-                }));
-            }
-        });
+                    document.getElementById('startButton').addEventListener('click', function () {
+                        if (ws) {
+                            ws.send(JSON.stringify({
+                                event: 'power:start',
+                                containerId: instanceId
+                            }));
+                        }
+                    });
 
-        document.getElementById('stopButton').addEventListener('click', function() {
-            if (ws) {
-                ws.send(JSON.stringify({
-                    event: 'power:stop',
-                    containerId: '<%= req.params.id %>'
-                }));
-            }
-        });
+                    document.getElementById('stopButton').addEventListener('click', function () {
+                        if (ws) {
+                            ws.send(JSON.stringify({
+                                event: 'power:stop',
+                                containerId: instanceId
+                            }));
+                        }
+                    });
 
-        document.getElementById('restartButton').addEventListener('click', function() {
-            if (ws) {
-                ws.send(JSON.stringify({
-                    event: 'power:restart',
-                    containerId: '<%= req.params.id %>'
-                }));
-            }
-        });
-    });
+                    document.getElementById('restartButton').addEventListener('click', function () {
+                        if (ws) {
+                            ws.send(JSON.stringify({
+                                event: 'power:restart',
+                                containerId: instanceId
+                            }));
+                        }
+                    });
+                });
 
-    const statsWs = new WebSocket(`${protocol}://<%= domain %>:<%= port %>/stats/<%= req.params.id %>`);
+                const statsWs = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/stats/${instanceId}`);
 
-    function formatBytes(bytes, decimals = 2) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = ['Bytes', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-    }
+                function formatBytes(bytes, decimals = 2) {
+                    if (bytes === 0) return '0 Bytes';
+                    const k = 1024;
+                    const dm = decimals < 0 ? 0 : decimals;
+                    const sizes = ['Bytes', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+                }
 
-    statsWs.onmessage = event => {
-        const stats = JSON.parse(event.data);
-        if (stats.error) {
-            console.error('Error fetching stats:', stats.error);
-            return;
-        }
+                statsWs.onmessage = event => {
+                    const stats = JSON.parse(event.data);
+                    if (stats.error) {
+                        console.error('Error fetching stats:', stats.error);
+                        return;
+                    }
 
-        // Disk usage
-        const diskRaw = stats.volumeSize;
-        document.cookie = "disk=" + diskRaw + "; expires=Fri, 31 Dec 2024 23:59:59 GMT; path=/";
+                    // Disk usage
+                    const diskRaw = stats.volumeSize;
+                    document.cookie = "disk=" + diskRaw + "; expires=Fri, 31 Dec 2024 23:59:59 GMT; path=/";
 
-        // Update RAM usage
-        const ramUsageRaw = stats.memory_stats.usage / 1024;
-        const ramUsage = isNaN(ramUsageRaw) ? '0 Bytes' : formatBytes(ramUsageRaw);
-        const ramLimitRaw = stats.memory_stats.limit / 1024;
-        const ramLimit = isNaN(ramLimitRaw) ? '0 Bytes' : formatBytes(ramLimitRaw);
-        document.getElementById('ramUsage').textContent = ramUsage;
-        document.getElementById('ramLimit').textContent = ' / ' + ramLimit;
+                    // Update RAM usage
+                    const ramUsageRaw = stats.memory_stats.usage / 1024;
+                    const ramUsage = isNaN(ramUsageRaw) ? '0 Bytes' : formatBytes(ramUsageRaw);
+                    const ramLimitRaw = stats.memory_stats.limit / 1024;
+                    const ramLimit = isNaN(ramLimitRaw) ? '0 Bytes' : formatBytes(ramLimitRaw);
+                    document.getElementById('ramUsage').textContent = ramUsage;
+                    document.getElementById('ramLimit').textContent = ' / ' + ramLimit;
 
-        // Determine status based on RAM usage
-        const statusElement = document.getElementById('status');
-        if (isNaN(ramUsageRaw)) {
-            statusElement.className = 'text-red-500';
-            statusElement.textContent = 'Offline';
-        } else if (ramUsageRaw > 1) {
-            statusElement.className = 'text-emerald-500';
-            statusElement.textContent = 'Online';
-        }
+                    // Determine status based on RAM usage
+                    const statusElement = document.getElementById('status');
+                    if (isNaN(ramUsageRaw)) {
+                        statusElement.className = 'text-red-500';
+                        statusElement.textContent = 'Offline';
+                    } else if (ramUsageRaw > 1) {
+                        statusElement.className = 'text-emerald-500';
+                        statusElement.textContent = 'Online';
+                    }
 
-        // Update CPU usage
-        const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
-        const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
-        const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta)) ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%' : '0%';
-        document.getElementById('cpuUsage').textContent = cpuUsagePercent;
+                    // Update CPU usage
+                    const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
+                    const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
+                    const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta)) ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%' : '0%';
+                    document.getElementById('cpuUsage').textContent = cpuUsagePercent;
 
-        // Update Network stats
-        if(stats.networks) {
-            const networkInRaw = stats.networks.eth0.rx_bytes;
-            const networkOutRaw = stats.networks.eth0.tx_bytes;
-            const networkIn = isNaN(networkInRaw) ? '0 Bytes' : formatBytes(networkInRaw);
-            const networkOut = isNaN(networkOutRaw) ? '0 Bytes' : formatBytes(networkOutRaw);
-            document.getElementById('networkIn').textContent = networkIn;
-            document.getElementById('networkOut').textContent = networkOut;
-        }
-    };
-</script>
+                    // Update Network stats
+                    if (stats.networks) {
+                        const networkInRaw = stats.networks.eth0.rx_bytes;
+                        const networkOutRaw = stats.networks.eth0.tx_bytes;
+                        const networkIn = isNaN(networkInRaw) ? '0 Bytes' : formatBytes(networkInRaw);
+                        const networkOut = isNaN(networkOutRaw) ? '0 Bytes' : formatBytes(networkOutRaw);
+                        document.getElementById('networkIn').textContent = networkIn;
+                        document.getElementById('networkOut').textContent = networkOut;
+                    }
+                };
+            </script>
 
-      <script>
-         function getCookie(name) {
-             let cookies = document.cookie.split(';');
-             for(let i = 0; i < cookies.length; i++) {
-                 let cookie = cookies[i].trim();
-                 if (cookie.indexOf(name + "=") === 0) {
-                     return cookie.substring(name.length + 1);
-                 }
-             }
-             return "";
-         }
-         
-         let disk = getCookie("disk");
-         document.getElementById('diskUsage').textContent = disk;
-      </script>
-</main>
-<%- include('../components/footer') %>
+            <script>
+                function getCookie(name) {
+                    let cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        let cookie = cookies[i].trim();
+                        if (cookie.indexOf(name + "=") === 0) {
+                            return cookie.substring(name.length + 1);
+                        }
+                    }
+                    return "";
+                }
+
+                let disk = getCookie("disk");
+                document.getElementById('diskUsage').textContent = disk;
+            </script>
+    </main>
+    <%- include('../components/footer') %>
