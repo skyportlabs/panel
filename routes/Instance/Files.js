@@ -43,7 +43,7 @@ router.get("/instance/:id/files", async (req, res) => {
         const files = await fetchFiles(instance, req.query.path);
         res.render('instance/files', { 
             req, 
-            files, 
+            files: files, 
             user: req.user, 
             name: await db.get('name') || 'Skyport', 
             logo: await db.get('logo') || false ,

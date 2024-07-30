@@ -3,7 +3,7 @@
   <div class="bg-transparent">
     <div class="sm:flex sm:items-center px-8 pt-4">
       <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-white">Edit User</h1>
+        <h1 class="text-base font-medium leading-6 text-white">Edit User</h1>
         <p class="mt-1 tracking-tight text-sm text-neutral-500">
           Modify the details of the selected user.
         </p>
@@ -16,7 +16,7 @@
           id="userName"
           type="text"
           name="username"
-          class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
           value="<%= editUser.username %>"
           placeholder="JohnDoe"
         />
@@ -25,7 +25,7 @@
           id="email"
           type="email"
           name="email"
-          class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
           value="<%= editUser.email %>"
           placeholder="your@email.tld"
         />
@@ -34,14 +34,14 @@
           id="userPass"
           type="password"
           name="password"
-          class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
           placeholder="******"
         />
         <label class="text-neutral-400 text-sm tracking-tight mb-2">Admin:</label>
         <select
           id="userAdmin"
           name="admin"
-          class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
         >
           <option value="true" <%= editUser.admin ? 'selected' : '' %>>True</option>
           <option value="false" <%= !editUser.admin ? 'selected' : '' %>>False</option>
@@ -50,7 +50,7 @@
         <select
           id="userVerified"
           name="verified"
-          class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
         >
           <option value="true" <%= editUser.verified ? 'selected' : '' %>>True</option>
           <option value="false" <%= !editUser.verified ? 'selected' : '' %>>False</option>
@@ -58,7 +58,7 @@
         <button
           id="saveChangesBtn"
           type="submit"
-          class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Save Changes
         </button>

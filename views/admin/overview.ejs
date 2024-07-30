@@ -3,46 +3,46 @@
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
-           <h1 class="text-base font-semibold leading-6 text-white">Overview</h1>
+           <h1 class="text-base font-medium leading-6 text-white">Overview</h1>
            <p class="mt-1 tracking-tight text-sm text-neutral-500">A simple overview of your Panel.</p>
          </div>
          <div class="mt-4 sm:ml-16 sm:mt-0 flex space-x-4">
-           <a href="../account/debug" class="block rounded-lg bg-transparent px-3 py-2 text-center text-sm font-normal text-neutral-300 shadow-lg hover:bg-neutral-600/10 border border-white/5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+           <a href="../account/debug" class="block rounded-xl bg-transparent px-3 py-2 text-center text-sm font-normal text-neutral-300 shadow-lg hover:bg-neutral-600/10 border border-white/5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             Account - JSON
            </a>
-           <a href="../nodes/debug" class="block rounded-lg bg-transparent px-3 py-2 text-center text-sm font-normal text-neutral-300 shadow-lg hover:bg-neutral-600/10 border border-white/5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+           <a href="../nodes/debug" class="block rounded-xl bg-transparent px-3 py-2 text-center text-sm font-normal text-neutral-300 shadow-lg hover:bg-neutral-600/10 border border-white/5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             Nodes - JSON
            </a>
          </div>
        </div>
        <div class="px-8 mt-5">
         <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
-            <div class="overflow-hidden rounded-lg bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+            <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
                <dt class="truncate text-sm font-medium text-neutral-400">Users</dt>
-               <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+               <dd class="mt-1 text-3xl font-medium tracking-tight text-white">
                   <%= usersTotal %>
                </dd>
             </div>
-            <div class="overflow-hidden rounded-lg bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+            <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
                <dt class="truncate text-sm font-medium text-neutral-400">Instances</dt>
-               <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+               <dd class="mt-1 text-3xl font-medium tracking-tight text-white">
                   <%= instancesTotal %>
                </dd>
             </div>
-            <div class="overflow-hidden rounded-lg bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+            <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
                <dt class="truncate text-sm font-medium text-neutral-400">Nodes</dt>
-               <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+               <dd class="mt-1 text-3xl font-medium tracking-tight text-white">
                   <%= nodesTotal %> 
                </dd>
             </div>
-            <div class="overflow-hidden rounded-lg bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+            <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
                <dt class="truncate text-sm font-medium text-neutral-400">Images</dt>
-               <dd class="mt-1 text-3xl font-semibold tracking-tight text-white">
+               <dd class="mt-1 text-3xl font-medium tracking-tight text-white">
                   <%= imagesTotal %>
                </dd>
             </div>
          </dl>
-          <div class="bg-neutral-700/10 rounded-lg py-8 mt-5">
+          <div class="bg-neutral-700/10 rounded-xl py-8 mt-5">
             <script>
                 fetch('https://atqr.pages.dev/skyport.json')
                   .then(response => response.json())
@@ -74,30 +74,30 @@
                     console.error('Error fetching latest version:', error);
                   });
               </script>
-             <img src="https://i.imgur.com/Ac3KqJ4.png" class="pl-8 h-28 mb-4">
-             <h1 class="text-white text-lg font-semibold tracking-tight pl-8">System information</h1>
+             <img src="https://i.imgur.com/VvFybOc.png" class="pl-8 h-28 mb-4">
+             <h1 class="text-white text-lg font-medium tracking-tight pl-8">System information</h1>
              <p class="text-sm mt-1 font-normal text-neutral-300 mb-2 pl-8">
-                You are running Skyport version <span id="currentVersion"></span>. <span id="versionStatus"></span>
+                You are running Skyport Panel version <span id="currentVersion"></span>. <span id="versionStatus"></span>
               </p>
           </div>
           <div class="mt-5 flex justify-between space-x-8">
-            <a href="https://discord.gg/skyport" class="block rounded-lg bg-amber-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-amber-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 w-full">
+            <a href="https://discord.gg/skyport" class="block rounded-xl bg-amber-500 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-amber-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 inline-flex mr-1 mb-0.5">
                     <path fill-rule="evenodd" d="m7.171 4.146 1.947 2.466a3.514 3.514 0 0 1 1.764 0l1.947-2.466a6.52 6.52 0 0 0-5.658 0Zm8.683 3.025-2.466 1.947c.15.578.15 1.186 0 1.764l2.466 1.947a6.52 6.52 0 0 0 0-5.658Zm-3.025 8.683-1.947-2.466c-.578.15-1.186.15-1.764 0l-1.947 2.466a6.52 6.52 0 0 0 5.658 0ZM4.146 12.83l2.466-1.947a3.514 3.514 0 0 1 0-1.764L4.146 7.171a6.52 6.52 0 0 0 0 5.658ZM5.63 3.297a8.01 8.01 0 0 1 8.738 0 8.031 8.031 0 0 1 2.334 2.334 8.01 8.01 0 0 1 0 8.738 8.033 8.033 0 0 1-2.334 2.334 8.01 8.01 0 0 1-8.738 0 8.032 8.032 0 0 1-2.334-2.334 8.01 8.01 0 0 1 0-8.738A8.03 8.03 0 0 1 5.63 3.297Zm5.198 4.882a2.008 2.008 0 0 0-2.243.407 1.994 1.994 0 0 0-.407 2.243 1.993 1.993 0 0 0 .992.992 2.008 2.008 0 0 0 2.243-.407c.176-.175.31-.374.407-.585a2.008 2.008 0 0 0-.407-2.243 1.993 1.993 0 0 0-.585-.407Z" clip-rule="evenodd" />
                 </svg>
                 Discord Server
             </a>
-            <a href="https://skyport.dev" class="block rounded-lg bg-blue-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-blue-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full">
+            <a href="https://skyport.dev" class="block rounded-xl bg-blue-500 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-blue-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 inline-flex mr-1">
                     <path d="M10.75 16.82A7.462 7.462 0 0 1 15 15.5c.71 0 1.396.098 2.046.282A.75.75 0 0 0 18 15.06v-11a.75.75 0 0 0-.546-.721A9.006 9.006 0 0 0 15 3a8.963 8.963 0 0 0-4.25 1.065V16.82ZM9.25 4.065A8.963 8.963 0 0 0 5 3c-.85 0-1.673.118-2.454.339A.75.75 0 0 0 2 4.06v11a.75.75 0 0 0 .954.721A7.506 7.506 0 0 1 5 15.5c1.579 0 3.042.487 4.25 1.32V4.065Z" />
                 </svg>                  
                 Documentation
             </a>
-            <a href="https://github.com/skyportlabs" class="block rounded-lg bg-blue-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-blue-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full">
+            <a href="https://github.com/skyportlabs" class="block rounded-xl bg-blue-500 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-blue-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full">
                 <svg class="h-5 w-5 text-white inline-flex mr-1" height="1792" viewBox="0 0 1792 1792" width="1792" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M1664 896q0 251-146.5 451.5t-378.5 277.5q-27 5-39.5-7t-12.5-30v-211q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-121-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-86-13.5q-44 113-7 204-79 85-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-40 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 89t.5 54q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/></svg>            
                 GitHub
             </a>
-            <a href="https://github.com/skyportlabs" class="block rounded-lg bg-emerald-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-emerald-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 w-full">
+            <a href="https://github.com/skyportlabs" class="block rounded-xl bg-emerald-500 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-emerald-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 inline-flex mr-1">
                     <path d="M10.75 10.818v2.614A3.13 3.13 0 0 0 11.888 13c.482-.315.612-.648.612-.875 0-.227-.13-.56-.612-.875a3.13 3.13 0 0 0-1.138-.432ZM8.33 8.62c.053.055.115.11.184.164.208.16.46.284.736.363V6.603a2.45 2.45 0 0 0-.35.13c-.14.065-.27.143-.386.233-.377.292-.514.627-.514.909 0 .184.058.39.202.592.037.051.08.102.128.152Z" />
                     <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-6a.75.75 0 0 1 .75.75v.316a3.78 3.78 0 0 1 1.653.713c.426.33.744.74.925 1.2a.75.75 0 0 1-1.395.55 1.35 1.35 0 0 0-.447-.563 2.187 2.187 0 0 0-.736-.363V9.3c.698.093 1.383.32 1.959.696.787.514 1.29 1.27 1.29 2.13 0 .86-.504 1.616-1.29 2.13-.576.377-1.261.603-1.96.696v.299a.75.75 0 1 1-1.5 0v-.3c-.697-.092-1.382-.318-1.958-.695-.482-.315-.857-.717-1.078-1.188a.75.75 0 1 1 1.359-.636c.08.173.245.376.54.569.313.205.706.353 1.138.432v-2.748a3.782 3.782 0 0 1-1.653-.713C6.9 9.433 6.5 8.681 6.5 7.875c0-.805.4-1.558 1.097-2.096a3.78 3.78 0 0 1 1.653-.713V4.75A.75.75 0 0 1 10 4Z" clip-rule="evenodd" />

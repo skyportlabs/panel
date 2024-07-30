@@ -4,7 +4,7 @@
 <div class="bg-transparent">
     <div class="sm:flex sm:items-center px-8 pt-4">
        <div class="sm:flex-auto">
-          <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
+          <h1 class="text-base font-medium leading-6 text-white">Manage Instance</h1>
           <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
        </div>
     </div>
@@ -27,10 +27,10 @@
 
 <div class="pt-8 overflow-hidden" style="height: 500px;" id="editor"></div>
 <div class="flex mt-8 space-x-4">
-<a href="/instance/<%= req.params.id %>/files" type="button" class="block ml-8 rounded-lg bg-transparent border border-white/5 hover:bg-neutral-600/10 px-3 py-2 text-center text-sm font-normal text-neutral-300 shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+<a href="/instance/<%= req.params.id %>/files" type="button" class="block ml-8 rounded-xl bg-transparent border border-white/5 hover:bg-neutral-600/10 px-3 py-2 text-center text-sm font-normal text-neutral-300 shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
     Back
 </a>
-<button id="saveButton" onclick="saveFile()" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+<button id="saveButton" onclick="saveFile()" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
     Save File
 </button>
 </div>

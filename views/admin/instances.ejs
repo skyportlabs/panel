@@ -13,16 +13,16 @@
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
-           <h1 class="text-base font-semibold leading-6 text-white">Instances</h1>
+           <h1 class="text-base font-medium leading-6 text-white">Instances</h1>
            <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the instances deployed on the Skyport panel.</p>
          </div>
          <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
-           <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new instance</button>
+           <button id="createButton" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new instance</button>
          </div>
        </div>
  <% if (req.query.err == "CREATED") { %>
       <div class="mt-6 w-full">
-        <div class="rounded-lg bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
+        <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
           <div class="flex">
              <div class="flex-shrink-0 ml-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
@@ -30,9 +30,9 @@
                 </svg>                
              </div>
              <div class="ml-5">
-                <h3 class="text-sm font-semibold text-emerald-400">CREATED!</h3>
+                <h3 class="text-sm font-medium text-emerald-400">Action completed!</h3>
                 <div class="text-sm text-emerald-400/50">
-                   <p>The Instance was Created successfully.</p>
+                   <p>The instance was created successfully. Please allow a few minutes for it to finish installing and downloading additional files. </p>
                 </div>
              </div>
           </div>
@@ -51,10 +51,10 @@
         </colgroup>
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
-            <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
-			<th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Node</th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker ID</th>
-            <th scope="col" class="py-2 pl-0 pr-4 text-right font-semibold sm:pr-8 sm:text-left lg:pr-20">Volume / Mount</th>
+            <th scope="col" class="py-2 pl-4 pr-8 font-medium sm:pl-6 lg:pl-8">Name</th>
+			<th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">Node</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">Docker ID</th>
+            <th scope="col" class="py-2 pl-0 pr-4 text-right font-medium sm:pr-8 sm:text-left lg:pr-20">Volume / Mount</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
@@ -82,19 +82,19 @@
             </td>
             <td class="py-4 pl-0 pr-4 text-right sm:pr-8 lg:pr-20">
               <div class="flex gap-x-3">
-                <button onclick="location.href='/admin/instance/delete/<%= instance.Id %>'" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                <button onclick="location.href='/admin/instance/delete/<%= instance.Id %>'" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                   Remove
                 </button>
 
                 <% if (instance.suspended === true) { %>
                   <form action="/admin/instances/unsuspend/<%= instance.Id %>" method="POST">
-                    <button type="submit" class="block rounded-lg bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-green-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                      UnSuspend
+                    <button type="submit" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-gray-100 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      Unsuspend
                     </button>
                   </form>
                 <% } else { %>
                   <form action="/admin/instances/suspend/<%= instance.Id %>" method="POST">
-                    <button type="submit" class="block rounded-lg bg-yellow-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-yellow-400 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    <button type="submit" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-gray-100 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                       Suspend
                     </button>
                     
@@ -111,17 +111,17 @@
       </div>
 
       <div style="display: none;" id="nodeForm" class="mt-6 px-8 w-full grid grid-cols-2 gap-4">
-        <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
+        <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
             <form>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
-                        <input id="name" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My instance">
+                        <input id="name" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My instance">
                     </div>
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">User:</label>
-                        <select style="background: #171717;" id="user" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                        <select style="background: #171717;" id="user" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
                             <% users.forEach(function(user) { %>
                                 <option value="<%= user.userId %>"><%= user.username %></option>
                             <% }); %>
@@ -130,7 +130,7 @@
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
-                        <select style="background: #171717;" id="image" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                        <select style="background: #171717;" id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
                             <% images.forEach(function(image) { %>
                                 <option value="<%= image.Image %>" data-configfilepath="<%= image.ConfigFilePath %>" data-configfilecontent="<%= image.ConfigFileContent %>"><%= image.Name %> (<%= image.Image %>)</option>
                             <% }); %>
@@ -139,7 +139,7 @@
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Node:</label>
-                        <select style="background: #171717;" id="node" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                        <select style="background: #171717;" id="node" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
                             <% nodes.forEach(function(node) { %>
                                 <option value="<%= node.id %>"><%= node.name %></option>
                             <% }); %>
@@ -148,27 +148,27 @@
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory (MiB):</label>
-                        <input id="memory" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="2048">
+                        <input id="memory" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="2048">
                     </div>
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU Threads:</label>
-                        <input id="cpu" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="1">
+                        <input id="cpu" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="1">
                     </div>
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports:</label>
-                        <input id="ports" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
+                        <input id="ports" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
                     </div>
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Primary Port:</label>
-                        <input id="primary" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565">
+                        <input id="primary" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565">
                     </div>
                 </div>
     
                 <div class="mt-4">
-                    <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
+                    <button id="createNodeBtn" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
                 </div>
             </form>
         </div>
@@ -197,7 +197,7 @@
   });
 </script>
 <script>
-document.getElementById('createNodeBtn').addEventListener('click', function() {
+document.getElementById('createNodeBtn').addEventListener('click', async function() {
     const createBtn = this;
     createBtn.textContent = 'Working on it...';
     createBtn.disabled = true;
@@ -253,8 +253,8 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
     const nodeData = {
         name: name.value,
         image: imageDropdown.value,
-        nodeId: document.getElementById('node').value,
-        user: document.getElementById('user').value,
+        nodeId: await document.getElementById('node').value,
+        user: await document.getElementById('user').value,
         memory: memory.value,
         cpu: cpu.value,
         ports: ports.value,
@@ -263,7 +263,7 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
         configFileContent: configFileContent
     };
 
-    sendData(nodeData, createBtn);
+    await sendData(nodeData, createBtn);
 });
 
 function clearValidationErrors() {

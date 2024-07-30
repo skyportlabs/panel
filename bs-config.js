@@ -7,5 +7,5 @@ module.exports = {
     },
     open: false,
     notify: false
-  };
+};
   

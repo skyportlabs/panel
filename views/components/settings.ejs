@@ -3,19 +3,19 @@
     <div class="hidden sm:block">
       <nav class="flex">
         <ul role="list" class="flex min-w-full flex-none gap-x-2 text-sm font-normal leading-6 text-neutral-400">
-          <li class="hover:scale-105 transition">
-            <a href="/admin/settings" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
-                <path fill-rule="evenodd" d="M2.25 5.25a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3V15a3 3 0 0 1-3 3h-3v.257c0 .597.237 1.17.659 1.591l.621.622a.75.75 0 0 1-.53 1.28h-9a.75.75 0 0 1-.53-1.28l.621-.622a2.25 2.25 0 0 0 .659-1.59V18h-3a3 3 0 0 1-3-3V5.25Zm1.5 0v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5Z" clip-rule="evenodd" />
-              </svg>                                                          
-              Appearance
+          <li class=" transition">
+            <a href="/admin/settings" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+              </svg>                                                                   
+              General
             </a>
           </li>
-          <li class="hover:scale-105 transition">
-            <a href="/admin/settings/smtp" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
-                <path fill-rule="evenodd" d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5Zm0 2h14v14H5V5Zm8.25 6.25a.75.75 0 0 1 .75.75v.5h.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75.75h-.5v.5a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1-.75-.75v-.5h-.5a.75.75 0 0 1-.75-.75v-1.5a.75.75 0 0 1 .75-.75h.5v-.5a.75.75 0 0 1 .75-.75h1.5Z" />
-              </svg>                                                          
+          <li class=" transition">
+            <a href="/admin/settings/smtp" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 1 0-2.636 6.364M16.5 12V8.25" />
+              </svg>                                                                        
               SMTP
             </a>
           </li>
@@ -24,8 +24,6 @@
     </div>
   </div>
 </div>
-<!-- added icons -->
-<script src="https://kit.fontawesome.com/4c967c0dcf.js" crossorigin="anonymous"></script>
 
  <script>
    document.addEventListener("DOMContentLoaded", function() {
@@ -37,7 +35,7 @@
        console.log(linkPath);
        if (currentPagePath === linkPath) {
          link.className = 'nav-link';
-         link.classList.add('text-white', 'font-semibold', 'border', 'border-transparent', 'bg-white/5', 'font-semibold', 'py-2', 'px-2.5', 'rounded-lg', 'shadow-sm');
+         link.classList.add('text-white', 'font-medium', 'border', 'border-transparent', 'bg-white/10', 'font-medium', 'py-2', 'px-3', 'rounded-full', 'shadow-sm');
        }
      });
    });

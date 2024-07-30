@@ -112,10 +112,10 @@ async function sendVerificationEmail(email, token) {
             <p style="font-size: 16px; text-align: center; margin-bottom: 20px;">Hello,</p>
             <p style="font-size: 16px; text-align: center; margin-bottom: 20px;">Thank you for registering on ${name}. Please click the button below to verify your email address:</p>
             <div style="text-align: center; margin-bottom: 20px;">
-              <a href="${config.baseURL}/verify/${token}" style="display: inline-block; padding: 14px 28px; font-size: 16px; color: #ffffff; background-color: #4CAF50; text-decoration: none; border-radius: 30px; box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);">Verify Email Address</a>
+              <a href="${config.baseUri}/verify/${token}" style="display: inline-block; padding: 14px 28px; font-size: 16px; color: #ffffff; background-color: #4CAF50; text-decoration: none; border-radius: 30px; box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);">Verify Email Address</a>
             </div>
             <p style="font-size: 16px; text-align: center; margin-bottom: 20px;">If you're having trouble clicking the button above, you can also verify your email by copying and pasting the following link into your browser:</p>
-            <p style="font-size: 16px; text-align: center; margin-bottom: 20px;"><a href="${config.baseURL}/verify/${token}" style="color: #4CAF50; word-wrap: break-word; text-decoration: underline;">${config.baseURL}/verify/${token}</a></p>
+            <p style="font-size: 16px; text-align: center; margin-bottom: 20px;"><a href="${config.baseUri}/verify/${token}" style="color: #4CAF50; word-wrap: break-word; text-decoration: underline;">${config.baseUri}/verify/${token}</a></p>
             <p style="font-size: 16px; text-align: center; margin-bottom: 20px;">If you didn't create an account on ${name}, please disregard this email.</p>
             <p style="font-size: 16px; text-align: center;">Thanks,<br/>The ${name} Team</p>
           </div>
@@ -241,10 +241,10 @@ async function sendTestEmail(recipientEmail) {
               <p style="font-size: 16px;">Hello,</p>
               <p style="font-size: 16px;">We received a request to reset your password. Click the button below to reset it:</p>
               <div style="text-align: center; margin: 20px 0;">
-                <a href="${config.baseURL}/auth/reset/${token}" style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #ffffff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                <a href="${config.baseUri}/auth/reset/${token}" style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #ffffff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">Reset Password</a>
               </div>
               <p style="font-size: 16px;">If the button above does not work, click the link below:</p>
-              <p style="font-size: 16px; text-align: center;"><a href="${config.baseURL}/auth/reset/${token}" style="color: #4CAF50; word-wrap: break-word;">${config.baseURL}/auth/reset/${token}</a></p>
+              <p style="font-size: 16px; text-align: center;"><a href="${config.baseUri}/auth/reset/${token}" style="color: #4CAF50; word-wrap: break-word;">${config.baseUri}/auth/reset/${token}</a></p>
               <p style="font-size: 16px;">If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
               <p style="font-size: 16px;">Thank you,</p>
               <p style="font-size: 16px;">The ${name} Team</p>
@@ -275,10 +275,10 @@ async function sendTestEmail(recipientEmail) {
               <p style="font-size: 16px;">Hello,</p>
               <p style="font-size: 16px;">We received a request to reset your password. Click the button below to reset it:</p>
               <div style="text-align: center; margin: 20px 0;">
-                <a href="${config.baseURL}/auth/reset/${token}" style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #ffffff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                <a href="${config.baseUri}/auth/reset/${token}" style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #ffffff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">Reset Password</a>
               </div>
               <p style="font-size: 16px;">If the button above does not work, click the link below:</p>
-              <p style="font-size: 16px; text-align: center;"><a href="${config.baseURL}/auth/reset/${token}" style="color: #4CAF50; word-wrap: break-word;">${config.baseURL}/auth/reset/${token}</a></p>
+              <p style="font-size: 16px; text-align: center;"><a href="${config.baseUri}/auth/reset/${token}" style="color: #4CAF50; word-wrap: break-word;">${config.baseUri}/auth/reset/${token}</a></p>
               <p style="font-size: 16px;">If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
               <p style="font-size: 16px;">Thank you,</p>
               <p style="font-size: 16px;">The ${name} Team</p>

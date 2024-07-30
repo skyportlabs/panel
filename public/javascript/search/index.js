@@ -56,7 +56,7 @@ function filterLinks(searchTerm) {
         'py-2',
         'text-sm',
         'font-medium',
-        'rounded-lg',
+        'rounded-xl',
       );
 
       if (index === 0) {

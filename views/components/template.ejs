@@ -1,340 +1,399 @@
 <!doctype html>
 <html class="h-full w-full">
-<head>
-  <title><%= name %></title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="/assets/tailwind.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-</head>
-<body style="font-family: 'IBM Plex Sans'" class="bg-[#141414] h-full w-full">
-<div>
-
-  <style>
-    .collapsed span {
-      display: none;
-    }
-    .collapsed p {
-      display: none;
-    }
-    .collapsed h1 {
-      display: none;
-    }
-
-    .collapsed .nav-link svg {
-      margin-right: 0;
-    }
-    .collapsed {
-      width: 4% !important;
-    }
-    .colcont {
-      padding-left: 4.2rem
-    }
-
-    .transition {
-      transition: all 0.3s ease-in-out;
-    }
-  </style>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-      const sidebar = document.querySelector('.sidebar');
-      const toggleButton = document.getElementById('sidebar-toggle');
-      const colcont = document.getElementById('colcont');
-
-      function setCookie(name, value, days) {
-          const date = new Date();
-          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-          const expires = "expires=" + date.toUTCString();
-          document.cookie = name + "=" + value + ";" + expires + ";path=/";
-      }
-      function getCookie(name) {
-          const nameEQ = name + "=";
-          const ca = document.cookie.split(';');
-          for(let i = 0; i < ca.length; i++) {
-              let c = ca[i];
-              while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-              if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-          }
-          return null;
-      }
-      const sidebarState = getCookie('sidebar-collapsed');
-      if (sidebarState === 'true') {
-          sidebar.classList.add('collapsed');
-          colcont.classList.add('colcont');
-      } else {
-          sidebar.classList.remove('collapsed');
-          colcont.classList.remove('colcont');
-      }
-      toggleButton.addEventListener('click', () => {
-          sidebar.classList.toggle('collapsed');
-          colcont.classList.toggle('colcont');
-          const isCollapsed = sidebar.classList.contains('collapsed');
-          setCookie('sidebar-collapsed', isCollapsed, 7);
-      });
-  });
-</script>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const loader = document.getElementById('loader');
-        const content = document.getElementById('content');
-
-        setTimeout(() => {
-            loader.classList.add('opacity-0');
-            content.classList.remove('opacity-0');
-            
-            setTimeout(() => {
-                loader.style.display = 'none';
-            }, 150);
-        }, 300);
-    });
-</script>
-  <!-- Static sidebar for desktop -->
-  <div class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
-    <div class="flex grow flex-col gap-y-5 overflow-hidden bg-[#101010] border-r border-white/5">
-      <nav class="flex flex-1 flex-col">
-        <div class="pl-6 pt-5 pb-4 flex">
-          <a href="/" class="flex">
-            <% if (logo == true) { %>
-              <img src="../assets/logo.png" class="h-7 w-7 rounded mr-3 inline-flex">
-            <% } %>
-            <h1 class="text-white font-medium tracking-tight text-lg"><%= name %></h1>
-          </a>
-        </div>
-        <ul role="list" class="flex flex-1 flex-col gap-y-7">
-          <li>
-            <ul role="list" class="-mx-2 space-y-1">
-              <li>
-                <a href="/instances" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal" searchdata="container instances servers" subterm="jegli:/server/servername">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
-                    <path d="M12.378 1.602a.75.75 0 0 0-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03ZM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 0 0 .372-.648V7.93ZM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 0 0 .372.648l8.628 5.033Z" />
-                  </svg>                                
-                </svg>                                
-                <span>Instances</span>
-                </a>
-                <a href="/account" searchdata="account profile <%= user.username %>" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z" clip-rule="evenodd" />
-                  </svg>                                
-                  <span>Account</span>
-                </a>
-              </li>
-
-              <% if (user.admin == true) { %>
-                <p class="pl-8 text-neutral-400 text-xs font-semibold pt-6 pb-2"><span>Admin Panel</span></p>
-              <li>
-                <a href="/admin/overview" searchdata="admin overview control" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
-                    <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v2.5A2.25 2.25 0 0 0 4.25 9h2.5A2.25 2.25 0 0 0 9 6.75v-2.5A2.25 2.25 0 0 0 6.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 2 13.25v2.5A2.25 2.25 0 0 0 4.25 18h2.5A2.25 2.25 0 0 0 9 15.75v-2.5A2.25 2.25 0 0 0 6.75 11h-2.5Zm9-9A2.25 2.25 0 0 0 11 4.25v2.5A2.25 2.25 0 0 0 13.25 9h2.5A2.25 2.25 0 0 0 18 6.75v-2.5A2.25 2.25 0 0 0 15.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 11 13.25v2.5A2.25 2.25 0 0 0 13.25 18h2.5A2.25 2.25 0 0 0 18 15.75v-2.5A2.25 2.25 0 0 0 15.75 11h-2.5Z" clip-rule="evenodd" />
-                  </svg>                                               
-                  <span>Overview</span>
-                </a>
-              </li>
-              <li>
-                <a href="/admin/settings" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
-                    <path fill-rule="evenodd" d="M7.84 1.804A1 1 0 0 1 8.82 1h2.36a1 1 0 0 1 .98.804l.331 1.652a6.993 6.993 0 0 1 1.929 1.115l1.598-.54a1 1 0 0 1 1.186.447l1.18 2.044a1 1 0 0 1-.205 1.251l-1.267 1.113a7.047 7.047 0 0 1 0 2.228l1.267 1.113a1 1 0 0 1 .206 1.25l-1.18 2.045a1 1 0 0 1-1.187.447l-1.598-.54a6.993 6.993 0 0 1-1.929 1.115l-.33 1.652a1 1 0 0 1-.98.804H8.82a1 1 0 0 1-.98-.804l-.331-1.652a6.993 6.993 0 0 1-1.929-1.115l-1.598.54a1 1 0 0 1-1.186-.447l-1.18-2.044a1 1 0 0 1 .205-1.251l1.267-1.114a7.05 7.05 0 0 1 0-2.227L1.821 7.773a1 1 0 0 1-.206-1.25l1.18-2.045a1 1 0 0 1 1.187-.447l1.598.54A6.992 6.992 0 0 1 7.51 3.456l.33-1.652ZM10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd" />
-                  </svg>                                 
-                  <span>Settings</span>
-                </a>
-              </li>
-              <li>
-                <a href="/admin/users" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
-                    <path d="M7 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM1.615 16.428a1.224 1.224 0 0 1-.569-1.175 6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 18a9.953 9.953 0 0 1-5.385-1.572ZM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755 4.502 4.502 0 0 1 5.874 2.636.818.818 0 0 1-.36.98A7.465 7.465 0 0 1 14.5 16Z" />
-                  </svg>                                
-                  <span>Users</span>
-                </a>
-              </li>
-              <li>
-                <a href="/admin/instances" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
-                    <path d="M12.378 1.602a.75.75 0 0 0-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03ZM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 0 0 .372-.648V7.93ZM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 0 0 .372.648l8.628 5.033Z" />
-                  </svg>                  
-                  <span>Instances</span>
-                </a>
-              </li>
-              <li>
-                <a href="/admin/nodes" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">            
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
-                    <path d="M4.464 3.162A2 2 0 0 1 6.28 2h7.44a2 2 0 0 1 1.816 1.162l1.154 2.5c.067.145.115.291.145.438A3.508 3.508 0 0 0 16 6H4c-.288 0-.568.035-.835.1.03-.147.078-.293.145-.438l1.154-2.5Z" />
-                    <path fill-rule="evenodd" d="M2 9.5a2 2 0 0 1 2-2h12a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Zm13.24 0a.75.75 0 0 1 .75-.75H16a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75h-.01a.75.75 0 0 1-.75-.75V9.5Zm-2.25-.75a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 0 0 .75-.75V9.5a.75.75 0 0 0-.75-.75h-.01ZM2 15a2 2 0 0 1 2-2h12a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Zm13.24 0a.75.75 0 0 1 .75-.75H16a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75h-.01a.75.75 0 0 1-.75-.75V15Zm-2.25-.75a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 0 0 .75-.75V15a.75.75 0 0 0-.75-.75h-.01Z" clip-rule="evenodd" />
-                  </svg>                                  
-                  <span>Nodes</span>
-                </a>
-              </li>
-              <li>
-                <a href="/admin/images" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
-                    <path fill-rule="evenodd" d="M2.25 4.125c0-1.036.84-1.875 1.875-1.875h5.25c1.036 0 1.875.84 1.875 1.875V17.25a4.5 4.5 0 1 1-9 0V4.125Zm4.5 14.25a1.125 1.125 0 1 0 0-2.25 1.125 1.125 0 0 0 0 2.25Z" clip-rule="evenodd" />
-                    <path d="M10.719 21.75h9.156c1.036 0 1.875-.84 1.875-1.875v-5.25c0-1.036-.84-1.875-1.875-1.875h-.14l-8.742 8.743c-.09.089-.18.175-.274.257ZM12.738 17.625l6.474-6.474a1.875 1.875 0 0 0 0-2.651L15.5 4.787a1.875 1.875 0 0 0-2.651 0l-.1.099V17.25c0 .126-.003.251-.01.375Z" />
-                  </svg>                                                       
-                  <span>Images</span>
-                </a>
-              </li>
-              <li>
-                <a href="/admin/apikeys" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
-                    <path fill-rule="evenodd" d="M15.75 1.5a6.75 6.75 0 0 0-6.651 7.906c.067.39-.032.717-.221.906l-6.5 6.499a3 3 0 0 0-.878 2.121v2.818c0 .414.336.75.75.75H6a.75.75 0 0 0 .75-.75v-1.5h1.5A.75.75 0 0 0 9 19.5V18h1.5a.75.75 0 0 0 .53-.22l2.658-2.658c.19-.189.517-.288.906-.22A6.75 6.75 0 1 0 15.75 1.5Zm0 3a.75.75 0 0 0 0 1.5A2.25 2.25 0 0 1 18 8.25a.75.75 0 0 0 1.5 0 3.75 3.75 0 0 0-3.75-3.75Z" clip-rule="evenodd" />
-                  </svg>                                                              
-                  <span>API Keys</span>
-                </a>
-              </li>
-              <li>
-                <a href="/admin/auditlogs" searchdata="audit logs admin" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
-                    <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
-                  </svg>                            
-                  <span>Audit Logs</span>
-                </a>
-              </li>
-              <li>
-                <a href="/admin/plugins" searchdata="addons plugins admin" class="hover:scale-105 transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-2 rounded-lg shadow-sm text-sm leading-6 font-normal">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                    <path d="M11.25 5.337c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.036 1.007-1.875 2.25-1.875S15 2.34 15 3.375c0 .369-.128.713-.349 1.003-.215.283-.401.604-.401.959 0 .332.278.598.61.578 1.91-.114 3.79-.342 5.632-.676a.75.75 0 0 1 .878.645 49.17 49.17 0 0 1 .376 5.452.657.657 0 0 1-.66.664c-.354 0-.675-.186-.958-.401a1.647 1.647 0 0 0-1.003-.349c-1.035 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401.31 0 .557.262.534.571a48.774 48.774 0 0 1-.595 4.845.75.75 0 0 1-.61.61c-1.82.317-3.673.533-5.555.642a.58.58 0 0 1-.611-.581c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.035-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959a.641.641 0 0 1-.658.643 49.118 49.118 0 0 1-4.708-.36.75.75 0 0 1-.645-.878c.293-1.614.504-3.257.629-4.924A.53.53 0 0 0 5.337 15c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.036 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.369 0 .713.128 1.003.349.283.215.604.401.959.401a.656.656 0 0 0 .659-.663 47.703 47.703 0 0 0-.31-4.82.75.75 0 0 1 .83-.832c1.343.155 2.703.254 4.077.294a.64.64 0 0 0 .657-.642Z" />
-                  </svg>                                                          
-                  <span>Plugins</span>
-                </a>
-              </li>
-              <% } %>
-            </ul>
-          </li>
-          <!--<li>
-            <div class="text-xs font-semibold leading-6 text-neutral-400">Your teams</div>
-            <ul role="list" class="-mx-2 mt-2 space-y-1">
-              <li>
-                <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-lg p-2 text-sm leading-6 font-semibold">
-                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">H</span>
-                  <span class="truncate">Heroicons</span>
-                </a>
-              </li>
-              <li>
-                <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-lg p-2 text-sm leading-6 font-semibold">
-                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">T</span>
-                  <span class="truncate">Tailwind Labs</span>
-                </a>
-              </li>
-              <li>
-                <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-lg p-2 text-sm leading-6 font-semibold">
-                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">W</span>
-                  <span class="truncate">Workcation</span>
-                </a>
-              </li>
-            </ul>
-          </li> -->
-          <li class="mt-auto border-t border-white/5">
-            <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-lg pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition hover:text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-              </svg>              
-              <span>Sign out</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-
-
-
-  
-  <div id="colcont" class="lg:pl-56">
-    <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 shadow-sm sm:gap-x-6 sm:px-4 lg:px-4">
-      <button type="button" id="sidebar-toggle" class="w-fit p-2 mt-1 rounded-lg text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
-        <span class="sr-only">Open sidebar</span>
-        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        </svg>
-      </button>
-
-      <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-        <div class="relative flex flex-1 flex-col">
-          <div class="flex items-center w-fit mt-3.5 px-4 py-2 h-10  rounded-lg border border-white/5 hover:scale-105 active:scale-100 duration-200 bg-transparent text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-400">
-              <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
-            </svg>
-            <input id="searchInput" 
-                   class="bg-transparent border-transparent focus-visible:ring-transparent border-none ring-transparent sm:text-sm placeholder:text-zinc-500" 
-                   placeholder="Search..." 
-                   type="search" 
-                   name="search"
-                   autocomplete="off"
-                   onclick="input.blur()"
-                   onfocus="showSearchResults()">
-          </div>
-        
-          <div id="searchResults" class="absolute bg-white w-[12.5rem] rounded-lg shadow-lg hidden mt-20 px-2 pb-2">
-          </div> 
-        </div>
-        
-        <script src="/javascript/search/index.js"></script>
-        <script>
-          document.addEventListener('keydown', function(event) {
-            if (event.key === 'F1') {
-              event.preventDefault();
-              document.getElementById('searchInput').focus();
-            }
-          });
-        
-          function showSearchResults() {
-            document.getElementById('searchResults').classList.remove('hidden');
-          }
-        
-          document.getElementById('searchInput').addEventListener('focus', showSearchResults);
-        </script>
-        <script>
-          function showSearchResults() {
-              var searchResults = document.getElementById('searchResults');
-              searchResults.classList.remove('hidden');
-          }
-      
-          document.addEventListener('click', function(event) {
-              var searchInput = document.getElementById('searchInput');
-              var searchResults = document.getElementById('searchResults');
-              if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
-                  searchResults.classList.add('hidden');
-              }
-          });
+   <head>
+      <title><%= name %></title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="/assets/tailwind.css" rel="stylesheet">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link rel="preconnect" href="https://cdn.fontshare.com">
+      <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,300,600,400,700&display=swap" rel="stylesheet">
+      <link href="https://fonts.cdnfonts.com/css/graphik-trial" rel="stylesheet">
+   </head>
+   <body style="font-family: 'General Sans" class="bg-black h-full w-full">
+      <div>
+      <style>
+         .collapsed span {
+         display: none;
+         }
+         .collapsed p {
+         display: none;
+         }
+         .collapsed h1 {
+         display: none;
+         }
+         .collapsed .nav-link svg {
+         margin-right: 0;
+         }
+         .collapsed {
+         width: 4% !important;
+         }
+         .colcont {
+         padding-left: 4.2rem
+         }
+         .transition {
+         transition: all 0.3s ease-in-out;
+         }
+         .sidebar nav ul {
+         position: relative;
+         }
+         #active-background {
+         position: absolute;
+         left: 1rem; /* Adjust based on your layout */
+         width: calc(100% - 2rem); /* Adjust based on your layout */
+         height: 2.25rem; /* Adjust based on your nav item height */
+         background-color: #171717;
+         border-radius: 0.5rem;
+         transition: transform 0.2s ease-in-out;
+         z-index: 0;
+         }
+         .nav-link {
+         position: relative;
+         z-index: 1;
+         }
+         .nav-link.active {
+         color: white;
+         font-weight: 500;
+         }
+      </style>
+      <script>
+         document.addEventListener('DOMContentLoaded', () => {
+             const sidebar = document.querySelector('.sidebar');
+             const toggleButton = document.getElementById('sidebar-toggle');
+             const colcont = document.getElementById('colcont');
+         
+             function setCookie(name, value, days) {
+                 const date = new Date();
+                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                 const expires = "expires=" + date.toUTCString();
+                 document.cookie = name + "=" + value + ";" + expires + ";path=/";
+             }
+             function getCookie(name) {
+                 const nameEQ = name + "=";
+                 const ca = document.cookie.split(';');
+                 for(let i = 0; i < ca.length; i++) {
+                     let c = ca[i];
+                     while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                     if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+                 }
+                 return null;
+             }
+             const sidebarState = getCookie('sidebar-collapsed');
+             if (sidebarState === 'true') {
+                 sidebar.classList.add('collapsed');
+                 colcont.classList.add('colcont');
+             } else {
+                 sidebar.classList.remove('collapsed');
+                 colcont.classList.remove('colcont');
+             }
+             toggleButton.addEventListener('click', () => {
+                 sidebar.classList.toggle('collapsed');
+                 colcont.classList.toggle('colcont');
+                 const isCollapsed = sidebar.classList.contains('collapsed');
+                 setCookie('sidebar-collapsed', isCollapsed, 7);
+             });
+         });
       </script>
-      
-        <div class="flex items-center gap-x-4 lg:gap-x-6">
-          <!-- Profile dropdown -->
-          <div class="relative mt-3 mr-4">
-            <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-              <img class="h-6 w-6 rounded-md bg-transparent" src="https://source.boringavatars.com/beam/120/<%= user.username %>?colors=264653,f4a261,e76f51" alt="">
-              <span class="hidden lg:flex lg:items-center">
-                <span class="ml-2.5 text-sm font-semibold leading-6 text-white" aria-hidden="true"><%= user.username %> <span class="font-mono text-xs text-zinc-300 font-normal">(<%= user.userId.substring(0, 6) %>)</span></span>
-              </span>
-            </button>
-          </div>
-        </div>
+      <script>
+         document.addEventListener('DOMContentLoaded', () => {
+             const loader = document.getElementById('loader');
+             const content = document.getElementById('content');
+         
+             setTimeout(() => {
+                 loader.classList.add('opacity-0');
+                 content.classList.remove('opacity-0');
+                 
+                 setTimeout(() => {
+                     loader.style.display = 'none';
+                 }, 150);
+             }, 300);
+         });
+      </script>
+      <!-- Static sidebar for desktop -->
+      <div class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
+         <div class="flex grow flex-col gap-y-5 overflow-hidden bg-black border-r border-white/5">
+            <nav class="flex flex-1 flex-col">
+               <div class="pl-6 pt-5 pb-4 flex">
+                  <a href="/" class="flex">
+                     <% if (logo == true) { %>
+                     <img src="../assets/logo.png" class="h-7 w-7 rounded mr-3 inline-flex">
+                     <% } %>
+                     <h1 class="text-white font-medium tracking-tight text-lg"><%= name %></h1>
+                  </a>
+               </div>
+               <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                  <li>
+                     <ul role="list" class="-mx-2 space-y-1">
+                        <div id="active-background" class="absolute left-0 w-full h-8 bg-[#171717] rounded-2xl transition-all duration-300 ease-in-out"></div>
+                        <li>
+                           <a href="/instances" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal" searchdata="container instances servers" subterm="jegli:/server/servername">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path d="M12.378 1.602a.75.75 0 0 0-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03ZM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 0 0 .372-.648V7.93ZM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 0 0 .372.648l8.628 5.033Z" />
+                              </svg>
+                              </svg>                                
+                              <span>Instances</span>
+                           </a>
+                           <a href="/account" searchdata="account profile <%= user.username %>" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z" clip-rule="evenodd" />
+                              </svg>
+                              <span>Account</span>
+                           </a>
+                        </li>
+                        <% if (user.admin == true) { %>
+                        <p class="pl-8 text-neutral-400 text-xs font-medium pt-6 pb-2"><span>Admin Panel</span></p>
+                        <li>
+                           <a href="/admin/overview" searchdata="admin overview control" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v2.5A2.25 2.25 0 0 0 4.25 9h2.5A2.25 2.25 0 0 0 9 6.75v-2.5A2.25 2.25 0 0 0 6.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 2 13.25v2.5A2.25 2.25 0 0 0 4.25 18h2.5A2.25 2.25 0 0 0 9 15.75v-2.5A2.25 2.25 0 0 0 6.75 11h-2.5Zm9-9A2.25 2.25 0 0 0 11 4.25v2.5A2.25 2.25 0 0 0 13.25 9h2.5A2.25 2.25 0 0 0 18 6.75v-2.5A2.25 2.25 0 0 0 15.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 11 13.25v2.5A2.25 2.25 0 0 0 13.25 18h2.5A2.25 2.25 0 0 0 18 15.75v-2.5A2.25 2.25 0 0 0 15.75 11h-2.5Z" clip-rule="evenodd" />
+                              </svg>
+                              <span>Overview</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="/admin/settings" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path fill-rule="evenodd" d="M7.84 1.804A1 1 0 0 1 8.82 1h2.36a1 1 0 0 1 .98.804l.331 1.652a6.993 6.993 0 0 1 1.929 1.115l1.598-.54a1 1 0 0 1 1.186.447l1.18 2.044a1 1 0 0 1-.205 1.251l-1.267 1.113a7.047 7.047 0 0 1 0 2.228l1.267 1.113a1 1 0 0 1 .206 1.25l-1.18 2.045a1 1 0 0 1-1.187.447l-1.598-.54a6.993 6.993 0 0 1-1.929 1.115l-.33 1.652a1 1 0 0 1-.98.804H8.82a1 1 0 0 1-.98-.804l-.331-1.652a6.993 6.993 0 0 1-1.929-1.115l-1.598.54a1 1 0 0 1-1.186-.447l-1.18-2.044a1 1 0 0 1 .205-1.251l1.267-1.114a7.05 7.05 0 0 1 0-2.227L1.821 7.773a1 1 0 0 1-.206-1.25l1.18-2.045a1 1 0 0 1 1.187-.447l1.598.54A6.992 6.992 0 0 1 7.51 3.456l.33-1.652ZM10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd" />
+                              </svg>
+                              <span>Settings</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="/admin/users" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path d="M7 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM1.615 16.428a1.224 1.224 0 0 1-.569-1.175 6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 18a9.953 9.953 0 0 1-5.385-1.572ZM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755 4.502 4.502 0 0 1 5.874 2.636.818.818 0 0 1-.36.98A7.465 7.465 0 0 1 14.5 16Z" />
+                              </svg>
+                              <span>Users</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="/admin/instances" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path d="M12.378 1.602a.75.75 0 0 0-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03ZM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 0 0 .372-.648V7.93ZM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 0 0 .372.648l8.628 5.033Z" />
+                              </svg>
+                              <span>Instances</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="/admin/nodes" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path d="M4.464 3.162A2 2 0 0 1 6.28 2h7.44a2 2 0 0 1 1.816 1.162l1.154 2.5c.067.145.115.291.145.438A3.508 3.508 0 0 0 16 6H4c-.288 0-.568.035-.835.1.03-.147.078-.293.145-.438l1.154-2.5Z" />
+                                 <path fill-rule="evenodd" d="M2 9.5a2 2 0 0 1 2-2h12a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Zm13.24 0a.75.75 0 0 1 .75-.75H16a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75h-.01a.75.75 0 0 1-.75-.75V9.5Zm-2.25-.75a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 0 0 .75-.75V9.5a.75.75 0 0 0-.75-.75h-.01ZM2 15a2 2 0 0 1 2-2h12a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Zm13.24 0a.75.75 0 0 1 .75-.75H16a.75.75 0 0 1 .75.75v.01a.75.75 0 0 1-.75.75h-.01a.75.75 0 0 1-.75-.75V15Zm-2.25-.75a.75.75 0 0 0-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 0 0 .75-.75V15a.75.75 0 0 0-.75-.75h-.01Z" clip-rule="evenodd" />
+                              </svg>
+                              <span>Nodes</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="/admin/images" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path fill-rule="evenodd" d="M2.25 4.125c0-1.036.84-1.875 1.875-1.875h5.25c1.036 0 1.875.84 1.875 1.875V17.25a4.5 4.5 0 1 1-9 0V4.125Zm4.5 14.25a1.125 1.125 0 1 0 0-2.25 1.125 1.125 0 0 0 0 2.25Z" clip-rule="evenodd" />
+                                 <path d="M10.719 21.75h9.156c1.036 0 1.875-.84 1.875-1.875v-5.25c0-1.036-.84-1.875-1.875-1.875h-.14l-8.742 8.743c-.09.089-.18.175-.274.257ZM12.738 17.625l6.474-6.474a1.875 1.875 0 0 0 0-2.651L15.5 4.787a1.875 1.875 0 0 0-2.651 0l-.1.099V17.25c0 .126-.003.251-.01.375Z" />
+                              </svg>
+                              <span>Images</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="/admin/apikeys" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path fill-rule="evenodd" d="M15.75 1.5a6.75 6.75 0 0 0-6.651 7.906c.067.39-.032.717-.221.906l-6.5 6.499a3 3 0 0 0-.878 2.121v2.818c0 .414.336.75.75.75H6a.75.75 0 0 0 .75-.75v-1.5h1.5A.75.75 0 0 0 9 19.5V18h1.5a.75.75 0 0 0 .53-.22l2.658-2.658c.19-.189.517-.288.906-.22A6.75 6.75 0 1 0 15.75 1.5Zm0 3a.75.75 0 0 0 0 1.5A2.25 2.25 0 0 1 18 8.25a.75.75 0 0 0 1.5 0 3.75 3.75 0 0 0-3.75-3.75Z" clip-rule="evenodd" />
+                              </svg>
+                              <span>API Keys</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="/admin/auditlogs" searchdata="audit logs admin" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                              </svg>
+                              <span>Audit Logs</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="/admin/plugins" searchdata="addons plugins admin" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path d="M11.25 5.337c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.036 1.007-1.875 2.25-1.875S15 2.34 15 3.375c0 .369-.128.713-.349 1.003-.215.283-.401.604-.401.959 0 .332.278.598.61.578 1.91-.114 3.79-.342 5.632-.676a.75.75 0 0 1 .878.645 49.17 49.17 0 0 1 .376 5.452.657.657 0 0 1-.66.664c-.354 0-.675-.186-.958-.401a1.647 1.647 0 0 0-1.003-.349c-1.035 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401.31 0 .557.262.534.571a48.774 48.774 0 0 1-.595 4.845.75.75 0 0 1-.61.61c-1.82.317-3.673.533-5.555.642a.58.58 0 0 1-.611-.581c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.035-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959a.641.641 0 0 1-.658.643 49.118 49.118 0 0 1-4.708-.36.75.75 0 0 1-.645-.878c.293-1.614.504-3.257.629-4.924A.53.53 0 0 0 5.337 15c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.036 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.369 0 .713.128 1.003.349.283.215.604.401.959.401a.656.656 0 0 0 .659-.663 47.703 47.703 0 0 0-.31-4.82.75.75 0 0 1 .83-.832c1.343.155 2.703.254 4.077.294a.64.64 0 0 0 .657-.642Z" />
+                              </svg>
+                              <span>Plugins</span>
+                           </a>
+                        </li>
+                        <% } %>
+                     </ul>
+                  </li>
+                  <!--<li>
+                     <div class="text-xs font-medium leading-6 text-neutral-400">Your teams</div>
+                     <ul role="list" class="-mx-2 mt-2 space-y-1">
+                       <li>
+                         <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-xl p-2 text-sm leading-6 font-medium">
+                           <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">H</span>
+                           <span class="truncate">Heroicons</span>
+                         </a>
+                       </li>
+                       <li>
+                         <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-xl p-2 text-sm leading-6 font-medium">
+                           <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">T</span>
+                           <span class="truncate">Tailwind Labs</span>
+                         </a>
+                       </li>
+                       <li>
+                         <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-xl p-2 text-sm leading-6 font-medium">
+                           <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">W</span>
+                           <span class="truncate">Workcation</span>
+                         </a>
+                       </li>
+                     </ul>
+                     </li> -->
+                  <li class="mt-auto border-t border-white/5">
+                     <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-xl pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                        </svg>
+                        <span>Sign out</span>
+                     </a>
+                  </li>
+               </ul>
+            </nav>
+         </div>
       </div>
-    </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-          var currentPageUrl = window.location.pathname;
-          var navLinks = document.querySelectorAll('.nav-link');
-          navLinks.forEach(function(link) {
-            var linkUrl = link.getAttribute('href');
-            if (currentPageUrl === linkUrl) {
-              link.className = 'nav-link';
-              link.classList.add(
-                'hover:scale-105', 'transition', 'bg-[#171717]', 'text-white', 'mt-1', 'pl-4', 'mx-4', 'group', 'flex', 'gap-x-3', 'shadow-sm', 'rounded-lg', 'py-2', 'text-sm', 'leading-6', 'font-semibold',
-              );
-            }
-          });
-        });
+      <div id="colcont" class="lg:pl-56">
+      <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 shadow-sm sm:gap-x-6 sm:px-4 lg:px-4">
+         <button type="button" id="sidebar-toggle" class="w-fit p-2 mt-1 rounded-xl text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
+            <span class="sr-only">Open sidebar</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+         </button>
+         <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+            <div class="relative flex flex-1 flex-col">
+               <div class="flex items-center w-fit mt-3.5 px-4 py-2 h-10  rounded-xl border border-white/5  active:scale-100 duration-200 bg-transparent text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-400">
+                     <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+                  </svg>
+                  <input id="searchInput" 
+                     class="bg-transparent border-transparent focus-visible:ring-transparent border-none ring-transparent sm:text-sm placeholder:text-zinc-500" 
+                     placeholder="Search..." 
+                     type="search" 
+                     name="search"
+                     autocomplete="off"
+                     onclick="input.blur()"
+                     onfocus="showSearchResults()">
+               </div>
+               <div id="searchResults" class="absolute bg-white w-[12.5rem] rounded-xl shadow-lg hidden mt-20 px-2 pb-2">
+               </div>
+            </div>
+            <script src="/javascript/search/index.js"></script>
+            <script>
+               document.addEventListener('keydown', function(event) {
+                 if (event.key === 'F1') {
+                   event.preventDefault();
+                   document.getElementById('searchInput').focus();
+                 }
+               });
+               
+               function showSearchResults() {
+                 document.getElementById('searchResults').classList.remove('hidden');
+               }
+               
+               document.getElementById('searchInput').addEventListener('focus', showSearchResults);
+            </script>
+            <script>
+               function showSearchResults() {
+                   var searchResults = document.getElementById('searchResults');
+                   searchResults.classList.remove('hidden');
+               }
+               
+               document.addEventListener('click', function(event) {
+                   var searchInput = document.getElementById('searchInput');
+                   var searchResults = document.getElementById('searchResults');
+                   if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+                       searchResults.classList.add('hidden');
+                   }
+               });
+            </script>
+            <div class="flex items-center gap-x-4 lg:gap-x-6">
+               <!-- Profile dropdown -->
+               <div class="relative mt-3 mr-4">
+                  <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                  <img class="h-6 w-6 rounded-xl bg-transparent" src="https://source.boringavatars.com/beam/120/<%= user.username %>?colors=264653,f4a261,e76f51" alt="">
+                  <span class="hidden lg:flex lg:items-center">
+                  <span class="ml-2.5 text-sm font-medium leading-6 text-white" aria-hidden="true"><%= user.username %> <span class="font-mono text-xs text-zinc-300 font-normal">(<%= user.userId.substring(0, 6) %>)</span></span>
+                  </span>
+                  </button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const navLinks = document.querySelectorAll('.nav-link');
+  const activeBackground = document.getElementById('active-background');
+  const contentSection = document.getElementById('content');
+  let isAnimating = false;
+
+  function updateActiveLink(currentPath) {
+    navLinks.forEach((link) => {
+      if (link.getAttribute('href') === currentPath) {
+        link.classList.add('active');
+        const linkRect = link.getBoundingClientRect();
+        const navRect = link.closest('ul').getBoundingClientRect();
+        activeBackground.style.transform = `translateY(${linkRect.top - navRect.top}px)`;
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+
+  function animatePageTransition(callback) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    contentSection.style.opacity = '0';
+    contentSection.style.transform = 'translateX(-20px)';
+
+    setTimeout(() => {
+      callback();
+      contentSection.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      contentSection.style.opacity = '1';
+      contentSection.style.transform = 'translateX(0)';
+      
+      setTimeout(() => {
+        contentSection.style.transition = '';
+        isAnimating = false;
+      }, 300);
+    }, 300);
+  }
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      
+      animatePageTransition(() => {
+        window.location.href = href;
+      });
+    });
+  });
+
+  // Prevent animation on initial load and browser back/forward
+  if (performance.getEntriesByType("navigation")[0].type === 'navigate') {
+    contentSection.style.opacity = '1';
+    contentSection.style.transform = 'translateX(0)';
+  }
+
+  // Update active link on page load and popstate
+  updateActiveLink(window.location.pathname);
+  window.addEventListener('popstate', () => {
+    updateActiveLink(window.location.pathname);
+  });
+});
       </script>
-        <div id="loader" class="fixed ml-56 mt-16 inset-0 flex items-center justify-center bg-[#141414] transition-opacity duration-300 opacity-100 z-50">
-          <svg class="animate-spin h-5 w-5 text-white inline-flex"
-          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-             stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor"
-             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-          </path>
-       </svg>
-        
-        </div>
+      <div id="loader" class="fixed ml-56 mt-16 inset-0 flex items-center justify-center bg-black transition-opacity duration-300 opacity-100 z-50">
+         <svg class="animate-spin h-5 w-5 text-white inline-flex"
+            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+               stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+         </svg>
+      </div>

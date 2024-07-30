@@ -6,7 +6,7 @@
  *  /____/_/|_|\__, / .___/\____/_/   \__/  
  *           /____/_/                  
  *              
- *  Skyport Panel v1 (Firestorm)
+ *  Skyport Panel (Incendior)
  *  (c) 2024 Matt James and contributers
  * 
 */

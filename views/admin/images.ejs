@@ -3,11 +3,11 @@
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
-           <h1 class="text-base font-semibold leading-6 text-white">Images</h1>
+           <h1 class="text-base font-medium leading-6 text-white">Images</h1>
            <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the images on the Skyport panel.</p>
          </div>
          <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
-          <button id="uploadimage" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Import Image</button>
+          <button id="uploadimage" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Import Image</button>
         </div>
        </div>
       <div style="display: block;" id="nodeTable" class="mt-6 w-full">
@@ -21,10 +21,10 @@
         </colgroup>
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
-            <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Author</th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker Image</th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Actions</th>
+            <th scope="col" class="py-2 pl-4 pr-8 font-medium sm:pl-6 lg:pl-8">Name</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">Author</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">Docker Image</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
@@ -47,7 +47,7 @@
             </td>
             <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
               <div class="flex gap-x-3">
-                <div onclick="deleteImage('<%= image.Id %>')" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</div>
+                <div onclick="deleteImage('<%= image.Id %>')" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</div>
               </div>
             </td>
           </tr>
@@ -56,26 +56,26 @@
       </table>
       </div>
       <div style="display: none;" id="imageDetail" class="mt-6 pl-8 w-full text-white">
-        <button id="backButton" class="block rounded-lg bg-neutral-800 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-neutral-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Back</button>
+        <button id="backButton" class="block rounded-xl bg-neutral-800 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-neutral-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Back</button>
         <h1 id="imageName" class="text-2xl font-bold mt-4"></h1>
         <p id="imageDescription" class="mt-2 text-neutral-400"></p>
         <div class="mt-4">
-          <span id="dockerImage" class="bg-white/5 text-white text-sm font-mono mr-2 px-2.5 py-1 rounded-lg"></span>
-          <span id="envVars" class="bg-white/5 text-white text-sm font-mono mr-2 px-2.5 py-1 rounded-lg"></span>
+          <span id="dockerImage" class="bg-white/5 text-white text-sm font-mono mr-2 px-2.5 py-1 rounded-xl"></span>
+          <span id="envVars" class="bg-white/5 text-white text-sm font-mono mr-2 px-2.5 py-1 rounded-xl"></span>
         </div>
         <div class="mt-4">
           <p id="authorInfo" class="text-neutral-400"></p>
         </div>
         <div class="mt-4 flex">
-          <button id="deleteImageButton" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Delete Image</button>
-          <button id="replaceImageButton" class="block rounded-lg ml-2 bg-neutral-800 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-neutral-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Replace Image</button>
+          <button id="deleteImageButton" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Delete Image</button>
+          <button id="replaceImageButton" class="block rounded-xl ml-2 bg-neutral-800 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-neutral-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Replace Image</button>
         </div>
       </div>
     </div>
 </main>
 <%- include('../components/footer') %>
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function(event){
     var uploadBtn = document.getElementById('uploadimage');
     var imageRows = document.querySelectorAll('.image-row');
     var nodeTable = document.getElementById('nodeTable');
@@ -90,7 +90,7 @@
     var replaceImageButton = document.getElementById('replaceImageButton');
     var currentImage = null;
 
-    uploadBtn.addEventListener('click', function() {
+    uploadBtn.addEventListener('click', async function() {
       var input = document.createElement('input');
       input.type = 'file';
       input.accept = '.json';
@@ -127,7 +127,7 @@
     });
 
     imageRows.forEach(function(row) {
-      row.addEventListener('click', function() {
+      row.addEventListener('click', async function() {
         var image = JSON.parse(this.dataset.image);
         currentImage = image;
         imageName.textContent = image.Name;
@@ -145,13 +145,13 @@
       imageDetail.style.display = 'none';
     });
 
-    deleteImageButton.addEventListener('click', function() {
+    deleteImageButton.addEventListener('click', async function() {
       if (currentImage) {
         deleteImage(currentImage.Id);
       }
     });
 
-    replaceImageButton.addEventListener('click', function() {
+    replaceImageButton.addEventListener('click', async function() {
       var input = document.createElement('input');
       input.type = 'file';
       input.accept = '.json';
@@ -182,12 +182,12 @@
           };
           reader.readAsText(file);
         } else {
-          alert('Please select a JSON file.');
+          alert('Please select a JSON filze.');
         }
       });
     });
 
-    function deleteImage(id) {
+    async function deleteImage(id) {
       var xhr = new XMLHttpRequest();
       xhr.open('POST', '/admin/images/delete', true);
       xhr.setRequestHeader('Content-Type', 'application/json');

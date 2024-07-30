@@ -7,16 +7,17 @@
   <link href="../assets/tailwind.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://cdn.fontshare.com">
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,300,600,400,700&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: 'IBM Plex Sans'" class="bg-[#181818] h-full">
+<body style="font-family: 'General Sans'" class="bg-black h-full">
 <div class="min-h-full flex">
   <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
     <div class="mx-auto w-full max-w-sm lg:w-96">
       <div>
         <% if (logo == true) { %><img class="h-12 w-auto" src="../assets/logo.png"> <% } %>
-        <h2 class="<% if (logo == true) { %>mt-6<% } %> text-3xl font-semibold text-white">Sign in to <%= name %></h2>
-        <p class="mt-2 text-sm text-neutral-500">
+        <h2 class="<% if (logo == true) { %>mt-6<% } %> text-3xl font-medium text-white">Sign in to <%= name %></h2>
+        <p class="mt-2 text-sm font-normal text-neutral-500">
           Please enter your account credentials below.
         </p>
       </div>
@@ -26,15 +27,15 @@
           <form id="login-form" class="space-y-6" onsubmit="event.preventDefault(); submitForm();">
             <div>
               <label for="email" class="block text-sm font-medium text-neutral-400"> Username or Email </label>
-              <div class="mt-1">
-                <input placeholder="example" id="username" autocomplete="username" required class="appearance-none block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg shadow-sm placeholder-neutral-500 focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 text-white transition sm:text-sm">
+              <div class="mt-2">
+                <input placeholder="example" id="username" autocomplete="username" required class="appearance-none block w-full px-3 py-2 bg-white/10 border border-transparent rounded-xl placeholder-neutral-500 focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 text-white transition sm:text-sm">
               </div>
             </div>
 
             <div class="space-y-1">
               <label for="password" class="block text-sm font-medium text-neutral-400"> Password </label>
-              <div class="mt-1">
-                <input placeholder="********" id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg shadow-sm placeholder-neutral-500 focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 text-white transition sm:text-sm">
+              <div class="mt-2">
+                <input placeholder="********" id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 bg-white/10 border border-transparent rounded-xl placeholder-neutral-500 focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 text-white transition sm:text-sm">
               </div>
             </div>
 
@@ -45,22 +46,22 @@
               </div>
 
               <div class="text-sm">
-                <a href="/auth/reset-password" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Forgot your password?</a>
+                <a href="/auth/reset-password" class="font-normal text-neutral-500 hover:text-white transition ">Forgot your password?</a>
               </div>
             </div>
 
             <div>
-              <a onclick="submitForm()" class="w-full cursor-pointer flex transition justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-neutral-800 bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">Sign in</a>
+              <a onclick="submitForm()" class="w-full cursor-pointer flex transition justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-neutral-800 bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">Sign in</a>
             </div>
             
             <% if (settings.register) { %>
             <!-- <div class="text-center mt-4">
-              <a href="/register" class="w-full cursor-pointer flex transition justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">Register</a>
+              <a href="/register" class="w-full cursor-pointer flex transition justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">Register</a>
             </div> -->
 
-            <div class=" mt-6 text-sm text-neutral-500 text-center py-[-50px] translate-y-[-70%]">
-              <!-- <a href="/register" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Don't have an account? Create one!</a> -->
-              Don't have an account? <a href="/register" class="font-normal text-neutral-500 hover:text-white transition hover:scale-105">Create one</a>
+            <div class=" mt-6 text-sm text-neutral-500 py-[-50px]">
+              <!-- <a href="/register" class="font-normal text-neutral-500 hover:text-white transition ">Don't have an account? Create one!</a> -->
+              Need an account? <a href="/register" class="font-normal text-neutral-500 hover:text-white transition ">Register</a>
             </div>
             <% } %>
 
@@ -92,23 +93,19 @@
             <% } %>
             <% if (req.query.msg && req.query.msg == "UserAlreadyVerified") { %>
               <div class="mt-2"></div>
-              <span class="text-amber-600 pt-4 font-normal text-sm">User Already Verified, Login With Your Account.</span>
+              <span class="text-amber-600 pt-4 font-normal text-sm">Your account is already verified, you may sign in.</span>
             <% } %>
             <% if (req.query.msg && req.query.msg == "AccountcreateEmailSent") { %>
               <div class="mt-2"></div>
-              <span class="text-emerald-600 pt-8 font-normal text-sm">Your Account successfully create and please check your email for verify your account.</span>
+              <span class="text-emerald-600 pt-8 font-normal text-sm">Your account was successfully created - please check your email to continue.</span>
             <% } %>
             <% if (req.query.msg && req.query.msg == "AccountCreated") { %>
               <div class="mt-2"></div>
-              <span class="text-emerald-600 pt-8 font-normal text-sm">Your Account successfully create, login with your username/email and password.</span>
+              <span class="text-emerald-600 pt-8 font-normal text-sm">Your account was successfully created, you may sign in now.</span>
             <% } %>
             <% if (req.query.err && req.query.err === "UserNotVerified") { %>
               <div class="mt-6 text-center">
-                <p class="text-red-500 text-lg font-semibold mb-2">Oops! Your Account Isn't Verified Yet.</p>
-                <p class="text-white text-sm mb-4">Please verify your account to proceed.</p>
-                <a href="/resend-verification" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 inline-block">
-                  Click Here to Resend Verification Email
-                </a>
+                <p class="text-red-500 text-lg font-medium mb-2">Your account isn't verify, please check your email. <a href="/resend-verification" class="text-red-300 hover:text-red-400 transition">Resend Email</a></p>
               </div>
             <% } %>                                                                                 
 

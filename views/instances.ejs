@@ -3,13 +3,13 @@
   <div class="bg-transparent">
     <div class="sm:flex sm:items-center px-8 pt-4">
       <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-white">Instances</h1>
+        <h1 class="text-base font-medium leading-6 text-white">Instances</h1>
         <p class="mt-1 tracking-tight text-sm text-neutral-500">View the instances that you have access to.</p>
       </div>
       <% if (req.user.admin === true) { %>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button id="switchButton" type="button"
-            class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             See all instances
           </button>
         </div>
@@ -66,10 +66,10 @@
         <% adminInstances.forEach(function (instance) { %>
           <a id="AdminInstancesContainer" data-instance-id="<%= instance.ContainerId %>"
             href="../instance/<%= instance.Id %>"
-            class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8 hidden">
+            class="p-3 hover:bg-[#171717]  transition bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-8 hidden">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
-                <div class="rounded-lg border border-white/5 inline-flex">
+                <div class="rounded-xl border border-white/5 inline-flex">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="size-5 mt-2.5 mb-2.5 mr-2.5 ml-2.5 text-white">
                     <path
@@ -82,7 +82,7 @@
               </div>
               <div class="flex items-center space-x-2">
                 <span data-status-bg
-                  class="bg-neutral-600/20 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center">
+                  class="bg-neutral-600/20 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-xl flex items-center">
                   <span data-status>
                     <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex"
                       xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@
                   </span>
                 </span>
                 <span
-                  class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center">
+                  class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-xl flex items-center">
                   <span data-ram-usage>
                     <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex"
                       xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@
                   </span>
                 </span>
                 <span
-                  class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center">
+                  class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-xl flex items-center">
                   <span data-cpu-usage>
                     <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex"
                       xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -204,10 +204,10 @@
       <% instances.forEach(function (instance) { %>
         <a id="instancesContainer" data-instance-id="<%= instance.ContainerId %>"
           href="../instance/<%= instance.Id %>"
-          class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-8">
+          class="p-3 hover:bg-[#171717]  transition bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-8">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
-              <div class="rounded-lg border border-white/5 inline-flex">
+              <div class="rounded-xl border border-white/5 inline-flex">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                   class="size-5 mt-2.5 mb-2.5 mr-2.5 ml-2.5 text-white">
                   <path
@@ -220,7 +220,7 @@
             </div>
             <div class="flex items-center space-x-2">
               <span data-status-bg
-                class="bg-neutral-600/20 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center">
+                class="bg-neutral-600/20 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-xl flex items-center">
                 <span data-status>
                   <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -234,7 +234,7 @@
                 </span>
               </span>
               <span
-                class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center">
+                class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-xl flex items-center">
                 <span data-ram-usage>
                   <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -248,7 +248,7 @@
                 </span>
               </span>
               <span
-                class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-lg flex items-center">
+                class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-xl flex items-center">
                 <span data-cpu-usage>
                   <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
