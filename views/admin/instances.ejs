@@ -97,10 +97,15 @@
                     <button type="submit" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-gray-100 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                       Suspend
                     </button>
+      
                     
                   </form>
 
-                <% } %>                
+                <% } %>        
+                
+                <button onclick="location.href='/admin/instances/<%= instance.Id %>/edit'" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-gray-100 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                  Edit
+                </button>
                 
               </div>
             </td>

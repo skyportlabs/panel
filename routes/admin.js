@@ -649,6 +649,17 @@ router.get('/admin/instances', isAdmin, async (req, res) => {
   res.render('admin/instances', { req, user: req.user, instances, images, nodes, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
 });
 
+
+router.get('/admin/instances/:id/edit', isAdmin, async (req, res) => {
+  const { id } = req.params;
+  const instance = await db.get(id + '_instance');
+  let users = await db.get('users') || [];
+  let images = await db.get('images') || [];
+
+  if (!instance) return res.redirect('/admin/instances');
+  res.render('admin/instance_edit', { req, user: req.user, instance, images, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+})
+
 router.get('/admin/users', isAdmin, async (req, res) => {
   let users = await db.get('users') || [];
 
