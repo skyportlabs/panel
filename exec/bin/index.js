@@ -62,7 +62,7 @@ program
             let imageDataArray = [];
 
             for (let url of imageUrls) {
-            log.init('fetching image data...');
+            log.init('fetching image data...' + url);
             try {
                 const imageDataResponse = await axios.get(url);
                 let imageData = imageDataResponse.data;

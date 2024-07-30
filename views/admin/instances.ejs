@@ -115,7 +115,7 @@
       </table>
       </div>
 
-      <div style="display: none;" id="nodeForm" class="mt-6 px-8 w-full grid grid-cols-2 gap-4">
+      <div id="nodeForm" class="hidden flex gap-4 mt-6 px-8 w-full">
         <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
             <form>
                 <div class="grid grid-cols-2 gap-4">
@@ -123,7 +123,6 @@
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
                         <input id="name" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My instance">
                     </div>
-    
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">User:</label>
                         <select style="background: #171717;" id="user" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
@@ -132,16 +131,14 @@
                             <% }); %>
                         </select>
                     </div>
-    
                     <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
-                        <select style="background: #171717;" id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
-                            <% images.forEach(function(image) { %>
-                                <option value="<%= image.Image %>" data-configfilepath="<%= image.ConfigFilePath %>" data-configfilecontent="<%= image.ConfigFileContent %>"><%= image.Name %> (<%= image.Image %>)</option>
-                            <% }); %>
-                        </select>
-                    </div>
-    
+                      <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
+                      <select style="background: #171717;" id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                          <% images.forEach(function(image) { %>
+                              <option value="<%= image.Image %>" data-configfilepath="<%= image.ConfigFilePath %>" data-configfilecontent="<%= image.ConfigFileContent %>" data-variables="<%= JSON.stringify(image.Variables) %>"><%= image.Name %> (<%= image.Image %>)</option>
+                          <% }); %>
+                      </select>
+                  </div>
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Node:</label>
                         <select style="background: #171717;" id="node" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
@@ -150,49 +147,92 @@
                             <% }); %>
                         </select>
                     </div>
-    
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory (MiB):</label>
                         <input id="memory" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="2048">
                     </div>
-    
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU Threads:</label>
                         <input id="cpu" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="1">
                     </div>
-    
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports:</label>
                         <input id="ports" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
                     </div>
-    
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Primary Port:</label>
                         <input id="primary" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565">
                     </div>
                 </div>
-    
                 <div class="mt-4">
                     <button id="createNodeBtn" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
                 </div>
             </form>
         </div>
+        <div id="secondCard" class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card hidden" style="width: 800px;">
+          <form id="variablesForm">
+        </form>
+        </div>
     </div>
+    
 
 
     
 </main>
+<script>
+  document.getElementById('image').addEventListener('change', function(event) {
+      var selectedOption = event.target.options[event.target.selectedIndex];
+      var variables = selectedOption.getAttribute('data-variables');
+      var secondCard = document.getElementById('secondCard');
+      var variablesForm = document.getElementById('variablesForm');
+
+      if (variables) {
+          secondCard.classList.remove('hidden');
+          variablesForm.innerHTML = '';
+          variables = JSON.parse(variables);
+
+          for (var key in variables) {
+              if (variables.hasOwnProperty(key)) {
+                  var variable = variables[key];
+                  var fieldHtml = '';
+
+                  if (variable.type === 'text') {
+                      fieldHtml = `
+                          <div>
+                              <label class="text-neutral-400 text-sm tracking-tight mb-2">${key}:</label>
+                              <input type="text" name="${key}" value="${variable.default || ''}" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" ${variable.required ? 'required' : ''}>
+                          </div>
+                      `;
+                  }
+
+                  variablesForm.insertAdjacentHTML('beforeend', fieldHtml);
+              }
+          }
+      } else {
+          secondCard.classList.add('hidden');
+      }
+  });
+</script>
 <script>
   document.getElementById('createButton').addEventListener('click', function() {
     var table = document.getElementById('nodeTable');
     var form = document.getElementById('nodeForm');
     if (table.style.display !== 'none') {
       table.style.display = 'none';
-      form.style.display = 'block';
+      form.style.display = 'flex';
     } else {
-      table.style.display = 'block';
+      table.style.display = 'flex';
       form.style.display = 'none';
     }
+
+    const elem  = document.getElementById('image');
+    elem.selectedIndex = 0;
+    const event = new Event('change', {
+      bubbles: true,
+      cancelable: true
+    });
+    elem.dispatchEvent(event);
+
   });
 
   document.getElementById('image').addEventListener('change', function() {
@@ -216,6 +256,15 @@ document.getElementById('createNodeBtn').addEventListener('click', async functio
     const selectedImage = imageDropdown.options[imageDropdown.selectedIndex];
     const configFilePath = selectedImage.getAttribute('data-configfilepath');
     let configFileContent = selectedImage.getAttribute('data-configfilecontent');
+    const variablesForm = document.getElementById('variablesForm');
+    
+    const inputs = variablesForm.querySelectorAll('div > input');
+    const variables = Array.from(inputs).reduce((acc, input) => {
+        if (input.name) {
+            acc[input.name] = input.value;
+        }
+        return acc;
+    }, {});
 
     clearValidationErrors();
 
@@ -258,14 +307,15 @@ document.getElementById('createNodeBtn').addEventListener('click', async functio
     const nodeData = {
         name: name.value,
         image: imageDropdown.value,
-        nodeId: await document.getElementById('node').value,
-        user: await document.getElementById('user').value,
+        nodeId: document.getElementById('node').value,
+        user: document.getElementById('user').value,
         memory: memory.value,
         cpu: cpu.value,
         ports: ports.value,
         primary: primaryPort.value,
         configFilePath: configFilePath,
-        configFileContent: configFileContent
+        configFileContent: configFileContent,
+        variables: JSON.stringify(variables)
     };
 
     await sendData(nodeData, createBtn);

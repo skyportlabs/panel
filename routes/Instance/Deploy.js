@@ -37,21 +37,20 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
     name,
     user,
     primary,
+    variables
   } = req.query;
-
   if (!image || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) {
     return res.status(400).json({ error: 'Missing parameters' });
   }
 
   try {
     const Id = uuid().split('-')[0];
-    console.log(Id);
     const node = await db.get(`${nodeId}_node`);
     if (!node) {
       return res.status(400).json({ error: 'Invalid node' });
     }
 
-    const requestData = await prepareRequestData(image, memory, cpu, ports, name, node, Id);
+    const requestData = await prepareRequestData(image, memory, cpu, ports, name, node, Id, variables);
     const response = await axios(requestData);
 
     await updateDatabaseWithNewInstance(response.data, user, node, image, memory, cpu, ports, primary, name, Id);
@@ -71,7 +70,7 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
   }
 });
 
-async function prepareRequestData(image, memory, cpu, ports, name, node, Id) {
+async function prepareRequestData(image, memory, cpu, ports, name, node, Id, variables) {
   const rawImage = await db.get('images');
   const imageData = rawImage.find(i => i.Image === image);
 
@@ -94,7 +93,8 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, Id) {
       Memory: memory ? parseInt(memory) : undefined,
       Cpu: cpu ? parseInt(cpu) : undefined,
       ExposedPorts: {},
-      PortBindings: {}
+      PortBindings: {},
+      variables
     }
   };
 
