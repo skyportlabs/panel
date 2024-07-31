@@ -11,7 +11,7 @@
       <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,300,600,400,700&display=swap" rel="stylesheet">
       <link href="https://fonts.cdnfonts.com/css/graphik-trial" rel="stylesheet">
    </head>
-   <body style="font-family: 'General Sans" class="bg-black h-full w-full">
+   <body style="font-family: 'General Sans" class="bg-[#141414] h-full w-full">
       <div>
       <style>
          .collapsed span {
@@ -202,7 +202,7 @@
          <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <div class="relative flex flex-1 flex-col">
                <div class="flex items-center w-fit mt-3.5 px-4 py-2 h-10  rounded-xl border border-white/5  active:scale-100 duration-200 bg-transparent text-white">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-neutral-400">
                      <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
                   </svg>
                   <input id="searchInput" 
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
         link.classList.add('active');
         const linkRect = link.getBoundingClientRect();
         const navRect = link.closest('ul').getBoundingClientRect();
-        activeBackground.style.transform = `translateY(${linkRect.top - navRect.top}px)`;
+        activeBackground.style.transform = `tranneutralY(${linkRect.top - navRect.top}px)`;
       } else {
         link.classList.remove('active');
       }
@@ -284,13 +284,13 @@ document.addEventListener('DOMContentLoaded', function() {
     isAnimating = true;
 
     contentSection.style.opacity = '0';
-    contentSection.style.transform = 'translateX(-20px)';
+    contentSection.style.transform = 'tranneutralX(-20px)';
 
     setTimeout(() => {
       callback();
       contentSection.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
       contentSection.style.opacity = '1';
-      contentSection.style.transform = 'translateX(0)';
+      contentSection.style.transform = 'tranneutralX(0)';
       
       setTimeout(() => {
         contentSection.style.transition = '';
@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Prevent animation on initial load and browser back/forward
   if (performance.getEntriesByType("navigation")[0].type === 'navigate') {
     contentSection.style.opacity = '1';
-    contentSection.style.transform = 'translateX(0)';
+    contentSection.style.transform = 'tranneutralX(0)';
   }
 
   // Update active link on page load and popstate

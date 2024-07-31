@@ -71,8 +71,8 @@
             <td class="py-4 pl-4 pr-8 sm:pl-8 lg:pl-8">
               <div class="flex items-center gap-x-4">
                 <img
-                  class="h-8 w-8 rounded-full bg-transparent"
-                  src="https://source.boringavatars.com/beam/120/<%= user.username %>?colors=264653,f4a261,e76f51"
+                  class="h-8 w-8 rounded-xl bg-transparent"
+                  src="https://api.dicebear.com/9.x/thumbs/svg?seed=<%= user.username %>"
                   alt=""
                 />
 
@@ -82,7 +82,7 @@
               </div>
             </td>
             <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-              <div class="flex gap-x-3">
+              <div class="flex gap-x-3 pl-8">
                 <div
                   class="rounded-xl bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
                 >
@@ -116,13 +116,13 @@
 
             <% if (user.verified==true) { %>
               <td
-                class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
+                class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-green-500 md:table-cell lg:pr-20"
               >
                 Verified
               </td>
               <% } else if (user.verified==false) { %>
               <td
-                class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
+                class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-red-500 md:table-cell lg:pr-20"
               >
                 Unverified
               </td>
@@ -141,7 +141,7 @@
                   ><button
                     id="editButton"
                     type="button"
-                    class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     Edit
                   </button></a

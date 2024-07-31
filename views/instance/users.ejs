@@ -14,12 +14,12 @@
     <div id="createUserModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="bg-white rounded-xl p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
             <div class="relative">
-                <h2 class="text-2xl font-medium mb-1 text-gray-800">Add User</h2>
-                <p class="mb-6 text-gray-600">Add a sub-user to this instance.</p>
+                <h2 class="text-2xl font-medium mb-1 text-neutral-800">Add User</h2>
+                <p class="mb-6 text-neutral-600">Add a sub-user to this instance.</p>
             </div>
             <form action="/instance/<%= req.params.id %>/users/add" method="POST" class="space-y-4">
                 <div>
-                    <input type="text" id="username" name="username" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500 transition mb-4" placeholder="Enter a username" required>
+                    <input type="text" id="username" name="username" class="w-full px-3 py-2 border border-neutral-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500 transition mb-4" placeholder="Enter a username" required>
                 </div>
                 <div>
                     <button type="submit" class="px-5 py-2 bg-neutral-800 text-white rounded-xl hover:bg-neutral-700 transition">Add User</button>

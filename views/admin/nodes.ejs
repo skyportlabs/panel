@@ -98,14 +98,14 @@
             </td>
             <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"><%= set[node.id] || 0 %></td>
 			<td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3">
-        <div class="inner"><button onclick="configure('<%= node.id %>')" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Configure</button></div>
-				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-gray-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</button></a></div>
+        <div class="inner"><button onclick="configure('<%= node.id %>')" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Configure</button></div>
+				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</button></a></div>
 				<div class="inner"><button id="removeButton" onclick="location.href='/admin/nodes/delete/<%= node.id %>'" type="button" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</button></div>
           </tr>
           <% }); %>
         </tbody>
       </table>
-      <div id="notification" class="fixed bottom-5 right-5 bg-white/5 text-white px-4 py-2 rounded-xl shadow-lg transform transition-all duration-300 translate-y-full opacity-0">
+      <div id="notification" class="fixed bottom-5 right-5 bg-white/5 text-white px-4 py-2 rounded-xl shadow-lg transform transition-all duration-300 tranneutral-y-full opacity-0">
         Command copied to clipboard!
       </div>
       </div>
@@ -185,7 +185,7 @@
     popup.style.position = 'fixed';
     popup.style.top = '50%';
     popup.style.left = '50%';
-    popup.style.transform = 'translate(-50%, -50%)';
+    popup.style.transform = 'tranneutral(-50%, -50%)';
     popup.style.padding = '20px';
     popup.style.width = '550px';
     popup.style.height = 'auto';
@@ -203,7 +203,7 @@
 </svg>
         </div>
         <p class="font-bold mb-2 mt-3 text-black" style="font-size:30px; text-align:center">Token created.</p>
-        <h3 class="mb-5 text-gray-600" style="text-align:center; margin-top: 25px;">To auto-configure your node, run the following command:</h3>
+        <h3 class="mb-5 text-neutral-600" style="text-align:center; margin-top: 25px;">To auto-configure your node, run the following command:</h3>
         <pre class="bg-neutral-900 p-3 rounded-xl mb-4 mt-3" style="overflow-x: scroll"><code id="commandCode" class="text-emerald-500">${command}</code></pre>
         <button id="doneBtn" class="block rounded-xl bg-black text-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4">Done</button>
     `;
@@ -218,10 +218,10 @@
         document.execCommand('copy');
         document.body.removeChild(textarea);
       const notification = document.getElementById('notification');
-      notification.classList.remove('translate-y-full', 'opacity-0');
+      notification.classList.remove('tranneutral-y-full', 'opacity-0');
       
       setTimeout(() => {
-        notification.classList.add('translate-y-full', 'opacity-0');
+        notification.classList.add('tranneutral-y-full', 'opacity-0');
       }, 3000);
     });
 

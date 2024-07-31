@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://cdn.fontshare.com">
   <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,300,600,400,700&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: 'General Sans'" class="bg-black h-full">
+<body style="font-family: 'General Sans'" class="bg-[#141414] h-full">
 <div class="min-h-full flex">
   <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
     <div class="mx-auto w-full max-w-sm lg:w-96">
@@ -45,7 +45,7 @@
             </div>
 
             <div>
-              <button type="submit" class="w-full flex transition justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-neutral-800 bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">Register</button>
+              <button type="submit" class="w-full flex transition justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-neutral-800 bg-white hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">Register</button>
             </div>
             
             <% if (req.query.err && req.query.err == "InvalidCredentials") { %>
