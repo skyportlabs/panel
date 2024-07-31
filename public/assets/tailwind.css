@@ -1270,6 +1270,10 @@ select {
   height: 2.25rem;
 }
 
+.h-24 {
+  height: 6rem;
+}
+
 .min-h-full {
   min-height: 100%;
 }
@@ -1907,6 +1911,38 @@ select {
   background-color: rgb(115 115 115 / var(--tw-bg-opacity));
 }
 
+.bg-\[\#101010\]\/80 {
+  background-color: rgb(16 16 16 / 0.8);
+}
+
+.bg-\[\#101010\]\/50 {
+  background-color: rgb(16 16 16 / 0.5);
+}
+
+.bg-\[\#101010\]\/20 {
+  background-color: rgb(16 16 16 / 0.2);
+}
+
+.bg-\[\#101010\]\/30 {
+  background-color: rgb(16 16 16 / 0.3);
+}
+
+.bg-\[\#101010\]\/70 {
+  background-color: rgb(16 16 16 / 0.7);
+}
+
+.bg-\[\#080808\]\/70 {
+  background-color: rgb(8 8 8 / 0.7);
+}
+
+.bg-\[\#080808\]\/40 {
+  background-color: rgb(8 8 8 / 0.4);
+}
+
+.bg-\[\#080808\]\/30 {
+  background-color: rgb(8 8 8 / 0.3);
+}
+
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
 }
@@ -2105,6 +2141,14 @@ select {
 
 .pb-32 {
   padding-bottom: 8rem;
+}
+
+.pr-6 {
+  padding-right: 1.5rem;
+}
+
+.pr-5 {
+  padding-right: 1.25rem;
 }
 
 .text-left {
@@ -2583,6 +2627,14 @@ select {
   color: rgb(212 212 212 / var(--tw-text-opacity));
 }
 
+.placeholder\:font-medium::-moz-placeholder {
+  font-weight: 500;
+}
+
+.placeholder\:font-medium::placeholder {
+  font-weight: 500;
+}
+
 .placeholder\:text-neutral-300::-moz-placeholder {
   --tw-text-opacity: 1;
   color: rgb(212 212 212 / var(--tw-text-opacity));
@@ -2609,6 +2661,16 @@ select {
 .placeholder\:text-zinc-500::placeholder {
   --tw-text-opacity: 1;
   color: rgb(113 113 122 / var(--tw-text-opacity));
+}
+
+.placeholder\:text-neutral-500::-moz-placeholder {
+  --tw-text-opacity: 1;
+  color: rgb(115 115 115 / var(--tw-text-opacity));
+}
+
+.placeholder\:text-neutral-500::placeholder {
+  --tw-text-opacity: 1;
+  color: rgb(115 115 115 / var(--tw-text-opacity));
 }
 
 .hover\:scale-105:hover {
@@ -2901,6 +2963,15 @@ select {
   --tw-ring-color: transparent;
 }
 
+.focus\:ring-blue-500:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity));
+}
+
+.focus\:focus\:ring-transparent:focus:focus {
+  --tw-ring-color: transparent;
+}
+
 .focus\:ring-offset-2:focus {
   --tw-ring-offset-width: 2px;
 }
@@ -3113,6 +3184,10 @@ select {
     z-index: 50;
   }
 
+  .lg\:mt-0 {
+    margin-top: 0px;
+  }
+
   .lg\:block {
     display: block;
   }
@@ -3141,8 +3216,20 @@ select {
     width: 24rem;
   }
 
+  .lg\:w-1\/3 {
+    width: 33.333333%;
+  }
+
+  .lg\:w-2\/3 {
+    width: 66.666667%;
+  }
+
   .lg\:flex-none {
     flex: none;
+  }
+
+  .lg\:flex-row {
+    flex-direction: row;
   }
 
   .lg\:flex-col {

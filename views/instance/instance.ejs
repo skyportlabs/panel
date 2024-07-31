@@ -12,25 +12,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fit/fit.min.js"
         integrity="sha512-+wh8VA1djpWk3Dj9/IJDu6Ufi4vVQ0zxLv9Vmfo70AbmYFJm0z3NLnV98vdRKBdPDV4Kwpi7EZdr8mDY9L8JIA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fullscreen/fullscreen.min.css"
-        integrity="sha512-Uowe00aPyi/0HrMR7lEu5Ot9HPayA6wIBueVcj3sCCbFV2dan8tMs2AbPmjPdHW5iDDjwRFMa5nvIwmOQQ/qaA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fullscreen/fullscreen.min.js"
-        integrity="sha512-a2UduN5n2FB1FMXX6b+R4EZsC+uEAco4KBuIDstE1Eq3NacUXhxNYeDcR+enLHDJBxrtffgjR6Z7gjx87668mw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/search/search.min.js"
-        integrity="sha512-OkVnWNhmCMHw8pYndhQ+yEMJzD1VrgqF12deRfRcqR6iWL4s8IkxTBwSrJZ2WgpevhD71S68dAqBPHv/VHGDAw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/terminado/terminado.min.js"
-        integrity="sha512-TtKncBxqCuka3yQ40VKwx1Jm3cfx1JyWCbRjAFIu7gQ+pvi8b4RwDIbTfmckBi2hpTSdIxxIN2nn23U6tcoboQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/webLinks/webLinks.min.js"
-        integrity="sha512-obszFFlN3K8h7hpqVwXAODf9IOnd1P4PuYRFAwZKTaykxzyMmizo9+eStvrFobjmFs6r6QVsXHMa7ksl34jecg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/zmodem/zmodem.min.js"
-        integrity="sha512-bNnvEr5vJ3m5rknohyD4TK9GIfGYhZU9v8ScE5er0msHAJNnp4UYy+vspakf4xRfrfrQpqORwCpUKL89Dj85mA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        canvas {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
     <main class="overflow-hidden" id="content">
         <div class="bg-transparent">
             <div class="sm:flex sm:items-center px-8 pt-4">
@@ -75,435 +66,383 @@
             </div>
         </div>
         <%- include('../components/instance') %>
-            <div class="rounded-xl bg-red-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8 hidden" id="daemonIsDown">
-                <div class="flex">
-                    <div class="flex-shrink-0 ml-1.5">
-                        <svg class="animate-spin mt-2 h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg"
-                            fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                            </circle>
-                            <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                            </path>
-                        </svg>
+        <div class="mt-8 ml-8 mb-4">
+            <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4 mr-8">
+                <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                    <div class="flex-grow">
+                        <dt class="truncate text-sm font-medium text-neutral-400">IP Address</dt>
+                        <dd class="mt-1 text-lg font-medium tracking-tight text-white">
+                            <span>
+                                <%= instance.Node.address %><span class="text-neutral-400">:<%= instance.Primary %>
+                                            </span>
+                            </span>
+                        </dd>
                     </div>
-                    <div class="ml-5">
-                        <h3 class="text-sm font-medium text-red-400">Connection failure</h3>
-                        <div class="text-sm text-red-400/50">
-                            <p>The node running this instance appears to be having issues. Please wait...</p>
-                        </div>
+                    <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="h-6 w-6 text-neutral-400"><rect width="256" height="256" fill="none"/><path d="M240,120a8,8,0,0,1-8,8H200v32h8a16,16,0,0,1,16,16v32a16,16,0,0,1-16,16H176a16,16,0,0,1-16-16V176a16,16,0,0,1,16-16h8V128H72v32h8a16,16,0,0,1,16,16v32a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V176a16,16,0,0,1,16-16h8V128H24a8,8,0,0,1,0-16h96V88h-8A16,16,0,0,1,96,72V40a16,16,0,0,1,16-16h32a16,16,0,0,1,16,16V72a16,16,0,0,1-16,16h-8v24h96A8,8,0,0,1,240,120Z"/></svg>
+                    </div>
+                </div>
+                <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                    <div class="flex-grow">
+                        <dt class="truncate text-sm font-medium text-neutral-400">Image</dt>
+                        <dd class="mt-1 text-lg font-medium tracking-tight text-white">
+                            <span>
+                                <%= instance.Image %>
+                            </span>
+                        </dd>
+                    </div>
+                    <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="h-6 w-6 text-neutral-400"><rect width="256" height="256" fill="none"/><path d="M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63ZM84,96A12,12,0,1,1,96,84,12,12,0,0,1,84,96Z"/></svg>
+                    </div>
+                </div>
+                <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                    <div class="flex-grow">
+                        <dt class="truncate text-sm font-medium text-neutral-400">Node</dt>
+                        <dd class="mt-1 text-lg font-medium tracking-tight text-white">
+                            <%= instance.Node.name %> <span class="text-neutral-500">(<%= instance.Node.address %>)</span>
+                        </dd>
+                    </div>
+                    <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="h-6 w-6 text-neutral-400"><rect width="256" height="256" fill="none"/><path d="M208,40H48A16,16,0,0,0,32,56v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40ZM180,92a12,12,0,1,1,12-12A12,12,0,0,1,180,92Z"/><path d="M208,136H48a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V152A16,16,0,0,0,208,136Zm-28,52a12,12,0,1,1,12-12A12,12,0,0,1,180,188Z"/></svg>
+                    </div>
+                </div>
+                <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+                    <div class="flex-grow">
+                        <dt class="truncate text-sm font-medium text-neutral-400">Identifier</dt>
+                        <dd class="mt-1 text-lg font-medium tracking-tight text-white">
+                            <%= req.params.id %>
+                        </dd>
+                    </div>
+                    <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="h-6 w-6 text-neutral-400"><rect width="256" height="256" fill="none"/><path d="M116.25,112h31.5l-8,32h-31.5ZM224,48V208a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32H208A16,16,0,0,1,224,48Zm-16,56a8,8,0,0,0-8-8H168.25l7.51-30.06a8,8,0,0,0-15.52-3.88L151.75,96h-31.5l7.51-30.06a8,8,0,0,0-15.52-3.88L103.75,96H64a8,8,0,0,0,0,16H99.75l-8,32H56a8,8,0,0,0,0,16H87.75l-7.51,30.06a8,8,0,0,0,5.82,9.7,8.13,8.13,0,0,0,2,.24,8,8,0,0,0,7.75-6.06L104.25,160h31.5l-7.51,30.06a8,8,0,0,0,5.82,9.7A8.13,8.13,0,0,0,136,200a8,8,0,0,0,7.75-6.06L152.25,160H192a8,8,0,0,0,0-16H156.25l8-32H200A8,8,0,0,0,208,104Z"/></svg>
+                    </div>
+                </div>
+            </dl>
+        </div>
+        <div class="rounded-xl bg-red-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8 hidden" id="daemonIsDown">
+            <div class="flex">
+                <div class="flex-shrink-0 ml-1.5">
+                    <svg class="animate-spin mt-2 h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="ml-5">
+                    <h3 class="text-sm font-medium text-red-400">Connection failure</h3>
+                    <div class="text-sm text-red-400/50">
+                        <p>The node running this instance appears to be having issues. Please wait...</p>
                     </div>
                 </div>
             </div>
-            <div class="mt-8 ml-8 mb-4">
-                <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 mr-8">
-                    <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-                        <div class="flex-grow">
-                            <dt class="truncate text-sm font-medium text-neutral-400">IP Address</dt>
-                            <dd class="mt-1 text-lg font-medium tracking-tight text-white">
-                                <span>
-                                    <%= instance.Node.address %><span class="text-neutral-400">:<%= instance.Primary %>
-                                                </span>
-                                </span>
-                            </dd>
-                        </div>
-                        <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-neutral-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-                        <div class="flex-grow">
-                            <dt class="truncate text-sm font-medium text-neutral-400">Image</dt>
-                            <dd class="mt-1 text-lg font-medium tracking-tight text-white">
-                                <span>
-                                    <%= instance.Image %>
-                                </span>
-                            </dd>
-                        </div>
-                        <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-neutral-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-                        <div class="flex-grow">
-                            <dt class="truncate text-sm font-medium text-neutral-400">Disk Usage</dt>
-                            <dd class="mt-1 text-lg font-medium tracking-tight text-white">
-                                <span id="diskUsage"></span>
-                            </dd>
-                        </div>
-                        <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-neutral-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-                            </svg>
-                        </div>
-                    </div>
-                </dl>
+        </div>
+        <div class="flex flex-col lg:flex-row px-8">
+            <!-- Left side: Console -->
+            <div class="w-full lg:w-2/3 pr-5">
+                <div class="bg-[#101010] rounded-t-xl p-4">
+                    <div id="terminal"></div>
+                </div>
+                <input id="input" type="text" placeholder="Send a command..."
+                    class="w-full px-4 py-3 bg-[#101010] text-white rounded-b-xl text-sm border-t border-transparent focus:ring-2 focus:focus:ring-transparent focus:border-transparent placeholder:font-medium placeholder:text-neutral-500">
             </div>
-            <div class="ml-8 mb-8">
-                <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5 mr-8">
-                    <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-                        <div class="flex-grow">
-                            <dt class="truncate text-sm font-medium text-neutral-400">State</dt>
-                            <dd class="mt-1 text-lg font-medium tracking-tight text-white">
-                                <span id="status">
-                                    <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                            stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                </span>
-                            </dd>
-                        </div>
-                        <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-neutral-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
-                            </svg>
-                        </div>
+            
+            <!-- Right side: Stats Cards -->
+            <div class="w-full lg:w-1/3 mt-4 lg:mt-0 space-y-4">
+                <!-- Status Card -->
+                <div class="bg-[#171717]/50 rounded-xl px-4 py-5 shadow sm:p-6 h-24 relative overflow-hidden">
+                    <canvas id="statusChart" class="absolute inset-0 w-full h-full"></canvas>
+                    <div class="relative z-10">
+                        <h2 class="text-sm font-medium text-neutral-400">Status</h2>
+                        <p id="status" class="mt-1 text-lg font-medium tracking-tight text-white">-</p>
                     </div>
-                    <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-                        <div class="flex-grow">
-                            <dt class="truncate text-sm font-medium text-neutral-400">RAM Usage</dt>
-                            <dd class="mt-1 text-lg font-medium tracking-tight text-white">
-                                <span id="ramUsage">
-                                    <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                            stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                </span>
-                                <span id="ramUsage"></span> <span class="text-xs text-neutral-400" id="ramLimit"></span>
-                            </dd>
-                        </div>
-                        <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-neutral-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
-                            </svg>
-                        </div>
+                </div>
+                
+                <!-- RAM Usage Card -->
+                <div class="bg-[#171717]/50 rounded-xl px-4 py-5 shadow sm:p-6 h-24 relative overflow-hidden">
+                    <canvas id="ramChart" class="absolute inset-0 w-full h-full"></canvas>
+                    <div class="relative z-10">
+                        <h2 class="text-sm font-medium text-neutral-400">RAM Usage</h2>
+                        <p id="ramUsage" class="mt-1 text-lg font-medium tracking-tight text-white"></p>
                     </div>
-                    <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-                        <div class="flex-grow">
-                            <dt class="truncate text-sm font-medium text-neutral-400">CPU Usage</dt>
-                            <dd class="mt-1 text-lg font-medium tracking-tight text-white">
-                                <span id="cpuUsage">
-                                    <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                            stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                </span>
-                            </dd>
-                        </div>
-                        <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-neutral-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
-                            </svg>
-                        </div>
+                </div>
+                
+                <!-- CPU Usage Card -->
+                <div class="bg-[#171717]/50 rounded-xl px-4 py-5 shadow sm:p-6 h-24 relative overflow-hidden">
+                    <canvas id="cpuChart" class="absolute inset-0 w-full h-full"></canvas>
+                    <div class="relative z-10">
+                        <h2 class="text-sm font-medium text-neutral-400">CPU Usage</h2>
+                        <p id="cpuUsage" class="mt-1 text-lg font-medium tracking-tight text-white"></p>
                     </div>
-                    <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-                        <div class="flex-grow">
-                            <dt class="truncate text-sm font-medium text-neutral-400">Network In</dt>
-                            <dd class="mt-1 text-lg font-medium tracking-tight text-white">
-                                <span id="networkIn">
-                                    <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                            stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                </span>
-                            </dd>
-                        </div>
-                        <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-neutral-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                        </div>
+                </div>
+                
+                <!-- Disk Usage Card -->
+                <div class="bg-[#171717]/50 rounded-xl px-4 py-5 shadow sm:p-6 h-24 relative overflow-hidden">
+                    <canvas id="diskChart" class="absolute inset-0 w-full h-full hidden"></canvas>
+                    <div class="relative z-10">
+                        <h2 class="text-sm font-medium text-neutral-400">Disk Usage</h2>
+                        <p id="diskUsage" class="mt-1 text-lg font-medium tracking-tight text-white"></p>
                     </div>
-                    <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
-                        <div class="flex-grow">
-                            <dt class="truncate text-sm font-medium text-neutral-400">Network Out</dt>
-                            <dd class="mt-1 text-lg font-medium tracking-tight text-white">
-                                <span id="networkOut">
-                                    <svg class="animate-spin mt-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                            stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                        </path>
-                                    </svg>
-                                </span>
-                            </dd>
-                        </div>
-                        <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-neutral-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                        </div>
-                    </div>
-                </dl>
+                </div>
             </div>
-            <div class="ml-8 mr-8 bg-[#101010] rounded-t-xl p-4 mx-3 mt-3">
-                <div id="terminal"></div>
-            </div>
-            <div class="ml-8 mr-8">
-                <input placeholder="Send a command..."
-                    class="rounded-b-xl bg-[#101010] w-full focus:ring-transparent focus:border-b focus:border-l focus:border-r focus:border-white/10 text-white text-sm mb-6 items-center transition justify-left gap-16 hover:bg-neutral-900 px-4 py-3 flex border-transparent placeholder:text-neutral-300 text-white border-b border-l border-r border-transparent"
-                    id="input"></input>
-            </div>
-            <script>
-                console.log('<%= instance.VolumeId %>');
-            
-                var baseTheme = {
-                    foreground: '#c5c9d1',
-                    background: '#101010',
-                    selection: '#5DA5D533',
-                    black: '#1E1E1D',
-                    brightBlack: '#262625',
-                    red: '#E54B4B',
-                    green: '#9ECE58',
-                    yellow: '#FAED70',
-                    blue: '#396FE2',
-                    magenta: '#BB80B3',
-                    cyan: '#2DDAFD',
-                    white: '#d0d0d0',
-                    brightBlack: 'rgba(255, 255, 255, 0.2)',
-                    brightRed: '#FF5370',
-                    brightGreen: '#C3E88D',
-                    brightYellow: '#FFCB6B',
-                    brightBlue: '#82AAFF',
-                    brightMagenta: '#C792EA',
-                    brightCyan: '#89DDFF',
-                    brightWhite: '#ffffff',
-                };
-            
-                let ws;
-                const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-                const instanceId = '<%= req.params.id %>'; // Make sure this line is added and defined correctly
-            
-                function initWebSocket() {
-                    ws = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/console/${instanceId}`);
-                    ws.onopen = () => {
-                        console.log('WebSocket connected!');
-                    };
-                    ws.onmessage = handleWebSocketMessage;
-                    ws.onclose = () => {
-                        console.log('WebSocket connection closed, attempting to reconnect...');
-                        setTimeout(initWebSocket, 3000);
-                    };
-                    ws.onerror = (error) => {
-                        console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
-                        setTimeout(initWebSocket, 5000);
-                    };
-                }
-            
-                let daemonIsDown = document.getElementById('daemonIsDown');
-                var term;
-            
-                function handleWebSocketMessage(msg) {
-                    const lines = msg.data.split('\n');
-                    let isFirstLine = true;
-                    let previousLineWasEmpty = false;
-            
-                    lines.forEach(line => {
-                        const trimmedLine = line.trim();
-                        if (trimmedLine === '' && previousLineWasEmpty) {
-                            return;
-                        }
-                        if (!isFirstLine && !previousLineWasEmpty) {
-                            term.write('\r\n');
-                        }
-            
-                        term.write('\x1b[0m' + trimmedLine);
-            
-                        if (trimmedLine.includes("state:")) {
-                            term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
-                            term.clear();
-                            ws.close();
-                        }
-            
-                        if (trimmedLine.includes("skyportd instance appears to be down")) {
-                            ws.close();
-                            daemonIsDown.classList.remove('hidden');
-                        } else {
-                            daemonIsDown.classList.add('hidden');
-                        }
-            
-                        isFirstLine = false;
-                        previousLineWasEmpty = (trimmedLine === '');
-                    });
-                }
-            
-                function setupTerminal() {
-                    term = new Terminal({
-                        disableStdin: true,
-                        allowProposedApi: true,
-                        lineHeight: 1.35,
-                        rows: 19,
-                        cols: 200,
-                        fontFamily: 'Menlo, monospace',
-                        theme: baseTheme,
-                        allowTransparency: true,
-                        fontSize: 12,
-                    });
-                    term.open(document.getElementById('terminal'));
-                }
-            
-                function sendCommand() {
-                    const inputElement = document.getElementById('input');
-                    const command = inputElement.value.trim();
-                    if (command && ws) {
-                        term.write('\u001b[1m\u001b[33m~ \u001b[0m' + command + '\r\n');
-                        ws.send(JSON.stringify({
-                            event: 'cmd',
-                            command: command,
-                            containerId: instanceId
-                        }));
-                        inputElement.value = '';
-                    }
-                }
-            
-                document.addEventListener('DOMContentLoaded', function () {
-                    setupTerminal();
-                    initWebSocket();
-            
-                    const inputElement = document.getElementById('input');
-                    inputElement.addEventListener('keypress', function (event) {
-                        if (event.key === 'Enter') {
-                            sendCommand();
-                        }
-                    });
-            
-                    document.getElementById('startButton').addEventListener('click', function () {
-                        if (ws) {
-                            ws.send(JSON.stringify({
-                                event: 'power:start',
-                                containerId: instanceId
-                            }));
-                        }
-                    });
-            
-                    document.getElementById('stopButton').addEventListener('click', function () {
-                        if (ws) {
-                            ws.send(JSON.stringify({
-                                event: 'power:stop',
-                                containerId: instanceId
-                            }));
-                        }
-                    });
-            
-                    document.getElementById('restartButton').addEventListener('click', function () {
-                        if (ws) {
-                            ws.send(JSON.stringify({
-                                event: 'power:restart',
-                                containerId: instanceId
-                            }));
-                        }
-                    });
-                });
-            
-                const statsWs = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/stats/${instanceId}`);
-            
-                function formatBytes(bytes, decimals = 2) {
-                    if (bytes === 0) return '0 Bytes';
-                    const k = 1024;
-                    const dm = decimals < 0 ? 0 : decimals;
-                    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-                    const i = Math.floor(Math.log(bytes) / Math.log(k));
-                    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-                }
-            
-                statsWs.onmessage = event => {
-                    const stats = JSON.parse(event.data);
-                    if (stats.error) {
-                        console.error('Error fetching stats:', stats.error);
-                        return;
-                    }
-            
-                    // Disk usage
-                    const diskRaw = stats.volumeSize;
-                    document.cookie = "disk=" + diskRaw + "; expires=Fri, 31 Dec 2024 23:59:59 GMT; path=/";
-            
-                    // Update RAM usage
-                    const ramUsageRaw = stats.memory_stats.usage / 1024;
-                    const ramUsage = isNaN(ramUsageRaw) ? '0 Bytes' : formatBytes(ramUsageRaw);
-                    const ramLimitRaw = stats.memory_stats.limit / 1024;
-                    const ramLimit = isNaN(ramLimitRaw) ? '0 Bytes' : formatBytes(ramLimitRaw);
-                    document.getElementById('ramUsage').textContent = ramUsage;
-                    document.getElementById('ramLimit').textContent = ' / ' + ramLimit;
-            
-                    // Determine status based on RAM usage
-                    const statusElement = document.getElementById('status');
-                    if (isNaN(ramUsageRaw)) {
-                        statusElement.className = 'text-red-500';
-                        statusElement.textContent = 'Offline';
-                    } else if (ramUsageRaw > 1) {
-                        statusElement.className = 'text-emerald-500';
-                        statusElement.textContent = 'Online';
-                    }
-            
-                    // Update CPU usage
-                    const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
-                    const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
-                    const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta)) ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%' : '0%';
-                    document.getElementById('cpuUsage').textContent = cpuUsagePercent;
-            
-                    // Update Network stats
-                    if (stats.networks) {
-                        const networkInRaw = stats.networks.eth0.rx_bytes;
-                        const networkOutRaw = stats.networks.eth0.tx_bytes;
-                        const networkIn = isNaN(networkInRaw) ? '0 Bytes' : formatBytes(networkInRaw);
-                        const networkOut = isNaN(networkOutRaw) ? '0 Bytes' : formatBytes(networkOutRaw);
-                        document.getElementById('networkIn').textContent = networkIn;
-                        document.getElementById('networkOut').textContent = networkOut;
-                    }
-                };
-            
-                function getCookie(name) {
-                    let cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        let cookie = cookies[i].trim();
-                        if (cookie.indexOf(name + "=") === 0) {
-                            return cookie.substring(name.length + 1);
-                        }
-                    }
-                    return "";
-                }
-            
-                let disk = getCookie("disk");
-                document.getElementById('diskUsage').textContent = disk;
-            </script>                
+        </div>
     </main>
+    <script>
+        console.log('<%= instance.VolumeId %>');
+    
+        var baseTheme = {
+            foreground: '#c5c9d1',
+            background: '#101010',
+            selection: '#5DA5D533',
+            black: '#1E1E1D',
+            brightBlack: '#262625',
+            red: '#E54B4B',
+            green: '#9ECE58',
+            yellow: '#FAED70',
+            blue: '#396FE2',
+            magenta: '#BB80B3',
+            cyan: '#2DDAFD',
+            white: '#d0d0d0',
+            brightBlack: 'rgba(255, 255, 255, 0.2)',
+            brightRed: '#FF5370',
+            brightGreen: '#C3E88D',
+            brightYellow: '#FFCB6B',
+            brightBlue: '#82AAFF',
+            brightMagenta: '#C792EA',
+            brightCyan: '#89DDFF',
+            brightWhite: '#ffffff',
+        };
+    
+        let ws;
+        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const instanceId = '<%= req.params.id %>';
+    
+        function initWebSocket() {
+            ws = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/console/${instanceId}`);
+            ws.onopen = () => {
+                console.log('WebSocket connected!');
+            };
+            ws.onmessage = handleWebSocketMessage;
+            ws.onclose = () => {
+                console.log('WebSocket connection closed, attempting to reconnect...');
+                setTimeout(initWebSocket, 3000);
+            };
+            ws.onerror = (error) => {
+                console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
+                setTimeout(initWebSocket, 5000);
+            };
+        }
+    
+        let daemonIsDown = document.getElementById('daemonIsDown');
+        var term;
+    
+        function handleWebSocketMessage(msg) {
+            const lines = msg.data.split('\n');
+            let isFirstLine = true;
+            let previousLineWasEmpty = false;
+    
+            lines.forEach(line => {
+                const trimmedLine = line.trim();
+                if (trimmedLine === '' && previousLineWasEmpty) {
+                    return;
+                }
+                if (!isFirstLine && !previousLineWasEmpty) {
+                    term.write('\r\n');
+                }
+    
+                term.write('\x1b[0m' + trimmedLine);
+    
+                if (trimmedLine.includes("state:")) {
+                    term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
+                    term.clear();
+                    ws.close();
+                }
+
+                if (trimmedLine.includes("skyportd instance appears to be down")) {
+                    ws.close();
+                    daemonIsDown.classList.remove('hidden');
+                } else {
+                    daemonIsDown.classList.add('hidden');
+                }
+
+                isFirstLine = false;
+                previousLineWasEmpty = (trimmedLine === '');
+            });
+        }
+
+        function setupTerminal() {
+            term = new Terminal({
+                disableStdin: true,
+                allowProposedApi: true,
+                lineHeight: 1.35,
+                rows: 19,
+                cols: 100,
+                fontFamily: 'Menlo, monospace',
+                theme: baseTheme,
+                allowTransparency: true,
+                fontSize: 12,
+            });
+            term.open(document.getElementById('terminal'));
+        }
+
+        function sendCommand() {
+            const inputElement = document.getElementById('input');
+            const command = inputElement.value.trim();
+            if (command && ws) {
+                term.write('\u001b[1m\u001b[33m~ \u001b[0m' + command + '\r\n');
+                ws.send(JSON.stringify({
+                    event: 'cmd',
+                    command: command,
+                    containerId: instanceId
+                }));
+                inputElement.value = '';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            setupTerminal();
+            initWebSocket();
+
+            const inputElement = document.getElementById('input');
+            inputElement.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    sendCommand();
+                }
+            });
+
+            document.getElementById('startButton').addEventListener('click', function () {
+                if (ws) {
+                    ws.send(JSON.stringify({
+                        event: 'power:start',
+                        containerId: instanceId
+                    }));
+                }
+            });
+
+            document.getElementById('stopButton').addEventListener('click', function () {
+                if (ws) {
+                    ws.send(JSON.stringify({
+                        event: 'power:stop',
+                        containerId: instanceId
+                    }));
+                }
+            });
+
+            document.getElementById('restartButton').addEventListener('click', function () {
+                if (ws) {
+                    ws.send(JSON.stringify({
+                        event: 'power:restart',
+                        containerId: instanceId
+                    }));
+                }
+            });
+        });
+
+        const statsWs = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/stats/${instanceId}`);
+
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        function createBackgroundChart(canvasId, type = 'line') {
+            return new Chart(document.getElementById(canvasId).getContext('2d'), {
+                type: type,
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
+                    scales: {
+                        x: { display: false },
+                        y: { display: false }
+                    },
+                    animation: false
+                }
+            });
+        }
+
+        const statusChart = createBackgroundChart('statusChart');
+        const ramChart = createBackgroundChart('ramChart');
+        const cpuChart = createBackgroundChart('cpuChart');
+        const diskChart = createBackgroundChart('diskChart', 'doughnut');
+
+        statsWs.onmessage = event => {
+            const stats = JSON.parse(event.data);
+            if (stats.error) {
+                console.error('Error fetching stats:', stats.error);
+                return;
+            }
+
+            // Update RAM usage
+            const ramUsageRaw = stats.memory_stats.usage / 1024 / 1024;
+            const ramLimitRaw = stats.memory_stats.limit / 1024 / 1024;
+            const ramUsagePercent = (ramUsageRaw / ramLimitRaw * 100).toFixed(2);
+            document.getElementById('ramUsage').textContent = `${ramUsagePercent}% (${formatBytes(ramUsageRaw * 1024 * 1024)} / ${formatBytes(ramLimitRaw * 1024 * 1024)})`;
+            
+            ramChart.data.labels.push('');
+            ramChart.data.datasets[0].data.push(ramUsagePercent);
+            if (ramChart.data.labels.length > 20) {
+                ramChart.data.labels.shift();
+                ramChart.data.datasets[0].data.shift();
+            }
+            ramChart.update();
+
+            // Update CPU usage
+            const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
+            const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
+            const cpuUsagePercent = ((cpuDelta / systemCpuDelta) * 100).toFixed(2);
+            document.getElementById('cpuUsage').textContent = `${cpuUsagePercent}%`;
+            
+            cpuChart.data.labels.push('');
+            cpuChart.data.datasets[0].data.push(cpuUsagePercent);
+            if (cpuChart.data.labels.length > 20) {
+                cpuChart.data.labels.shift();
+                cpuChart.data.datasets[0].data.shift();
+            }
+            cpuChart.update();
+
+            // Update Disk usage
+            const diskUsageRaw = parseFloat(stats.volumeSize);
+            const diskLimitRaw = 10 * 1024; // Assuming 10GB limit
+            const diskUsagePercent = (diskUsageRaw / diskLimitRaw * 100).toFixed(2);
+            document.getElementById('diskUsage').textContent = `${diskUsagePercent}% (${formatBytes(diskUsageRaw * 1024 * 1024)} / ${formatBytes(diskLimitRaw * 1024 * 1024)})`;
+
+            // Update Status
+            const statusElement = document.getElementById('status');
+            if (ramUsageRaw > 1) {
+                statusElement.textContent = 'Online';
+                statusElement.className = 'mt-1 text-lg font-medium tracking-tight text-emerald-500';
+                statusChart.data.datasets[0].backgroundColor = 'rgba(16, 185, 129, 0.1)';  // Emerald color
+                statusChart.data.datasets[0].borderColor = 'rgba(16, 185, 129, 0.2)';
+            } else {
+                statusElement.textContent = 'Offline';
+                statusElement.className = 'mt-1 text-lg font-medium tracking-tight text-red-500';
+                statusChart.data.datasets[0].backgroundColor = 'rgba(239, 68, 68, 0.1)';  // Red color
+                statusChart.data.datasets[0].borderColor = 'rgba(239, 68, 68, 0.2)';
+            }
+            statusChart.data.labels = [''];
+            statusChart.data.datasets[0].data = [100];
+            statusChart.update();
+        };
+    </script>
     <%- include('../components/footer') %>
