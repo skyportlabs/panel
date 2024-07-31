@@ -1,5 +1,6 @@
 <%- include('../components/template') %>
 <main id="content">
+
    <%
       function formatLastUpdated(dateString) {
          const date = new Date(dateString);
@@ -156,7 +157,7 @@
    </div>
    <!-- End of files -->
    <!-- Floating Action Bar -->
-   <div id="floatingActionBar" class="hidden fixed bottom-0 left-0 right-0 bg-neutral-900/70 backdrop-blur text-white py-4 px-6 transform tranneutral-y-full transition-transform duration-300 ease-in-out flex justify-between items-center">
+   <div id="floatingActionBar" class="fixed bottom-0 left-0 right-0 bg-neutral-900/70 backdrop-blur text-white py-4 px-6 transform tranneutral-y-full transition-transform duration-300 ease-in-out flex justify-between items-center">
       <span id="selectedFilesCount">0 files selected</span>
       <button id="massDeleteBtn" class="bg-red-500 hover:bg-red-600 text-white font-normal py-2 px-4 rounded-xl transition">
       Delete Selected
@@ -391,71 +392,94 @@
               }
             });
       
-            // Mass actions functionality
-          const selectAllCheckbox = document.getElementById('selectAll');
-          const fileCheckboxes = document.querySelectorAll('.file-checkbox');
-          const floatingActionBar = document.getElementById('floatingActionBar');
-          const selectedFilesCount = document.getElementById('selectedFilesCount');
-          const massDeleteBtn = document.getElementById('massDeleteBtn');
-          const massDeleteModal = document.getElementById('massDeleteModal');
-          const massDeleteMessage = document.getElementById('massDeleteMessage');
-          const confirmMassDeleteBtn = document.getElementById('confirmMassDelete');
-      
-          let selectedFiles = [];
-      
-          function updateSelectedFiles() {
-            selectedFiles = Array.from(fileCheckboxes)
-              .filter(checkbox => checkbox.checked)
-              .map(checkbox => checkbox.dataset.filename);
-      
-            selectedFilesCount.textContent = `${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''} selected`;
-      
-            if (selectedFiles.length > 0) {
-              floatingActionBar.classList.remove('tranneutral-y-full');
-              floatingActionBar.classList.remove('hidden')
-            } else {
-              floatingActionBar.classList.add('tranneutral-y-full');
-              floatingActionBar.classList.add('hidden')
-            }
-          }
-      
-          selectAllCheckbox.addEventListener('change', function() {
-            fileCheckboxes.forEach(checkbox => checkbox.checked = this.checked);
-            updateSelectedFiles();
-          });
-      
-          fileCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateSelectedFiles);
-          });
-      
-          massDeleteBtn.addEventListener('click', function() {
-            massDeleteMessage.textContent = `Are you sure you want to delete ${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''}? This is a permanent action and cannot be reversed.`;
-            massDeleteModal.classList.remove('opacity-0', 'pointer-events-none');
-            massDeleteModal.querySelector('div').classList.remove('scale-95');
-            massDeleteModal.querySelector('div').classList.add('scale-100');
-          });
-      
-          function closeMassDeleteModal() {
-            massDeleteModal.classList.add('opacity-0', 'pointer-events-none');
-            massDeleteModal.querySelector('div').classList.remove('scale-100');
-            massDeleteModal.querySelector('div').classList.add('scale-95');
-          }
-      
-          confirmMassDeleteBtn.addEventListener('click', async function() {
-            closeMassDeleteModal();
-            
-            const deletePromises = selectedFiles.map(fileName => 
-              fetch(`/instance/<%= req.params.id %>/files/delete/${fileName}<%= query %>`, { method: 'GET' })
-            );
-      
-            try {
-              await Promise.all(deletePromises);
-              window.location.reload();
-            } catch (error) {
-              console.error('Error deleting files:', error);
-              alert('An error occurred while deleting files. Please try again.');
-            }
-          });
+// Mass actions functionality
+const selectAllCheckbox = document.getElementById('selectAll');
+const fileCheckboxes = document.querySelectorAll('.file-checkbox:not(#selectAll)');
+const floatingActionBar = document.getElementById('floatingActionBar');
+const selectedFilesCount = document.getElementById('selectedFilesCount');
+const massDeleteBtn = document.getElementById('massDeleteBtn');
+const massDeleteModal = document.getElementById('massDeleteModal');
+const massDeleteMessage = document.getElementById('massDeleteMessage');
+const confirmMassDeleteBtn = document.getElementById('confirmMassDelete');
+
+let selectedFiles = [];
+
+function updateSelectedFiles() {
+  selectedFiles = Array.from(fileCheckboxes)
+    .filter(checkbox => checkbox.checked)
+    .map(checkbox => checkbox.dataset.filename);
+
+  selectedFilesCount.textContent = `${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''} selected`;
+
+  if (selectedFiles.length > 0) {
+    floatingActionBar.classList.remove('translate-y-full');
+  } else {
+    floatingActionBar.classList.add('translate-y-full');
+  }
+
+  // Update the "select all" checkbox
+  selectAllCheckbox.checked = fileCheckboxes.length > 0 && selectedFiles.length === fileCheckboxes.length;
+
+  // Store the current state in sessionStorage
+  sessionStorage.setItem('selectedFiles', JSON.stringify(selectedFiles));
+}
+
+function initializeSelectedFiles() {
+  const storedSelectedFiles = JSON.parse(sessionStorage.getItem('selectedFiles') || '[]');
+  fileCheckboxes.forEach(checkbox => {
+    checkbox.checked = storedSelectedFiles.includes(checkbox.dataset.filename);
+  });
+  updateSelectedFiles();
+}
+
+selectAllCheckbox.addEventListener('change', function() {
+  fileCheckboxes.forEach(checkbox => checkbox.checked = this.checked);
+  updateSelectedFiles();
+});
+
+fileCheckboxes.forEach(checkbox => {
+  checkbox.addEventListener('change', updateSelectedFiles);
+});
+
+massDeleteBtn.addEventListener('click', function() {
+  massDeleteMessage.textContent = `Are you sure you want to delete ${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''}? This is a permanent action and cannot be reversed.`;
+  massDeleteModal.classList.remove('opacity-0', 'pointer-events-none');
+  massDeleteModal.querySelector('div').classList.remove('scale-95');
+  massDeleteModal.querySelector('div').classList.add('scale-100');
+});
+
+function closeMassDeleteModal() {
+  massDeleteModal.classList.add('opacity-0', 'pointer-events-none');
+  massDeleteModal.querySelector('div').classList.remove('scale-100');
+  massDeleteModal.querySelector('div').classList.add('scale-95');
+}
+
+confirmMassDeleteBtn.addEventListener('click', async function() {
+  closeMassDeleteModal();
+  
+  const deletePromises = selectedFiles.map(fileName => 
+    fetch(`/instance/<%= req.params.id %>/files/delete/${fileName}<%= query %>`, { method: 'GET' })
+  );
+
+  try {
+    await Promise.all(deletePromises);
+    window.location.reload();
+  } catch {
+    console.error('Error deleting files:', error);
+    alert('An error occurred while deleting files. Please try again.');
+  }
+});
+
+// Initialize the state when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initializeSelectedFiles);
+
+// Clear the stored state when leaving the page
+window.addEventListener('beforeunload', () => {
+  sessionStorage.removeItem('selectedFiles');
+});
+
+// Initial update to set the correct state
+updateSelectedFiles();
             
    </script>
    <script>

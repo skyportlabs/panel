@@ -331,9 +331,15 @@ document.addEventListener('DOMContentLoaded', function() {
       contentSection.style.opacity = '1';
       contentSection.style.transform = 'translateX(0)';
       
+      // Ensure content section takes full height
+      contentSection.style.minHeight = '100vh';
+      
       setTimeout(() => {
         contentSection.style.transition = '';
         isAnimating = false;
+        
+        // Trigger a resize event to recalculate layout
+        window.dispatchEvent(new Event('resize'));
       }, 300);
     }, 300);
   }
@@ -344,7 +350,18 @@ document.addEventListener('DOMContentLoaded', function() {
       const href = link.getAttribute('href');
       
       animatePageTransition(() => {
-        window.location.href = href;
+        history.pushState(null, '', href);
+        fetch(href)
+          .then(response => response.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newContent = doc.getElementById('content');
+            if (newContent) {
+              contentSection.innerHTML = newContent.innerHTML;
+            }
+            updateActiveLink(href);
+          });
       });
     });
   });
@@ -353,6 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (performance.getEntriesByType("navigation")[0].type === 'navigate') {
     contentSection.style.opacity = '1';
     contentSection.style.transform = 'translateX(0)';
+    contentSection.style.minHeight = '100vh';
   }
 
   // Update active link on page load and popstate
