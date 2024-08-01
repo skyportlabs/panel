@@ -103,7 +103,7 @@ async function addUserToUsersTable(username, email, password, verified) {
     const userId = uuidv4();
     const verificationToken = verified ? null : generateRandomCode(30);
     let users = await db.get('users') || [];
-    const newUser = { userId, username, email, password: hashedPassword, "Accesto":[], admin: false, welcomeEmailSent: false, verified, verificationToken };
+    const newUser = { userId, username, email, password: hashedPassword, accessTo: [], admin: false, welcomeEmailSent: false, verified, verificationToken };
     users.push(newUser);
     await db.set('users', users);
 

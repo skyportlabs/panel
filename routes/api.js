@@ -96,7 +96,7 @@ router.post('/api/users/create', validateApiKey, async (req, res) => {
       username,
       email,
       password: await bcrypt.hash(password, saltRounds),
-      Accesto: [],
+      accessTo: [],
       admin: admin === true
     };
 

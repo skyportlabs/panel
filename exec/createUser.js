@@ -33,7 +33,7 @@ async function doesEmailExist(email) {
 async function initializeUsersTable(username, email, password) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const userId = uuidv4();
-    const users = [{ userId, username, email, password: hashedPassword, "Accesto":[], admin: true, verified: true }];
+    const users = [{ userId, username, email, password: hashedPassword, accessTo: [], admin: true, verified: true }];
     return db.set('users', users);
 }
 
@@ -41,7 +41,7 @@ async function addUserToUsersTable(username, email, password) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const userId = uuidv4();
     const users = await db.get('users') || [];
-    users.push({ userId, username, email, password: hashedPassword, "Accesto":[], admin: true, verified: true });
+    users.push({ userId, username, email, password: hashedPassword, accessTo: [], admin: true, verified: true });
     return db.set('users', users);
 }
 
