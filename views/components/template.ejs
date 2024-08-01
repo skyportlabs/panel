@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function animatePageTransition(callback) {
+  function animatePageTransition(href) {
     if (isAnimating) return;
     isAnimating = true;
 
@@ -326,21 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
     contentSection.style.transform = 'translateX(-20px)';
 
     setTimeout(() => {
-      callback();
-      contentSection.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-      contentSection.style.opacity = '1';
-      contentSection.style.transform = 'translateX(0)';
-      
-      // Ensure content section takes full height
-      contentSection.style.minHeight = '100vh';
-      
-      setTimeout(() => {
-        contentSection.style.transition = '';
-        isAnimating = false;
-        
-        // Trigger a resize event to recalculate layout
-        window.dispatchEvent(new Event('resize'));
-      }, 300);
+      window.location.href = href;
     }, 300);
   }
 
@@ -348,33 +334,14 @@ document.addEventListener('DOMContentLoaded', function() {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const href = link.getAttribute('href');
-      
-      animatePageTransition(() => {
-        history.pushState(null, '', href);
-        fetch(href)
-          .then(response => response.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const newContent = doc.getElementById('content');
-            if (newContent) {
-              contentSection.innerHTML = newContent.innerHTML;
-            }
-            updateActiveLink(href);
-          });
-      });
+      animatePageTransition(href);
     });
   });
 
-  // Prevent animation on initial load and browser back/forward
-  if (performance.getEntriesByType("navigation")[0].type === 'navigate') {
-    contentSection.style.opacity = '1';
-    contentSection.style.transform = 'translateX(0)';
-    contentSection.style.minHeight = '100vh';
-  }
-
-  // Update active link on page load and popstate
+  // Update active link on page load
   updateActiveLink(window.location.pathname);
+
+  // Handle browser back/forward
   window.addEventListener('popstate', () => {
     updateActiveLink(window.location.pathname);
   });
