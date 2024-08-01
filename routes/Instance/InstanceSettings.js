@@ -23,6 +23,7 @@ router.get("/instance/:id/settings", async (req, res) => {
     });
 
     if (!instance || !instance.VolumeId) {
+        console.log(instance);
         return res.redirect('../instances');
     }
 

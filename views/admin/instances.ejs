@@ -135,7 +135,7 @@
                       <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
                       <select style="background: #171717;" id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
                           <% images.forEach(function(image) { %>
-                              <option value="<%= image.Image %>" data-configfilepath="<%= image.ConfigFilePath %>" data-configfilecontent="<%= image.ConfigFileContent %>" data-variables="<%= JSON.stringify(image.Variables) %>"><%= image.Name %> (<%= image.Image %>)</option>
+                              <option value="<%= image.Image %>" data-configfilepath="<%= image.ConfigFilePath %>" data-imagename="<%= image.Name %>" data-configfilecontent="<%= image.ConfigFileContent %>" data-variables="<%= JSON.stringify(image.Variables) %>"><%= image.Name %> (<%= image.Image %>)</option>
                           <% }); %>
                       </select>
                   </div>
@@ -307,6 +307,7 @@ document.getElementById('createNodeBtn').addEventListener('click', async functio
     const nodeData = {
         name: name.value,
         image: imageDropdown.value,
+        imagename: selectedImage.getAttribute('data-imagename'),
         nodeId: document.getElementById('node').value,
         user: document.getElementById('user').value,
         memory: memory.value,

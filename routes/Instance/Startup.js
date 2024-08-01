@@ -3,31 +3,55 @@ const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditlog');
 const { v4: uuid } = require('uuid');
+const { loadPlugins } = require('../../plugins/loadPls.js');
+const path = require('path');
 
+const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
 const router = express.Router();
 
-/**
- * Middleware to verify if the user is an administrator.
- * Checks if the user object exists and if the user has admin privileges. If not, redirects to the
- * home page. If the user is an admin, proceeds to the next middleware or route handler.
- *
- * @param {Object} req - The request object, containing user data.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware or route handler to be executed.
- * @returns {void} Either redirects or proceeds by calling next().
- */
-function isAdmin(req, res, next) {
-    if (!req.user || req.user.admin !== true) {
-        return res.redirect('../');
-    }
-    next();
-}
+const allPluginData = Object.values(plugins).map(plugin => plugin.config);
 
 /**
- * GET /instances/redeploy/:id
- * Handles the redeployment of an existing instance based on the parameters provided via query strings.
+ * GET /instance/:id/startup
+ * Renders the instance startup page with the available alternative images.
  */
-router.get('/instances/redeploy/:id', isAdmin, async (req, res) => {
+router.get('/instance/:id/startup', async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.redirect('/admin/instances');
+    }
+
+    try {
+        const instance = await db.get(`${id}_instance`);
+        if (!instance) {
+            return res.redirect('/admin/instances');
+        }
+
+        res.render('instance/startup.ejs', {
+            name: await db.get('name') || 'Skyport',
+            logo: await db.get('logo') || false,
+            req,
+            user: req.user,
+            addons: {
+                plugins: allPluginData
+            },
+            instance
+        });
+    } catch (error) {
+        console.error('Error fetching instance data:', error);
+        res.status(500).json({
+            error: 'Failed to load instance data',
+            details: error.message
+        });
+    }
+});
+
+/**
+ * GET /instances/startup/changeimage/:id
+ * Handles the change of the instance image based on the parameters provided via query strings.
+ */
+router.get('/instances/startup/changeimage/:id', async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
@@ -41,20 +65,9 @@ router.get('/instances/redeploy/:id', isAdmin, async (req, res) => {
         }
 
         const nodeId = instance.Node.id;
+        const { image, user } = req.query;
 
-        const {
-            image,
-            memory,
-            cpu,
-            ports,
-            name,
-            user,
-            primary
-        } = req.query;
-
-        const shortimage = image.match(/\(([^)]+)\)/)[1];
-
-        if (!shortimage || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) {
+        if (!image || !user || !nodeId) {
             return res.status(400).json({ error: 'Missing parameters' });
         }
 
@@ -63,21 +76,17 @@ router.get('/instances/redeploy/:id', isAdmin, async (req, res) => {
             return res.status(400).json({ error: 'Invalid node' });
         }
 
-        const requestData = await prepareRequestData(shortimage, memory, cpu, ports, name, node, id, instance.ContainerId);
+        const requestData = await prepareRequestData(image, instance.Memory, instance.Cpu, instance.Ports, instance.Name, node, id, instance.ContainerId);
         const response = await axios(requestData);
 
-        await updateDatabaseWithNewInstance(response.data, user, node, shortimage, memory, cpu, ports, primary, name, id);
+        await updateDatabaseWithNewInstance(response.data, user, node, image, instance.Memory, instance.Cpu, instance.Ports, instance.Primary, instance.Name, id);
 
-        logAudit(req.user.userId, req.user.username, 'instance:redeploy', req.ip);
-        res.status(201).json({
-            message: 'Container redeployed successfully and updated in user\'s servers',
-            containerId: response.data.containerId,
-            volumeId: response.data.volumeId
-        });
+        logAudit(req.user.userId, req.user.username, 'instance:imageChange', req.ip);
+        res.status(201).redirect(`/instance/${id}/startup`);
     } catch (error) {
-        console.error('Error redeploying instance:', error);
+        console.error('Error changing instance image:', error);
         res.status(500).json({
-            error: 'Failed to redeploy container',
+            error: 'Failed to change container image',
             details: error.response ? error.response.data : 'No additional error info'
         });
     }

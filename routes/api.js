@@ -129,61 +129,64 @@ router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
     nodeId,
     name,
     user,
-    primary,
+    primary
   } = req.body;
 
   if (!image || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) {
     return res.status(400).json({ error: 'Missing parameters' });
   }
 
-  const NodeId = nodeId;
-  const Memory = parseInt(memory);
-  const Cpu = parseInt(cpu);
-  const ExposedPorts = {};
-  const PortBindings = {};
-  const PrimaryPort = primary;
-
-  let rawImage = await db.get('images');
-  rawImage = rawImage.find(i => i.Image === image);
-  const Env = rawImage ? rawImage.Env : undefined;
-  const Scripts = rawImage ? rawImage.Scripts : undefined;
-
-  const Node = await db.get(NodeId + '_node');
-  if (!Node) return res.status(400).json({ error: 'Invalid node' });
-
-  const RequestData = {
-    method: 'post',
-    url: `http://${Node.address}:${Node.port}/instances/create`,
-    auth: {
-      username: 'Skyport',
-      password: Node.apiKey
-    },
-    headers: { 
-      'Content-Type': 'application/json'
-    },
-    data: {
-      Name: name,
-      Image: image,
-      Env,
-      Scripts,
-      Memory,
-      Cpu,
-      ExposedPorts: {},
-      PortBindings: {}
-    }
-  };
-
-  // Process ports
-  if (ports) {
-    ports.split(',').forEach(portMapping => {
-      const [containerPort, hostPort] = portMapping.split(':');
-      const key = `${containerPort}/tcp`;
-      RequestData.data.ExposedPorts[key] = {};
-      RequestData.data.PortBindings[key] = [{ HostPort: hostPort }];
-    });
-  }
-
   try {
+    const Id = uuid().split('-')[0];
+    const Node = await db.get(`${nodeId}_node`);
+    if (!Node) return res.status(400).json({ error: 'Invalid node' });
+
+    let rawImage = await db.get('images');
+    rawImage = rawImage.find(i => i.Image === image);
+    if (!rawImage) return res.status(400).json({ error: 'Invalid image' });
+
+    const { Env, Scripts, AltImages } = rawImage;
+
+    const Memory = parseInt(memory);
+    const Cpu = parseInt(cpu);
+    const ExposedPorts = {};
+    const PortBindings = {};
+    const PrimaryPort = primary;
+
+    const RequestData = {
+      method: 'post',
+      url: `http://${Node.address}:${Node.port}/instances/create`,
+      auth: {
+        username: 'Skyport',
+        password: Node.apiKey
+      },
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data: {
+        Name: name,
+        Id,
+        Image: image,
+        Env,
+        Scripts,
+        Memory,
+        Cpu,
+        ExposedPorts,
+        PortBindings,
+        AltImages // Add AltImages to request data
+      }
+    };
+
+    // Process ports
+    if (ports) {
+      ports.split(',').forEach(portMapping => {
+        const [containerPort, hostPort] = portMapping.split(':');
+        const key = `${containerPort}/tcp`;
+        RequestData.data.ExposedPorts[key] = {};
+        RequestData.data.PortBindings[key] = [{ HostPort: hostPort }];
+      });
+    }
+
     const response = await axios(RequestData);
 
     // Attempt to get the user's current server list
@@ -192,8 +195,9 @@ router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
     const globalServers = await db.get('instances') || [];
 
     // Append the new server ID to the user's server list
-    userServers.push({
+    const newInstance = {
       Name: name,
+      Id,
       Node,
       User: userId,
       ContainerId: response.data.containerId,
@@ -203,41 +207,18 @@ router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
       Ports: ports,
       Primary: PrimaryPort,
       ExposedPorts,
-      PortBindings
-    });
+      PortBindings,
+      Image: image,
+      AltImages // Include AltImages in the new instance
+    };
 
-    globalServers.push({
-      Name: name,
-      Node,
-      User: userId,
-      ContainerId: response.data.containerId,
-      VolumeId: response.data.volumeId,
-      Memory,
-      Cpu,
-      Ports: ports,
-      Primary: PrimaryPort,
-      ExposedPorts,
-      PortBindings
-    });
+    userServers.push(newInstance);
+    globalServers.push(newInstance);
 
     // Save the updated list back to the database
     await db.set(`${userId}_instances`, userServers);
-    await db.set(`instances`, globalServers);
-
-    await db.set(`${response.data.containerId}_instance`, {
-      Name: name,
-      Node,
-      Image: image,
-      User: userId,
-      ContainerId: response.data.containerId,
-      VolumeId: response.data.volumeId,
-      Memory,
-      Cpu,
-      Ports: ports,
-      Primary: PrimaryPort,
-      ExposedPorts,
-      PortBindings
-    });
+    await db.set('instances', globalServers);
+    await db.set(`${response.data.containerId}_instance`, newInstance);
 
     res.status(201).json({
       Message: 'Container created successfully and added to user\'s servers',
@@ -245,7 +226,7 @@ router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
       VolumeId: response.data.volumeId
     });
   } catch (error) {
-    console.log(error)
+    console.error('Error deploying instance:', error);
     res.status(500).json({
       error: 'Failed to create container',
       details: error.response ? error.response.data : 'No additional error info'
