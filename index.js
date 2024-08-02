@@ -64,6 +64,11 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.locals.ogTitle = config.ogTitle;
+  res.locals.ogDescription = config.ogDescription;
+  next();
+});
 
 /* remove the comments for faster loading
 app.use((req, res, next) => {
