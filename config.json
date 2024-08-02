@@ -2,5 +2,7 @@
     "baseUri": "http://localhost:3001",
     "port": 3001,
     "domain": "localhost",
-    "version": "0.2.0-beta1"
+    "version": "0.2.0-beta1",
+    "ogTitle": "Skyport Panel",
+    "ogDescription": "Skyport Panel | Alternate of Pterodactyl!"
 } 
