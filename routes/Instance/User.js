@@ -22,7 +22,7 @@ router.get('/instance/:id/users', async (req, res) => {
         }
 
         let users = await db.get('users') || [];
-        users = users.filter(user => user && user.accessTo && user.accessTo.includes(instance.ContainerId));
+        users = users.filter(user => user && user.accessTo && user.accessTo.includes(instance.Id));
         const instanceName = instance.Name;
         const allPluginData = Object.values(plugins).map(plugin => plugin.config);
 
