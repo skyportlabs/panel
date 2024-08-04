@@ -5,12 +5,12 @@
             <form>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.name %>:</label>
                         <input id="name" value="<%= instance.Name %>" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My instance">
                     </div>
     
                     <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2">User:</label>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.user %>:</label>
                         <select style="background: #171717;" id="user" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
                             <% users.forEach(function(user) { %>
                                 <option value="<%= instance.User %>"><%= user.username %></option>

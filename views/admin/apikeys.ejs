@@ -3,9 +3,9 @@
   <div class="bg-transparent">
     <div class="sm:flex sm:items-center px-8 pt-4">
       <div class="sm:flex-auto">
-        <h1 class="text-base font-medium leading-6 text-white">API Keys</h1>
+        <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.APIKeys %></h1>
         <p class="mt-1 tracking-tight text-sm text-neutral-500">
-          A list of all the API Keys on the Skyport panel.
+          <%= req.translations.APIKeysText %>
         </p>
       </div>
       <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -14,7 +14,7 @@
           type="button"
           class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Create new API Key
+        <%= req.translations.createnewapikey %>
         </button>
       </div>
     </div>
@@ -28,9 +28,9 @@
                 </svg>                
              </div>
              <div class="ml-5">
-                <h3 class="text-sm font-medium text-emerald-400">CREATED!</h3>
+                <h3 class="text-sm font-medium text-emerald-400"><%= req.translations.created %></h3>
                 <div class="text-sm text-emerald-400/50">
-                   <p>The API-Key was CREATED successfully.</p>
+                   <p><%= req.translations.apiKeySuccessCreated %></p>
                 </div>
              </div>
           </div>
@@ -51,22 +51,22 @@
               scope="col"
               class="py-2 pl-0 pr-8 font-medium sm:pl-80 lg:pl-8"
             >
-              ID
+              <%= req.translations.id %>
             </th>
             <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">
-              Key
+              <%= req.translations.key %>
             </th>
             <th
               scope="col"
               class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"
             >
-              Created At
+            <%= req.translations.createdAt %>
             </th>
             <th
               scope="col"
               class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"
             >
-              Actions
+            <%= req.translations.actions %>
             </th>
           </tr>
         </thead>
@@ -109,7 +109,7 @@
                   class="removeButton block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   data-keyid="<%= key.id %>"                
                   >
-                  Remove
+                  <%= req.translations.remove %>
                 </button>
               </div>
             </td>
@@ -125,7 +125,7 @@
           type="button"
           class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Click to confirm creation
+          <%= req.translations.clickToConfirmCreation %>
         </button>
       </form>
     </div>
@@ -164,12 +164,10 @@
         })
         .then((data) => {
           console.log("key created:", data);
-          alert("API key created successfully");
+          alert('<%= req.translations.apiKeyErrorDelete %>');
           window.location.reload();
         })
-        .catch((error) =>
-          alert("Error creating API Key: " + error.message)
-        );
+        .catch(error => alert('<%= req.translations.apiKeyErrorCreated %>: ' + error.message));
     });
 </script>
 <!-- remove -->
@@ -187,16 +185,15 @@
       })
       .then(response => {
         if (response.ok) {
-          console.log('API KEY CREATED');
+          console.log('API KEY DELETED');
           window.location.href = '../admin/apikeys?err=CREATED'
         } else {
           throw new Error('Failed to delete key');
         }
       })
-      .catch(error => alert('Error deleting key: ' + error.message));
+      .catch(error => alert('<%= req.translations.apiKeyErrorDelete %>: ' + error.message));
     });
   });
 </script>
-
 
 <%- include('../components/footer') %>

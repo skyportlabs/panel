@@ -1,4 +1,5 @@
 <%- include('components/template') %>
+
 <main id="content">
    <div class="px-4 sm:px-6 lg:px-8">
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
@@ -6,46 +7,42 @@
             <div class="lg:flex lg:items-center lg:justify-between">
                <div class="min-w-0 flex-1">
                   <h2 class="text-md font-medium tracking-tight">
-                     <span class="text-white flex flex-row">Update account
-                      </span>
+                     <span class="text-white flex flex-row"><%= req.translations.updateAccount %></span>
                      <span id="statusBg"
                         class="bg-neutral-600/20 hidden text-neutral-400 text-sm ml-1.5 font-medium me-2 px-2.5 py-1 rounded-full">
-                        <span
-                           id="status">
-                            <%= user.username %>
-                        </span>
+                        <span id="status"><%= user.username %></span>
                      </span>
                   </h2>
                   <form id="change-username-form" action="/change-username" method="POST" class="mt-5">
                      <div class="flex justify-between">
                         <div class="w-1/2 mr-4">
-                           <label class="text-neutral-400 text-sm tracking-tight mb-2">Username:</label>
+                           <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.username %>:</label>
                            <input id="username" type="text" name="username" 
                            class="rounded-xl focus:ring-transparent focus:border-transparent text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder-neutral-400 text-white border border-black/10" 
                            style="width: 340px;" placeholder="<%= user.username %>" />
-                           <span id="username-feedback" class="mt-2 border border-neutral-600/30 text-neutral-400 text-xs font-medium me-2 px-2.5 py-1 rounded-full"></span>
+                           <span id="username-feedback" class="mt-2 border border-neutral-600/30 text-neutral-400 text-xs font-medium me-2 px-2.5 py-1 rounded-full"><%= req.translations.checking %></span>
                         </div>
                         <div class="w-1/2">
-                           <label class="text-neutral-400 text-sm tracking-tight mt-4">Email:</label>
-                           <input id="email" type="email" name="email" value="" class="text-white rounded-xl focus:ring-transparent focus:border-transparent  text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder:text-white/20  border border-black/10" style="width: 340px;" placeholder="<%= user.email %>" disabled />
+                           <label class="text-neutral-400 text-sm tracking-tight mt-4"><%= req.translations.email %>:</label>
+                           <input id="email" type="email" name="email" value="" class="text-white rounded-xl focus:ring-transparent focus:border-transparent text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;" placeholder="<%= user.email %>" disabled />
                         </div>
                      </div>
-                     <button type="submit" id="change-username-btn" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" disabled>Update Username</button>
+                     <button type="submit" id="change-username-btn" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" disabled><%= req.translations.updateUsername %></button>
                   </form>
 
                   <form id="change-password-form" action="/change-password" method="POST" class="mt-5">
-                     <label class="text-neutral-400 text-sm tracking-tight mb-3">Current Password:</label>
-                     <div id="current-password-feedback" class="border border-neutral-600/30 text-neutral-400 text-xs ml-1.5 font-medium me-2 px-2.5 py-1 rounded-full"></div>
-                     <input id="currentPassword" type="password" name="currentPassword" class="rounded-xl focus:ring-transparent focus:border-transparent text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder-neutral-400 text-white border border-black/10" placeholder="********" />
-                     <label class="block text-neutral-400 text-sm tracking-tight mt-4">New Password:</label>
-                     <input id="newPassword" type="password" name="newPassword" class="rounded-xl focus:ring-transparent focus:border-transparent text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder-neutral-400 text-white border border-black/10" placeholder="********" disabled />
-                     <button type="submit" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Update Password</button>
+                     <label class="text-neutral-400 text-sm tracking-tight mb-3"><%= req.translations.currentPassword %>:</label>
+                     <div id="current-password-feedback" class="border border-neutral-600/30 text-neutral-400 text-xs ml-1.5 font-medium me-2 px-2.5 py-1 rounded-full"><%= req.translations.checking %></div>
+                     <input id="currentPassword" type="password" name="currentPassword" class="rounded-xl focus:ring-transparent focus:border-transparent text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder-neutral-400 text-white border border-black/10" placeholder="<%= req.translations.currentPasswordHide %>" />
+                     <label class="block text-neutral-400 text-sm tracking-tight mt-4"><%= req.translations.newPassword %>:</label>
+                     <input id="newPassword" type="password" name="newPassword" class="rounded-xl focus:ring-transparent focus:border-transparent text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder-neutral-400 text-white border border-black/10" placeholder="<%= req.translations.newPasswordHide %>" disabled />
+                     <button type="submit" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><%= req.translations.update_password %></button>
                  </form>
                  <% if (user.twoFAEnabled !== true) { %>
-                  <button onclick="window.location.href = '/enable-2fa';" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Enable 2FA</button>      
+                  <button onclick="window.location.href = '/enable-2fa';" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><%= req.translations.enabled2FA %></button>      
                  <% } else { %>
                  <form action="/disable-2fa" method="POST">
-                  <button class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Disable 2FA</button>
+                  <button class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><%= req.translations.disable2FA %></button>
                  </form>
                  <% } %>
                </div>
@@ -79,7 +76,7 @@
                   <svg class="animate-spin h-3 w-3  inline-flex mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg> <span id="current-password-feedback-message">Checking...</span>
+                  </svg> <span id="current-password-feedback-message"><%= req.translations.checking %></span>
                </span>
            `;
        }
@@ -141,9 +138,9 @@
                    if (response.ok) {
                        const data = await response.json();
                        if (data.valid) {
-                           currentPasswordFeedback.innerHTML = `<span id="current-password-status">✅ Correct!</span>`;
+                           currentPasswordFeedback.innerHTML = `<span id="current-password-status"><%= req.translations.correctPassword %></span>`;
                        } else {
-                           currentPasswordFeedback.innerHTML = `<span id="current-current-status">❌ Incorrect password</span>`;
+                           currentPasswordFeedback.innerHTML = `<span id="current-current-status"><%= req.translations.incorrectPassword %></span>`;
                        }
                        
                        // Enable or disable the new password input based on validation result
@@ -152,13 +149,13 @@
                        isLoading = false;
                    } else {
                        const errorMessage = await response.text();
-                       currentPasswordFeedback.innerText = errorMessage;
+                       currentPasswordFeedback.innerText = `<%= req.translations.updatingUsernameError %>`;
                        currentPasswordFeedback.style.color = 'red';
                        currentPasswordFeedback.style.display = 'inline-block'; // Show the feedback div
                    }
                } catch (error) {
                    console.error('Error validating password:', error);
-                   currentPasswordFeedback.innerText = 'Error validating password';
+                   currentPasswordFeedback.innerText = `<%= req.translations.validadingpasswordError %>`;
                    currentPasswordFeedback.style.color = 'red';
                    currentPasswordFeedback.style.display = 'inline-block'; // Show the feedback div
                }
@@ -172,8 +169,8 @@
            isLoading = false; // Set isLoading to false if the input is blank initially
        }
    });
-   
 </script>
+
 <script>
    document.addEventListener('DOMContentLoaded', () => {
        const currentPasswordInput = document.getElementById('currentPassword');
@@ -202,8 +199,8 @@
        // Trigger initial check when the page is loaded
        toggleChangePasswordButton();
    });
-   
 </script>
+
 <script>
    document.addEventListener('DOMContentLoaded', () => {
       const usernameInput = document.getElementById('username');
@@ -218,7 +215,7 @@
                <svg class="animate-spin h-3 w-3  inline-flex mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-               </svg> <span id="username-feedback-message">Checking...</span>
+               </svg> <span id="username-feedback-message"><%= req.translations.checking %></span>
             </span>
          `;
       }
@@ -255,10 +252,10 @@
    
             // Update UI based on response
             if (data.exists) {
-               usernameFeedback.innerHTML = `<span id="username-status">❌ Taken</span>`;
+               usernameFeedback.innerHTML = `<span id="username-status"><%= req.translations.usernameTaken %></span>`;
                changeUsernameBtn.disabled = true;
             } else {
-               usernameFeedback.innerHTML = `<span id="username-status">✅ Not Taken</span>`;
+               usernameFeedback.innerHTML = `<span id="username-status"><%= req.translations.usernameIsNotTaken %></span>`;
                changeUsernameBtn.disabled = false;
             }
             isLoading = false;
@@ -306,7 +303,7 @@
    
             if (response.ok) {
                // Username updated successfully
-               alert('Username updated successfully!');
+               alert('<%= req.translations.usernameUpdatedSuccess %>');
                window.location.href = '/login?err=UpdatedCredentials';
                // Optionally, you can redirect the user to another page or update the UI
             } else {
@@ -316,13 +313,13 @@
             }
          } catch (error) {
             console.error('Error updating username:', error);
-            alert('Error updating username. Please try again later.');
+            alert('<%= req.translations.updatingUsernameError %>');
          }
       }
    
       // Add event listener to the form for submit event
       document.getElementById('change-username-form').addEventListener('submit', handleUsernameUpdate);
    });
-   
 </script>
+
 <%- include('components/footer') %>

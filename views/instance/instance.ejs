@@ -26,10 +26,8 @@
         <div class="bg-transparent">
             <div class="sm:flex sm:items-center px-8 pt-4">
                 <div class="sm:flex-auto">
-                    <h1 class="text-base font-medium leading-6 text-white">Manage Instance</h1>
-                    <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the
-                        Skyport panel.
-                    </p>
+                    <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.manageInstance %></h1>
+                    <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.manageInstanceText %></p>
                 </div>
                 <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex gap-2.5">
                     <button id="startButton" type="button"
@@ -40,7 +38,7 @@
                                 d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
                                 clip-rule="evenodd" />
                         </svg>
-                        Start
+                        <%= req.translations.start %>
                     </button>
                     <button id="restartButton" type="button"
                         class="block rounded-xl bg-white/20 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-white/25 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -50,7 +48,7 @@
                                 d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
                                 clip-rule="evenodd" />
                         </svg>
-                        Restart
+                        <%= req.translations.restart %>
                     </button>
                     <button id="stopButton" type="button"
                         class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -60,7 +58,7 @@
                                 d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z"
                                 clip-rule="evenodd" />
                         </svg>
-                        Stop
+                        <%= req.translations.stop %>
                     </button>
                 </div>
             </div>
@@ -70,11 +68,13 @@
             <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4 mr-8">
                 <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
                     <div class="flex-grow">
-                        <dt class="truncate text-sm font-medium text-neutral-400">IP Address</dt>
+                        <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.address %></dt>
                         <dd class="mt-1 text-lg font-medium tracking-tight text-white">
                             <span>
-                                <%= instance.Node.address %><span class="text-neutral-400">:<%= instance.Primary %>
-                                            </span>
+                                <%= instance.Node.address %>
+                                <span class="text-neutral-400">
+                                    <%= instance.Primary %>:
+                                </span>
                             </span>
                         </dd>
                     </div>
@@ -84,7 +84,7 @@
                 </div>
                 <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
                     <div class="flex-grow">
-                        <dt class="truncate text-sm font-medium text-neutral-400">Image</dt>
+                        <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.image %></dt>
                         <dd class="mt-1 text-lg font-medium tracking-tight text-white">
                             <span>
                                 <%= instance.Image %>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
                     <div class="flex-grow">
-                        <dt class="truncate text-sm font-medium text-neutral-400">Node</dt>
+                        <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.node %></dt>
                         <dd class="mt-1 text-lg font-medium tracking-tight text-white">
                             <%= instance.Node.name %> <span class="text-neutral-500">(<%= instance.Node.address %>)</span>
                         </dd>
@@ -108,7 +108,7 @@
                 </div>
                 <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
                     <div class="flex-grow">
-                        <dt class="truncate text-sm font-medium text-neutral-400">Identifier</dt>
+                        <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.identifier %></dt>
                         <dd class="mt-1 text-lg font-medium tracking-tight text-white">
                             <%= req.params.id %>
                         </dd>
@@ -132,9 +132,9 @@
                     </svg>
                 </div>
                 <div class="ml-5">
-                    <h3 class="text-sm font-medium text-red-400">Connection failure</h3>
+                    <h3 class="text-sm font-medium text-red-400"><%= req.translations.connectionFailure %></h3>
                     <div class="text-sm text-red-400/50">
-                        <p>The node running this instance appears to be having issues. Please wait...</p>
+                        <p><%= req.translations.connectionFailureText %></p>
                     </div>
                 </div>
             </div>
@@ -145,7 +145,7 @@
                 <div class="bg-[#101010] rounded-t-xl p-4">
                     <div id="terminal"></div>
                 </div>
-                <input id="input" type="text" placeholder="Send a command..."
+                <input id="input" type="text" placeholder="<%= req.translations.SendACommand %>"
                     class="w-full px-4 py-3 bg-[#101010] text-white rounded-b-xl text-sm border-t border-transparent focus:ring-2 focus:focus:ring-transparent focus:border-transparent placeholder:font-medium placeholder:text-neutral-500">
             </div>
             
@@ -155,7 +155,7 @@
                 <div class="bg-[#171717]/50 rounded-xl px-4 py-5 shadow sm:p-6 h-24 relative overflow-hidden">
                     <canvas id="statusChart" class="absolute inset-0 w-full h-full"></canvas>
                     <div class="relative z-10">
-                        <h2 class="text-sm font-medium text-neutral-400">Status</h2>
+                        <h2 class="text-sm font-medium text-neutral-400"><%= req.translations.status %></h2>
                         <p id="status" class="mt-1 text-lg font-medium tracking-tight text-white">-</p>
                     </div>
                 </div>
@@ -164,7 +164,7 @@
                 <div class="bg-[#171717]/50 rounded-xl px-4 py-5 shadow sm:p-6 h-24 relative overflow-hidden">
                     <canvas id="ramChart" class="absolute inset-0 w-full h-full"></canvas>
                     <div class="relative z-10">
-                        <h2 class="text-sm font-medium text-neutral-400">RAM Usage</h2>
+                        <h2 class="text-sm font-medium text-neutral-400"><%= req.translations.ramUsage %></h2>
                         <p id="ramUsage" class="mt-1 text-lg font-medium tracking-tight text-white"></p>
                     </div>
                 </div>
@@ -173,7 +173,7 @@
                 <div class="bg-[#171717]/50 rounded-xl px-4 py-5 shadow sm:p-6 h-24 relative overflow-hidden">
                     <canvas id="cpuChart" class="absolute inset-0 w-full h-full"></canvas>
                     <div class="relative z-10">
-                        <h2 class="text-sm font-medium text-neutral-400">CPU Usage</h2>
+                        <h2 class="text-sm font-medium text-neutral-400"><%= req.translations.cpuUsage %></h2>
                         <p id="cpuUsage" class="mt-1 text-lg font-medium tracking-tight text-white"></p>
                     </div>
                 </div>
@@ -182,7 +182,7 @@
                 <div class="bg-[#171717]/50 rounded-xl px-4 py-5 shadow sm:p-6 h-24 relative overflow-hidden">
                     <canvas id="diskChart" class="absolute inset-0 w-full h-full hidden"></canvas>
                     <div class="relative z-10">
-                        <h2 class="text-sm font-medium text-neutral-400">Disk Usage</h2>
+                        <h2 class="text-sm font-medium text-neutral-400"><%= req.translations.diskUsage %></h2>
                         <p id="diskUsage" class="mt-1 text-lg font-medium tracking-tight text-white"></p>
                     </div>
                 </div>

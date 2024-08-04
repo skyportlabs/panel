@@ -3,14 +3,14 @@
   <div class="bg-transparent">
     <div class="sm:flex sm:items-center px-8 pt-4">
       <div class="sm:flex-auto">
-        <h1 class="text-base font-medium leading-6 text-white">Instances</h1>
-        <p class="mt-1 tracking-tight text-sm text-neutral-500">View the instances that you have access to.</p>
+        <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.instances %></h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.viewInstances %></p>
       </div>
       <% if (req.user.admin === true) { %>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button id="switchButton" type="button"
             class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            See all instances
+            <%= req.translations.seeAllInstances %>
           </button>
         </div>
         <script>
@@ -32,7 +32,7 @@
                   noInstancesContainer.classList.add('hidden');
                 }
               } else {
-                toggleButton.textContent = "Showing your instances";
+                toggleButton.textContent = "<%= req.translations.showingYourInstances %>";
                 if (instances.length == 0) {
                   noInstancesContainer.classList.add('hidden');
                   instancesContainer.classList.add('hidden');
@@ -57,8 +57,8 @@
             d="M11.622 1.602a.75.75 0 0 1 .756 0l2.25 1.313a.75.75 0 0 1-.756 1.295L12 3.118 10.128 4.21a.75.75 0 1 1-.756-1.295l2.25-1.313ZM5.898 5.81a.75.75 0 0 1-.27 1.025l-1.14.665 1.14.665a.75.75 0 1 1-.756 1.295L3.75 8.806v.944a.75.75 0 0 1-1.5 0V7.5a.75.75 0 0 1 .372-.648l2.25-1.312a.75.75 0 0 1 1.026.27Zm12.204 0a.75.75 0 0 1 1.026-.27l2.25 1.312a.75.75 0 0 1 .372.648v2.25a.75.75 0 0 1-1.5 0v-.944l-1.122.654a.75.75 0 1 1-.756-1.295l1.14-.665-1.14-.665a.75.75 0 0 1-.27-1.025Zm-9 5.25a.75.75 0 0 1 1.026-.27L12 11.882l1.872-1.092a.75.75 0 1 1 .756 1.295l-1.878 1.096V15a.75.75 0 0 1-1.5 0v-1.82l-1.878-1.095a.75.75 0 0 1-.27-1.025ZM3 13.5a.75.75 0 0 1 .75.75v1.82l1.878 1.095a.75.75 0 1 1-.756 1.295l-2.25-1.312a.75.75 0 0 1-.372-.648v-2.25A.75.75 0 0 1 3 13.5Zm18 0a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.372.648l-2.25 1.312a.75.75 0 1 1-.756-1.295l1.878-1.096V14.25a.75.75 0 0 1 .75-.75Zm-9 5.25a.75.75 0 0 1 .75.75v.944l1.122-.654a.75.75 0 1 1 .756 1.295l-2.25 1.313a.75.75 0 0 1-.756 0l-2.25-1.313a.75.75 0 1 1 .756-1.295l1.122.654V19.5a.75.75 0 0 1 .75-.75Z"
             clip-rule="evenodd" />
         </svg>
-        <h3 class="mt-4 text-md font-medium text-white">No instances</h3>
-        <p class="mt-1 text-sm text-neutral-400">There are no instances on your account.</p>
+        <h3 class="mt-4 text-md font-medium text-white"><%= req.translations.noInstances %></h3>
+        <p class="mt-1 text-sm text-neutral-400"><%= req.translations.noInstancesText %></p>
       </div>
     <% } %>
     <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -92,7 +92,7 @@
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                       </path>
                     </svg>
-                    loading...
+                    <%= req.translations.loading %>
                   </span>
                 </span>
                 <span
@@ -106,7 +106,7 @@
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                       </path>
                     </svg>
-                    loading...
+                    <%= req.translations.loading %>
                   </span>
                 </span>
                 <span
@@ -120,7 +120,7 @@
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                       </path>
                     </svg>
-                    loading...
+                    <%= req.translations.loading %>
                   </span>
                 </span>
               </div>
@@ -174,7 +174,7 @@
                   const ramUsage = isNaN(ramUsageRaw) ? '0 B' : formatBytes(ramUsageRaw);
                   const ramLimitRaw = stats.memory_stats.limit / 1024;
                   const ramLimit = isNaN(ramLimitRaw) ? '0 B' : formatBytes(ramLimitRaw);
-                  ramUsageElement.textContent = ramUsage + ' RAM Usage';
+                  ramUsageElement.textContent = ramUsage + ' <%= req.translations.ramUsage %>';
             
                   // Determine status based on RAM usage
                   if (isNaN(ramUsageRaw)) {
@@ -193,7 +193,7 @@
                   const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta))
                     ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%'
                     : '0%';
-                  cpuUsageElement.textContent = cpuUsagePercent + ' CPU Usage';
+                  cpuUsageElement.textContent = cpuUsagePercent + ' <%= req.translations.cpuUsage %>';
                 };
               });
             });
@@ -230,7 +230,7 @@
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                     </path>
                   </svg>
-                  loading...
+                  <%= req.translations.loading %>
                 </span>
               </span>
               <span
@@ -244,7 +244,7 @@
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                     </path>
                   </svg>
-                  loading...
+                  <%= req.translations.loading %>
                 </span>
               </span>
               <span
@@ -258,7 +258,7 @@
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                     </path>
                   </svg>
-                  loading...
+                  <%= req.translations.loading %>
                 </span>
               </span>
             </div>
@@ -312,7 +312,7 @@
                 const ramUsage = isNaN(ramUsageRaw) ? '0 B' : formatBytes(ramUsageRaw);
                 const ramLimitRaw = stats.memory_stats.limit / 1024;
                 const ramLimit = isNaN(ramLimitRaw) ? '0 B' : formatBytes(ramLimitRaw);
-                ramUsageElement.textContent = ramUsage + ' RAM Usage';
+                ramUsageElement.textContent = ramUsage + ' <%= req.translations.ramUsage %>';
 
                 // Determine status based on RAM usage
                 if (isNaN(ramUsageRaw)) {
@@ -331,7 +331,7 @@
                 const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta))
                   ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%'
                   : '0%';
-                cpuUsageElement.textContent = cpuUsagePercent + ' CPU Usage';
+                cpuUsageElement.textContent = cpuUsagePercent + ' <%= req.translations.cpuUsage %>';
               };
             });
           });

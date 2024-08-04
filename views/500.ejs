@@ -1,18 +1,22 @@
 <%- include('components/template') %>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/min/vs/loader.js"></script>
-<main id="content">
-<div class="bg-transparent">
-    <div class="sm:flex sm:items-center px-8 pt-4">
-       <div class="sm:flex-auto">
-          <h1 class="text-base font-medium leading-6 text-white">Manage Instance</h1>
-          <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
-       </div>
-    </div>
-</div>
-<%- include('components/instance') %>
 
-<h1 class="text-neutral-500 font-mono tracking-widest px-8 text-sm mb-1">500 SERVER ERROR</h1>
-<p class="text-white font-medium text-lg px-8 mt-4">Hm... Something went wrong there.</p>
-<p class="text-neutral-400 font-normal px-8 mt-1">Here's the error that was returned: <code><%= error %></code></p>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/min/vs/loader.js"></script>
+
+<main id="content">
+    <div class="bg-transparent">
+        <div class="sm:flex sm:items-center px-8 pt-4">
+            <div class="sm:flex-auto">
+                <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.manageInstance %></h1>
+                <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.instanceViewDetailText %></p>
+            </div>
+        </div>
+    </div>
+
+    <%- include('components/instance') %>
+
+    <h1 class="text-neutral-500 font-mono tracking-widest px-8 text-sm mb-1"><%= req.translations.fivezerozeroInstanceError %></h1>
+    <p class="text-white font-medium text-lg px-8 mt-4"><%= req.translations.somethingWentWrongThere %></p>
+    <p class="text-neutral-400 font-normal px-8 mt-1"><%= req.translations.returnedTextError %> <code><%= error || req.translations.informationAvailableError %></code></p>
 </main>
+
 <%- include('components/footer') %>

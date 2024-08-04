@@ -3,40 +3,40 @@
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
-           <h1 class="text-base font-medium leading-6 text-white">Overview</h1>
-           <p class="mt-1 tracking-tight text-sm text-neutral-500">A simple overview of your Panel.</p>
+           <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.overview %></h1>
+           <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.overviewText %></p>
          </div>
          <div class="mt-4 sm:ml-16 sm:mt-0 flex space-x-4">
            <a href="../account/debug" class="block rounded-xl bg-transparent px-3 py-2 text-center text-sm font-normal text-neutral-300 shadow-lg hover:bg-neutral-600/10 border border-white/5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            Account - JSON
+            <%= req.translations.accountJSON %>
            </a>
            <a href="../nodes/debug" class="block rounded-xl bg-transparent px-3 py-2 text-center text-sm font-normal text-neutral-300 shadow-lg hover:bg-neutral-600/10 border border-white/5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            Nodes - JSON
+            <%= req.translations.nodesJSON %>
            </a>
          </div>
        </div>
        <div class="px-8 mt-5">
         <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
             <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
-               <dt class="truncate text-sm font-medium text-neutral-400">Users</dt>
+               <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.users %></dt>
                <dd class="mt-1 text-3xl font-medium tracking-tight text-white">
                   <%= usersTotal %>
                </dd>
             </div>
             <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
-               <dt class="truncate text-sm font-medium text-neutral-400">Instances</dt>
+               <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.instances %></dt>
                <dd class="mt-1 text-3xl font-medium tracking-tight text-white">
                   <%= instancesTotal %>
                </dd>
             </div>
             <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
-               <dt class="truncate text-sm font-medium text-neutral-400">Nodes</dt>
+               <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.nodes %></dt>
                <dd class="mt-1 text-3xl font-medium tracking-tight text-white">
                   <%= nodesTotal %> 
                </dd>
             </div>
             <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
-               <dt class="truncate text-sm font-medium text-neutral-400">Images</dt>
+               <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.images %></dt>
                <dd class="mt-1 text-3xl font-medium tracking-tight text-white">
                   <%= imagesTotal %>
                </dd>
@@ -56,17 +56,17 @@
                     versionSpan.textContent = currentVersion;
             
                     if (currentVersion === latestVersion) {
-                      versionStatusSpan.textContent = 'You are running the latest version!';
+                      versionStatusSpan.textContent = '<%= req.translations.runningLatestVersion %>';
                     } else {
                       const link = document.createElement('a');
                       link.href = 'https://github.com/skyportlabs/panel/releases/tag/' + latestVersion;
                       link.classList.add('text-amber-500', 'transition', 'hover:text-amber-600', 'font-medium');
-                      link.textContent = 'here';
+                      link.textContent = '<%= req.translations.here %>';
             
-                      const linkText = document.createTextNode(`A new release, Skyport ${latestVersion} is available. Please click `);
+                      const linkText = document.createTextNode(`<%= req.translations.newReleaseSkyport1 %> ${latestVersion} <%= req.translations.newReleaseSkyport2 %> `);
                       versionStatusSpan.appendChild(linkText);
                       versionStatusSpan.appendChild(link);
-                      versionStatusSpan.appendChild(document.createTextNode(' to download it!'));
+                      versionStatusSpan.appendChild(document.createTextNode(' <%= req.translations.newReleaseSkyport3 %>'));
                       versionStatusSpan.classList.add('text-amber-500', 'pt-2');
                     }
                   })
@@ -74,9 +74,9 @@
                     console.error('Error fetching latest version:', error);
                   });
               </script>
-             <h1 class="text-white text-lg font-medium tracking-tight pl-8">System information</h1>
+             <h1 class="text-white text-lg font-medium tracking-tight pl-8"><%= req.translations.sysInfo %></h1>
              <p class="text-sm mt-1 font-normal text-neutral-300 mb-2 pl-8">
-                You are running Skyport Panel version <span id="currentVersion"></span>. <span id="versionStatus"></span>
+                <%= req.translations.sysInfoText %> <span id="currentVersion"></span>. <span id="versionStatus"></span>
               </p>
           </div>
           <div class="mt-5 flex justify-between space-x-8">

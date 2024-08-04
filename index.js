@@ -30,6 +30,8 @@ const path = require('path');
 const chalk = require('chalk');
 const expressWs = require('express-ws')(app);
 const { db } = require('./handlers/db.js')
+const translationMiddleware = require('./handlers/translation');
+const cookieParser = require('cookie-parser')
 
 const sqlite = require("better-sqlite3");
 const SqliteStore = require("better-sqlite3-session-store")(session);
@@ -47,6 +49,10 @@ const log = new CatLoggr();
  */
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(cookieParser())
+
+app.use(translationMiddleware);
 
 app.set('view engine', 'ejs');
 app.use(
@@ -70,6 +76,7 @@ app.use((req, res, next) => {
   next();
 });
 
+
 /* remove the comments for faster loading
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -88,6 +95,7 @@ app.use('/assets', (req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 // init
 init();
 
@@ -100,6 +108,20 @@ console.log(chalk.gray(ascii) + chalk.white(`version v${config.version}\n`));
  * modular route definitions that can be independently maintained and easily scaled.
  */
 const routesDir = path.join(__dirname, 'routes');
+
+
+
+app.get('/setLanguage', (req, res) => {
+  const lang = req.query.lang;
+  if (lang && (lang === 'en' || lang === 'de')) {
+      res.cookie('lang', lang, { maxAge: 900000, httpOnly: true });
+      req.user.lang = lang; // Update user language preference
+      res.json({ success: true });
+  } else {
+      console.log('Invalid language');
+      res.json({ success: false });
+  }
+});
 
 function loadRoutes(directory) {
   fs.readdirSync(directory).forEach(file => {

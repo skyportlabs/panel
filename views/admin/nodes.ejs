@@ -3,11 +3,13 @@
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
-           <h1 class="text-base font-medium leading-6 text-white">Nodes</h1>
-           <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the nodes set up on the Skyport panel.</p>
+           <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.nodes %></h1>
+           <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.nodesText %></p>
          </div>
          <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-           <button id="createButton" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new node</button>
+           <button id="createButton" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <%= req.translations.createNewNode %>
+          </button>
          </div>
        </div>
       <% if (req.query.err == "none") { %>
@@ -56,10 +58,10 @@
         </colgroup>
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
-            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:pl-80 lg:pl-8">Name</th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">Connection</th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20">Instances</th>
-			<th scope="col" class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20">Actions</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:pl-80 lg:pl-8"><%= req.translations.name %></th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell"><%= req.translations.connection %></th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"><%= req.translations.instances %></th>
+			<th scope="col" class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"><%= req.translations.actions %></th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
@@ -98,9 +100,19 @@
             </td>
             <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"><%= set[node.id] || 0 %></td>
 			<td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3">
-        <div class="inner"><button onclick="configure('<%= node.id %>')" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Configure</button></div>
-				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</button></a></div>
-				<div class="inner"><button id="removeButton" onclick="location.href='/admin/nodes/delete/<%= node.id %>'" type="button" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Remove</button></div>
+        <div class="inner"><button onclick="configure('<%= node.id %>')" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          <%= req.translations.configure %>
+        </button>
+      </div>
+				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          <%= req.translations.edit %>
+        </button>
+      </a>
+    </div>
+				<div class="inner"><button id="removeButton" onclick="location.href='/admin/nodes/delete/<%= node.id %>'" type="button" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          <%= req.translations.remove %>
+        </button>
+      </div>
           </tr>
           <% }); %>
         </tbody>
@@ -114,43 +126,45 @@
           <form>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label for="nodeName" class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
+                <label for="nodeName" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.name %>:</label>
                 <input id="nodeName" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My node">
               </div>
       
               <div>
-                <label for="nodeRam" class="text-neutral-400 text-sm tracking-tight mb-2">RAM (GB):</label>
+                <label for="nodeRam" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.ram %> (GB):</label>
                 <input id="nodeRam" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="This is only for information purposes.">
               </div>
       
               <div>
-                <label for="nodeDisk" class="text-neutral-400 text-sm tracking-tight mb-2">Disk (GB):</label>
+                <label for="nodeDisk" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.disk %> (GB):</label>
                 <input id="nodeDisk" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="This is only for information purposes.">
               </div>
       
               <div>
-                <label for="nodeProcessor" class="text-neutral-400 text-sm tracking-tight mb-2">CPU:</label>
+                <label for="nodeProcessor" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.cpu %>:</label>
                 <input id="nodeProcessor" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="This is only for information purposes.">
               </div>
       
               <div>
-                <label for="nodeAddress" class="text-neutral-400 text-sm tracking-tight mb-2">IP Address:</label>
+                <label for="nodeAddress" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.addressIP %>:</label>
                 <input id="nodeAddress" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="192.168.1.1 or my.hostnamehere.com">
               </div>
       
               <div>
-                <label for="nodePort" class="text-neutral-400 text-sm tracking-tight mb-2">Daemon Port:</label>
+                <label for="nodePort" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.deamonPort %>:</label>
                 <input id="nodePort" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="3000">
               </div>
       
               <div class="col-span-2">
-                <label for="tagInput" class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
+                <label for="tagInput" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.tags %>:</label>
                 <div id="tagContainer" class="flex flex-wrap gap-2 mb-2"></div>
                 <input id="tagInput" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="Add a tag and press Enter">
               </div>
       
               <div class="col-span-2">
-                <button id="createNodeBtn" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
+                <button id="createNodeBtn" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                  <%= req.translations.create %>
+                </button>
               </div>
             </div>
           </form>
