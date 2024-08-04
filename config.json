@@ -2,7 +2,7 @@
     "baseUri": "http://localhost:3001",
     "port": 3001,
     "domain": "localhost",
-    "version": "0.2.0-beta1",
+    "version": "0.2.0",
     "ogTitle": "Skyport Panel",
-    "ogDescription": "Best Game server Managment Panel!"
+    "ogDescription": "This is an instance of the Skyport Panel - learn more at github.com/skyportlabs"
 } 
