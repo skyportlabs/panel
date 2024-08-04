@@ -113,7 +113,7 @@ const routesDir = path.join(__dirname, 'routes');
 
 app.get('/setLanguage', (req, res) => {
   const lang = req.query.lang;
-  if (lang && (lang === 'en' || lang === 'de')) {
+  if (lang && (lang === 'en' || lang === 'de' || lang === 'nl')) {
       res.cookie('lang', lang, { maxAge: 900000, httpOnly: true });
       req.user.lang = lang; // Update user language preference
       res.json({ success: true });
