@@ -39,10 +39,10 @@
                      <button type="submit" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><%= req.translations.update_password %></button>
                  </form>
                  <% if (user.twoFAEnabled !== true) { %>
-                  <button onclick="window.location.href = '/enable-2fa';" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><%= req.translations.enabled2FA %></button>      
+                  <button onclick="window.location.href = '/enable-2fa';" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><%= req.translations.enabledTWOFA %></button>      
                  <% } else { %>
                  <form action="/disable-2fa" method="POST">
-                  <button class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><%= req.translations.disable2FA %></button>
+                  <button class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><%= req.translations.disableTWOFA %></button>
                  </form>
                  <% } %>
                </div>

@@ -22,9 +22,9 @@
                 </svg>                
              </div>
              <div class="ml-5">
-                <h3 class="text-sm font-medium text-emerald-400">Success!</h3>
+                <h3 class="text-sm font-medium text-emerald-400"><%= req.translations.success %></h3>
                 <div class="text-sm text-emerald-400/50">
-                   <p>The action was successfully completed.</p>
+                   <p><%= req.translations.actionCompletedSuccess %>.</p>
                 </div>
              </div>
           </div>
@@ -40,9 +40,9 @@
                 </svg>                
              </div>
              <div class="ml-5">
-                <h3 class="text-sm font-medium text-emerald-400">Success!</h3>
+                <h3 class="text-sm font-medium text-emerald-400"><%= req.translations.success %></h3>
                 <div class="text-sm text-emerald-400/50">
-                   <p>The node was edited successfully.</p>
+                   <p><%= req.translations.nodeEditedSuccess %></p>
                 </div>
              </div>
           </div>
@@ -95,7 +95,7 @@
             <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
               <div class="flex gap-x-3">
                 <div class="font-mono text-sm leading-6 text-neutral-400"><%= node.address %><span class="text-neutral-500">:<%= node.port %></span></div>
-                <div class="rounded-xl bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"><%= node.versionRelease || 'unknown' %></div>
+                <div class="rounded-xl bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"><%= node.versionRelease || '<%= req.translations.unknown %>' %></div>
               </div>
             </td>
             <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"><%= set[node.id] || 0 %></td>
@@ -118,7 +118,7 @@
         </tbody>
       </table>
       <div id="notification" class="fixed bottom-5 right-5 bg-white/5 text-white px-4 py-2 rounded-xl shadow-lg transform transition-all duration-300 tranneutral-y-full opacity-0">
-        Command copied to clipboard!
+        <%= req.translations.copiedToClipboard %>
       </div>
       </div>
       <div id="nodeForm" class="mt-6 px-8 w-full hidden">
@@ -195,6 +195,10 @@
   }
 
   function showPopup(command) {
+    const tokenCreated = '<%= req.translations.tokenCreated %>'
+    const autoConfigureNode = '<%= req.translations.autoConfigureNode %>'
+    const done = '<%= req.translations.done %>'
+
     const popup = document.createElement('div');
     popup.style.position = 'fixed';
     popup.style.top = '50%';
@@ -216,10 +220,10 @@
 <linearGradient id="1ayUTr30BaMDjOG69N2fSa_xTkoPEFGI0P7_gr1" x1="21.241" x2="3.541" y1="39.241" y2="21.541" gradientUnits="userSpaceOnUse"><stop offset=".108" stop-color="#0d7044"></stop><stop offset=".433" stop-color="#11945a"></stop></linearGradient><path fill="url(#1ayUTr30BaMDjOG69N2fSa_xTkoPEFGI0P7_gr1)" d="M16.599,41.42L1.58,26.401c-0.774-0.774-0.774-2.028,0-2.802l4.019-4.019	c0.774-0.774,2.028-0.774,2.802,0L23.42,34.599c0.774,0.774,0.774,2.028,0,2.802l-4.019,4.019	C18.627,42.193,17.373,42.193,16.599,41.42z"></path><linearGradient id="1ayUTr30BaMDjOG69N2fSb_xTkoPEFGI0P7_gr2" x1="-15.77" x2="26.403" y1="43.228" y2="43.228" gradientTransform="rotate(134.999 21.287 38.873)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2ac782"></stop><stop offset="1" stop-color="#21b876"></stop></linearGradient><path fill="url(#1ayUTr30BaMDjOG69N2fSb_xTkoPEFGI0P7_gr2)" d="M12.58,34.599L39.599,7.58c0.774-0.774,2.028-0.774,2.802,0l4.019,4.019	c0.774,0.774,0.774,2.028,0,2.802L19.401,41.42c-0.774,0.774-2.028,0.774-2.802,0l-4.019-4.019	C11.807,36.627,11.807,35.373,12.58,34.599z"></path>
 </svg>
         </div>
-        <p class="font-bold mb-2 mt-3 text-black" style="font-size:30px; text-align:center">Token created.</p>
-        <h3 class="mb-5 text-neutral-600" style="text-align:center; margin-top: 25px;">To auto-configure your node, run the following command:</h3>
+        <p class="font-bold mb-2 mt-3 text-black" style="font-size:30px; text-align:center">${tokenCreated}.</p>
+        <h3 class="mb-5 text-neutral-600" style="text-align:center; margin-top: 25px;">${autoConfigureNode}:</h3>
         <pre class="bg-neutral-900 p-3 rounded-xl mb-4 mt-3" style="overflow-x: scroll"><code id="commandCode" class="text-emerald-500">${command}</code></pre>
-        <button id="doneBtn" class="block rounded-xl bg-black text-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4">Done</button>
+        <button id="doneBtn" class="block rounded-xl bg-black text-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4">${done}</button>
     `;
     document.body.appendChild(popup);
 
@@ -243,10 +247,7 @@
 
         document.body.removeChild(popup);
     });
-}
-
-
-  
+  }
 
   function setupBadgeInput(inputId, containerId, validator) {
     const input = document.getElementById(inputId);
@@ -267,7 +268,7 @@
         });
 
         if (!allValid) {
-            alert('Invalid format. Ports should be like this: 8080:8080 [external:internal]. For example, if you wanted to assign 8080 to the internal port 2022, you could do: 8080:2022.');
+            alert('<%= req.translations.portsFormatInvalid %>');
         }
 
         input.value = '';
@@ -300,7 +301,7 @@
             });
 
             if (!allValid) {
-                alert('Invalid format. Ports should be like this: 8080:8080 [external:internal]. For example, if you wanted to assign 8080 to the internal port 2022, you could do: 8080:2022.');
+                alert('<%= req.translations.portsFormatInvalid %>');
             }
 
             input.value = '';
@@ -309,21 +310,21 @@
 
 
     function createBadge(text, container, inputField) {
-    const badge = document.createElement('span');
-    badge.className = 'bg-white/5 text-neutral-300 text-xs font-medium mr-1 px-2.5 py-0.5 rounded-xl';
-    badge.textContent = text;
+      const badge = document.createElement('span');
+      badge.className = 'bg-white/5 text-neutral-300 text-xs font-medium mr-1 px-2.5 py-0.5 rounded-xl';
+      badge.textContent = text;
 
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'ml-2 text-neutral-600';
-    removeBtn.textContent = '×';
-    removeBtn.onclick = function() {
-      container.removeChild(badge);
-    };
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'ml-2 text-neutral-600';
+      removeBtn.textContent = '<%= req.translations.× %>';
+      removeBtn.onclick = function() {
+        container.removeChild(badge);
+      };
 
-    badge.appendChild(removeBtn);
-    container.appendChild(badge);
-    inputField.value = '';
-  }
+      badge.appendChild(removeBtn);
+      container.appendChild(badge);
+      inputField.value = '';
+    }
   }
 
   setupBadgeInput('tagInput', 'tagContainer');
@@ -364,7 +365,7 @@
       console.log('Node created:', data);
       window.location.href = '../admin/nodes?err=none'
     })
-    .catch(error => alert('Error creating node:', error));
+    .catch(error => alert('<%= req.translations.nodeCreatingError %> :', error));
   });
 </script>
 <%- include('../components/footer') %>

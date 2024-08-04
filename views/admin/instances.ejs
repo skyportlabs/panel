@@ -22,7 +22,7 @@
           </button>
          </div>
        </div>
- <% if (req.query.err == "CREATED") { %>
+      <% if (req.query.err == "CREATED") { %>
       <div class="mt-6 w-full">
         <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
           <div class="flex">
@@ -32,9 +32,9 @@
                 </svg>                
              </div>
              <div class="ml-5">
-                <h3 class="text-sm font-medium text-emerald-400">Action completed!</h3>
+                <h3 class="text-sm font-medium text-emerald-400"><%= req.translations.actionCompleted %></h3>
                 <div class="text-sm text-emerald-400/50">
-                   <p>The instance was created successfully. Please allow a few minutes for it to finish installing and downloading additional files. </p>
+                   <p><%= req.translations.instanceCreatedSuccess %></p>
                 </div>
              </div>
           </div>
@@ -174,9 +174,6 @@
         </div>
     </div>
     
-
-
-    
 </main>
 <script>
   document.getElementById('image').addEventListener('change', function(event) {
@@ -243,7 +240,7 @@
 <script>
 document.getElementById('createNodeBtn').addEventListener('click', async function() {
     const createBtn = this;
-    createBtn.textContent = 'Working on it...';
+    createBtn.textContent = '<%= req.translations.workingOnIt %>';
     createBtn.disabled = true;
 
     const name = document.getElementById('name');
@@ -270,35 +267,35 @@ document.getElementById('createNodeBtn').addEventListener('click', async functio
     let isValid = true;
 
     if (name.value.includes(' ')) {
-        showError(name, 'Name must not contain spaces.');
+        showError(name, '<%= req.translations.nameMustNotContainSpaces %>');
         isValid = false;
     }
 
     if (!isPositiveInteger(memory.value)) {
-        showError(memory, 'Memory must be an integer greater than 1.');
+        showError(memory, '<%= req.translations.memoryMustBeGreaterThanOne %>');
         isValid = false;
     }
 
     if (!isPositiveIntegerCpu(cpu.value)) {
-        showError(cpu, 'CPU must be an integer greater than 0.');
+        showError(cpu, '<%= req.translations.cpuMustBeGreaterThanZero %>');
         isValid = false;
     }
 
     const portPattern = /^(\d+:\d+)(,\d+:\d+)*$/;
     if (!ports.value.match(portPattern)) {
-        showError(ports, 'Ports must be in the format "port:port,port:port".');
+        showError(ports, '<%= req.translations.portsMustBeFormat %>');
         isValid = false;
     }
 
     if (!primaryPort.value.match(/^\d+$/)) {
-        showError(primaryPort, 'Primary port must be a valid number.');
+        showError(primaryPort, '<%= req.translations.primaryPortMustBeValidNumber %>');
         isValid = false;
     } else {
         configFileContent = configFileContent.replace('{{primaryPort}}', primaryPort.value);
     }
 
     if (!isValid) {
-        createBtn.textContent = 'Create';
+        createBtn.textContent = '<%= req.translations.create %>';
         createBtn.disabled = false;
         return;
     }
@@ -373,13 +370,13 @@ function sendData(nodeData, createBtn) {
     .then(data => {
 	window.location.href = '../admin/instances?err=CREATED'
         console.log('Instance created:', data);
-        createBtn.textContent = 'Create';
+        createBtn.textContent = '<%= req.translations.create %>';
         createBtn.disabled = false;
     })
     .catch(error => {
         console.error('Error creating instance:', error);
-        alert('Error! Instance creation failed. Check the console for more details.');
-        createBtn.textContent = 'Create';
+        alert('<%= req.translations.instanceCreationFailed %>');
+        createBtn.textContent = '<%= req.translations.create %>';
         createBtn.disabled = false;
     });
 }
@@ -393,7 +390,7 @@ function handleResponse(response) {
 
 function handleError(error) {
     console.error('Error creating instance:', error);
-    alert('Error! Check the console for more details.');
+    alert('<%= req.translations.errorCheckTheConsole %>');
     createBtn.textContent = 'Create';
     createBtn.disabled = false;
 }
