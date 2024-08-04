@@ -71,16 +71,6 @@ function filterLinks(searchTerm) {
 
 filterLinks('');
 
-document.addEventListener('keydown', (event) => {
-  if (event.key === '/') {
-    event.preventDefault();
-    searchModal.classList.add('show');
-    setTimeout(() => {
-      modalContent.classList.add('visible');
-      searchInput.focus();
-    }, 50);
-  }
-});
 
 window.addEventListener('click', (event) => {
   if (event.target === searchModal) {
