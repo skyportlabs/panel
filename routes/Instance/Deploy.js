@@ -97,7 +97,7 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, Id, var
       PortBindings: {},
       variables,
       AltImages: imageData ? imageData.AltImages : [],
-      StopCommand: imageData ? imageData.StopCommand : undefined
+      StopCommand: imageData ? imageData.StopCommand : undefined, imageData
     }
   };
 
@@ -132,7 +132,7 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
     Primary: primary,
     Image: image,
     AltImages: altImages,
-    StopCommand: imageData ? imageData.StopCommand : undefined
+    StopCommand: imageData ? imageData.StopCommand : undefined,imageData
   };
 
   const userInstances = await db.get(`${userId}_instances`) || [];
