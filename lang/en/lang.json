@@ -1,6 +1,6 @@
 {
     "manageInstance": "Manage Instance",
-    "instanceViewDetailText": "View, update and manage an instance on the Skyport panel.",
+    "instanceViewDetailText": "View, update or manage an instance on the Skyport panel.",
     "fivezerozeroInstanceError": "500 SERVER ERROR",
     "somethingWentWrongThere": "Hm... Something went wrong there.",
     "returnedTextError": "Here's the error that was returned:",
@@ -160,7 +160,7 @@
     "stop": "Stop",
     "restart": "Restart",
     "created": "CREATED!",
-    "apiKeySuccessCreated": "The API-Key was CREATED successfully.",
+    "apiKeySuccessCreated": "The API Key was created successfully.",
     "apiKeyErrorDelete": "Error deleting key",
     "editUser": "Edit User",
     "editUserDetails": "Modify the details of the selected user.",
