@@ -2,31 +2,33 @@
 <main id="content">
 <div id="nodeForm" class="mt-6 px-8 w-full">
 	<form>
-	 <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
+	 <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.name %>:</label>
 	 <input id="nodeName" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My node" value="<%- node.name %>">
 
-	 <label class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
+	 <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.tags %>:</label>
 	 <input id="nodeTags" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="Tag 1 - Tag 2 - Tag 3" value="<%- node.tags %>">
 
-	 <label class="text-neutral-400 text-sm tracking-tight mb-2">RAM (GB):</label>
+	 <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.ram %> (GB):</label>
 	 <input id="nodeRam" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8" value="<%- node.ram %>">
 
-	 <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (GB):</label>
+	 <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.disk %> (GB):</label>
 	 <input id="nodeDisk" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="40" value="<%- node.disk %>">
 
-	 <label class="text-neutral-400 text-sm tracking-tight mb-2">Processor:</label>
+	 <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.processor %>:</label>
 	 <input id="nodeProcessor" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="AMD EPYC 9454 - 16 Threads"  value="<%- node.processor %>">
 
-	 <label class="text-neutral-400 text-sm tracking-tight mb-2">IP Address:</label>
+	 <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.addressIP %>:</label>
 	 <input id="nodeAddress" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="192.168.1.1 or my.hostnamehere.com" value="<%- node.address %>">
 
-	 <label class="text-neutral-400 text-sm tracking-tight mb-2">Daemon Port:</label>
+	 <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.deamonPort %>:</label>
 	 <input id="nodePort" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8080" value="<%- node.port %>">
 
-	 <label class="text-neutral-400 text-sm tracking-tight mb-2">Access Key:</label>
+	 <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.accessKey %>:</label>
 	 <input id="nodeApiKey" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="skyportd_xxxxxxxxxxxxxxxx" value="<%- node.apiKey %>">
 
-	 <button id="saveNodeBtn" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Apply Changes</button>
+	 <button id="saveNodeBtn" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <%= req.translations.applyChanges %>
+    </button>
   </form>
 </div>
 

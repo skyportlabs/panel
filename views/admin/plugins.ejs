@@ -3,8 +3,8 @@
   <div class="bg-transparent">
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
-        <h1 class="text-base font-medium leading-6 text-white">Plugins Overview</h1>
-        <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the Plugins installed on the panel.</p>
+        <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.pluginsOverview %></h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.pluginsOverviewDetails %></p>
       </div>
       <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
         <button id="reload" type="button" class="block rounded-xl bg-green-500 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-green-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" onclick="fetch('/admin/plugins/reload', {method: 'POST'}), location.reload()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -20,7 +20,7 @@
           
           <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
             <div class="flex-grow">
-                <dt class="truncate text-sm font-medium text-neutral-400">Plugins Installed:</dt>
+                <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.pluginsInstalled %>:</dt>
                 <dd class="mt-1 text-lg font-medium tracking-tight text-white">
                   <span id="ramUsage">
                     <%= plugins.length %>
@@ -37,7 +37,7 @@
          
         <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
           <div class="flex-grow">
-              <dt class="truncate text-sm font-medium text-neutral-400">Plugins Enabled:</dt>
+              <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.pluginsEnabled %>:</dt>
               <dd class="mt-1 text-lg font-medium tracking-tight text-white">
                 <span id="ramUsage">
                   <%= enabledPlugins.length %>
@@ -55,7 +55,7 @@
         </dl>
 
         <div class="mt-8">
-          <h3 class="text-lg font-medium leading-6 text-white">Installed Plugins:</h3>
+          <h3 class="text-lg font-medium leading-6 text-white"><%= req.translations.installedPlugins %>:</h3>
           <% plugins.forEach(function(plugin) { %>
             <div class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl p-6 flex justify-between">
 
@@ -68,9 +68,9 @@
 
               <button onclick="fetch('/admin/plugins/<%= plugin.name %>/toggle', {method: 'POST'}).then((res) => { if (res.ok) location.reload() })">
                 <% if (enabledPlugins.some(pluginObj => pluginObj.name === plugin.name)) { %>
-                  <span class="bg-red-600 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 px-3 py-1.5 rounded-xl">Disable</span>
+                  <span class="bg-red-600 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 px-3 py-1.5 rounded-xl"><%= req.translations.disable %></span>
                 <% } else { %>
-                  <span class="bg-green-600 text-center text-sm font-medium text-white shadow-lg hover:bg-green-500 px-3 py-1.5 rounded-xl">Enable</span>
+                  <span class="bg-green-600 text-center text-sm font-medium text-white shadow-lg hover:bg-green-500 px-3 py-1.5 rounded-xl"><%= req.translations.enable %></span>
                 <% } %>
               </button>
 

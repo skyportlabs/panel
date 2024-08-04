@@ -3,8 +3,8 @@
   <div class="bg-transparent">
     <div class="sm:flex sm:items-center px-8 pt-4">
       <div class="sm:flex-auto">
-        <h1 class="text-base font-medium leading-6 text-white">Edit Plugin Manifest</h1>
-        <p class="mt-1 tracking-tight text-sm text-neutral-500">Edit the content of the manifest.json of the plugin.</p>
+        <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.editPluginManifest %></h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.editContentManifest %></p>
       </div>
     </div>
   </div>
@@ -12,11 +12,15 @@
 
 <div class="grid sm:grid-cols-4 gap-6 px-8 py-6">
   <div class="bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden w-96 sm:p-6 lg:p-5 mb-6 card" style="width:1600px">
-    <label class="text-neutral-400 text-sm tracking-tight mb-2">/plugins/<%= dir %>/<span class="text-white">manifest.json</span></label>
+    <label class="text-neutral-400 text-sm tracking-tight mb-2">/plugins/<%= dir %>/<span class="text-white"><%= req.translations.manifestJSON %></span></label>
     <div id="editor" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full items-center transition justify-left gap-16 hover:bg-white/5 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" style="height: 500px;"></div>
     <div class="flex flex-row">
-      <button id="save-button" class="mt-6 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
-      <button id="save-close-button" class="ml-6 mt-6 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save & Close</button>
+      <button id="save-button" class="mt-6 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <%= req.translations.save %>
+      </button>
+      <button id="save-close-button" class="ml-6 mt-6 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <%= req.translations.saveANDClose %>
+      </button>
     </div>
   </div>
 </div>

@@ -19,7 +19,7 @@
                     </div>
     
                     <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.image %>:</label>
                         <select style="background: #171717;" id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
                             <% images.forEach(function(image) { %>
                                 <option data-configfilepath="<%= image.ConfigFilePath %>" data-configfilecontent="<%= image.ConfigFileContent %>"><%= image.Name %> (<%= image.Image %>)</option>
@@ -27,24 +27,23 @@
                         </select>
                     </div>
     
-    
                     <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory (MiB):</label>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.memory %> (MiB):</label>
                         <input value="<%= instance.Memory %>" type="number" id="memory" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="2048">
                     </div>
     
                     <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU Threads:</label>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.cpuThreads %>:</label>
                         <input value="<%= instance.Cpu %>" id="cpu" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="1">
                     </div>
     
                     <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports:</label>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.ports %>:</label>
                         <input value="<%= instance.Ports %>" id="ports" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
                     </div>
     
                     <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Primary Port:</label>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.primaryPort %>:</label>
                         <input value="<%= instance.Primary %>" id="primary" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565">
                     </div>
                 </div>
@@ -61,7 +60,7 @@
 <script>
     document.getElementById('createNodeBtn').addEventListener('click', function() {
         const createBtn = this;
-        createBtn.textContent = 'Working on it...';
+        createBtn.textContent = '<%= req.translations.workingOnIt %>';
         createBtn.disabled = true;
     
         const name = document.getElementById('name');
@@ -79,35 +78,35 @@
         let isValid = true;
     
         if (name.value.includes(' ')) {
-            showError(name, 'Name must not contain spaces.');
+            showError(name, '<%= req.translations.nameMustNotContainSpaces %>');
             isValid = false;
         }
     
         if (!isPositiveInteger(memory.value)) {
-            showError(memory, 'Memory must be an integer greater than 1.');
+            showError(memory, '<%= req.translations.memoryMustBeGreaterThanOne %>');
             isValid = false;
         }
     
         if (!isPositiveIntegerCpu(cpu.value)) {
-            showError(cpu, 'CPU must be an integer greater than 0.');
+            showError(cpu, '<%= req.translations.cpuMustBeGreaterThanZero %>');
             isValid = false;
         }
     
         const portPattern = /^(\d+:\d+)(,\d+:\d+)*$/;
         if (!ports.value.match(portPattern)) {
-            showError(ports, 'Ports must be in the format "port:port,port:port".');
+            showError(ports, '<%= req.translations.portsMustBeFormat %>');
             isValid = false;
         }
     
         if (!primaryPort.value.match(/^\d+$/)) {
-            showError(primaryPort, 'Primary port must be a valid number.');
+            showError(primaryPort, '<%= req.translations.primaryPortMustBeValidNumber %>');
             isValid = false;
         } else {
             configFileContent = configFileContent.replace('{{primaryPort}}', primaryPort.value);
         }
     
         if (!isValid) {
-            createBtn.textContent = 'Create';
+            createBtn.textContent = '<%= req.translations.create %>';
             createBtn.disabled = false;
             return;
         }
@@ -180,13 +179,13 @@
         .then(data => {
         window.location.href = '../../../admin/instances?err=CREATED'
             console.log('Instance created:', data);
-            createBtn.textContent = 'Create';
+            createBtn.textContent = '<%= req.translations.create %>';
             createBtn.disabled = false;
         })
         .catch(error => {
             console.error('Error creating instance:', error);
-            alert('Error! Instance creation failed. Check the console for more details.');
-            createBtn.textContent = 'Create';
+            alert('<%= req.translations.instanceCreationFailed %>');
+            createBtn.textContent = '<%= req.translations.create %>';
             createBtn.disabled = false;
         });
     }
@@ -200,8 +199,8 @@
     
     function handleError(error) {
         console.error('Error creating instance:', error);
-        alert('Error! Check the console for more details.');
-        createBtn.textContent = 'Create';
+        alert('<%= req.translations.errorCheckTheConsole %>');
+        createBtn.textContent = '<%= req.translations.create %>';
         createBtn.disabled = false;
     }
     </script>

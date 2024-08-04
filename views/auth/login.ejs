@@ -16,9 +16,9 @@
     <div class="mx-auto w-full max-w-sm lg:w-96">
       <div>
         <% if (logo == true) { %><img class="h-12 w-auto" src="../assets/logo.png"> <% } %>
-        <h2 class="<% if (logo == true) { %>mt-6<% } %> text-3xl font-medium text-white">Sign in to <%= name %></h2>
+        <h2 class="<% if (logo == true) { %>mt-6<% } %> text-3xl font-medium text-white"><%= req.translations.signInTo %> <%= name %></h2>
         <p class="mt-2 text-sm font-normal text-neutral-500">
-          Please enter your account credentials below.
+          <%= req.translations.credentialsDetails %>
         </p>
       </div>
 
@@ -26,14 +26,14 @@
         <div class="mt-6">
           <form id="login-form" class="space-y-6" onsubmit="event.preventDefault(); submitForm();">
             <div>
-              <label for="email" class="block text-sm font-medium text-neutral-400"> Username or Email </label>
+              <label for="email" class="block text-sm font-medium text-neutral-400"> <%= req.translations.usernameOREmail %> </label>
               <div class="mt-2">
                 <input placeholder="example" id="username" autocomplete="username" required class="appearance-none block w-full px-3 py-2 bg-white/10 border border-transparent rounded-xl placeholder-neutral-500 focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 text-white transition sm:text-sm">
               </div>
             </div>
 
             <div class="space-y-1">
-              <label for="password" class="block text-sm font-medium text-neutral-400"> Password </label>
+              <label for="password" class="block text-sm font-medium text-neutral-400"> <%= req.translations.passwordLabel %> </label>
               <div class="mt-2">
                 <input placeholder="********" id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 bg-white/10 border border-transparent rounded-xl placeholder-neutral-500 focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 text-white transition sm:text-sm">
               </div>
@@ -42,16 +42,18 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center">
                 <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-neutral-600 focus:ring-neutral-500 border-white/10 bg-white/5 rounded">
-                <label for="remember-me" class="ml-2 block text-sm text-neutral-400"> Remember me </label>
+                <label for="remember-me" class="ml-2 block text-sm text-neutral-400"> <%= req.translations.rememberMe %> </label>
               </div>
 
               <div class="text-sm">
-                <a href="/auth/reset-password" class="font-normal text-neutral-500 hover:text-white transition ">Forgot your password?</a>
+                <a href="/auth/reset-password" class="font-normal text-neutral-500 hover:text-white transition "><%= req.translations.forgotPassword %></a>
               </div>
             </div>
 
             <div>
-              <a onclick="submitForm()" class="w-full cursor-pointer flex transition justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-neutral-800 bg-white hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">Sign in</a>
+              <a onclick="submitForm()" class="w-full cursor-pointer flex transition justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-neutral-800 bg-white hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">
+                Sign in
+              </a>
             </div>
             
             <% if (settings.register) { %>
@@ -111,9 +113,9 @@
 
             <% if (req.query.msg && req.query.msg === 'PasswordReset') { %>
               <% if (req.query.state && req.query.state === 'success') { %>
-                <span class="text-emerald-600 pt-8 font-normal text-sm">Your password has been successfully updated.</span>
+                <span class="text-emerald-600 pt-8 font-normal text-sm"><%= req.translations.passwordResetSuccess %></span>
               <% } else if (req.query.state && req.query.state === 'failed') { %>
-                <span class="text-red-500 pt-4 font-normal text-sm">Password reset failed. Please try again.</span>
+                <span class="text-red-500 pt-4 font-normal text-sm"><%= req.translations.passwordResetFailed %></span>
               <% } %>
             <% } %>
           </form>
@@ -122,7 +124,7 @@
     </div>
   </div>
   <div class="hidden lg:block relative w-0 flex-1">
-    <img class="absolute inset-0 h-full w-full object-cover" src="https://i.imgur.com/j9BodUY.jpeg" alt="">
+    <img class="absolute inset-0 h-full w-full object-cover" src="https://i.imgur.com/j9BodUY.jpeg" alt="image">
   </div>
 </div>
 
