@@ -299,9 +299,9 @@
          <span class="font-mono text-xs text-zinc-300 font-normal ml-1">(<%= user.userId.substring(0, 6) %>)</span>
        </span>
      </button>
-     <div id="dropdown-menu" class="hidden absolute right-0 z-10 mt-2 w-56 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none pb-2">
+     <div id="dropdown-menu" class="hidden absolute right-0 z-10 mt-2 w-56 bg-white rounded-2xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none pb-2">
        <div class="py-2 px-4">
-         <p class="text-sm font-medium text-gray-700">Theme</p>
+         <p class="text-sm font-medium text-gray-700 mt-2">Theme</p>
          <div class="flex space-x-4 mt-2">
            <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Sun Theme">
              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
@@ -320,7 +320,7 @@
            </button>
          </div>
        </div>
-       <div class="border-t border-gray-200 my-2"></div>
+       <div class="border-t border-gray-200 my-2 mt-2 mb-2"></div>
        <div class="py-1 px-4">
          <label for="language-selector" class="block text-sm font-medium text-gray-700">Language</label>
          <select id="language-selector" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" onchange="changeLanguage(this.value)">
