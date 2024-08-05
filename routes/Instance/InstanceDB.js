@@ -124,16 +124,14 @@ router.post("/instance/:id/db/create/:name", async (req, res) => {
 
         try {
             let response = await axios(requestData);
-
+            
             if (response.status === 200) {
                 if (!Array.isArray(instance.Databases)) {
                     instance.Databases = [];
                 }
 
-                response.data.credentials.host = instance.Node.mysql.host;
-                console.log(instance.Node.mysql);
                 instance.Databases.push(response.data.credentials);
-
+                
                 await db.set(id + '_instance', instance);
 
                 return res.redirect(`/instance/${id}/db`);
