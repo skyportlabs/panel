@@ -179,157 +179,206 @@
                        </li>
                      </ul>
                      </li> -->
-                  <li class="mt-auto border-t border-white/5">
-                     <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-xl pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-                        </svg>
-                        <span>Sign out</span>
-                     </a>
-                  </li>
-               </ul>
-            </nav>
-         </div>
+                     <li class="mt-auto border-t border-white/5">
+                      <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-xl pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition hover:text-white">
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                         </svg>
+                         <span><%= req.translations.signOut %></span>
+                      </a>
+                   </li>
+                </ul>
+             </nav>
+          </div>
+       </div>
+       <div id="colcont" class="lg:pl-56">
+       <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 shadow-sm sm:gap-x-6 sm:px-4 lg:px-4">
+          <button type="button" id="sidebar-toggle" class="w-fit p-2 mt-1 rounded-xl text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
+             <span class="sr-only">Open sidebar</span>
+             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+             </svg>
+          </button>
+          <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+             <div class="relative flex flex-1 flex-col">
+                <div class="flex items-center w-fit mt-3.5 px-4 py-2 h-10  rounded-xl border border-white/5  active:scale-100 duration-200 bg-transparent text-white">
+                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-neutral-400">
+                      <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+                   </svg>
+                   <input id="searchInput" 
+                      class="bg-transparent border-transparent focus-visible:ring-transparent border-none ring-transparent sm:text-sm placeholder:text-zinc-500" 
+                      placeholder="<%= req.translations.search %>" 
+                      type="search" 
+                      name="search"
+                      autocomplete="off"
+                      onclick="input.blur()"
+                      onfocus="showSearchResults()">
+                </div>
+                <div id="searchResults" class="absolute bg-white w-[12.5rem] rounded-xl shadow-lg hidden mt-20 px-2 pb-2">
+                </div>
+             </div>
+             <script src="/javascript/search/index.js"></script>
+             <script>
+                document.addEventListener('keydown', function(event) {
+                  if (event.key === 'F1') {
+                    event.preventDefault();
+                    document.getElementById('searchInput').focus();
+                  }
+                });
+                
+                function showSearchResults() {
+                  document.getElementById('searchResults').classList.remove('hidden');
+                }
+                
+                document.getElementById('searchInput').addEventListener('focus', showSearchResults);
+             </script>
+             <script>
+                function showSearchResults() {
+                    var searchResults = document.getElementById('searchResults');
+                    searchResults.classList.remove('hidden');
+                }
+                
+                document.addEventListener('click', function(event) {
+                    var searchInput = document.getElementById('searchInput');
+                    var searchResults = document.getElementById('searchResults');
+                    if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+                        searchResults.classList.add('hidden');
+                    }
+                });
+             </script>
+ 
+ 
+ <div class="flex items-center gap-x-4 lg:gap-x-6">
+    <!-- Profile dropdown -->
+    <div class="relative mt-3 mr-4">
+      <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true" onclick="toggleDropdown()">
+        <img class="h-8 w-8 rounded-lg bg-transparent" src="https://api.dicebear.com/9.x/thumbs/svg?seed=<%= user.username %>" alt="">
+        <span class="hidden lg:flex lg:items-center ml-2.5 text-sm font-medium leading-6 text-white" aria-hidden="true">
+          <%= user.username %>
+          <span class="font-mono text-xs text-zinc-300 font-normal ml-1">(<%= user.userId.substring(0, 6) %>)</span>
+        </span>
+      </button>
+      <div id="dropdown-menu" class="hidden absolute right-0 z-10 mt-2 w-56 bg-white rounded-2xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none pb-2">
+        <div class="py-2 px-4">
+          <p class="text-sm font-medium text-gray-700 mt-2">Theme</p>
+          <div class="flex space-x-4 mt-2">
+            <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Sun Theme">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm8,24a64,64,0,1,0,64,64A64.07,64.07,0,0,0,128,64ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"></path>
+              </svg>
+            </button>
+            <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Moon Theme">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="24" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M240,96a8,8,0,0,1-8,8H216v16a8,8,0,0,1-16,0V104H184a8,8,0,0,1,0-16h16V72a8,8,0,0,1,16,0V88h16A8,8,0,0,1,240,96ZM144,56h8v8a8,8,0,0,0,16,0V56h8a8,8,0,0,0,0-16h-8V32a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16Zm65.14,94.33A88.07,88.07,0,0,1,105.67,46.86a8,8,0,0,0-10.6-9.06A96,96,0,1,0,218.2,160.93a8,8,0,0,0-9.06-10.6Z"></path>
+              </svg>
+            </button>
+            <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Monitor Theme">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="24" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M232,64V176a24,24,0,0,1-24,24H48a24,24,0,0,1-24-24V64A24,24,0,0,1,48,40H208A24,24,0,0,1,232,64ZM160,216H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="border-t border-gray-200 my-2 mt-2 mb-2"></div>
+        <div class="py-1 px-4">
+          <label for="language-selector" class="block text-sm font-medium text-gray-700">Language</label>
+          <select id="language-selector" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" onchange="changeLanguage(this.value)">
+            <option value="de">Deutsch</option>
+            <option value="en">English</option>
+            <option value="nl">Nederlands</option>
+          </select>
+        </div>
       </div>
-      <div id="colcont" class="lg:pl-56">
-      <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 shadow-sm sm:gap-x-6 sm:px-4 lg:px-4">
-         <button type="button" id="sidebar-toggle" class="w-fit p-2 mt-1 rounded-xl text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
-            <span class="sr-only">Open sidebar</span>
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-         </button>
-         <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-            <div class="relative flex flex-1 flex-col">
-               <div class="flex items-center w-fit mt-3.5 px-4 py-2 h-10  rounded-xl border border-white/5  active:scale-100 duration-200 bg-transparent text-white">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-neutral-400">
-                     <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
-                  </svg>
-                  <input id="searchInput" 
-                     class="bg-transparent border-transparent focus-visible:ring-transparent border-none ring-transparent sm:text-sm placeholder:text-zinc-500" 
-                     placeholder="Search..." 
-                     type="search" 
-                     name="search"
-                     autocomplete="off"
-                     onclick="input.blur()"
-                     onfocus="showSearchResults()">
-               </div>
-               <div id="searchResults" class="absolute bg-white w-[12.5rem] rounded-xl shadow-lg hidden mt-20 px-2 pb-2">
-               </div>
-            </div>
-            <script src="/javascript/search/index.js"></script>
-            <script>
-               document.addEventListener('keydown', function(event) {
-                 if (event.key === 'F1') {
-                   event.preventDefault();
-                   document.getElementById('searchInput').focus();
-                 }
-               });
-               
-               function showSearchResults() {
-                 document.getElementById('searchResults').classList.remove('hidden');
-               }
-               
-               document.getElementById('searchInput').addEventListener('focus', showSearchResults);
-            </script>
-            <script>
-               function showSearchResults() {
-                   var searchResults = document.getElementById('searchResults');
-                   searchResults.classList.remove('hidden');
-               }
-               
-               document.addEventListener('click', function(event) {
-                   var searchInput = document.getElementById('searchInput');
-                   var searchResults = document.getElementById('searchResults');
-                   if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
-                       searchResults.classList.add('hidden');
-                   }
-               });
-            </script>
-            <div class="flex items-center gap-x-4 lg:gap-x-6">
-               <!-- Profile dropdown -->
-               <div class="relative mt-3 mr-4">
-                  <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                  <img class="h-6 w-6 rounded-xl bg-transparent" src="https://source.boringavatars.com/beam/120/<%= user.username %>?colors=264653,f4a261,e76f51" alt="">
-                  <span class="hidden lg:flex lg:items-center">
-                  <span class="ml-2.5 text-sm font-medium leading-6 text-white" aria-hidden="true"><%= user.username %> <span class="font-mono text-xs text-zinc-300 font-normal">(<%= user.userId.substring(0, 6) %>)</span></span>
-                  </span>
-                  </button>
-               </div>
-            </div>
-         </div>
-      </div>
-      <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const navLinks = document.querySelectorAll('.nav-link');
-  const activeBackground = document.getElementById('active-background');
-  const contentSection = document.getElementById('content');
-  let isAnimating = false;
-
-  function updateActiveLink(currentPath) {
-    navLinks.forEach((link) => {
-      if (link.getAttribute('href') === currentPath) {
-        link.classList.add('active');
-        const linkRect = link.getBoundingClientRect();
-        const navRect = link.closest('ul').getBoundingClientRect();
-        activeBackground.style.transform = `tranneutralY(${linkRect.top - navRect.top}px)`;
-      } else {
-        link.classList.remove('active');
+    </div>
+  </div>
+  
+  <script>
+    function toggleDropdown() {
+      const dropdownMenu = document.getElementById('dropdown-menu');
+      dropdownMenu.classList.toggle('hidden');
+    }
+  
+    // Optional: Close the dropdown when clicking outside
+    window.addEventListener('click', function(e) {
+      const userMenuButton = document.getElementById('user-menu-button');
+      const dropdownMenu = document.getElementById('dropdown-menu');
+      if (!userMenuButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.classList.add('hidden');
       }
     });
-  }
-
-  function animatePageTransition(callback) {
-    if (isAnimating) return;
-    isAnimating = true;
-
-    contentSection.style.opacity = '0';
-    contentSection.style.transform = 'tranneutralX(-20px)';
-
-    setTimeout(() => {
-      callback();
-      contentSection.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-      contentSection.style.opacity = '1';
-      contentSection.style.transform = 'tranneutralX(0)';
-      
-      setTimeout(() => {
-        contentSection.style.transition = '';
-        isAnimating = false;
-      }, 300);
-    }, 300);
-  }
-
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const href = link.getAttribute('href');
-      
-      animatePageTransition(() => {
-        window.location.href = href;
-      });
-    });
-  });
-
-  // Prevent animation on initial load and browser back/forward
-  if (performance.getEntriesByType("navigation")[0].type === 'navigate') {
-    contentSection.style.opacity = '1';
-    contentSection.style.transform = 'tranneutralX(0)';
-  }
-
-  // Update active link on page load and popstate
-  updateActiveLink(window.location.pathname);
-  window.addEventListener('popstate', () => {
-    updateActiveLink(window.location.pathname);
-  });
-});
-      </script>
-      <div id="loader" class="fixed ml-56 mt-16 inset-0 flex items-center justify-center bg-black transition-opacity duration-300 opacity-100 z-50">
-         <svg class="animate-spin h-5 w-5 text-white inline-flex"
-            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-               stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor"
-               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-            </path>
-         </svg>
-      </div>
+  </script>
+          </div>
+       </div>
+       <script>
+ document.addEventListener('DOMContentLoaded', function() {
+   const navLinks = document.querySelectorAll('.nav-link');
+   const activeBackground = document.getElementById('active-background');
+   const contentSection = document.getElementById('content');
+   let isAnimating = false;
+ 
+   function updateActiveLink(currentPath) {
+     navLinks.forEach((link) => {
+       if (link.getAttribute('href') === currentPath) {
+         link.classList.add('active');
+         const linkRect = link.getBoundingClientRect();
+         const navRect = link.closest('ul').getBoundingClientRect();
+         activeBackground.style.transform = `translateY(${linkRect.top - navRect.top}px)`;
+       } else {
+         link.classList.remove('active');
+       }
+     });
+   }
+ 
+   function animatePageTransition(href) {
+     if (isAnimating) return;
+     isAnimating = true;
+ 
+     contentSection.style.opacity = '0';
+     contentSection.style.transform = 'translateX(-20px)';
+ 
+     setTimeout(() => {
+       window.location.href = href;
+     }, 300);
+   }
+ 
+   navLinks.forEach(link => {
+     link.addEventListener('click', (e) => {
+       e.preventDefault();
+       const href = link.getAttribute('href');
+       animatePageTransition(href);
+     });
+   });
+ 
+   // Update active link on page load
+   updateActiveLink(window.location.pathname);
+ 
+   // Handle browser back/forward
+   window.addEventListener('popstate', () => {
+     updateActiveLink(window.location.pathname);
+   });
+ });
+       </script>
+           <script>
+             function changeLanguage(lang) {
+                 fetch(`/setLanguage?lang=${lang}`)
+                     .then(response => response.json())
+                     .then(data => {
+                         if (data.success) {
+                             location.reload();
+                         } else {
+                             alert('Failed to change language');
+                         }
+                     });
+             }
+         </script>
+ 
+       <div id="loader" class="fixed ml-56 mt-16 inset-0 flex items-center justify-center bg-[#141414] transition-opacity duration-300 opacity-100 z-50">
+          <svg class="animate-spin h-5 w-5 text-white inline-flex"
+             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                stroke-width="4"></circle>
+             <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+             </path>
+          </svg>
+       </div>

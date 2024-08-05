@@ -77,7 +77,9 @@ app.use((req, res, next) => {
 });
 
 
-/* remove the comments for faster loading
+if (config.mode === 'production' || false) {
+  
+
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Pragma', 'no-cache');
@@ -90,7 +92,8 @@ app.use('/assets', (req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=1');
   next();
 });
-*/
+
+}
 
 app.use(passport.initialize());
 app.use(passport.session());

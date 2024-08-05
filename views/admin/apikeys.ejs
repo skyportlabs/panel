@@ -14,7 +14,7 @@
           type="button"
           class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-        <%= req.translations.createnewapikey %>
+        <%= req.translations.createNewAPIKey %>
         </button>
       </div>
     </div>
@@ -164,7 +164,7 @@
         })
         .then((data) => {
           console.log("key created:", data);
-          alert('<%= req.translations.apiKeyErrorDelete %>');
+          alert('<%= req.translations.apiKeySuccessCreated %>');
           window.location.reload();
         })
         .catch(error => alert('<%= req.translations.apiKeyErrorCreated %>: ' + error.message));

@@ -126,6 +126,7 @@ router.get('/admin/plugins', isAdmin, async (req, res) => {
     const enabledPlugins = pluginArray.filter(plugin => plugin.enabled);
 
     res.render('admin/plugins', {
+        req,
         plugins: pluginList,
         pluginsidebar,
         enabledPlugins,

@@ -1351,6 +1351,10 @@ select {
   width: 100%;
 }
 
+.w-1\/12 {
+  width: 8.333333%;
+}
+
 .min-w-0 {
   min-width: 0px;
 }
@@ -2329,6 +2333,11 @@ select {
   color: rgb(212 212 216 / var(--tw-text-opacity));
 }
 
+.text-indigo-600 {
+  --tw-text-opacity: 1;
+  color: rgb(79 70 229 / var(--tw-text-opacity));
+}
+
 .placeholder-neutral-400::-moz-placeholder {
   --tw-placeholder-opacity: 1;
   color: rgb(163 163 163 / var(--tw-placeholder-opacity));
@@ -2836,6 +2845,11 @@ select {
 
 .focus\:ring-transparent:focus {
   --tw-ring-color: transparent;
+}
+
+.focus\:ring-indigo-600:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(79 70 229 / var(--tw-ring-opacity));
 }
 
 .focus\:ring-offset-2:focus {
