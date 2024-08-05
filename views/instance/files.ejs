@@ -75,83 +75,95 @@
          </div>
          <p id="diskUsage" class="text-sm text-neutral-400"></p>
       </div>
-      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-6">
-         <% files.filter(file => file.isDirectory).forEach(function(directory) { %>
-         <% let currentPath; %>
-         <% if (req.query.path) { %>
-         <% currentPath = req.query.path + '/' %>
-         <% } else { %>
-         <% currentPath = '' %>
-         <% } %>
-         <a href="/instance/<%= req.params.id %>/files?path=<%= currentPath %><%= directory.name %>" class="p-3 hover:bg-[#171717] hover:scale-105 transition bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-3 lg:p-5">
-            <div class="lg:flex lg:items-center lg:justify-between">
-               <div class="min-w-0 flex-1">
-                  <h2 class="text-md font-medium text-white tracking-tight">
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mb-0.5 inline-flex mr-1.5">
-                        <path d="M3.75 3A1.75 1.75 0 0 0 2 4.75v3.26a3.235 3.235 0 0 1 1.75-.51h12.5c.644 0 1.245.188 1.75.51V6.75A1.75 1.75 0 0 0 16.25 5h-4.836a.25.25 0 0 1-.177-.073L9.823 3.513A1.75 1.75 0 0 0 8.586 3H3.75ZM3.75 9A1.75 1.75 0 0 0 2 10.75v4.5c0 .966.784 1.75 1.75 1.75h12.5A1.75 1.75 0 0 0 18 15.25v-4.5A1.75 1.75 0 0 0 16.25 9H3.75Z" />
-                     </svg>
-                     <%= directory.name %>
-                  </h2>
-               </div>
-            </div>
-         </a>
-         <% }); %>
-      </dl>
       <table class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl">
-         <thead class="text-white">
-            <tr>
-               <th class="px-6 py-3 text-left">
-                  <input type="checkbox" id="selectAll" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/10 border border-white/15 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox">
-               </th>
-               <th class="px-6 py-3 text-left">File Name</th>
-               <th class="px-6 py-3 text-left">Size</th>
-               <th class="px-6 py-3 text-left">Last Updated</th>
-               <th class="px-6 py-3 text-left">&nbsp;</th>
-            </tr>
-         </thead>
-         <tbody>
-            <% files.filter(file => !file.isDirectory).forEach(function(file) { %>
-            <% let extension; %>
-            <% if (req.query.path) { %>
-            <% extension = '?path=' + req.query.path %>
-            <% } else { %>
-            <% extension = '' %>
-            <% } %>
+        <thead class="text-white">
+          <tr>
+            <th class="px-6 py-3 text-left">
+              <input type="checkbox" id="selectAll" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/10 border border-white/15 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox">
+            </th>
+            <th class="px-6 py-3 text-left">File Name</th>
+            <th class="px-6 py-3 text-left">Size</th>
+            <th class="px-6 py-3 text-left">Last Updated</th>
+            <th class="px-6 py-3 text-left">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% files.filter(file => file.isDirectory).forEach(function(directory) { %>
+            <% let currentPath = req.query.path ? req.query.path + '/' : ''; %>
             <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
-               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
-                  <input type="checkbox" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/5 border border-white/10 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox" data-filename="<%= file.name %>">
-               </td>
-               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
-                  <a href="/instance/<%= req.params.id %>/files/view/<%= file.name %><%= extension %>" class="flex items-center">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
+                <input type="checkbox" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/5 border border-white/10 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox" data-filename="<%= directory.name %>">
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
+                <a href="/instance/<%= req.params.id %>/files?path=<%= currentPath %><%= directory.name %>" class="flex items-center">
                   <span class="mr-2">
-                  <%- getFileIcon(file.purpose) %>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mb-0.5 inline-flex mr-1.5">
+                      <path d="M3.75 3A1.75 1.75 0 0 0 2 4.75v3.26a3.235 3.235 0 0 1 1.75-.51h12.5c.644 0 1.245.188 1.75.51V6.75A1.75 1.75 0 0 0 16.25 5h-4.836a.25.25 0 0 1-.177-.073L9.823 3.513A1.75 1.75 0 0 0 8.586 3H3.75ZM3.75 9A1.75 1.75 0 0 0 2 10.75v4.5c0 .966.784 1.75 1.75 1.75h12.5A1.75 1.75 0 0 0 18 15.25v-4.5A1.75 1.75 0 0 0 16.25 9H3.75Z" />
+                    </svg>
+                  </span>
+                  <%= directory.name %>
+                </a>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
+                N/A
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
+                N/A
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-none relative">
+                <button onclick="toggleDropdown(event, '<%= directory.name %>')" class="text-neutral-400 hover:text-white transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                  </svg>
+                </button>
+                <div id="dropdown-<%= directory.name %>" class="absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 transform opacity-0 scale-95 transition-all duration-200 ease-out pointer-events-none">
+                  <div class="p-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                    <a href="#" onclick="openRenameModal('<%= directory.name %>', '<%= currentPath %>')" class="transition rounded-xl block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 text-left" role="menuitem">Rename</a>
+                    <a href="#" onclick="openDeleteModal('<%= directory.name %>', '<%= currentPath %>')" class="transition rounded-xl block px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left" role="menuitem">Delete</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+      
+          <% files.filter(file => !file.isDirectory).forEach(function(file) { %>
+            <% let extension = req.query.path ? '?path=' + req.query.path : ''; %>
+            <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
+                <input type="checkbox" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/5 border border-white/10 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox" data-filename="<%= file.name %>">
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
+                <a href="/instance/<%= req.params.id %>/files/view/<%= file.name %><%= extension %>" class="flex items-center">
+                  <span class="mr-2">
+                    <%- getFileIcon(file.purpose) %>
                   </span>
                   <%= file.name %>
-                  </a>
-               </td>
-               <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
-                  <%= file.size %>
-               </td>
-               <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
-                  <%= formatLastUpdated(file.lastUpdated) %>
-               </td>
-               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-none relative">
-                  <button onclick="toggleDropdown(event, '<%= file.name %>')" class="text-neutral-400 hover:text-white transition">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                     </svg>
-                  </button>
-                  <div id="dropdown-<%= file.name %>" class="absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 transform opacity-0 scale-95 transition-all duration-200 ease-out pointer-events-none">
-                     <div class="p-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                        <a href="#" onclick="openRenameModal('<%= file.name %>', '<%= extension %>')" class="transition rounded-xl block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 text-left" role="menuitem">Rename</a>
-                        <a href="#" onclick="openDeleteModal('<%= file.name %>', '<%= extension %>')" class="transition rounded-xl block px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left" role="menuitem">Delete</a>
-                     </div>
+                </a>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
+                <%= file.size %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
+                <%= formatLastUpdated(file.lastUpdated) %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-none relative">
+                <button onclick="toggleDropdown(event, '<%= file.name %>')" class="text-neutral-400 hover:text-white transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                  </svg>
+                </button>
+                <div id="dropdown-<%= file.name %>" class="absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 transform opacity-0 scale-95 transition-all duration-200 ease-out pointer-events-none">
+                  <div class="p-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                    <a href="#" onclick="openRenameModal('<%= file.name %>', '<%= extension %>')" class="transition rounded-xl block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 text-left" role="menuitem">Rename</a>
+                    <a href="#" onclick="openDeleteModal('<%= file.name %>', '<%= extension %>')" class="transition rounded-xl block px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left" role="menuitem">Delete</a>
                   </div>
-               </td>
+                </div>
+              </td>
             </tr>
-            <% }); %>
-         </tbody>
+          <% }); %>
+        </tbody>
       </table>
+      
       <!-- prevent action bar from hiding files -->
       <div class="pb-12"></div>
    </div>
