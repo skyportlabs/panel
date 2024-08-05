@@ -5,6 +5,7 @@ const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
 const path = require('path');
 const { config } = require('process');
+const { fetchFiles } = require('../../utils/fileHelper');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));  // Correct import
 
@@ -69,6 +70,7 @@ router.get("/instance/:id", async (req, res) => {
         user: req.user,
         name: await db.get('name') || 'Skyport',
         logo: await db.get('logo') || false,
+        files: await fetchFiles(instance, ""),
         addons: {
             plugins: allPluginData
         }

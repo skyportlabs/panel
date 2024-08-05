@@ -23,6 +23,33 @@
         }
     </style>
     <main class="overflow-hidden" id="content">
+        <% if (!files.some(file => file.name === 'eula.txt')) { %>
+            <% if ((instance.imageData.features).includes('eula')) { %>
+                <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
+                    <div class="bg-gray-600 p-6 rounded shadow-lg w-1/2 h-36">
+                        <p class="text-white">Do you accept the EULA?</p>
+                        <p class="text-sm text-neutral-400">By pressing this button your agree to the <a class="text-blue-400" href="https://account.mojang.com/documents/minecraft_eula">Mojang EULA</a>.</p>
+                        <button 
+                        onclick="axios.post('/instance/<%= req.params.id %>/imagefeatures/eula')
+                            .then(response => {
+                                if (response.status === 200) {
+                                    location.reload();
+                                }
+                            })
+                            .catch(error => {
+                                console.error('There was an error!', error);
+                            });" 
+                        class="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700">
+                        Agree
+                    </button>
+                    
+                    </div>
+                </div>
+            <% } %>
+        <% } %>
+        
+        
+
         <div class="bg-transparent">
             <div class="sm:flex sm:items-center px-8 pt-4">
                 <div class="sm:flex-auto">
