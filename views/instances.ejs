@@ -6,6 +6,22 @@
         <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.instances %></h1>
         <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.viewInstances %></p>
       </div>
+      <% if (req.user.admin === true) { %>
+        <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+          <% if (req.query.see == 'other') { %>
+            <button onclick="location.href='/instances'" type="button"
+              class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              <%= req.translations.showingYourInstances %>
+            </button>
+          <% } else { %>
+            <button onclick="location.href='/instances?see=other'" type="button"
+              class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              <%= req.translations.seeAllInstances %>
+            </button>
+          <% } %>
+        </div>
+      <% } %>
+      
     </div>
   </div>
   <div class="px-4 sm:px-6 lg:px-8">

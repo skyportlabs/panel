@@ -4,8 +4,32 @@ const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
 const path = require('path');
+const { config } = require('process');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));  // Correct import
+
+
+router.get("/instances", async (req, res) => {
+    if (!req.user) return res.redirect('/');
+    let instances = [];
+
+    if (req.query.see === "other") {
+        let allInstances = await db.get('instances') || [];
+        instances = allInstances.filter(instance => instance.User !== req.user.userId);
+    } else {
+        instances = await db.get(req.user.userId + '_instances') || [];
+    }
+
+
+    res.render('instances', {
+        req,
+        instances,
+        user: req.user,
+        name: await db.get('name') || 'Skyport',
+        logo: await db.get('logo') || false,
+        config: require('../../config.json')
+    });
+});
 
 router.get("/instance/:id", async (req, res) => {
     if (!req.user) return res.redirect('/');
