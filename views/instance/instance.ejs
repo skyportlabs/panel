@@ -71,10 +71,7 @@
                         <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.address %></dt>
                         <dd class="mt-1 text-lg font-medium tracking-tight text-white">
                             <span>
-                                <%= instance.Node.address %>
-                                <span class="text-neutral-400">
-                                    <%= instance.Primary %>:
-                                </span>
+                                <%= instance.Node.address %><span class="text-neutral-400">:<%= instance.Primary %></span>
                             </span>
                         </dd>
                     </div>
@@ -398,8 +395,6 @@
                 if (isNaN(stats.memory_stats.usage)) {
                     stats.memory_stats.usage = 0;
                 }
-
-                // Ensure limit is a valid number
                 if (isNaN(stats.memory_stats.limit)) {
                     stats.memory_stats.limit = <%= instance.Memory * 1024 * 1024 %>;
                 }
@@ -407,28 +402,41 @@
                 const ramUsageRaw = stats.memory_stats.usage / 1024 / 1024;
                 const ramLimitRaw = stats.memory_stats.limit / 1024 / 1024;
 
-                // Calculate RAM usage percent safely
                 const ramUsagePercent = (ramLimitRaw > 0) ? ((ramUsageRaw / ramLimitRaw) * 100).toFixed(2) : '0.00';
-
-                // Update the text content safely
                 document.getElementById('ramUsage').textContent = `${ramUsagePercent}% (${formatBytes(stats.memory_stats.usage)} / ${formatBytes(stats.memory_stats.limit)})`;
 
+
+                if (stats.memory_stats.usage > 0) {
                 ramChart.data.labels.push('');
                 ramChart.data.datasets[0].data.push(ramUsagePercent);
+
+
                 if (ramChart.data.labels.length > 20) {
                     ramChart.data.labels.shift();
                     ramChart.data.datasets[0].data.shift();
                 }
-                ramChart.update();
+
+
+                    ramChart.update();
+                }
+
+               
 
 
 
             // Update CPU usage
             const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
             const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
-            const cpuUsagePercent = ((cpuDelta / systemCpuDelta) * 100).toFixed(2);
+            let cpuUsagePercent = ((cpuDelta / systemCpuDelta) * 100).toFixed(2);
+
+            if (isNaN(cpuUsagePercent)) {
+                cpuUsagePercent = 0;
+            }
+
             document.getElementById('cpuUsage').textContent = `${cpuUsagePercent}%`;
             
+            if (cpuUsagePercent > 0) {
+
             cpuChart.data.labels.push('');
             cpuChart.data.datasets[0].data.push(cpuUsagePercent);
             if (cpuChart.data.labels.length > 20) {
@@ -436,6 +444,7 @@
                 cpuChart.data.datasets[0].data.shift();
             }
             cpuChart.update();
+        }
 
             // Update Disk usage
             const diskUsageRaw = parseFloat(stats.volumeSize);
