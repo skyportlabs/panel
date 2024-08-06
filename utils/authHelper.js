@@ -16,7 +16,7 @@ async function isUserAuthorizedForContainer(userId, containerId) {
         if (isAdmin == true) {
             return true;
         }
-        const subUserInstances = users.find(user => user.userId === userId).Accesto;
+        const subUserInstances = users.find(user => user.userId === userId).accessTo;
         if (!userInstances && !subUserInstances.includes(containerId)) {
             console.log(subUserInstances);
             console.error('No instances found for user:', userId);

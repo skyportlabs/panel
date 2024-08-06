@@ -3,21 +3,39 @@
   <div class="bg-transparent">
     <div class="sm:flex sm:items-center px-8 pt-4">
       <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-white">API Keys</h1>
+        <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.APIKeys %></h1>
         <p class="mt-1 tracking-tight text-sm text-neutral-500">
-          A list of all the API Keys on the Skyport panel.
+          <%= req.translations.APIKeysText %>
         </p>
       </div>
       <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
         <button
           id="createButton"
           type="button"
-          class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Create new API Key
+        <%= req.translations.createNewAPIKey %>
         </button>
       </div>
     </div>
+    <% if (req.query.err == "CREATED") { %>
+      <div class="mt-6 w-full">
+        <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
+          <div class="flex">
+             <div class="flex-shrink-0 ml-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                </svg>                
+             </div>
+             <div class="ml-5">
+                <h3 class="text-sm font-medium text-emerald-400"><%= req.translations.created %></h3>
+                <div class="text-sm text-emerald-400/50">
+                   <p><%= req.translations.apiKeySuccessCreated %></p>
+                </div>
+             </div>
+          </div>
+       </div>
+<% } %> 
     <div id="nodeTable" class="mt-6 w-full">
       <table class="mt-6 w-full whitespace-nowrap text-left">
         <colgroup>
@@ -31,24 +49,24 @@
           <tr>
             <th
               scope="col"
-              class="py-2 pl-0 pr-8 font-semibold sm:pl-80 lg:pl-8"
+              class="py-2 pl-0 pr-8 font-medium sm:pl-80 lg:pl-8"
             >
-              ID
+              <%= req.translations.id %>
             </th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">
-              Key
-            </th>
-            <th
-              scope="col"
-              class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
-            >
-              Created At
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">
+              <%= req.translations.key %>
             </th>
             <th
               scope="col"
-              class="py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
+              class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"
             >
-              Actions
+            <%= req.translations.createdAt %>
+            </th>
+            <th
+              scope="col"
+              class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"
+            >
+            <%= req.translations.actions %>
             </th>
           </tr>
         </thead>
@@ -65,7 +83,7 @@
             <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
               <div class="flex gap-x-3">
                 <div
-                  class="rounded-lg font-mono bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
+                  class="rounded-xl font-mono bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
                 >
                   <%= key.key %>
                 </div>
@@ -75,7 +93,7 @@
             <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
                 <div class="flex gap-x-3">
                   <div
-                    class="rounded-lg bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
+                    class="rounded-xl bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
                   >
                     <%= key.createdAt %>
                   </div>
@@ -88,10 +106,10 @@
                 <button
                   id="removeButton"
                   type="button"
-                  class="removeButton block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  class="removeButton block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   data-keyid="<%= key.id %>"                
                   >
-                  Remove
+                  <%= req.translations.remove %>
                 </button>
               </div>
             </td>
@@ -105,9 +123,9 @@
         <button
           id="createNodeBtn"
           type="button"
-          class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Click to confirm creation
+          <%= req.translations.clickToConfirmCreation %>
         </button>
       </form>
     </div>
@@ -146,39 +164,36 @@
         })
         .then((data) => {
           console.log("key created:", data);
-          alert("API key created successfully");
+          alert('<%= req.translations.apiKeySuccessCreated %>');
           window.location.reload();
         })
-        .catch((error) =>
-          alert("Error creating API Key: " + error.message)
-        );
+        .catch(error => alert('<%= req.translations.apiKeyErrorCreated %>: ' + error.message));
     });
 </script>
 <!-- remove -->
 <script>
   document.querySelectorAll('.removeButton').forEach(button => {
     button.addEventListener('click', function() {
-      const keyId = this.dataset.keyid; // Get the user ID from the button's data attribute
+      const keyId = this.dataset.keyid;
 
       fetch('/apikeys/delete', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ keyId }) // Send the user ID in the request body
+        body: JSON.stringify({ keyId })
       })
       .then(response => {
         if (response.ok) {
-          // If deletion is successful, reload the page
-          window.location.reload();
+          console.log('API KEY DELETED');
+          window.location.href = '../admin/apikeys?err=CREATED'
         } else {
           throw new Error('Failed to delete key');
         }
       })
-      .catch(error => alert('Error deleting key: ' + error.message));
+      .catch(error => alert('<%= req.translations.apiKeyErrorDelete %>: ' + error.message));
     });
   });
 </script>
-
 
 <%- include('../components/footer') %>

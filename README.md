@@ -8,24 +8,8 @@
 ## Overview
 Skyport is an open source panel for managing and operating game servers and applications built using Node.js with Express and Dockerode. [Click here to join our Discord.](https://discord.gg/skyport)
 
-> [!WARNING]
-> Skyport is not ready for production use, nor does it have a stable and completed release yet.
-
 ## Installation
-1. Clone the repository:
-`git clone https://github.com/skyportlabs/panel/`
-
-2. Install dependencies:
-`npm install`
-
-3. Seed images and create a user:
-```
-npm run seed
-npm run createUser
-```
-
-4. Start the Panel:
-`node . # or use pm2 to keep it online`
+You can read our documentation at [skyport.dev](https://skyport.dev)
 
 ## Configuration
 Edit the `config.json` file in the root directory to set up the application settings including the database connection and port.

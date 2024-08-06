@@ -1,0 +1,191 @@
+<%- include('../components/template') %>
+<main id="content" class="min-h-screen text-white">
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+            <h1 class="text-base font-medium leading-6">Manage Instance</h1>
+            <p class="mt-1 text-sm text-neutral-500">View, update, and manage an instance on the Skyport panel.</p>
+         </div>
+         <% let query = req.query.path ? '?path=' + req.query.path : ''; %>
+         <div class="mt-4 sm:ml-16 sm:mt-0 flex space-x-4">
+            <button onclick="createArchive()" class="block rounded-xl bg-white px-4 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Create Backup
+            </button>
+            <input type="file" id="fileInput" multiple style="display: none;">
+         </div>
+      </div>
+   </div>
+
+   <%- include('../components/instance') %>
+   <div class="px-4 sm:px-6 lg:px-8">
+      <table class="min-w-full mt-5 table-auto border-separate border border-white/5 shadow rounded-xl">
+         <thead class="text-white">
+            <tr>
+               <th class="px-6 py-3 text-left">Name</th>
+               <th class="px-6 py-3 text-left">Size</th>
+               <th class="px-6 py-3 text-left">Created on</th>
+               <th class="px-6 py-3 text-left">Actions</th>
+            </tr>
+         </thead>
+         <tbody>
+            <% archives.forEach(function(archive) { %>
+               <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+                  <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-white border-none">
+                      <%= archive.name.replace(req.params.id + '-', '') %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
+                      <%= archive.size %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
+                      <%= archive.lastUpdated %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
+                     <span class="bg-white/5 text-neutral-300 px-3 py-1.5 rounded-xl cursor-pointer" onclick="restoreArchive('<%= archive.name %>')">Restore</span>
+                     <span class="bg-red-600 text-neutral-300 px-2 py-1.5 rounded-xl cursor-pointer ml-2" onclick="deleteArchive('<%= archive.name %>')">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
+                           <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                        </svg>
+                     </span>
+                  </td>
+               </tr>
+            <% }); %>
+         </tbody>
+      </table>
+   </div>
+</main>
+<%- include('../components/footer') %>
+
+<!-- Popup for loading -->
+<div id="loadingPopup" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-xl p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+        <h2 class="text-2xl font-medium mb-4 text-neutral-800">Creating Backup</h2>
+        <div class="mb-4">
+            <div class="w-full bg-neutral-200 rounded-full h-2.5">
+                <div id="loadingBar" class="bg-neutral-400 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+        </div>
+        <p id="loadingMessage" class="text-center text-neutral-600">Initializing...</p>
+    </div>
+</div>
+
+<script>
+async function createArchive() {
+    const instanceId = '<%= req.params.id %>';
+
+    const loadingPopup = document.getElementById('loadingPopup');
+    loadingPopup.classList.add('active');
+    document.getElementById('loadingBar').style.width = '0%';
+    document.getElementById('loadingMessage').textContent = 'Initializing...';
+
+    try {
+        const response = await fetch(`/instance/${instanceId}/archives/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        let progress = 0;
+        const interval = setInterval(() => {
+            if (progress < 90) {
+                progress += 10;
+                document.getElementById('loadingBar').style.width = `${progress}%`;
+                document.getElementById('loadingMessage').textContent = `Creating backup... ${progress}%`;
+            } else {
+                clearInterval(interval);
+            }
+        }, 200);
+
+        if (response.ok) {
+            setTimeout(() => {
+                document.getElementById('loadingBar').style.width = '100%';
+                document.getElementById('loadingMessage').textContent = 'Backup created successfully!';
+                setTimeout(() => {
+                    loadingPopup.classList.remove('active');
+                    window.location.href = `/instance/${instanceId}/archives`;
+                }, 1000);
+            }, 2000);
+        } else {
+            alert('Error creating archive: ' + response.statusText);
+            loadingPopup.classList.remove('active');
+        }
+    } catch (error) {
+        console.error('Error during POST request:', error);
+        alert('An error occurred.');
+        loadingPopup.classList.remove('active');
+    }
+}
+
+
+async function restoreArchive(archiveName) {
+    const instanceId = '<%= req.params.id %>';
+    try {
+        const response = await fetch(`/instance/${instanceId}/archives/rollback/${encodeURIComponent(archiveName)}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ archivename: archiveName })
+        });
+        if (response.ok) {
+            alert('Archive restored successfully!');
+            window.location.href = `/instance/${instanceId}/archives`;
+        } else {
+            alert('Error restoring archive: ' + response.statusText);
+        }
+    } catch (error) {
+        console.error('Error during POST request:', error);
+        alert('An error occurred.');
+    }
+}
+
+async function deleteArchive(archiveName) {
+    const instanceId = '<%= req.params.id %>';
+    try {
+        const response = await fetch(`/instance/${instanceId}/archives/delete/${encodeURIComponent(archiveName)}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ archivename: archiveName })
+        });
+        if (response.ok) {
+            alert('Archive deleted successfully!');
+            window.location.href = `/instance/${instanceId}/archives`;
+        } else {
+            alert('Error deleting archive: ' + response.statusText);
+        }
+    } catch (error) {
+        console.error('Error during POST request:', error);
+        alert('An error occurred.');
+    }
+}
+</script>
+<style>
+    #loadingPopup {
+        display: none;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+    }
+    
+    #loadingPopup.active {
+        display: flex;
+        opacity: 1;
+        pointer-events: auto;
+    }
+    
+    #loadingPopup .bg-white {
+        transform: scale(0.95);
+        transition: transform 0.3s;
+    }
+    
+    #loadingPopup.active .bg-white {
+        transform: scale(1);
+    }
+    
+    #loadingBar {
+        transition: width 0.4s;
+    }
+    </style>
+    

@@ -26,6 +26,16 @@ router.get("/instance/:id/network", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
+
+    if(!instance.suspended) {
+        instance.suspended = false;
+        db.set(id + '_instance', instance);
+    }
+
+    if(instance.suspended === true) {
+                return res.redirect('../../instance/' + id + '/suspended');
+    }
+
     const allPluginData = Object.values(plugins).map(plugin => plugin.config);
     const ports = processPorts(instance.Ports, instance);
 

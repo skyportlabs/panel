@@ -1,0 +1,24 @@
+<%- include('components/template') %>
+
+<main id="content" class="flex items-center justify-center">
+  <div class="max-w-md w-full bg-white rounded-xl shadow-2xl p-8 transform transition-transform duration-300 mt-16">
+    <h1 class="text-3xl font-bold text-center text-neutral-800"><%= req.translations.enable2FATitle %></h1>
+    <p class="text-center text-neutral-500 mt-4"><%= req.translations.enable2FADescription %></p>
+    <div class="flex justify-center my-6">
+      <div class="border border-dashed border-neutral-400 p-4 rounded-xl">
+        <img src="<%= qrCode %>" alt="QR Code for 2FA" class="w-48 h-48 object-cover">
+      </div>
+    </div>
+    <form action="/verify-2fa" method="POST">
+      <div class="mb-4">
+        <label for="token" class="block text-sm font-medium text-neutral-700"><%= req.translations.authCode %></label>
+        <input type="text" id="token" name="token" required class="mt-1 block w-full px-4 py-3 border border-neutral-300 rounded-xl shadow-sm focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 sm:text-sm transition-colors duration-300">
+      </div>
+      <div class="flex justify-center">
+        <button type="submit" class="w-full bg-black text-white py-3 px-5 rounded-xl shadow-lg hover:bg-neutral-900 transition-transform transform  duration-300"><%= req.translations.verifyCode %></button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<%- include('components/footer') %>

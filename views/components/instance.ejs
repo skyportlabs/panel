@@ -1,65 +1,70 @@
-<div class="mt-8 ml-8 mb-8">
+<div class="mt-6 ml-8 mb-8">
     <div>
-       <div class="hidden sm:block">
-          <nav class="flex">
-             <ul role="list" class="flex min-w-full flex-none gap-x-2 text-sm font-normal leading-6 text-neutral-400">
-                <li class="hover:scale-105 transition">
-                   <a href="/instance/<%= req.params.id %>" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
-                        <path fill-rule="evenodd" d="M2.25 6a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V6Zm3.97.97a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06-1.06l1.72-1.72-1.72-1.72a.75.75 0 0 1 0-1.06Zm4.28 4.28a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z" clip-rule="evenodd" />
-                      </svg>                                             
+       <div class="hidden relative sm:block">
+          <nav class="flex relative">
+            <div id="sliding-background" class="absolute h-9 px-3 bg-white/10 rounded-full transition-all duration-300 ease-in-out"></div>
+             <ul role="list" class="flex min-w-full mt-1.5 flex-none gap-x-2 text-sm font-normal leading-6 text-neutral-400">
+                <li class=" transition">
+                   <a href="/instance/<%= req.params.id %>" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1"><rect width="256" height="256" fill="none"/><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm-91,94.25-40,32a8,8,0,1,1-10-12.5L107.19,128,75,102.25a8,8,0,1,1,10-12.5l40,32a8,8,0,0,1,0,12.5ZM176,168H136a8,8,0,0,1,0-16h40a8,8,0,0,1,0,16Z"/></svg>                                      
                      Console
                   </a>
                 </li>
-                <li class="hover:scale-105 transition">
-                   <a href="/instance/<%= req.params.id %>/files" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
-                        <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
-                      </svg>
+                <li class=" transition">
+                   <a href="/instance/<%= req.params.id %>/files" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1"><rect width="256" height="256" fill="none"/><path d="M224,64H154.67L126.93,43.2a16.12,16.12,0,0,0-9.6-3.2H72A16,16,0,0,0,56,56V72H40A16,16,0,0,0,24,88V200a16,16,0,0,0,16,16H192.89A15.13,15.13,0,0,0,208,200.89V184h16.89A15.13,15.13,0,0,0,240,168.89V80A16,16,0,0,0,224,64Zm0,104H208V112a16,16,0,0,0-16-16H122.67L94.93,75.2a16.12,16.12,0,0,0-9.6-3.2H72V56h45.33L147.2,78.4A8,8,0,0,0,152,80h72Z"/></svg>
                       Files
                    </a>
                 </li>
-                <li class="hover:scale-105 transition">
-                  <a href="/instance/<%= req.params.id %>/users" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
-                        <path fill-rule="evenodd" d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z" clip-rule="evenodd" />
-                        <path d="M5.082 14.254a8.287 8.287 0 0 0-1.308 5.135 9.687 9.687 0 0 1-1.764-.44l-.115-.04a.563.563 0 0 1-.373-.487l-.01-.121a3.75 3.75 0 0 1 3.57-4.047ZM20.226 19.389a8.287 8.287 0 0 0-1.308-5.135 3.75 3.75 0 0 1 3.57 4.047l-.01.121a.563.563 0 0 1-.373.486l-.115.04c-.567.2-1.156.349-1.764.441Z" />
-                      </svg>                                         
+                <li class=" transition">
+                  <a href="/instance/<%= req.params.id %>/users" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1"><rect width="256" height="256" fill="none"/><path d="M164.47,195.63a8,8,0,0,1-6.7,12.37H10.23a8,8,0,0,1-6.7-12.37,95.83,95.83,0,0,1,47.22-37.71,60,60,0,1,1,66.5,0A95.83,95.83,0,0,1,164.47,195.63Zm87.91-.15a95.87,95.87,0,0,0-47.13-37.56A60,60,0,0,0,144.7,54.59a4,4,0,0,0-1.33,6A75.83,75.83,0,0,1,147,150.53a4,4,0,0,0,1.07,5.53,112.32,112.32,0,0,1,29.85,30.83,23.92,23.92,0,0,1,3.65,16.47,4,4,0,0,0,3.95,4.64h60.3a8,8,0,0,0,7.73-5.93A8.22,8.22,0,0,0,252.38,195.48Z"/></svg>                                      
                      Users
                   </a>
                </li>
-                <li class="hover:scale-105 transition">
-                   <a href="/instance/<%= req.params.id %>/network" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
-                        <path fill-rule="evenodd" d="M6.97 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06L8.25 4.81V16.5a.75.75 0 0 1-1.5 0V4.81L3.53 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5Zm9.53 4.28a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V7.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
-                      </svg>                                                            
+                <li class=" transition">
+                   <a href="/instance/<%= req.params.id %>/network" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1"><rect width="256" height="256" fill="none"/><path d="M240,120a8,8,0,0,1-8,8H200v32h8a16,16,0,0,1,16,16v32a16,16,0,0,1-16,16H176a16,16,0,0,1-16-16V176a16,16,0,0,1,16-16h8V128H72v32h8a16,16,0,0,1,16,16v32a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V176a16,16,0,0,1,16-16h8V128H24a8,8,0,0,1,0-16h96V88h-8A16,16,0,0,1,96,72V40a16,16,0,0,1,16-16h32a16,16,0,0,1,16,16V72a16,16,0,0,1-16,16h-8v24h96A8,8,0,0,1,240,120Z"/></svg>                                                       
                       Network
                    </a>
                 </li>
-                <li class="hover:scale-105 transition">
-                   <a href="/instance/<%= req.params.id %>/ftp" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
-                        <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375Z" />
-                        <path fill-rule="evenodd" d="m3.087 9 .54 9.176A3 3 0 0 0 6.62 21h10.757a3 3 0 0 0 2.995-2.824L20.913 9H3.087ZM12 10.5a.75.75 0 0 1 .75.75v4.94l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 1 1 1.06-1.06l1.72 1.72v-4.94a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
-                      </svg>                      
+                <li class=" transition">
+                  <a href="/instance/<%= req.params.id %>/archives" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1"><rect width="256" height="256" fill="none"/><path d="M223.16,68.42l-16-32A8,8,0,0,0,200,32H56a8,8,0,0,0-7.16,4.42l-16,32A8.08,8.08,0,0,0,32,72V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V72A8.08,8.08,0,0,0,223.16,68.42Zm-57.5,73.24a8,8,0,0,1-11.32,0L136,123.31V184a8,8,0,0,1-16,0V123.31l-18.34,18.35a8,8,0,0,1-11.32-11.32l32-32a8,8,0,0,1,11.32,0l32,32A8,8,0,0,1,165.66,141.66ZM52.94,64l8-16H195.06l8,16Z"/></svg>                                                                         
+                     Archives
+                  </a>
+               </li>
+               <li class=" transition">
+                  <a href="/instance/<%= req.params.id %>/db" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1"><rect width="256" height="256" fill="none"/><path d="M128,24C74.17,24,32,48.6,32,80v96c0,31.4,42.17,56,96,56s96-24.6,96-56V80C224,48.6,181.83,24,128,24Zm80,104c0,9.62-7.88,19.43-21.61,26.92C170.93,163.35,150.19,168,128,168s-42.93-4.65-58.39-13.08C55.88,147.43,48,137.62,48,128V111.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64Zm-21.61,74.92C170.93,211.35,150.19,216,128,216s-42.93-4.65-58.39-13.08C55.88,195.43,48,185.62,48,176V159.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64V176C208,185.62,200.12,195.43,186.39,202.92Z"/></svg>                                                     
+                     Databases
+                  </a>
+               </li>
+                <li class=" transition">
+                   <a href="/instance/<%= req.params.id %>/ftp" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1"><rect width="256" height="256" fill="none"/><path d="M74.34,77.66a8,8,0,0,1,0-11.32l48-48a8,8,0,0,1,11.32,0l48,48a8,8,0,0,1-11.32,11.32L136,43.31V128a8,8,0,0,1-16,0V43.31L85.66,77.66A8,8,0,0,1,74.34,77.66ZM240,136v64a16,16,0,0,1-16,16H32a16,16,0,0,1-16-16V136a16,16,0,0,1,16-16h68a4,4,0,0,1,4,4v3.46c0,13.45,11,24.79,24.46,24.54A24,24,0,0,0,152,128v-4a4,4,0,0,1,4-4h68A16,16,0,0,1,240,136Zm-40,32a12,12,0,1,0-12,12A12,12,0,0,0,200,168Z"/></svg>                                       
                       FTP
                    </a>
                 </li>
-                <li class="hover:scale-105 transition">
-                   <a href="/instance/<%= req.params.id %>/settings" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
-                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
-                        <path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 0 0-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 0 0-2.282.819l-.922 1.597a1.875 1.875 0 0 0 .432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 0 0 0 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 0 0-.432 2.385l.922 1.597a1.875 1.875 0 0 0 2.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 0 0 2.28-.819l.923-1.597a1.875 1.875 0 0 0-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 0 0 0-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 0 0-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 0 0-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 0 0-1.85-1.567h-1.843ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clip-rule="evenodd" />
-                      </svg>
+                <li class=" transition">
+                   <a href="/instance/<%= req.params.id %>/settings" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1"><rect width="256" height="256" fill="none"/><path d="M237.94,107.21a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A111.92,111.92,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.63a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"/></svg>
                       Settings
                   </a>
                 </li>
+                <li class=" transition">
+                  <a href="/instance/<%= req.params.id %>/startup" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1"><rect width="256" height="256" fill="none"/><path d="M32,80a8,8,0,0,1,8-8H77.17a28,28,0,0,1,53.66,0H216a8,8,0,0,1,0,16H130.83a28,28,0,0,1-53.66,0H40A8,8,0,0,1,32,80Zm184,88H194.83a28,28,0,0,0-53.66,0H40a8,8,0,0,0,0,16H141.17a28,28,0,0,0,53.66,0H216a8,8,0,0,0,0-16Z"/></svg>
+                     Startup
+                 </a>
+               </li>
 
                 <% addons.plugins.forEach(plugin => { %>
                   <% if (plugin.instancesidebar) { %>
                       <% Object.entries(plugin.instancesidebar).forEach(([key, value]) => { %>
 
-                <li class="hover:scale-105 transition">
-                  <a href="<%= (value.url).replace('%id%', req.params.id) %>" class="nav-link2 py-2 px-2.5 transition border border-transparent hover:border-white/5 hover:text-white hover:shadow rounded-lg">
+                <li class=" transition">
+                  <a href="<%= (value.url).replace('%id%', req.params.id) %>" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
                      <i class="size-4 mb-0.5 inline-flex mr-1 <%= value.icon %>"></i>
                      <%= key %>
                  </a>
@@ -75,35 +80,47 @@
        </div>
     </div>
  </div>
-<!-- added icons -->
-<script src="https://kit.fontawesome.com/4c967c0dcf.js" crossorigin="anonymous"></script>
-
  <script>
    document.addEventListener("DOMContentLoaded", function() {
-     // Use window.location.pathname to focus on the path part of the URL
      var currentPagePath = window.location.pathname;
-   
-     // Get all navigation links
      var navLinks2 = document.querySelectorAll('.nav-link2');
-   
-     // Loop through each navigation link
-     navLinks2.forEach(function(link) {
-       // Get the href attribute of the link and adjust the relative path
-       var linkPath = new URL(link.getAttribute('href'), window.location.origin).pathname;
-   
-       // Debugging outputs to see the paths being compared
-       console.log(currentPagePath);
-       console.log(linkPath);
-   
-       // Check if the current page path matches the link path
-       if (currentPagePath === linkPath) {
-         // Remove all existing classes
-         link.className = 'nav-link';
-   
-         // Add the specified classes
-         link.classList.add('text-white', 'font-semibold', 'border', 'border-transparent', 'bg-white/5', 'font-semibold', 'py-2', 'px-2.5', 'rounded-lg', 'shadow-sm');
+     var slidingBackground = document.getElementById('sliding-background');
+     
+     function updateActiveLink(clickedLink = null) {
+       var activeLink = clickedLink || document.querySelector('.nav-link2[href="' + currentPagePath + '"]');
+       if (activeLink) {
+         navLinks2.forEach(link => {
+           link.classList.remove('text-white', 'font-medium', 'bg-white/10', 'shadow-sm');
+         });
+         
+         activeLink.classList.add('text-white', 'font-medium');
+         
+         var linkRect = activeLink.getBoundingClientRect();
+         var navRect = activeLink.closest('nav').getBoundingClientRect();
+         slidingBackground.style.width = linkRect.width + 'px';
+         slidingBackground.style.transform = `translateX(${linkRect.left - navRect.left}px)`;
        }
+     }
+     
+     // Initial setup
+     updateActiveLink();
+     
+     navLinks2.forEach(function(link) {
+       link.addEventListener('click', function(e) {
+         e.preventDefault();
+         var href = this.getAttribute('href');
+         
+         updateActiveLink(this);
+         
+         setTimeout(() => {
+           window.location.href = href;
+         }, 300);
+       });
+     });
+     
+     window.addEventListener('popstate', function() {
+       currentPagePath = window.location.pathname;
+       updateActiveLink();
      });
    });
-   </script>
-   
+ </script>

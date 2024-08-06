@@ -1,0 +1,45 @@
+<%- include('components/template') %>
+<main id="content">
+    <div class="bg-transparent">
+        <div class="sm:flex sm:items-center px-8 pt-4">
+            <div class="sm:flex-auto">
+                <h1 class="text-base font-medium leading-6 text-white">Manage Instance</h1>
+                <p class="mt-1 tracking-tight text-sm text-neutral-500">
+                    View, update, and manage an instance on the Skyport panel.
+                </p>
+            </div>
+        </div>
+    </div>
+    <%- include('components/instance') %>
+    <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 ml-8 card" style="width: 900px;">
+        <div class="flex flex-row">
+            <div class="w-1/2 mr-4">
+                <h2 class="text-md font-medium text-white tracking-tight">Change Instance Image</h2>
+                <div class="mt-5">
+                    <% if (instance.AltImages && instance.AltImages.length > 0) { %>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Image</label>
+                        <select id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" style="width: 340px;">
+                            <% instance.AltImages.forEach(function(altImage) { %>
+                                <option value="<%= altImage %>" <%= instance.Image === altImage ? 'selected' : '' %>><%= altImage %></option>
+                            <% }); %>
+                        </select>
+                    <% } else { %>
+                        <p class="text-neutral-400 text-sm">No alternative images available</p>
+                    <% } %>
+                    <button id="save" class="block rounded-xl mt-8 bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <%= req.translations.save %>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    document.getElementById('save').addEventListener('click', function() {
+        const image = document.getElementById('image').value;
+        const userId = '<%= req.user.userId %>';
+        const instanceId = '<%= instance.Id %>';
+        window.location.href = `/instances/startup/changeimage/${instanceId}?image=${encodeURIComponent(image)}&user=${encodeURIComponent(userId)}`;
+    });
+</script>
+<%- include('../components/footer') %>

@@ -3,9 +3,12 @@ const config = require('../config.json');
 const { v4: uuidv4 } = require('uuid');
 const CatLoggr = require('cat-loggr');
 const log = new CatLoggr();
-const axios = require("axios")
 
 async function init() {
+    if (process.env.CODESPACE_NAME) {
+        log.error("Skyport does not support running on github codespaces.")
+        process.exit(1)
+    }
     const skyport = await db.get('skyport_instance');
     if (!skyport) {
         log.init('this is probably your first time starting skyport, welcome!');
@@ -31,21 +34,8 @@ async function init() {
         await db.set('skyport_instance', info)
         log.info('initialized skyport panel with id: ' + skyportId)
     }        
-    (async () => {
-        try {
-          const response = await axios.get("https://atqr.pages.dev/skyport.json");
-          const version = response.data.panel_latest;
-          latest = `${version.split("-beta")[0]}.${version.split("-beta")[1]}`
-          current = `${config.version.split("-beta")[0]}.${config.version.split("-beta")[1]}`
-          if (latest > current) {
-            log.info(`Update Available: ${version} is available to upgrade to. Type "npm run update" to update.`);
-          }
-        } catch (error) {
-          console.error("Error fetching the version:", error);
-        }
-        log.info(`Debug mode: ${config.debugging}`);
-        log.info('Init complete!');
-      })();
+
+    log.info('init complete!')
 }
 
 module.exports = { init }

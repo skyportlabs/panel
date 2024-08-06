@@ -1,8 +1,9 @@
 {
-    "baseURL": "http://localhost:3001",
+    "baseUri": "http://localhost:3001",
     "port": 3001,
     "domain": "localhost",
-    "version": "0.1.0-beta6",
-    "_info": "Enable the line bellow to true to enable debugging",
-    "debugging": true
-}
+    "mode": "production",
+    "version": "0.2.0",
+    "ogTitle": "Skyport Panel",
+    "ogDescription": "This is an instance of the Skyport Panel - learn more at github.com/skyportlabs"
+} 

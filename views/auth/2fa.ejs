@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= name %> - Login</title>
+  <link href="../assets/tailwind.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,300,600,400,700&display=swap" rel="stylesheet">
+</head>
+<body style="font-family: 'General Sans'" class="bg-[#141414] h-full">
+    <div class="min-h-full flex">
+        <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+          <div class="mx-auto w-full max-w-sm lg:w-96">
+            <div>
+              <% if (logo == true) { %><img class="h-12 w-auto" src="../assets/logo.png"> <% } %>
+              <h2 class="<% if (logo == true) { %>mt-6<% } %> text-3xl font-medium text-white">2-Factor Authentication</h2>
+              <p class="mt-2 text-sm text-neutral-500">
+                Please enter the 6 character code displayed on your authenticator app.
+              </p>
+            </div>
+      
+            <div class="mt-8">
+              <div class="mt-6">
+
+                <form action="/2fa" class="space-y-6" method="POST">
+                  <div>
+                    <label for="email" class="block text-sm font-medium text-neutral-400"> Code </label>
+                    <div class="mt-1">
+                      <input placeholder="000000" type="text" id="token" name="token" required required class="appearance-none block w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl shadow-sm placeholder-neutral-500 focus:outline-none focus:ring-neutral-500 focus:border-neutral-500 text-white transition sm:text-sm">
+                    </div>
+                  </div>
+      
+                  <div>
+                    <button type="submit" class="w-full cursor-pointer flex transition justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-neutral-800 bg-white hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">Submit</button>
+                  </div>
+      
+                  <% if (req.query.err && req.query.err == "InvalidAuthCode") { %>
+                    <div class="mt-2"></div>
+                    <span class="text-amber-600 pt-4 font-normal text-sm">Invalid auth code.</span>
+                  <% } %>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hidden lg:block relative w-0 flex-1">
+          <img class="absolute inset-0 h-full w-full object-cover" src="https://i.imgur.com/IYpZHWi.jpeg" alt="">
+        </div>  
+      </div>
+</body>
+</html>

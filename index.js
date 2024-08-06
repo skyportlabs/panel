@@ -6,7 +6,7 @@
  *  /____/_/|_|\__, / .___/\____/_/   \__/  
  *           /____/_/                  
  *              
- *  Skyport Panel v1 (Firestorm)
+ *  Skyport Panel 0.2.0 (Piledriver)
  *  (c) 2024 Matt James and contributers
  * 
 */
@@ -30,6 +30,8 @@ const path = require('path');
 const chalk = require('chalk');
 const expressWs = require('express-ws')(app);
 const { db } = require('./handlers/db.js')
+const translationMiddleware = require('./handlers/translation');
+const cookieParser = require('cookie-parser')
 
 const sqlite = require("better-sqlite3");
 const SqliteStore = require("better-sqlite3-session-store")(session);
@@ -48,6 +50,10 @@ const log = new CatLoggr();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(cookieParser())
+
+app.use(translationMiddleware);
+
 app.set('view engine', 'ejs');
 app.use(
   session({
@@ -64,8 +70,16 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.locals.ogTitle = config.ogTitle;
+  res.locals.ogDescription = config.ogDescription;
+  next();
+});
 
-/* remove the comments for faster loading
+
+if (config.mode === 'production' || false) {
+  
+
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Pragma', 'no-cache');
@@ -78,10 +92,12 @@ app.use('/assets', (req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=1');
   next();
 });
-*/
+
+}
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 // init
 init();
@@ -95,6 +111,20 @@ console.log(chalk.gray(ascii) + chalk.white(`version v${config.version}\n`));
  * modular route definitions that can be independently maintained and easily scaled.
  */
 const routesDir = path.join(__dirname, 'routes');
+
+
+
+app.get('/setLanguage', (req, res) => {
+  const lang = req.query.lang;
+  if (lang && (lang === 'en' || lang === 'de' || lang === 'nl')) {
+      res.cookie('lang', lang, { maxAge: 90000000, httpOnly: true });
+      req.user.lang = lang; // Update user language preference
+      res.json({ success: true });
+  } else {
+      console.log('Invalid language');
+      res.json({ success: false });
+  }
+});
 
 function loadRoutes(directory) {
   fs.readdirSync(directory).forEach(file => {

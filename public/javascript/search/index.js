@@ -6,10 +6,28 @@ const navLinks = document.querySelectorAll('.nav-link');
 let selected = '';
 
 function filterLinks(searchTerm) {
+  // Split the search term into mainTerm and subTerm
+  const [mainTerm, subTerm] = searchTerm.split(':/');
+  
+  // Ensure mainTerm and subTerm are lowercase for comparison
+  const mainTermFiltered = mainTerm ? mainTerm.toLowerCase() : '';
+  const subTermFiltered = subTerm ? subTerm.toLowerCase() : '';
+
+  // Filter links based on mainTerm and optionally subTerm
   const filteredLinks = Array.from(navLinks).filter((link) => {
-    const textMatch = link.textContent.toLowerCase().includes(searchTerm);
-    const searchDataMatch = link.getAttribute('searchdata')?.toLowerCase().includes(searchTerm);
-    return textMatch || searchDataMatch;
+    const textContent = link.textContent.toLowerCase();
+    const searchData = link.getAttribute('searchdata')?.toLowerCase();
+    const linkSubTerm = link.getAttribute('subterm')?.toLowerCase();
+
+    // Check if main term matches
+    const mainTermMatch = textContent.includes(mainTermFiltered) || (searchData && searchData.includes(mainTermFiltered));
+
+    // If subTerm exists, check if it matches too
+    const subTermMatch = subTermFiltered
+      ? textContent.includes(subTermFiltered) || (searchData && searchData.includes(subTermFiltered)) || (linkSubTerm && linkSubTerm.includes(subTermFiltered))
+      : true;
+
+    return mainTermMatch && subTermMatch;
   });
 
   searchResults.innerHTML = '';
@@ -38,7 +56,7 @@ function filterLinks(searchTerm) {
         'py-2',
         'text-sm',
         'font-medium',
-        'rounded-lg',
+        'rounded-xl',
       );
 
       if (index === 0) {
@@ -53,16 +71,6 @@ function filterLinks(searchTerm) {
 
 filterLinks('');
 
-document.addEventListener('keydown', (event) => {
-  if (event.key === '/') {
-    event.preventDefault();
-    searchModal.classList.add('show');
-    setTimeout(() => {
-      modalContent.classList.add('visible');
-      searchInput.focus();
-    }, 50);
-  }
-});
 
 window.addEventListener('click', (event) => {
   if (event.target === searchModal) {

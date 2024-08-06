@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditlog');
+const { v4: uuid } = require('uuid');
 
 const router = express.Router();
 
@@ -29,6 +30,7 @@ function isAdmin(req, res, next) {
 router.get('/instances/deploy', isAdmin, async (req, res) => {
   const {
     image,
+    imagename,
     memory,
     cpu,
     ports,
@@ -36,22 +38,23 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
     name,
     user,
     primary,
+    variables
   } = req.query;
-
   if (!image || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) {
     return res.status(400).json({ error: 'Missing parameters' });
   }
 
   try {
+    const Id = uuid().split('-')[0];
     const node = await db.get(`${nodeId}_node`);
     if (!node) {
       return res.status(400).json({ error: 'Invalid node' });
     }
 
-    const requestData = await prepareRequestData(image, memory, cpu, ports, name, node);
+    const requestData = await prepareRequestData(image, memory, cpu, ports, name, node, Id, variables, imagename);
     const response = await axios(requestData);
 
-    await updateDatabaseWithNewInstance(response.data, user, node, image, memory, cpu, ports, primary, name);
+    await updateDatabaseWithNewInstance(response.data, user, node, image, memory, cpu, ports, primary, name, Id, imagename);
 
     logAudit(req.user.userId, req.user.username, 'instance:create', req.ip);
     res.status(201).json({
@@ -68,9 +71,9 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
   }
 });
 
-async function prepareRequestData(image, memory, cpu, ports, name, node) {
-  const rawImage = await db.get('images');
-  const imageData = rawImage.find(i => i.Image === image);
+async function prepareRequestData(image, memory, cpu, ports, name, node, Id, variables, imagename) {
+  const rawImages = await db.get('images');
+  const imageData = rawImages.find(i => i.Name === imagename);
 
   const requestData = {
     method: 'post',
@@ -84,13 +87,18 @@ async function prepareRequestData(image, memory, cpu, ports, name, node) {
     },
     data: {
       Name: name,
+      Id,
       Image: image,
       Env: imageData ? imageData.Env : undefined,
       Scripts: imageData ? imageData.Scripts : undefined,
       Memory: memory ? parseInt(memory) : undefined,
       Cpu: cpu ? parseInt(cpu) : undefined,
       ExposedPorts: {},
-      PortBindings: {}
+      PortBindings: {},
+      variables,
+      AltImages: imageData ? imageData.AltImages : [],
+      StopCommand: imageData ? imageData.StopCommand : undefined,
+      imageData
     }
   };
 
@@ -106,18 +114,27 @@ async function prepareRequestData(image, memory, cpu, ports, name, node) {
   return requestData;
 }
 
-async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name) {
+async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, Id, imagename) {
+  const rawImages = await db.get('images');
+  const imageData = rawImages.find(i => i.Name === imagename);
+
+  let altImages = imageData ? imageData.AltImages : [];
+
   const instanceData = {
     Name: name,
+    Id,
     Node: node,
     User: userId,
     ContainerId: responseData.containerId,
-    VolumeId: responseData.volumeId,
+    VolumeId: Id,
     Memory: parseInt(memory),
     Cpu: parseInt(cpu),
     Ports: ports,
     Primary: primary,
-    Image: image
+    Image: image,
+    AltImages: altImages,
+    StopCommand: imageData ? imageData.StopCommand : undefined,
+    imageData
   };
 
   const userInstances = await db.get(`${userId}_instances`) || [];
@@ -128,7 +145,7 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
   globalInstances.push(instanceData);
   await db.set('instances', globalInstances);
 
-  await db.set(`${responseData.containerId}_instance`, instanceData);
+  await db.set(`${Id}_instance`, instanceData);
 }
 
 module.exports = router;

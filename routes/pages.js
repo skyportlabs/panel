@@ -46,7 +46,7 @@ async function setupRoutes() {
                         if (!authenticatedUser) {
                             throw new Error('Authenticated user not found in database.');
                         }
-                        const subUserInstances = authenticatedUser.Accesto || [];
+                        const subUserInstances = authenticatedUser.accessTo || [];
                         for (const instanceId of subUserInstances) {
                             const instanceData = await db.get(`${instanceId}_instance`);
                             if (instanceData) {

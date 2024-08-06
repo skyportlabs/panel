@@ -62,7 +62,7 @@ program
             let imageDataArray = [];
 
             for (let url of imageUrls) {
-            log.init('fetching image data...');
+            log.init('fetching image data...' + url);
             try {
                 const imageDataResponse = await axios.get(url);
                 let imageData = imageDataResponse.data;
@@ -141,7 +141,7 @@ program
         async function initializeUsersTable(username, email, password) {
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             const userId = uuidv4();
-            const users = [{ userId, username, email, password: hashedPassword, "Accesto":[], admin: true }];
+            const users = [{ userId, username, email, password: hashedPassword, accessTo: [], admin: true }];
             return db.set('users', users);
         }
         
@@ -150,7 +150,7 @@ program
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             const userId = uuidv4();
             const users = await db.get('users') || [];
-            users.push({ userId, username, email, password: hashedPassword, "Accesto":[], admin: true });
+            users.push({ userId, username, email, password: hashedPassword, accessTo: [], admin: true });
             return db.set('users', users);
         }
         

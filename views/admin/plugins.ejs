@@ -3,11 +3,11 @@
   <div class="bg-transparent">
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-white">Plugins Overview</h1>
-        <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the Plugins installed on the panel.p>
+        <h1 class="text-base font-medium leading-6 text-white">Plugins Overview</h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the Plugins installed on the panel.</p>
       </div>
       <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
-        <button id="reload" type="button" class="block rounded-lg bg-green-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-green-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" onclick="fetch('/admin/plugins/reload', {method: 'POST'}), location.reload()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <button id="reload" type="button" class="block rounded-xl bg-green-500 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-green-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" onclick="fetch('/admin/plugins/reload', {method: 'POST'}), location.reload()"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
         </svg>
         </button>
@@ -18,34 +18,34 @@
 
         <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5 mr-8">
           
-          <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+          <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
             <div class="flex-grow">
                 <dt class="truncate text-sm font-medium text-neutral-400">Plugins Installed:</dt>
-                <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+                <dd class="mt-1 text-lg font-medium tracking-tight text-white">
                   <span id="ramUsage">
                     <%= plugins.length %>
                   </span>
                   <span id="ramUsage"></span> <span class="text-xs text-neutral-400" id="ramLimit"></span>
                 </dd>
             </div>
-            <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+            <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5-3.9 19.5m-2.1-19.5-3.9 19.5" />
               </svg>                                         
             </div>
           </div>
          
-        <div class="overflow-hidden rounded-lg bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
+        <div class="overflow-hidden rounded-xl bg-[#171717]/50 px-4 py-5 shadow sm:p-6 flex items-center">
           <div class="flex-grow">
               <dt class="truncate text-sm font-medium text-neutral-400">Plugins Enabled:</dt>
-              <dd class="mt-1 text-lg font-semibold tracking-tight text-white">
+              <dd class="mt-1 text-lg font-medium tracking-tight text-white">
                 <span id="ramUsage">
                   <%= enabledPlugins.length %>
                 </span>
                 <span id="ramUsage"></span> <span class="text-xs text-neutral-400" id="ramLimit"></span>
               </dd>
           </div>
-          <div class="ml-4 shadow border border-white/10 rounded-lg p-2">
+          <div class="ml-4 shadow border border-white/10 rounded-xl p-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5-3.9 19.5m-2.1-19.5-3.9 19.5" />
             </svg>                   
@@ -68,9 +68,9 @@
 
               <button onclick="fetch('/admin/plugins/<%= plugin.name %>/toggle', {method: 'POST'}).then((res) => { if (res.ok) location.reload() })">
                 <% if (enabledPlugins.some(pluginObj => pluginObj.name === plugin.name)) { %>
-                  <span class="bg-red-600 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 px-3 py-1.5 rounded-lg">Disable</span>
+                  <span class="bg-red-600 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 px-3 py-1.5 rounded-xl">Disable</span>
                 <% } else { %>
-                  <span class="bg-green-600 text-center text-sm font-semibold text-white shadow-lg hover:bg-green-500 px-3 py-1.5 rounded-lg">Enable</span>
+                  <span class="bg-green-600 text-center text-sm font-medium text-white shadow-lg hover:bg-green-500 px-3 py-1.5 rounded-xl">Enable</span>
                 <% } %>
               </button>
 

@@ -22,7 +22,7 @@ router.get('/instance/:id/users', async (req, res) => {
         }
 
         let users = await db.get('users') || [];
-        users = users.filter(user => user && user.Accesto && user.Accesto.includes(instance.ContainerId));
+        users = users.filter(user => user && user.accessTo && user.accessTo.includes(instance.Id));
         const instanceName = instance.Name;
         const allPluginData = Object.values(plugins).map(plugin => plugin.config);
 
@@ -49,8 +49,8 @@ router.post('/instance/:id/users/add', async (req, res) => {
         if (!user) {
             return res.redirect('/instance/' + id + '/users?err=usernotfound.');
         }
-        if (!user.Accesto.includes(id)) {
-            user.Accesto.push(id);
+        if (!user.accessTo.includes(id)) {
+            user.accessTo.push(id);
         }
         await db.set('users', usersData);
         return res.redirect('/instance/' + id + '/users');
@@ -74,7 +74,7 @@ router.get('/instance/:id/users/remove/:username', async (req, res) => {
         if (!user) {
             return res.redirect(`/instance/${id}/users?err=usernotfound.`);
         }
-        user.Accesto = user.Accesto.filter(accessId => accessId !== id);
+        user.accessTo = user.accessTo.filter(accessId => accessId !== id);
 
         await db.set('users', usersData);
 

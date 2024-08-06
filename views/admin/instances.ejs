@@ -13,13 +13,34 @@
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
-           <h1 class="text-base font-semibold leading-6 text-white">Instances</h1>
-           <p class="mt-1 tracking-tight text-sm text-neutral-500">A list of all the instances deployed on the Skyport panel.</p>
+           <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.instances %></h1>
+           <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.instancesText %></p>
          </div>
          <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
-           <button id="createButton" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create new instance</button>
+           <button id="createButton" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <%= req.translations.createNewInstance %>
+          </button>
          </div>
        </div>
+ <% if (req.query.err == "CREATED") { %>
+      <div class="mt-6 w-full">
+        <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
+          <div class="flex">
+             <div class="flex-shrink-0 ml-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                </svg>                
+             </div>
+             <div class="ml-5">
+                <h3 class="text-sm font-medium text-emerald-400">Action completed!</h3>
+                <div class="text-sm text-emerald-400/50">
+                   <p>The instance was created successfully. Please allow a few minutes for it to finish installing and downloading additional files. </p>
+                </div>
+             </div>
+          </div>
+       </div>
+      <% } %>	  
+ 
       <div style="display: block;" id="nodeTable" class="mt-6 w-full">
       <table class="mt-6 w-full whitespace-nowrap text-left">
         <colgroup>
@@ -32,10 +53,10 @@
         </colgroup>
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
-            <th scope="col" class="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">Name</th>
-			<th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Node</th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-semibold sm:table-cell">Docker ID</th>
-            <th scope="col" class="py-2 pl-0 pr-4 text-right font-semibold sm:pr-8 sm:text-left lg:pr-20">Volume / Mount</th>
+            <th scope="col" class="py-2 pl-4 pr-8 font-medium sm:pl-6 lg:pl-8"><%= req.translations.name %></th>
+		      	<th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell"><%= req.translations.node %></th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell"><%= req.translations.dockerID %></th>
+            <th scope="col" class="py-2 pl-0 pr-4 text-right font-medium sm:pr-8 sm:text-left lg:pr-20"><%= req.translations.volumeANDMount %></th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
@@ -63,8 +84,25 @@
             </td>
             <td class="py-4 pl-0 pr-4 text-right sm:pr-8 lg:pr-20">
               <div class="flex gap-x-3">
-                <button onclick="location.href='/admin/instance/delete/<%= instance.ContainerId %>'" class="block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                  Remove
+                <button onclick="location.href='/admin/instance/delete/<%= instance.Id %>'" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                  <%= req.translations.remove %>
+                </button>
+
+                <% if (instance.suspended === true) { %>
+                  <form action="/admin/instances/unsuspend/<%= instance.Id %>" method="POST">
+                    <button type="submit" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-100 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      <%= req.translations.unsuspend %>
+                    </button>
+                  </form>
+                <% } else { %>
+                  <form action="/admin/instances/suspend/<%= instance.Id %>" method="POST">
+                    <button type="submit" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-100 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      <%= req.translations.suspend %>
+                    </button>
+                  </form>
+                <% } %>        
+                <button onclick="location.href='/admin/instances/<%= instance.Id %>/edit'" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-100 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                  <%= req.translations.edit %>
                 </button>
               </div>
             </td>
@@ -73,76 +111,127 @@
         </tbody>
       </table>
       </div>
-      <div style="display: none;"  id="nodeForm" class="mt-6 px-8 w-full">
-        <form>
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Name:</label>
-         <input id="name" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="My instance">
 
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">User:</label>
-         <select style="background: #171717;" id="user" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
-            <% users.forEach(function(user) { %>
-                <option value="<%= user.userId %>"><%= user.username %></option>
-            <% }); %>
-         </select>
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
-         <select style="background: #171717;" id="image" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
-          <% images.forEach(function(image) { %>
-              <option value="<%= image.Image %>" data-configfilepath="<%= image.ConfigFilePath %>" data-configfilecontent="<%= image.ConfigFileContent %>"><%= image.Name %> (<%= image.Image %>)</option>
-          <% }); %>
-          </select>      
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Node:</label>
-         <select style="background: #171717;" id="node" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10">
-            <% nodes.forEach(function(node) { %>
-                <option value="<%= node.id %>"><%= node.name %></option>
-            <% }); %>
-         </select>
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory (MiB):</label>
-         <input id="memory" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="2048">
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU Threads:</label>
-         <input id="cpu" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="1">
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports:</label>
-         <input id="ports" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="25565:25565,8080:8080">
-
-         <div class="mb-6"></div>
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Primary Port:</label>
-         <input id="primary" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="25565">
+      <div id="nodeForm" class="hidden flex gap-4 mt-6 px-8 w-full">
+        <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
+            <form>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.name %>:</label>
+                        <input id="name" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My instance">
+                    </div>
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.user %>:</label>
+                        <select style="background: #171717;" id="user" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                            <% users.forEach(function(user) { %>
+                                <option value="<%= user.userId %>"><%= user.username %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div>
+                      <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.image %>:</label>
+                      <select style="background: #171717;" id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                          <% images.forEach(function(image) { %>
+                              <option value="<%= image.Image %>" data-configfilepath="<%= image.ConfigFilePath %>" data-imagename="<%= image.Name %>" data-configfilecontent="<%= image.ConfigFileContent %>" data-variables="<%= JSON.stringify(image.Variables) %>"><%= image.Name %> (<%= image.Image %>)</option>
+                          <% }); %>
+                      </select>
+                  </div>
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.node %>:</label>
+                        <select style="background: #171717;" id="node" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                            <% nodes.forEach(function(node) { %>
+                                <option value="<%= node.id %>"><%= node.name %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.memory %> (MiB):</label>
+                        <input id="memory" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="2048">
+                    </div>
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.cpuThreads %>:</label>
+                        <input id="cpu" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="1">
+                    </div>
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.ports %>:</label>
+                        <input id="ports" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
+                    </div>
+                    <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.primaryPort %>:</label>
+                        <input id="primary" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button id="createNodeBtn" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      <%= req.translations.create %>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div id="secondCard" class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card hidden" style="width: 800px;">
+          <form id="variablesForm">
+        </form>
+        </div>
+    </div>
     
-         <div class="mb-6"></div>
 
-         <button id="createNodeBtn" type="button" class="block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
-      </form>
-    </div>
-    </div>
+
+    
 </main>
+<script>
+  document.getElementById('image').addEventListener('change', function(event) {
+      var selectedOption = event.target.options[event.target.selectedIndex];
+      var variables = selectedOption.getAttribute('data-variables');
+      var secondCard = document.getElementById('secondCard');
+      var variablesForm = document.getElementById('variablesForm');
+
+      if (variables) {
+          secondCard.classList.remove('hidden');
+          variablesForm.innerHTML = '';
+          variables = JSON.parse(variables);
+
+          for (var key in variables) {
+              if (variables.hasOwnProperty(key)) {
+                  var variable = variables[key];
+                  var fieldHtml = '';
+
+                  if (variable.type === 'text') {
+                      fieldHtml = `
+                          <div>
+                              <label class="text-neutral-400 text-sm tracking-tight mb-2">${key}:</label>
+                              <input type="text" name="${key}" value="${variable.default || ''}" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" ${variable.required ? 'required' : ''}>
+                          </div>
+                      `;
+                  }
+
+                  variablesForm.insertAdjacentHTML('beforeend', fieldHtml);
+              }
+          }
+      } else {
+          secondCard.classList.add('hidden');
+      }
+  });
+</script>
 <script>
   document.getElementById('createButton').addEventListener('click', function() {
     var table = document.getElementById('nodeTable');
     var form = document.getElementById('nodeForm');
     if (table.style.display !== 'none') {
       table.style.display = 'none';
-      form.style.display = 'block';
+      form.style.display = 'flex';
     } else {
-      table.style.display = 'block';
+      table.style.display = 'flex';
       form.style.display = 'none';
     }
+
+    const elem  = document.getElementById('image');
+    elem.selectedIndex = 0;
+    const event = new Event('change', {
+      bubbles: true,
+      cancelable: true
+    });
+    elem.dispatchEvent(event);
+
   });
 
   document.getElementById('image').addEventListener('change', function() {
@@ -152,10 +241,10 @@
   });
 </script>
 <script>
-document.getElementById('createNodeBtn').addEventListener('click', function() {
+document.getElementById('createNodeBtn').addEventListener('click', async function() {
     const createBtn = this;
-    createBtn.textContent = 'Working on it...'; // Change the button text
-    createBtn.disabled = true; // Disable the button
+    createBtn.textContent = 'Working on it...';
+    createBtn.disabled = true;
 
     const name = document.getElementById('name');
     const memory = document.getElementById('memory');
@@ -166,19 +255,25 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
     const selectedImage = imageDropdown.options[imageDropdown.selectedIndex];
     const configFilePath = selectedImage.getAttribute('data-configfilepath');
     let configFileContent = selectedImage.getAttribute('data-configfilecontent');
+    const variablesForm = document.getElementById('variablesForm');
+    
+    const inputs = variablesForm.querySelectorAll('div > input');
+    const variables = Array.from(inputs).reduce((acc, input) => {
+        if (input.name) {
+            acc[input.name] = input.value;
+        }
+        return acc;
+    }, {});
 
-    // Clear previous errors
     clearValidationErrors();
 
     let isValid = true;
 
-    // Validate name (no spaces allowed)
     if (name.value.includes(' ')) {
         showError(name, 'Name must not contain spaces.');
         isValid = false;
     }
 
-    // Validate memory and CPU (must be integers greater than 1)
     if (!isPositiveInteger(memory.value)) {
         showError(memory, 'Memory must be an integer greater than 1.');
         isValid = false;
@@ -189,19 +284,16 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
         isValid = false;
     }
 
-    // Validate ports (must match the format "port:port,port:port")
     const portPattern = /^(\d+:\d+)(,\d+:\d+)*$/;
     if (!ports.value.match(portPattern)) {
         showError(ports, 'Ports must be in the format "port:port,port:port".');
         isValid = false;
     }
 
-    // Validate primary port (must be a number)
     if (!primaryPort.value.match(/^\d+$/)) {
         showError(primaryPort, 'Primary port must be a valid number.');
         isValid = false;
     } else {
-        // Replace {{primaryPort}} in configFileContent
         configFileContent = configFileContent.replace('{{primaryPort}}', primaryPort.value);
     }
 
@@ -214,6 +306,7 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
     const nodeData = {
         name: name.value,
         image: imageDropdown.value,
+        imagename: selectedImage.getAttribute('data-imagename'),
         nodeId: document.getElementById('node').value,
         user: document.getElementById('user').value,
         memory: memory.value,
@@ -221,11 +314,11 @@ document.getElementById('createNodeBtn').addEventListener('click', function() {
         ports: ports.value,
         primary: primaryPort.value,
         configFilePath: configFilePath,
-        configFileContent: configFileContent
+        configFileContent: configFileContent,
+        variables: JSON.stringify(variables)
     };
 
-    // Proceed with sending data
-    sendData(nodeData, createBtn);
+    await sendData(nodeData, createBtn);
 });
 
 function clearValidationErrors() {
@@ -235,7 +328,6 @@ function clearValidationErrors() {
     messages.forEach(msg => msg.remove());
 }
 
-// Serialize and send request as before
 function serializeParams(params) {
     return Object.keys(params)
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
@@ -279,7 +371,7 @@ function sendData(nodeData, createBtn) {
         }
     })
     .then(data => {
-        alert('Done! Instance created successfully.');
+	window.location.href = '../admin/instances?err=CREATED'
         console.log('Instance created:', data);
         createBtn.textContent = 'Create';
         createBtn.disabled = false;

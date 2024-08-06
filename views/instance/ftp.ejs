@@ -3,37 +3,37 @@
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
          <div class="sm:flex-auto">
-            <h1 class="text-base font-semibold leading-6 text-white">Manage Instance</h1>
+            <h1 class="text-base font-medium leading-6 text-white">Manage Instance</h1>
             <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
          </div>
          <% let query = req.query.path ? '?path=' + req.query.path : ''; %>
       </div>
   </div>
    <%- include('../components/instance') %>
-   <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-lg overflow-hidden sm:p-6 lg:p-10 ml-8 card" style="width: 900px;">
+   <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 ml-8 card" style="width: 900px;">
       <div class="flex flex-row">
          <div class="w-1/2 mr-4">
             <h2 class="text-md font-medium text-white tracking-tight">FTP Details</h2>
             <div class="mt-5">
                <div class="mr-4 mt-5">
                   <label class="text-neutral-400 text-sm tracking-tight mb-2">Server Address</label>
-                  <div onclick="navigator.clipboard.writeText(`ftp://<%- logindata.host %>:<%- logindata.port %>`)" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;">
+                  <div onclick="navigator.clipboard.writeText(`ftp://<%- logindata.host %>:<%- logindata.port %>`)" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;">
                      <span onclick="navigator.clipboard.writeText(`ftp://<%- logindata.host %>:<%- logindata.port %>`);">ftp://<%- logindata.host %>:<%- logindata.port %></span>
                   </div>
                </div>
                <div class="mr-4 mt-5">
                   <label class="text-neutral-400 text-sm tracking-tight mb-2">Username:</label>
-                  <div onclick="navigator.clipboard.writeText('<%- logindata.username %>');" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;">
+                  <div onclick="navigator.clipboard.writeText('<%- logindata.username %>');" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;">
                      <span id="usernameText" onclick="navigator.clipboard.writeText('<%- logindata.username %>');" onmouseover="this.style.filter = 'none';"><%- logindata.username %></span>
                   </div>
                </div>
                <div class="mr-4 mt-5">
                   <label class="text-neutral-400 text-sm tracking-tight mb-2">Password:</label>
-                  <div onclick="navigator.clipboard.writeText('<%- logindata.password %>');" class="rounded-lg focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;">
+                  <div onclick="navigator.clipboard.writeText('<%- logindata.password %>');" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;">
                      <span id="passwordText" style="filter: blur(5px)" onclick="navigator.clipboard.writeText('<%- logindata.password %>');" onmouseover="this.style.filter = 'none';" onmouseout="this.style.filter = 'blur(5px)';"><%- logindata.password %></span>
                   </div>
                </div>
-               <button class="block rounded-lg mt-8 bg-white px-3 py-2 text-center text-sm font-semibold text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" onclick="loginToWinSCP()">Connect via your FTP client</button>
+               <button class="block rounded-xl mt-8 bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" onclick="loginToWinSCP()">Connect via your FTP client</button>
                <script>
                   function loginToWinSCP() {
                       const username = "<%- logindata.username %>";
