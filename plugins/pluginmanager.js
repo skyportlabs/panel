@@ -154,6 +154,7 @@ router.get('/admin/plugins/:dir/edit', isAdmin, async (req, res) => {
     const manifestJson = await fs.promises.readFile(manifestPath, 'utf8');
 
     res.render('admin/plugin', {
+        req,
         pluginsidebar,
         dir,
         content: manifestJson,
