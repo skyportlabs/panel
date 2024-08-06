@@ -121,7 +121,6 @@ app.get('/setLanguage', (req, res) => {
       req.user.lang = lang; // Update user language preference
       res.json({ success: true });
   } else {
-      console.log('Invalid language');
       res.json({ success: false });
   }
 });

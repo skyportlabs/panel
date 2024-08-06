@@ -276,7 +276,6 @@ router.post('/validate-password', async (req, res) => {
         if (currentUser && currentUser.password) {
             // Hash the current password using the same salt as the stored password
             const isPasswordValid = await bcrypt.compare(currentPassword, currentUser.password);
-            console.log(currentPassword, currentUser.password, isPasswordValid)
 
             if (isPasswordValid) {
                 res.status(200).json({ valid: true });
