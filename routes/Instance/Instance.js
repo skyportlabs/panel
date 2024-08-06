@@ -6,11 +6,12 @@ const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
 const path = require('path');
 const { config } = require('process');
 const { fetchFiles } = require('../../utils/fileHelper');
+const { isAuthenticated } = require('../../handlers/auth.js');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));  // Correct import
 
 
-router.get("/instances", async (req, res) => {
+router.get("/instances", isAuthenticated, async (req, res) => {
     if (!req.user) return res.redirect('/');
     let instances = [];
 
