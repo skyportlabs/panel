@@ -24,7 +24,7 @@
     </style>
     <main class="overflow-hidden" id="content">
         <% if (!files.some(file => file.name === 'eula.txt')) { %>
-            <% if ((instance.imageData.features).includes('eula')) { %>
+            <% if (instance.imageData.features && (instance.imageData.features).includes('eula')) { %>
                 <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
                     <div class="bg-gray-600 p-6 rounded shadow-lg w-1/2 h-36">
                         <p class="text-white">Do you accept the EULA?</p>
