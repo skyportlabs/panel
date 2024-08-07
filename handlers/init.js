@@ -5,6 +5,10 @@ const CatLoggr = require('cat-loggr');
 const log = new CatLoggr();
 
 async function init() {
+    if (process.env.CODESPACE_NAME) {
+        log.error("Skyport does not support running on github codespaces.")
+        process.exit(1)
+    }
     const skyport = await db.get('skyport_instance');
     if (!skyport) {
         log.init('this is probably your first time starting skyport, welcome!');
