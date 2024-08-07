@@ -20,7 +20,6 @@ async function fetchFiles(instance, path = '') {
 
     return response.data.files || [];
     } catch (error) {
-        console.error('Error on fetching files');
         return [];
     }
 }

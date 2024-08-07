@@ -46,9 +46,6 @@
                 </div>
             <% } %>
         <% } %>
-        
-        
-        
 
         <div class="bg-transparent">
             <div class="sm:flex sm:items-center px-8 pt-4">
@@ -165,9 +162,9 @@
         </div>
         <div class="flex flex-col lg:flex-row px-8">
             <!-- Left side: Console -->
-            <div class="w-full lg:w-2/3 pr-5">
+            <div class="w-full lg:w-2/3 lg:pr-5">
                 <div class="bg-[#101010] rounded-t-xl p-4">
-                    <div id="terminal"></div>
+                    <div id="terminal" class="overflow-x-auto whitespace-pre-wrap"></div>
                 </div>
                 <input id="input" type="text" placeholder="<%= req.translations.SendACommand %>"
                     class="w-full px-4 py-3 bg-[#101010] text-white rounded-b-xl text-sm border-t border-transparent focus:ring-2 focus:focus:ring-transparent focus:border-transparent placeholder:font-medium placeholder:text-neutral-500">
@@ -214,156 +211,185 @@
         </div>
     </main>
     <script>
-        console.log('<%= instance.VolumeId %>');
-    
-        var baseTheme = {
-            foreground: '#c5c9d1',
-            background: '#101010',
-            selection: '#5DA5D533',
-            black: '#1E1E1D',
-            brightBlack: '#262625',
-            red: '#E54B4B',
-            green: '#9ECE58',
-            yellow: '#FAED70',
-            blue: '#396FE2',
-            magenta: '#BB80B3',
-            cyan: '#2DDAFD',
-            white: '#d0d0d0',
-            brightBlack: 'rgba(255, 255, 255, 0.2)',
-            brightRed: '#FF5370',
-            brightGreen: '#C3E88D',
-            brightYellow: '#FFCB6B',
-            brightBlue: '#82AAFF',
-            brightMagenta: '#C792EA',
-            brightCyan: '#89DDFF',
-            brightWhite: '#ffffff',
+    console.log('<%= instance.VolumeId %>');
+
+    var baseTheme = {
+        foreground: '#c5c9d1',
+        background: '#101010',
+        selection: '#5DA5D533',
+        black: '#1E1E1D',
+        brightBlack: '#262625',
+        red: '#E54B4B',
+        green: '#9ECE58',
+        yellow: '#FAED70',
+        blue: '#396FE2',
+        magenta: '#BB80B3',
+        cyan: '#2DDAFD',
+        white: '#d0d0d0',
+        brightBlack: 'rgba(255, 255, 255, 0.2)',
+        brightRed: '#FF5370',
+        brightGreen: '#C3E88D',
+        brightYellow: '#FFCB6B',
+        brightBlue: '#82AAFF',
+        brightMagenta: '#C792EA',
+        brightCyan: '#89DDFF',
+        brightWhite: '#ffffff',
+    };
+
+    let ws;
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const instanceId = '<%= req.params.id %>';
+    const maxCommands = 10;
+    let commandHistory = [];
+    let currentCommandIndex = -1;
+
+    function initWebSocket() {
+        const port = window.location.port ? `:${window.location.port}` : '';
+        ws = new WebSocket(`${protocol}://${window.location.hostname}${port}/console/${instanceId}`);
+        ws.onopen = () => {
+            console.log('WebSocket connected!');
         };
-    
-        let ws;
-        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        const instanceId = '<%= req.params.id %>';
-    
-        function initWebSocket() {
-                const port = window.location.port ? `:${window.location.port}` : '';
-            ws = new WebSocket(`${protocol}://${window.location.hostname}${port}/console/${instanceId}`);
-            ws.onopen = () => {
-                console.log('WebSocket connected!');
-            };
-            ws.onmessage = handleWebSocketMessage;
-            ws.onclose = () => {
-                console.log('WebSocket connection closed, attempting to reconnect...');
-                setTimeout(initWebSocket, 3000);
-            };
-            ws.onerror = (error) => {
-                console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
-                setTimeout(initWebSocket, 5000);
-            };
+        ws.onmessage = handleWebSocketMessage;
+        ws.onclose = () => {
+            console.log('WebSocket connection closed, attempting to reconnect...');
+            setTimeout(initWebSocket, 3000);
+        };
+        ws.onerror = (error) => {
+            console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
+            setTimeout(initWebSocket, 5000);
+        };
+    }
+
+    function handleWebSocketMessage(msg) {
+        const lines = msg.data.split('\n');
+        let isFirstLine = true;
+        let previousLineWasEmpty = false;
+
+        lines.forEach(line => {
+            const trimmedLine = line.trim();
+            if (trimmedLine === '' && previousLineWasEmpty) {
+                return;
+            }
+            if (!isFirstLine && !previousLineWasEmpty) {
+                term.write('\r\n');
+            }
+
+            term.write('\x1b[0m' + trimmedLine);
+
+            if (trimmedLine.includes("state:")) {
+                term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
+                term.clear();
+                ws.close();
+            }
+
+            if (trimmedLine.includes("skyportd instance appears to be down")) {
+                ws.close();
+                daemonIsDown.classList.remove('hidden');
+            } else {
+                daemonIsDown.classList.add('hidden');
+            }
+
+            isFirstLine = false;
+            previousLineWasEmpty = (trimmedLine === '');
+        });
+    }
+
+    function setupTerminal() {
+        term = new Terminal({
+            disableStdin: true,
+            allowProposedApi: true,
+            lineHeight: 1.35,
+            rows: 19,
+            cols: 100,
+            fontFamily: 'Menlo, monospace',
+            theme: baseTheme,
+            allowTransparency: true,
+            fontSize: 12,
+        });
+        term.open(document.getElementById('terminal'));
+    }
+
+    function sendCommand() {
+        const inputElement = document.getElementById('input');
+        const command = inputElement.value.trim();
+        if (command && ws) {
+            term.write('\u001b[1m\u001b[33m~ \u001b[0m' + command + '\r\n');
+            ws.send(JSON.stringify({
+                event: 'cmd',
+                command: command,
+                containerId: instanceId
+            }));
+
+            // Save command in history
+            if (commandHistory.length === maxCommands) {
+                commandHistory.shift(); // Remove the oldest command if we have reached the max limit
+            }
+            commandHistory.push(command);
+            currentCommandIndex = commandHistory.length;
+
+            inputElement.value = '';
         }
-    
-        let daemonIsDown = document.getElementById('daemonIsDown');
-        var term;
-    
-        function handleWebSocketMessage(msg) {
-            const lines = msg.data.split('\n');
-            let isFirstLine = true;
-            let previousLineWasEmpty = false;
-    
-            lines.forEach(line => {
-                const trimmedLine = line.trim();
-                if (trimmedLine === '' && previousLineWasEmpty) {
-                    return;
-                }
-                if (!isFirstLine && !previousLineWasEmpty) {
-                    term.write('\r\n');
-                }
-    
-                term.write('\x1b[0m' + trimmedLine);
-    
-                if (trimmedLine.includes("state:")) {
-                    term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
-                    term.clear();
-                    ws.close();
-                }
+    }
 
-                if (trimmedLine.includes("skyportd instance appears to be down")) {
-                    ws.close();
-                    daemonIsDown.classList.remove('hidden');
-                } else {
-                    daemonIsDown.classList.add('hidden');
-                }
-
-                isFirstLine = false;
-                previousLineWasEmpty = (trimmedLine === '');
-            });
+    function handleKeyUp(event) {
+        if (event.key === 'ArrowUp') {
+            if (currentCommandIndex > 0) {
+                currentCommandIndex--;
+                document.getElementById('input').value = commandHistory[currentCommandIndex];
+            }
+            event.preventDefault();
+        } else if (event.key === 'ArrowDown') {
+            if (currentCommandIndex < commandHistory.length - 1) {
+                currentCommandIndex++;
+                document.getElementById('input').value = commandHistory[currentCommandIndex];
+            } else {
+                currentCommandIndex = commandHistory.length;
+                document.getElementById('input').value = '';
+            }
+            event.preventDefault();
         }
+    }
 
-        function setupTerminal() {
-            term = new Terminal({
-                disableStdin: true,
-                allowProposedApi: true,
-                lineHeight: 1.35,
-                rows: 19,
-                cols: 100,
-                fontFamily: 'Menlo, monospace',
-                theme: baseTheme,
-                allowTransparency: true,
-                fontSize: 12,
-            });
-            term.open(document.getElementById('terminal'));
-        }
+    document.addEventListener('DOMContentLoaded', function () {
+        setupTerminal();
+        initWebSocket();
 
-        function sendCommand() {
-            const inputElement = document.getElementById('input');
-            const command = inputElement.value.trim();
-            if (command && ws) {
-                term.write('\u001b[1m\u001b[33m~ \u001b[0m' + command + '\r\n');
+        const inputElement = document.getElementById('input');
+        inputElement.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                sendCommand();
+            }
+        });
+
+        inputElement.addEventListener('keydown', handleKeyUp);
+
+        document.getElementById('startButton').addEventListener('click', function () {
+            if (ws) {
                 ws.send(JSON.stringify({
-                    event: 'cmd',
-                    command: command,
+                    event: 'power:start',
                     containerId: instanceId
                 }));
-                inputElement.value = '';
             }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            setupTerminal();
-            initWebSocket();
-
-            const inputElement = document.getElementById('input');
-            inputElement.addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    sendCommand();
-                }
-            });
-
-            document.getElementById('startButton').addEventListener('click', function () {
-                if (ws) {
-                    ws.send(JSON.stringify({
-                        event: 'power:start',
-                        containerId: instanceId
-                    }));
-                }
-            });
-
-            document.getElementById('stopButton').addEventListener('click', function () {
-                if (ws) {
-                    ws.send(JSON.stringify({
-                        event: 'power:stop',
-                        containerId: instanceId
-                    }));
-                }
-            });
-
-            document.getElementById('restartButton').addEventListener('click', function () {
-                if (ws) {
-                    ws.send(JSON.stringify({
-                        event: 'power:restart',
-                        containerId: instanceId
-                    }));
-                }
-            });
         });
+
+        document.getElementById('stopButton').addEventListener('click', function () {
+            if (ws) {
+                ws.send(JSON.stringify({
+                    event: 'power:stop',
+                    containerId: instanceId
+                }));
+            }
+        });
+
+        document.getElementById('restartButton').addEventListener('click', function () {
+            if (ws) {
+                ws.send(JSON.stringify({
+                    event: 'power:restart',
+                    containerId: instanceId
+                }));
+            }
+        });
+    });
 
         const statsWs = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/stats/${instanceId}`);
 

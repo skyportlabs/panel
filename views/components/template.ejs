@@ -14,105 +14,147 @@
       <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,300,600,400,700&display=swap" rel="stylesheet">
       <link href="https://fonts.cdnfonts.com/css/graphik-trial" rel="stylesheet">
    </head>
-   <body style="font-family: 'General Sans" class="bg-[#141414] h-full w-full">
+   <body style="font-family: 'General Sans'" class="bg-[#141414] h-full w-full">
       <div>
       <style>
          .collapsed span {
-         display: none;
+            display: none;
          }
          .collapsed p {
-         display: none;
+            display: none;
          }
          .collapsed h1 {
-         display: none;
+            display: none;
          }
          .collapsed .nav-link svg {
-         margin-right: 0;
+            margin-right: 0;
          }
          .collapsed {
-         width: 4% !important;
+            width: 4% !important;
          }
          .colcont {
-         padding-left: 4.2rem
+            padding-left: 4.2rem
          }
          .transition {
-         transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
          }
          .sidebar nav ul {
-         position: relative;
+            position: relative;
          }
          #active-background {
-         position: absolute;
-         left: 1rem; /* Adjust based on your layout */
-         width: calc(100% - 2rem); /* Adjust based on your layout */
-         height: 2.25rem; /* Adjust based on your nav item height */
-         background-color: #171717;
-         border-radius: 0.5rem;
-         transition: transform 0.2s ease-in-out;
-         z-index: 0;
+            position: absolute;
+            left: 1rem;
+            width: calc(100% - 2rem);
+            height: 2.25rem;
+            background-color: #171717;
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease-in-out;
+            z-index: 0;
          }
          .nav-link {
-         position: relative;
-         z-index: 1;
+            position: relative;
+            z-index: 1;
          }
          .nav-link.active {
-         color: white;
-         font-weight: 500;
+            color: white;
+            font-weight: 500;
+         }
+         @media (max-width: 1024px) {
+            .sidebar {
+               display: none;
+               position: fixed;
+               z-index: 50;
+               height: 100%;
+               width: 80%;
+               background-color: #101010;
+               overflow-y: auto;
+               transform: translateX(-100%);
+               transition: transform 0.3s ease-in-out;
+            }
+            .sidebar.open {
+               display: block;
+               transform: translateX(0);
+            }
+            #sidebar-toggle {
+               display: block;
+            }
+            .sidebar.expanded {
+               width: 100%;
+            }
          }
       </style>
       <script>
          document.addEventListener('DOMContentLoaded', () => {
-             const sidebar = document.querySelector('.sidebar');
-             const toggleButton = document.getElementById('sidebar-toggle');
-             const colcont = document.getElementById('colcont');
-         
-             function setCookie(name, value, days) {
-                 const date = new Date();
-                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                 const expires = "expires=" + date.toUTCString();
-                 document.cookie = name + "=" + value + ";" + expires + ";path=/";
-             }
-             function getCookie(name) {
-                 const nameEQ = name + "=";
-                 const ca = document.cookie.split(';');
-                 for(let i = 0; i < ca.length; i++) {
-                     let c = ca[i];
-                     while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                     if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-                 }
-                 return null;
-             }
-             const sidebarState = getCookie('sidebar-collapsed');
-             if (sidebarState === 'true') {
-                 sidebar.classList.add('collapsed');
-                 colcont.classList.add('colcont');
-             } else {
-                 sidebar.classList.remove('collapsed');
-                 colcont.classList.remove('colcont');
-             }
-             toggleButton.addEventListener('click', () => {
-                 sidebar.classList.toggle('collapsed');
-                 colcont.classList.toggle('colcont');
-                 const isCollapsed = sidebar.classList.contains('collapsed');
-                 setCookie('sidebar-collapsed', isCollapsed, 7);
-             });
+            const sidebar = document.querySelector('.sidebar');
+            const toggleButton = document.getElementById('sidebar-toggle');
+            const colcont = document.getElementById('colcont');
+
+            function setCookie(name, value, days) {
+               const date = new Date();
+               date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+               const expires = "expires=" + date.toUTCString();
+               document.cookie = name + "=" + value + ";" + expires + ";path=/";
+            }
+            function getCookie(name) {
+               const nameEQ = name + "=";
+               const ca = document.cookie.split(';');
+               for(let i = 0; i < ca.length; i++) {
+                  let c = ca[i];
+                  while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                  if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+               }
+               return null;
+            }
+            const sidebarState = getCookie('sidebar-collapsed');
+            if (sidebarState === 'true') {
+               sidebar.classList.add('collapsed');
+               colcont.classList.add('colcont');
+            } else {
+               sidebar.classList.remove('collapsed');
+               colcont.classList.remove('colcont');
+            }
+            toggleButton.addEventListener('click', () => {
+               sidebar.classList.toggle('collapsed');
+               colcont.classList.toggle('colcont');
+               const isCollapsed = sidebar.classList.contains('collapsed');
+               setCookie('sidebar-collapsed', isCollapsed, 7);
+            });
+
+            const mobileToggleButton = document.getElementById('mobile-sidebar-toggle');
+            if (mobileToggleButton) {
+               mobileToggleButton.addEventListener('click', () => {
+                  sidebar.classList.toggle('open');
+                  if (sidebar.classList.contains('open')) {
+                     mobileToggleButton.classList.add('right-4');
+                     mobileToggleButton.classList.remove('left-4');
+                  } else {
+                     mobileToggleButton.classList.add('left-4');
+                     mobileToggleButton.classList.remove('right-4');
+                  }
+               });
+            }
          });
       </script>
       <script>
          document.addEventListener('DOMContentLoaded', () => {
-             const loader = document.getElementById('loader');
-             const content = document.getElementById('content');
-         
-             setTimeout(() => {
-                 loader.classList.add('opacity-0');
-                 content.classList.remove('opacity-0');
-                 
-                 setTimeout(() => {
-                     loader.style.display = 'none';
-                 }, 150);
-             }, 300);
+            const loader = document.getElementById('loader');
+            const content = document.getElementById('content');
+
+            setTimeout(() => {
+               loader.classList.add('opacity-0');
+               content.classList.remove('opacity-0');
+               
+               setTimeout(() => {
+                  loader.style.display = 'none';
+               }, 150);
+            }, 300);
          });
       </script>
+      <button id="mobile-sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-50 w-fit p-2 rounded-xl text-white border border-white/5 bg-[#141414] hover:scale-110 active:scale-100 duration-200 transition-all">
+         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+         </svg>
+      </button>
       <!-- Static sidebar for desktop -->
       <div class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
          <div class="flex grow flex-col gap-y-5 overflow-hidden bg-[#101010] border-r border-white/5">
@@ -130,7 +172,7 @@
                      <ul role="list" class="-mx-2 space-y-1">
                         <div id="active-background" class="absolute left-0 w-full h-8 bg-[#171717] rounded-2xl transition-all duration-300 ease-in-out"></div>
                         <li>
-                           <a href="/instances" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal" searchdata="container instances servers" subterm="jegli:/server/servername">
+                           <a href="/instances" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal" searchdata="container instances servers" subterm="jegli:/server/servername">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M220,169.09l-92,53.65L36,169.09A8,8,0,0,0,28,182.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,169.09Z"/><path d="M220,121.09l-92,53.65L36,121.09A8,8,0,0,0,28,134.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,121.09Z"/><path d="M28,86.91l96,56a8,8,0,0,0,8.06,0l96-56a8,8,0,0,0,0-13.82l-96-56a8,8,0,0,0-8.06,0l-96,56a8,8,0,0,0,0,13.82Z"/></svg>
                               <span><%= req.translations.instances %></span>
                            </a>
@@ -235,15 +277,17 @@
       </div>
       <div id="colcont" class="lg:pl-56">
       <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 shadow-sm sm:gap-x-6 sm:px-4 lg:px-4">
-         <button type="button" id="sidebar-toggle" class="w-fit p-2 mt-1 rounded-xl text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
+         <div class="hidden lg:block">
+         <button type="button" id="sidebar-toggle" class="hidden lg:block w-fit p-2 mt-1 rounded-xl text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
             <span class="sr-only">Open sidebar</span>
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
          </button>
+      </div>
          <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <div class="relative flex flex-1 flex-col">
-               <div class="flex items-center w-fit mt-3.5 px-4 py-2 h-10  rounded-xl border border-white/5  active:scale-100 duration-200 bg-transparent text-white">
+               <div class="ml-14 lg:-ml-2 flex items-center w-fit mt-3.5 px-4 py-2 h-10  rounded-xl border border-white/5  active:scale-100 duration-200 bg-transparent text-white">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-neutral-400">
                      <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
                   </svg>
