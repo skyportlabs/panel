@@ -25,10 +25,10 @@
     <main class="overflow-hidden" id="content">
         <% if (Array.isArray(files) && files.length > 0 && !files.some(file => file.name === 'eula.txt')) { %>
             <% if (instance.imageData.features && instance.imageData.features.includes('eula')) { %>
-                <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
-                    <div class="bg-gray-600 p-6 rounded shadow-lg w-1/2 h-36">
-                        <p class="text-white">Do you accept the EULA?</p>
-                        <p class="text-sm text-neutral-400">By pressing this button you agree to the <a class="text-blue-400" href="https://account.mojang.com/documents/minecraft_eula">Mojang EULA</a>.</p>
+                <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div class="bg-white/5 backdrop-blur py-8 px-8 rounded-2xl shadow-lg w-1/2 h-48">
+                        <p class="text-white text-lg font-medium">Do you accept the EULA?</p>
+                        <p class="text-sm text-neutral-400">By pressing this button you agree to the <a class="text-white" href="https://account.mojang.com/documents/minecraft_eula">Mojang EULA</a>.</p>
                         <button 
                         onclick="axios.post('/instance/<%= req.params.id %>/imagefeatures/eula')
                             .then(response => {
@@ -39,8 +39,8 @@
                             .catch(error => {
                                 console.error('There was an error!', error);
                             });" 
-                        class="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700">
-                        Agree
+                        class="mt-8 bg-green-500 font-sm text-white px-4 font-medium transition py-2 rounded-2xl hover:bg-green-700">
+                        Accept
                         </button>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
         <div class="bg-transparent">
             <div class="sm:flex sm:items-center px-8 pt-4">
                 <div class="sm:flex-auto">
-                    <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.manageInstance %>: <strong class="space-x-1"><%= instance.Name %></strong></h1>
+                    <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.manageInstance %></h1>
                     <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.manageInstanceText %></p>
                 </div>
                 <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex gap-2.5">
