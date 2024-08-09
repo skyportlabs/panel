@@ -17,10 +17,10 @@ const router = express.Router();
  * @returns {void} Either redirects or proceeds by calling next().
  */
 function isAdmin(req, res, next) {
-    if (!req.user || req.user.admin !== true) {
-      return res.redirect('../');
-    }
-    next();
+  if (!req.user || req.user.admin !== true) {
+    return res.redirect('../');
+  }
+  next();
 }
 
 /**
@@ -28,18 +28,8 @@ function isAdmin(req, res, next) {
  * Handles the deployment of a new instance based on the parameters provided via query strings.
  */
 router.get('/instances/deploy', isAdmin, async (req, res) => {
-  const {
-    image,
-    imagename,
-    memory,
-    cpu,
-    ports,
-    nodeId,
-    name,
-    user,
-    primary,
-    variables
-  } = req.query;
+  const { image, imagename, memory, cpu, ports, nodeId, name, user, primary, variables } =
+    req.query;
   if (!image || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) {
     return res.status(400).json({ error: 'Missing parameters' });
   }
@@ -51,22 +41,44 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
       return res.status(400).json({ error: 'Invalid node' });
     }
 
-    const requestData = await prepareRequestData(image, memory, cpu, ports, name, node, Id, variables, imagename);
+    const requestData = await prepareRequestData(
+      image,
+      memory,
+      cpu,
+      ports,
+      name,
+      node,
+      Id,
+      variables,
+      imagename,
+    );
     const response = await axios(requestData);
 
-    await updateDatabaseWithNewInstance(response.data, user, node, image, memory, cpu, ports, primary, name, Id, imagename);
+    await updateDatabaseWithNewInstance(
+      response.data,
+      user,
+      node,
+      image,
+      memory,
+      cpu,
+      ports,
+      primary,
+      name,
+      Id,
+      imagename,
+    );
 
     logAudit(req.user.userId, req.user.username, 'instance:create', req.ip);
     res.status(201).json({
-      message: 'Container created successfully and added to user\'s servers',
+      message: "Container created successfully and added to user's servers",
       containerId: response.data.containerId,
-      volumeId: response.data.volumeId
+      volumeId: response.data.volumeId,
     });
   } catch (error) {
     console.error('Error deploying instance:', error);
     res.status(500).json({
       error: 'Failed to create container',
-      details: error.response ? error.response.data : 'No additional error info'
+      details: error.response ? error.response.data : 'No additional error info',
     });
   }
 });
@@ -80,10 +92,10 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, Id, var
     url: `http://${node.address}:${node.port}/instances/create`,
     auth: {
       username: 'Skyport',
-      password: node.apiKey
+      password: node.apiKey,
     },
-    headers: { 
-      'Content-Type': 'application/json'
+    headers: {
+      'Content-Type': 'application/json',
     },
     data: {
       Name: name,
@@ -98,23 +110,52 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, Id, var
       variables,
       AltImages: imageData ? imageData.AltImages : [],
       StopCommand: imageData ? imageData.StopCommand : undefined,
-      imageData
-    }
+      imageData,
+    },
   };
 
   if (ports) {
     ports.split(',').forEach(portMapping => {
       const [containerPort, hostPort] = portMapping.split(':');
-      const key = `${containerPort}/tcp`;
-      requestData.data.ExposedPorts[key] = {};
-      requestData.data.PortBindings[key] = [{ HostPort: hostPort }];
+
+      // Adds support for TCP
+      const tcpKey = `${containerPort}/tcp`;
+      if (!requestData.data.ExposedPorts[tcpKey]) {
+        requestData.data.ExposedPorts[tcpKey] = {};
+      }
+
+      if (!requestData.data.PortBindings[tcpKey]) {
+        requestData.data.PortBindings[tcpKey] = [{ HostPort: hostPort }];
+      }
+
+      // Adds support for UDP
+      const udpKey = `${containerPort}/udp`;
+      if (!requestData.data.ExposedPorts[udpKey]) {
+        requestData.data.ExposedPorts[udpKey] = {};
+      }
+
+      if (!requestData.data.PortBindings[udpKey]) {
+        requestData.data.PortBindings[udpKey] = [{ HostPort: hostPort }];
+      }
     });
   }
 
   return requestData;
 }
 
-async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, Id, imagename) {
+async function updateDatabaseWithNewInstance(
+  responseData,
+  userId,
+  node,
+  image,
+  memory,
+  cpu,
+  ports,
+  primary,
+  name,
+  Id,
+  imagename,
+) {
   const rawImages = await db.get('images');
   const imageData = rawImages.find(i => i.Name === imagename);
 
@@ -134,14 +175,14 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
     Image: image,
     AltImages: altImages,
     StopCommand: imageData ? imageData.StopCommand : undefined,
-    imageData
+    imageData,
   };
 
-  const userInstances = await db.get(`${userId}_instances`) || [];
+  const userInstances = (await db.get(`${userId}_instances`)) || [];
   userInstances.push(instanceData);
   await db.set(`${userId}_instances`, userInstances);
 
-  const globalInstances = await db.get('instances') || [];
+  const globalInstances = (await db.get('instances')) || [];
   globalInstances.push(instanceData);
   await db.set('instances', globalInstances);
 
