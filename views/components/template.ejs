@@ -344,54 +344,80 @@
          <span class="font-mono text-xs text-zinc-300 font-normal ml-1">(<%= user.userId.substring(0, 6) %>)</span>
        </span>
      </button>
-     <div id="dropdown-menu" class="hidden absolute right-0 z-10 mt-2 w-56 bg-white rounded-2xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none pb-2">
-       <div class="py-2 px-4">
-         <p class="text-sm font-medium text-gray-700 mt-2">Theme</p>
-         <div class="flex space-x-4 mt-2">
-           <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Sun Theme">
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-               <path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm8,24a64,64,0,1,0,64,64A64.07,64.07,0,0,0,128,64ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"></path>
-             </svg>
-           </button>
-           <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Moon Theme">
-             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="24" fill="currentColor" viewBox="0 0 256 256">
-               <path d="M240,96a8,8,0,0,1-8,8H216v16a8,8,0,0,1-16,0V104H184a8,8,0,0,1,0-16h16V72a8,8,0,0,1,16,0V88h16A8,8,0,0,1,240,96ZM144,56h8v8a8,8,0,0,0,16,0V56h8a8,8,0,0,0,0-16h-8V32a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16Zm65.14,94.33A88.07,88.07,0,0,1,105.67,46.86a8,8,0,0,0-10.6-9.06A96,96,0,1,0,218.2,160.93a8,8,0,0,0-9.06-10.6Z"></path>
-             </svg>
-           </button>
-           <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Monitor Theme">
-             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="24" fill="currentColor" viewBox="0 0 256 256">
-               <path d="M232,64V176a24,24,0,0,1-24,24H48a24,24,0,0,1-24-24V64A24,24,0,0,1,48,40H208A24,24,0,0,1,232,64ZM160,216H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Z"></path>
-             </svg>
-           </button>
+     <div id="dropdown-menu" class="hidden absolute right-0 z-10 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none pb-2 transform opacity-0 scale-95 transition-all duration-200 ease-out">
+       <div class="p-4">
+         <div class="py-1 px-1">
+           <label for="language-selector" class="block text-sm font-medium text-gray-700 mb-2">Language</label>
+           <div class="relative">
+             <select id="language-selector" class="appearance-none w-full bg-white border border-gray-300 rounded-md py-2 pl-2 pr-10 text-sm leading-5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500" onchange="changeLanguage(this.value)">
+               <option value="de" <%= req.cookies.lang === 'de' ? 'selected' : '' %>>Deutsch</option>
+               <option value="en" <%= req.cookies.lang === 'en' ? 'selected' : '' %>>English</option>
+               <option value="nl" <%= req.cookies.lang === 'nl' ? 'selected' : '' %>>Nederlands</option>
+             </select>
+           </div>
          </div>
-       </div>
-       <div class="border-t border-gray-200 my-2 mt-2 mb-2"></div>
-       <div class="py-1 px-4">
-         <label for="language-selector" class="block text-sm font-medium text-gray-700">Language</label>
-         <select id="language-selector" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" onchange="changeLanguage(this.value)">
-            <option value="de" <%= req.cookies.lang === 'de' ? 'selected' : '' %>>Deutsch</option>
-            <option value="en" <%= req.cookies.lang === 'en' ? 'selected' : '' %>>English</option>
-            <option value="nl" <%= req.cookies.lang === 'nl' ? 'selected' : '' %>>Nederlands</option>
-          </select>
-          
-          
        </div>
      </div>
    </div>
  </div>
  
+ <style>
+   .flag-icon {
+     width: 20px;
+     height: 15px;
+     background-size: cover;
+     background-position: center;
+   }
+   .flag-icon-de { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1IDMiPjxwYXRoIGQ9Ik0wIDBoNXYxSDB6IiBmaWxsPSIjMDAwIi8+PHBhdGggZD0iTTAgMWg1djFIMHoiIGZpbGw9IiNEMDAiLz48cGF0aCBkPSJNMCAyaDV2MUgweiIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg=='); }
+   .flag-icon-en { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjM1IDY1MCI+PHBhdGggZmlsbD0iIzAxMjE2OSIgZD0iTTAgMGgxMjM1djY1MEgweiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0wIDc1aDEyMzV2MjVIMHptMCAxMjVoMTIzNXYyNUgwem0wIDEyNWgxMjM1djI1SDB6bTAgMTI1aDEyMzV2MjVIMHptMCAxMjVoMTIzNXYyNUgweiIvPjxwYXRoIGZpbGw9IiNDODEwMkUiIGQ9Ik0wIDEwMGgxMjM1djI1SDB6bTAgMTI1aDEyMzV2MjVIMHptMCAxMjVoMTIzNXYyNUgwem0wIDEyNWgxMjM1djI1SDB6bTAgMTI1aDEyMzV2MjVIMHoiLz48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMCAwaDQ5NHYzNTBIMHoiLz48ZyBmaWxsPSIjQzgxMDJFIj48cGF0aCBkPSJNMjIwIDAgMCA2MHYzNWwyMjAgNzVMMCA1OXY0NGwyMjAgOTR6Ii8+PHBhdGggZD0iTTI3NCAwdjE4MEgwdjQ0aDI3NHYxMjZoNDRWMjI0aDQ5NHYtNDRINTE4VjBoLTQ0djEyNkgwdjQ0aDQ3NFYweiIvPjwvZz48L3N2Zz4='); }
+   .flag-icon-nl { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5IDYiPjxwYXRoIGZpbGw9IiMyMTQ2OEIiIGQ9Ik0wIDBoOXYySDB6Ii8+PHBhdGggZmlsbD0iI0ZGRiIgZD0iTTAgMmg5djJIMHoiLz48cGF0aCBmaWxsPSIjQUUxQzI4IiBkPSJNMCA0aDl2MkgweiIvPjwvc3ZnPg=='); }
+ </style>
+ 
  <script>
    function toggleDropdown() {
      const dropdownMenu = document.getElementById('dropdown-menu');
      dropdownMenu.classList.toggle('hidden');
+     if (!dropdownMenu.classList.contains('hidden')) {
+       setTimeout(() => {
+         dropdownMenu.style.transform = 'scale(1)';
+         dropdownMenu.style.opacity = '1';
+       }, 10);
+     } else {
+       dropdownMenu.style.transform = 'scale(0.95)';
+       dropdownMenu.style.opacity = '0';
+     }
    }
- 
+
+   function updateSelectedFlag() {
+     const select = document.getElementById('language-selector');
+     const selectedFlag = document.getElementById('selected-flag');
+     selectedFlag.className = `flag-icon flag-icon-${select.value}`;
+   }
+
+   function changeLanguage(lang) {
+     fetch(`/setLanguage?lang=${lang}`)
+       .then(response => response.json())
+       .then(data => {
+         if (data.success) {
+           updateSelectedFlag();
+           location.reload();
+         } else {
+           alert('Failed to change language');
+         }
+       });
+   }
+
+   // Initialize the selected flag on page load
+   document.addEventListener('DOMContentLoaded', updateSelectedFlag);
+
    // Optional: Close the dropdown when clicking outside
    window.addEventListener('click', function(e) {
      const userMenuButton = document.getElementById('user-menu-button');
      const dropdownMenu = document.getElementById('dropdown-menu');
      if (!userMenuButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
        dropdownMenu.classList.add('hidden');
+       dropdownMenu.style.transform = 'scale(0.95)';
+       dropdownMenu.style.opacity = '0';
      }
    });
  </script>
