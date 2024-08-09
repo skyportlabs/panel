@@ -10,6 +10,7 @@ async function fetchFiles(instance, path = '') {
     const query = path ? `?path=${path}` : '';
     const url = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files${query}`;
     
+    try {
     const response = await axios.get(url, {
         auth: {
             username: 'Skyport',
@@ -18,7 +19,14 @@ async function fetchFiles(instance, path = '') {
     });
 
     return response.data.files || [];
+    } catch (error) {
+        return [];
+    }
 }
+
+
+
+
 
 /**
  * Fetches content of a specific file.
@@ -31,14 +39,20 @@ async function fetchFileContent(instance, filename, path = '') {
     const query = path ? `?path=${path}` : '';
     const url = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/view/${filename}${query}`;
     
+
+    try {
     const response = await axios.get(url, {
         auth: {
             username: 'Skyport',
             password: instance.Node.apiKey
         }
     });
-
     return response.data.content;
+    } catch (error) {
+        console.error('Error fetching file content:', error);
+        return null;
+    }
+
 }
 
 /**
@@ -50,17 +64,22 @@ async function fetchFileContent(instance, filename, path = '') {
  * @returns {Promise<Object>} - The response from the server.
  */
 async function createFile(instance, filename, content, path = '') {
-    const query = path ? `?path=${path}` : '';
+    const query = path ? `?path=${encodeURIComponent(path)}` : '';
     const url = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/create/${filename}${query}`;
     
-    const response = await axios.post(url, { content }, {
-        auth: {
-            username: 'Skyport',
-            password: instance.Node.apiKey
-        }
-    });
+    try {
+        const response = await axios.post(url, { content }, {
+            auth: {
+                username: 'Skyport',
+                password: instance.Node.apiKey
+            }
+        });
 
-    return response.data;
+        return response.data;
+    } catch (error) {
+        console.error('Error creating file:', error);
+        return null;
+    }
 }
 
 /**

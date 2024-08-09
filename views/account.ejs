@@ -2,8 +2,8 @@
 
 <main id="content">
    <div class="px-4 sm:px-6 lg:px-8">
-      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
-         <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
+      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
+         <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card w-full">
             <div class="lg:flex lg:items-center lg:justify-between">
                <div class="min-w-0 flex-1">
                   <h2 class="text-md font-medium tracking-tight">
@@ -14,17 +14,17 @@
                      </span>
                   </h2>
                   <form id="change-username-form" action="/change-username" method="POST" class="mt-5">
-                     <div class="flex justify-between">
-                        <div class="w-1/2 mr-4">
+                     <div class="flex flex-col sm:flex-row justify-between">
+                        <div class="w-full sm:w-1/2 sm:mr-4 mb-4 sm:mb-0">
                            <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.username %>:</label>
                            <input id="username" type="text" name="username" 
                            class="rounded-xl focus:ring-transparent focus:border-transparent text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder-neutral-400 text-white border border-black/10" 
-                           style="width: 340px;" placeholder="<%= user.username %>" />
+                           placeholder="<%= user.username %>" />
                            <span id="username-feedback" class="mt-2 border border-neutral-600/30 text-neutral-400 text-xs font-medium me-2 px-2.5 py-1 rounded-full"><%= req.translations.checking %></span>
                         </div>
-                        <div class="w-1/2">
-                           <label class="text-neutral-400 text-sm tracking-tight mt-4"><%= req.translations.email %>:</label>
-                           <input id="email" type="email" name="email" value="" class="text-white rounded-xl focus:ring-transparent focus:border-transparent text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder:text-white/20 border border-black/10" style="width: 340px;" placeholder="<%= user.email %>" disabled />
+                        <div class="w-full sm:w-1/2">
+                           <label class="text-neutral-400 text-sm tracking-tight mt-4 sm:mt-0"><%= req.translations.email %>:</label>
+                           <input id="email" type="email" name="email" value="" class="text-white rounded-xl focus:ring-transparent focus:border-transparent text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder:text-white/20 border border-black/10" placeholder="<%= user.email %>" disabled />
                         </div>
                      </div>
                      <button type="submit" id="change-username-btn" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" disabled><%= req.translations.updateUsername %></button>
@@ -37,7 +37,7 @@
                      <label class="block text-neutral-400 text-sm tracking-tight mt-4"><%= req.translations.newPassword %>:</label>
                      <input id="newPassword" type="password" name="newPassword" class="rounded-xl focus:ring-transparent focus:border-transparent text-sm mt-1 mb-0 w-full items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 dark:bg-neutral-900 placeholder-neutral-400 text-white border border-black/10" placeholder="<%= req.translations.newPasswordHide %>" disabled />
                      <button type="submit" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><%= req.translations.update_password %></button>
-                 </form>
+                  </form>
                  <% if (user.twoFAEnabled !== true) { %>
                   <button onclick="window.location.href = '/enable-2fa';" class="mt-4 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><%= req.translations.enabled2FA %></button>      
                  <% } else { %>
@@ -51,6 +51,7 @@
       </dl>
    </div>
 </main>
+
 
 <style>
    #username-feedback, #current-password-feedback {

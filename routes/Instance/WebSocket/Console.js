@@ -29,7 +29,7 @@ router.ws("/console/:id", async (ws, req) => {
     };
 
     socket.onerror = (error) => {
-        ws.send('\x1b[31;1mThis instance is unavailable! \n\x1b[0mThe skyportd instance appears to be down. Retrying...')
+        ws.send('\x1b[31;1mThis instance is unavailable! \n\x1b[0mThe skyportd instance appears to be down. Retrying...\n')
     };
 
     socket.onclose = (event) => {};

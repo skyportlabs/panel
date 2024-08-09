@@ -14,146 +14,106 @@
           type="button"
           class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-         <%= req.translations.createUserButton %>
+          <%= req.translations.createUserButton %>
         </button>
       </div>
     </div>
-    <div id="nodeTable" class="mt-6 w-full">
-      <table class="mt-6 w-full whitespace-nowrap text-left">
+
+    <!-- Responsive Table -->
+    <div id="nodeTable" class="mt-6 w-full overflow-x-auto">
+      <table class="w-full whitespace-nowrap text-left">
         <colgroup>
-          <col class="w-full sm:w-4/12" />
-          <col class="lg:w-4/12" />
-          <col class="lg:w-2/12" />
-          <col class="lg:w-4/12" />
-          <col class="lg:w-1/12" />
-          <col class="lg:w-1/12" />
+          <col class="w-1/2 sm:w-4/12" />
+          <col class="w-1/2 lg:w-4/12" />
+          <col class="hidden lg:table" />
+          <col class="hidden lg:table" />
+          <col class="hidden lg:table" />
+          <col class="hidden lg:table" />
         </colgroup>
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
-            <th
-              scope="col"
-              class="py-2 pl-0 pr-8 font-medium sm:pl-80 lg:pl-8"
-            >
-            <%= req.translations.name %>
+            <th class="py-2 pl-4 pr-8 font-medium sm:pl-2 lg:pl-4">
+              <%= req.translations.name %>
             </th>
-            <th
-            scope="col"
-            class="py-2 pl-0 pr-8 font-medium sm:pl-80 lg:pl-8"
-          >
-          <%= req.translations.email %>
-          </th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">
+            <th class="py-2 pl-4 pr-8 font-medium sm:pl-2 lg:pl-4">
+              <%= req.translations.email %>
+            </th>
+            <th class="hidden lg:table py-2 pl-4 pr-8 font-medium">
               <%= req.translations.information %>
             </th>
-            <th
-              scope="col"
-              class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"
-            >
-            <%= req.translations.role %>
+            <th class="hidden lg:table py-2 pl-4 pr-8 font-medium">
+              <%= req.translations.role %>
             </th>
-            <th
-              scope="col"
-              class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"
-            >
-            <%= req.translations.verificationStatus %>
+            <th class="hidden lg:table py-2 pl-4 pr-8 font-medium">
+              <%= req.translations.verificationStatus %>
             </th>
-            <th
-              scope="col"
-              class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"
-            >
-            <%= req.translations.actions %>
+            <th class="hidden lg:table py-2 pl-4 pr-8 font-medium">
+              <%= req.translations.actions %>
             </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
           <% users.forEach(function(user) { %>
           <tr>
-            <td class="py-4 pl-4 pr-8 sm:pl-8 lg:pl-8">
+            <td class="py-4 pl-4 pr-8 sm:pl-2 lg:pl-4">
               <div class="flex items-center gap-x-4">
                 <img
                   class="h-8 w-8 rounded-xl bg-transparent"
                   src="https://api.dicebear.com/9.x/thumbs/svg?seed=<%= user.username %>"
-                  alt=""
+                  alt="<%= user.username %>"
                 />
-
                 <div class="truncate text-sm font-medium leading-6 text-white">
                   <%= user.username %>
                 </div>
               </div>
             </td>
-            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-              <div class="flex gap-x-3 pl-8">
-                <div
-                  class="rounded-xl bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
-                >
-                  <%= user.email %>
-                </div>
+            <td class="py-4 pl-4 pr-8 sm:pl-2 lg:pl-4">
+              <div class="rounded-xl bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10">
+                <%= user.email %>
               </div>
             </td>
-            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-              <div class="flex gap-x-3">
-                <div
-                  class="rounded-xl bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"
-                >
-                  <%= user.userId %>
-                </div>
+            <td class="hidden lg:table py-4 pl-4 pr-8">
+              <div class="rounded-xl bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10">
+                <%= user.userId %>
               </div>
             </td>
-
-            <% if (user.admin==true) { %>
-            <td
-              class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
-            >
-            <%= req.translations.admin %>
+            <% if (user.admin) { %>
+            <td class="hidden lg:table py-4 pl-4 pr-8 text-sm leading-6 text-neutral-400">
+              <%= req.translations.admin %>
             </td>
-            <% } else if (user.admin==false) { %>
-            <td
-              class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
-            >
-            <%= req.translations.regularUserRole %>
-            </td>
-            <% } %>
-
-            <% if (user.verified==true) { %>
-              <td
-                class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-green-500 md:table-cell lg:pr-20"
-              >
-              <%= req.translations.verifiedStatus %>
-              </td>
-              <% } else if (user.verified==false) { %>
-              <td
-                class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-red-500 md:table-cell lg:pr-20"
-              >
-              <%= req.translations.unverifiedStatus %>
-              </td>
             <% } else { %>
-            <td
-              class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"
-            >
-            <%= req.translations.error %>
+            <td class="hidden lg:table py-4 pl-4 pr-8 text-sm leading-6 text-neutral-400">
+              <%= req.translations.regularUserRole %>
             </td>
             <% } %>
-            <td
-              class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3"
-            >
+            <% if (user.verified) { %>
+            <td class="hidden lg:table py-4 pl-4 pr-8 text-sm leading-6 text-green-500">
+              <%= req.translations.verifiedStatus %>
+            </td>
+            <% } else { %>
+            <td class="hidden lg:table py-4 pl-4 pr-8 text-sm leading-6 text-red-500">
+              <%= req.translations.unverifiedStatus %>
+            </td>
+            <% } %>
+            <td class="py-4 pl-4 pr-8 flex gap-3">
               <div class="inner">
-                <a href="/admin/users/edit/<%= user.userId %>"
-                  ><button
+                <a href="/admin/users/edit/<%= user.userId %>">
+                  <button
                     id="editButton"
                     type="button"
                     class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
-                  <%= req.translations.edit %>
-                  </button></a
-                >
+                    <%= req.translations.edit %>
+                  </button>
+                </a>
               </div>
               <div class="inner">
                 <button
                   id="removeButton"
                   type="button"
                   class="removeButton block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  data-user-id="<%= user.userId %>"                
-                  >
+                  data-user-id="<%= user.userId %>"
+                >
                   <%= req.translations.remove %>
                 </button>
               </div>
@@ -163,90 +123,76 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Responsive Form -->
     <div id="nodeForm" class="mt-6 px-8 w-full hidden">
       <form>
-        <label class="text-neutral-400 text-sm tracking-tight mb-2"
-          ><%= req.translations.username %>:</label
-        >
+        <label class="text-neutral-400 text-sm tracking-tight mb-2">
+          <%= req.translations.username %>:
+        </label>
         <input
           id="userName"
           type="text"
           name="username"
-          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full max-w-md items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
           placeholder="<%= req.translations.usernamePlaceholder %>"
         />
         <input
           id="email"
           type="email"
           name="email"
-          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full max-w-md items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
           placeholder="<%= req.translations.emailPlaceholder %>"
         />
 
-        <label class="text-neutral-400 text-sm tracking-tight mb-2"
-          ><%= req.translations.passwordLabel %>:</label
-        >
+        <label class="text-neutral-400 text-sm tracking-tight mb-2">
+          <%= req.translations.passwordLabel %>:
+        </label>
         <input
           id="userPass"
           type="password"
           name="password"
-          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full max-w-md items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
           placeholder="******"
         />
 
-        <label class="text-neutral-400 text-sm tracking-tight mb-2"
-          ><%= req.translations.admin %>:</label
-        >
+        <label class="text-neutral-400 text-sm tracking-tight mb-2">
+          <%= req.translations.admin %>:
+        </label>
         <select
           id="userAdmin"
           name="admin"
-          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full max-w-md items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
         >
           <option value="true"><%= req.translations.true %></option>
           <option value="false"><%= req.translations.false %></option>
         </select>
 
-        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.verifiedStatus %>:</label>
+        <label class="text-neutral-400 text-sm tracking-tight mb-2">
+          <%= req.translations.verifiedStatus %>:
+        </label>
         <select
           id="userVerified"
           name="verified"
-          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
+          class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full max-w-md items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10"
         >
-        <option value="true"><%= req.translations.true %></option>
-        <option value="false"><%= req.translations.false %></option>
+          <option value="true"><%= req.translations.true %></option>
+          <option value="false"><%= req.translations.false %></option>
         </select>
-        <!-- <label class="text-neutral-400 text-sm tracking-tight mb-2">Tags:</label>
-         <input id="nodeTags" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="Tag 1 - Tag 2 - Tag 3">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">RAM (GB):</label>
-         <input id="nodeRam" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (GB):</label>
-         <input id="nodeDisk" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="40">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Processor:</label>
-         <input id="nodeProcessor" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="AMD EPYC 9454 - 16 Threads">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">IP Address:</label>
-         <input id="nodeAddress" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="192.168.1.1 or my.hostnamehere.com">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Daemon Port:</label>
-         <input id="nodePort" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="8080">
-
-         <label class="text-neutral-400 text-sm tracking-tight mb-2">Access Key:</label>
-         <input id="nodeApiKey" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" placeholder="skyportd_xxxxxxxxxxxxxxxx"> -->
 
         <button
           id="createNodeBtn"
           type="button"
           class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-        <%= req.translations.create %>
+          <%= req.translations.create %>
         </button>
       </form>
     </div>
   </div>
 </main>
+
+
 <script>
   document
     .getElementById("createButton")

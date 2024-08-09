@@ -1,4 +1,5 @@
 <%- include('../../components/template') %>
+
 <main id="content">
    <div class="bg-transparent">
       <div class="sm:flex sm:items-center px-8 pt-4">
@@ -9,18 +10,17 @@
       </div>
    </div>
    <%- include('../../components/settings') %>
-   <!--div class="grid grid-cols-1 md:lg:grid-cols-2 gap-2 md-lg"-->
    <div class="flex flex-col bg-white/5 m-8 pt-0 py-5 rounded-xl">
-      <h1 class="text-white text-[18px] px-5 p-1 py-4 mb-1 w-full bg-white/5 rounded-t-xl font-medium"><%= req.translations.general %></h1>
-      <div class="grid grid-cols-3">
-         <div id="changenameform" class="mt-4 ml-5">
+      <h1 class="text-white text-[18px] px-5 py-4 mb-1 w-full bg-white/5 rounded-t-xl font-medium"><%= req.translations.general %></h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-5">
+         <div id="changenameform" class="mt-4">
             <form action="/admin/settings/change/name" method="POST">
                <label for="name" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.panelName %></label>
-               <input id="name" name="name" type="text" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-88 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-white/5 placeholder:text-white/20 text-white border border-black/10" value="<%= name %>" placeholder="<%= name %>" required>
+               <input id="name" name="name" type="text" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-fit items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-white/5 placeholder:text-white/20 text-white border border-black/10" value="<%= name %>" placeholder="<%= name %>" required>
                <button id="Save-Name" type="submit" class="mt-6 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.save %></button>
             </form>
          </div>
-         <div id="changelogoform" class="mt-6 ml-5">
+         <div id="changelogoform" class="mt-6">
             <label for="name" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.panelLogo %></label>
             <form action="/admin/settings/change/logo" class="mt-4" method="POST" enctype="multipart/form-data">
                <div class="flex items-center mb-4">
@@ -44,13 +44,13 @@
                   <span class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.registerPage %> <span class="font-medium text-red-500"><%= req.translations.disabled %></span></span>
                   <% } %>
                </div>
-               <div class="flex flex-row">
+               <div class="flex flex-col sm:flex-row">
                   <% if (settings.register === true) { %>  
-                  <button id="toggleregister" type="submit" class="block rounded-l-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.disable %></button>
-                  <button id="toggleregister" type="submit" class="block rounded-r-lg bg-green-600 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-green-500 transition focus:outline focus:outline-2 focus:outline-offset-2 opacity-[0.7]" disabled><%= req.translations.enable %></button>
+                  <button id="toggleregister" type="submit" class="block rounded-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-l-lg sm:rounded-r-none"><%= req.translations.disable %></button>
+                  <button id="toggleregister" type="submit" class="block rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-green-500 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-none sm:rounded-r-lg opacity-[0.7]" disabled><%= req.translations.enable %></button>
                   <% } else { %>
-                  <button id="toggleregister" type="submit" class="block rounded-l-lg bg-red-600 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus:outline focus:outline-2 focus:outline-offset-2 opacity-[0.7]" disabled><%= req.translations.disable %></button>
-                  <button id="toggleregister" type="submit" class="block rounded-r-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.enable %></button>
+                  <button id="toggleregister" type="submit" class="block rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-l-lg sm:rounded-r-none opacity-[0.7]" disabled><%= req.translations.disable %></button>
+                  <button id="toggleregister" type="submit" class="block rounded-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-none sm:rounded-r-lg"><%= req.translations.enable %></button>
                   <% } %>  
                </div>
             </form>
@@ -63,23 +63,24 @@
                      <span class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.forceVerifyEmail %> <span class="font-medium text-red-500"><%= req.translations.disabled %></span></span>
                      <% } %>
                   </div>
-                  <div class="flex flex-row">
+                  <div class="flex flex-col sm:flex-row">
                      <% if (settings.forceVerify === true) { %>
-                     <button id="toggleforceverify" type="submit" class="block rounded-l-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.disable %></button>
-                     <button id="toggleforceverify" type="submit" class="block rounded-r-lg bg-green-600 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-green-500 transition focus:outline focus:outline-2 focus:outline-offset-2 opacity-[0.7]" disabled><%= req.translations.enable %></button>
+                     <button id="toggleforceverify" type="submit" class="block rounded-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-l-lg sm:rounded-r-none"><%= req.translations.disable %></button>
+                     <button id="toggleforceverify" type="submit" class="block rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-green-500 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-none sm:rounded-r-lg opacity-[0.7]" disabled><%= req.translations.enable %></button>
                      <% } else { %>
-                     <button id="toggleforceverify" type="submit" class="block rounded-l-lg bg-red-600 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus:outline focus:outline-2 focus:outline-offset-2 opacity-[0.7]" disabled><%= req.translations.disable %></button>
-                     <button id="toggleforceverify" type="submit" class="block rounded-r-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.enable %></button>
+                     <button id="toggleforceverify" type="submit" class="block rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-l-lg sm:rounded-r-none opacity-[0.7]" disabled><%= req.translations.disable %></button>
+                     <button id="toggleforceverify" type="submit" class="block rounded-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-none sm:rounded-r-lg"><%= req.translations.enable %></button>
                      <% } %>
                   </div>
                </form>
             </div>
          </div>
       </div>
-      <!--/div-->
    </div>
 </main>
+
 <%- include('../../components/footer') %>
+
 <script>
    document.getElementById('useImage').addEventListener('change', function() {
      const imageUploadBox = document.getElementById('imageUploadBox');
