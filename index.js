@@ -6,7 +6,7 @@
  *  /____/_/|_|\__, / .___/\____/_/   \__/  
  *           /____/_/                  
  *              
- *  Skyport Panel 0.2.0 (Piledriver)
+ *  Skyport Panel 0.2.1 (Piledriver)
  *  (c) 2024 Matt James and contributers
  * 
 */
@@ -32,6 +32,8 @@ const expressWs = require('express-ws')(app);
 const { db } = require('./handlers/db.js')
 const translationMiddleware = require('./handlers/translation');
 const cookieParser = require('cookie-parser')
+const rateLimit = require('express-rate-limit');
+
 
 const sqlite = require("better-sqlite3");
 const SqliteStore = require("better-sqlite3-session-store")(session);
@@ -53,6 +55,20 @@ app.use(bodyParser.json());
 app.use(cookieParser())
 
 app.use(translationMiddleware);
+
+const postRateLimiter = rateLimit({
+  windowMs: 60 * 100,
+  max: 6,
+  message: 'Too many requests, please try again later'
+});
+
+app.use((req, res, next) => {
+  if (req.method === 'POST') {
+    postRateLimiter(req, res, next);
+  } else {
+    next();
+  }
+});
 
 app.set('view engine', 'ejs');
 app.use(
