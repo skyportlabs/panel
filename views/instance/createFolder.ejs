@@ -57,6 +57,7 @@ function saveFile() {
               setTimeout(() => {
                   button.disabled = false;
                   button.textContent = 'Create Folder';
+                  window.location.href = '/instance/' + instanceId + '/files?path=<%= req.query.path %>/' + folder;
               }, 1000);
           } else {
               alert('Error creating file');

@@ -71,7 +71,30 @@
    <div class="px-4 sm:px-6 lg:px-8">
       <div class="flex">
          <div class="flex-grow">
-            <h1 class="text-white text-sm"><a class="text-neutral-300 hover:text-neutral-200 transition" href="./files">/app/data/</a><%= req.query.path %></h1>
+          <h1 class="text-white text-sm">
+            <a class="text-neutral-300 hover:text-neutral-200 transition" href="./files">/app/data/</a>
+            <% 
+                if (req.query.path) { 
+                    const parts = req.query.path.split('/');
+                    let currentPath = '';
+        
+                    parts.forEach((part, index) => {
+                        currentPath += part;
+        
+                        if (index < parts.length - 1) {
+                            %>
+                            <a href="./files?path=<%= currentPath %>" class="text-neutral-300 hover:text-neutral-200 transition"><%= part %></a>/
+                            <% 
+                            currentPath += '/';
+                        } else {
+                            %>
+                            <span class="text-neutral-100"><%= part %></span>
+                            <%
+                        }
+                    });
+                }
+            %>
+        </h1>
          </div>
          <p id="diskUsage" class="text-sm text-neutral-400"></p>
       </div>

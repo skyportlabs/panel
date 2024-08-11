@@ -23,7 +23,7 @@
 <% } else { %>
     <% query = '' %>
 <% } %>
-<h1 class="text-neutral-200 text-md px-8"><a class="text-neutral-400 hover:text-neutral-300 transition" href="../">/app/data/<%= req.query.path %></a><%= formattedFile %></h1>
+<h1 class="text-neutral-200 text-md px-8"><a class="text-neutral-400 hover:text-neutral-300 transition" href="../?path=<%= req.query.path %>">/app/data/<%= req.query.path %></a><%= formattedFile %></h1>
 
 <div class="pt-8 overflow-hidden" style="height: 500px;" id="editor"></div>
 <div class="flex mt-8 space-x-4">
