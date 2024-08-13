@@ -87,6 +87,7 @@ app.use(
 );
 
 app.use((req, res, next) => {
+  res.locals.languages = getlanguages();
   res.locals.ogTitle = config.ogTitle;
   res.locals.ogDescription = config.ogDescription;
   next();
@@ -130,9 +131,22 @@ const routesDir = path.join(__dirname, 'routes');
 
 
 
-app.get('/setLanguage', (req, res) => {
+
+function getlanguages() {
+  return fs.readdirSync(__dirname + '/lang').map(file => file.split('.')[0])
+}
+function getlangname() {
+  return fs.readdirSync(path.join(__dirname, '/lang')).map(file => {
+    const langFilePath = path.join(__dirname, '/lang', file);
+    const langFileContent = JSON.parse(fs.readFileSync(langFilePath, 'utf-8'));
+    return langFileContent.langname;
+  });
+}
+
+
+app.get('/setLanguage', async (req, res) => {
   const lang = req.query.lang;
-  if (lang && (lang === 'en' || lang === 'de' || lang === 'nl')) {
+  if (lang && (await getlanguages()).includes(lang)) {
       res.cookie('lang', lang, { maxAge: 90000000, httpOnly: true });
       req.user.lang = lang; // Update user language preference
       res.json({ success: true });

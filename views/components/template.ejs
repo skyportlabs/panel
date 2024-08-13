@@ -350,9 +350,14 @@
            <label for="language-selector" class="block text-sm font-medium text-gray-700 mb-2">Language</label>
            <div class="relative">
              <select id="language-selector" class="appearance-none w-full bg-white border border-gray-300 rounded-md py-2 pl-2 pr-10 text-sm leading-5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500" onchange="changeLanguage(this.value)">
-               <option value="de" <%= req.cookies.lang === 'de' ? 'selected' : '' %>>Deutsch</option>
-               <option value="en" <%= req.cookies.lang === 'en' ? 'selected' : '' %>>English</option>
-               <option value="nl" <%= req.cookies.lang === 'nl' ? 'selected' : '' %>>Nederlands</option>
+               
+               <% languages.forEach(function(language) { %>
+                  <option value="<%= language %>" 
+                    <%= (req.cookies.lang ? req.cookies.lang : 'en') === language ? 'selected' : '' %>>
+                    <%= req.translations[language] %>
+                  </option>
+                <% }); %>
+                
              </select>
            </div>
          </div>

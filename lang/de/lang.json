@@ -1,4 +1,7 @@
 {
+    "de": "Deutsch",
+    "en": "Englisch",
+    "nl": "Niederländisch",
     "manageInstance": "Instanz verwalten",
     "instanceViewDetailText": "Ansicht, Aktualisierung und Verwaltung einer Instanz im Skyport-Panel.",
     "fivezerozeroInstanceError": "500 SERVERFEHLER",
