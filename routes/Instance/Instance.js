@@ -19,7 +19,17 @@ router.get("/instances", isAuthenticated, async (req, res) => {
         let allInstances = await db.get('instances') || [];
         instances = allInstances.filter(instance => instance.User !== req.user.userId);
     } else {
+        const userId = req.user.userId;
+        const users = await db.get('users') || [];
+        const authenticatedUser = users.find(user => user.userId === userId);
         instances = await db.get(req.user.userId + '_instances') || [];
+        const subUserInstances = authenticatedUser.accessTo || [];
+                        for (const instanceId of subUserInstances) {
+                            const instanceData = await db.get(`${instanceId}_instance`);
+                            if (instanceData) {
+                                instances.push(instanceData);
+                            }
+                        }
     }
 
 
