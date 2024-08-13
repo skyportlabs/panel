@@ -28,7 +28,7 @@ router.get("/instance/:id/ftp", async (req, res) => {
         return res.redirect('../../../../instances');
     }
 
-    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
     if (!isAuthorized) {
         return res.status(403).send('Unauthorized access to this instance.');
     }

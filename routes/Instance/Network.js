@@ -21,7 +21,7 @@ router.get("/instance/:id/network", async (req, res) => {
 
     if (!instance) return res.status(404).send('Instance not found');
 
-    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
     if (!isAuthorized) {
         return res.status(403).send('Unauthorized access to this instance.');
     }

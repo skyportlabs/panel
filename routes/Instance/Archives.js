@@ -29,7 +29,7 @@ router.get("/instance/:id/archives", async (req, res) => {
             return res.redirect('/instances');
         }
 
-        const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+        const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
         if (!isAuthorized) {
             return res.status(403).send('Unauthorized access to this instance.');
         }
@@ -100,7 +100,7 @@ router.post('/instance/:id/archives/create', async (req, res) => {
         return res.redirect('/instances');
     }
 
-    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
     if (!isAuthorized) {
         return res.status(403).send('Unauthorized access to this instance.');
     }
@@ -151,7 +151,7 @@ router.post('/instance/:id/archives/delete/:archivename', async (req, res) => {
         return res.redirect('/instances');
     }
 
-    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
     if (!isAuthorized) {
         return res.status(403).send('Unauthorized access to this instance.');
     }
@@ -204,7 +204,7 @@ router.post('/instance/:id/archives/rollback/:archivename', async (req, res) => 
         return res.redirect('/instances');
     }
 
-    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
     if (!isAuthorized) {
         return res.status(403).send('Unauthorized access to this instance.');
     }

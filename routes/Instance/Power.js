@@ -8,7 +8,7 @@ router.post("/instance/:id/power", async (req, res) => {
 
     if (!instance || !id) return res.redirect('../instances');
 
-    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
     if (!isAuthorized) {
         return res.status(403).send('Unauthorized access to this instance.');
     }

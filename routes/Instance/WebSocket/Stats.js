@@ -12,7 +12,7 @@ router.ws("/stats/:id", async (ws, req) => {
 
     if (!instance || !id) return ws.close(1008, "Invalid instance or ID");
 
-    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.ContainerId);
+    const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
     if (!isAuthorized) {
         return ws.close(1008, "Unauthorized access");
     }
