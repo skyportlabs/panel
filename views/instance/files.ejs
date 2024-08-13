@@ -518,19 +518,35 @@ updateSelectedFiles();
             
    </script>
    <script>
-      function getCookie(name) {
-          let cookies = document.cookie.split(';');
-          for(let i = 0; i < cookies.length; i++) {
-              let cookie = cookies[i].trim();
-              if (cookie.indexOf(name + "=") === 0) {
-                  return cookie.substring(name.length + 1);
-              }
-          }
-          return "";
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      const instanceId = '<%= req.params.id %>';
+
+
+      function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+      const statsWs = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/stats/${instanceId}`);
+
+      statsWs.onmessage = event => {
+        const stats = JSON.parse(event.data);
+            if (stats.error) {
+                console.error('Error fetching stats:', stats.error);
+                return;
+            }
+
+            const diskUsageRaw = parseFloat(stats.volumeSize);
+            const diskLimitRaw = 10 * 1024; // Assuming 10GB limit
+            const diskUsagePercent = (diskUsageRaw / diskLimitRaw * 100).toFixed(2);
+            document.getElementById('diskUsage').textContent = `${formatBytes(diskUsageRaw * 1024 * 1024)} / ${formatBytes(diskLimitRaw * 1024 * 1024)} (${diskUsagePercent}%)`;
+        
       }
-      
-      let disk = getCookie("disk");
-      document.getElementById('diskUsage').textContent = disk + ' disk usage';
+    
    </script>
 </main>
 <%- include('../components/footer') %>
