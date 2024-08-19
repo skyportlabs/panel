@@ -12,8 +12,20 @@ async function getSMTPSettings() {
   }
   if (smtpSettings.port == 587 || smtpSettings.port == 25) {
     secure = false
-  } 
-  const transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
+    host: smtpSettings.server,
+    port: smtpSettings.port,
+    secure: secure,
+    auth: {
+      user: smtpSettings.username,
+      pass: smtpSettings.password,
+    },
+    tls: {
+        rejectUnauthorized: true 
+    },
+  });
+  } else {
+const transporter = nodemailer.createTransport({
     host: smtpSettings.server,
     port: smtpSettings.port,
     secure: secure,
@@ -22,7 +34,8 @@ async function getSMTPSettings() {
       pass: smtpSettings.password,
     },
   });
-
+  }
+  
   return { transporter, smtpSettings, name };
 }
 
