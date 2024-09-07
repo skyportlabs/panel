@@ -164,10 +164,10 @@ router.get('/instances/startup/changeimage/:id', async (req, res) => {
             return res.status(400).json({ error: 'Invalid node' });
         }
 
-        const requestData = await prepareRequestData(image, instance.Memory, instance.Cpu, instance.Ports, instance.Name, node, id, instance.ContainerId);
+        const requestData = await prepareRequestData(image, instance.Memory, instance.Cpu, instance.Ports, instance.Name, node, id, instance.ContainerId, instance.Env);
         const response = await axios(requestData);
 
-        await updateDatabaseWithNewInstance(response.data, user, node, image, instance.Memory, instance.Cpu, instance.Ports, instance.Primary, instance.Name, id);
+        await updateDatabaseWithNewInstance(response.data, user, node, instance.imageData.Image, instance.Memory, instance.Cpu, instance.Ports, instance.Primary, instance.Name, id, image, instance.imageData, instance.Env);
 
         logAudit(req.user.userId, req.user.username, 'instance:imageChange', req.ip);
         res.status(201).redirect(`/instance/${id}/startup`);
@@ -180,7 +180,7 @@ router.get('/instances/startup/changeimage/:id', async (req, res) => {
     }
 });
 
-async function prepareRequestData(image, memory, cpu, ports, name, node, id, containerId) {
+async function prepareRequestData(image, memory, cpu, ports, name, node, id, containerId, Env) {
     const rawImages = await db.get('images');
     const imageData = rawImages.find(i => i.Image === image);
 
@@ -198,7 +198,7 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, id, con
             Name: name,
             Id: id,
             Image: image,
-            Env: imageData ? imageData.Env : undefined,
+            Env,
             Scripts: imageData ? imageData.Scripts : undefined,
             Memory: memory ? parseInt(memory) : undefined,
             Cpu: cpu ? parseInt(cpu) : undefined,
@@ -219,7 +219,7 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, id, con
     return requestData;
 }
 
-async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, id) {
+async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, id, currentimage, imagedata, Env) {
     const rawImages = await db.get('images');
     const imageData = rawImages.find(i => i.Image === image);
     const altImages = imageData ? imageData.AltImages : [];
@@ -235,8 +235,11 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
         Cpu: parseInt(cpu),
         Ports: ports,
         Primary: primary,
+        currentimage: currentimage,
+        Env,
         Image: image,
-        AltImages: altImages
+        AltImages: altImages,
+        imageData: imagedata
     };
 
     let userInstances = await db.get(`${userId}_instances`) || [];
