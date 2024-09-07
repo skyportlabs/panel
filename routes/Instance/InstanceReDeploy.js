@@ -66,7 +66,7 @@ router.get('/instances/redeploy/:id', isAdmin, async (req, res) => {
         const requestData = await prepareRequestData(shortimage, memory, cpu, ports, name, node, id, instance.ContainerId, instance.Env);
         const response = await axios(requestData);
 
-        await updateDatabaseWithNewInstance(response.data, user, node, shortimage, memory, cpu, ports, primary, name, id);
+        await updateDatabaseWithNewInstance(response.data, user, node, shortimage, memory, cpu, ports, primary, name, id, instance.Env, instance.imageData);
 
         logAudit(req.user.userId, req.user.username, 'instance:redeploy', req.ip);
         res.status(201).json({
@@ -122,7 +122,7 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, id, con
     return requestData;
 }
 
-async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, id) {
+async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, id, Env, imagedata) {
     const rawImages = await db.get('images');
     const imageData = rawImages.find(i => i.Image === image);
     const altImages = imageData ? imageData.AltImages : [];
@@ -138,9 +138,10 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
         Cpu: parseInt(cpu),
         Ports: ports,
         Primary: primary,
+        Env,
         Image: image,
         AltImages: altImages,
-        imageData
+        imageData: imagedata
     };
 
     let userInstances = await db.get(`${userId}_instances`) || [];
