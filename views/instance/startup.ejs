@@ -21,7 +21,7 @@
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Image</label>
                         <select id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" style="width: 340px;">
                             <% instance.AltImages.forEach(function(altImage) { %>
-                                <option value="<%= altImage %>" <%= instance.Image === altImage ? 'selected' : '' %>><%= altImage %></option>
+                                <option value="<%= altImage %>" <%= instance.currentimage === altImage ? 'selected' : '' %>><%= altImage %></option>
                             <% }); %>
                         </select>
 
