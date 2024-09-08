@@ -3,6 +3,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
+const { sendPasswordResetEmail } = require('../handlers/email.js');
 const { db } = require('../handlers/db.js');
 
 const saltRounds = 10;
@@ -71,7 +72,7 @@ router.post('/api/getUser', validateApiKey, async (req, res) => {
   }
 });
 
-router.post('/api/users/create', validateApiKey, async (req, res) => {
+router.post('/api/auth/create-user', validateApiKey, async (req, res) => {
   try {
     const { username, email, password, userId, admin } = req.body;
     
@@ -107,6 +108,34 @@ router.post('/api/users/create', validateApiKey, async (req, res) => {
     res.status(201).json({ userId: user.userId, email, username: user.username, admin: user.admin });
   } catch (error) {
     res.status(500).json({ error: 'Failed to create user' });
+  }
+});
+
+router.post('/api/auth/reset-password', validateApiKey, async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const users = await db.get('users') || [];
+    const user = users.find(u => u.email === email);
+
+    if (!user) {
+      return res.status(404).json({ error: 'Email not found' });
+    }
+
+    const resetToken = generateRandomCode(30);
+    user.resetToken = resetToken;
+    await db.set('users', users);
+
+    const smtpSettings = await db.get('smtp_settings');
+    if (smtpSettings) {
+      await sendPasswordResetEmail(email, resetToken);
+      res.status(200).json({ message: `Password reset email sent successfully (${resetToken})` });
+    } else {
+      res.status(200).json({ message: resetToken });
+    }
+  } catch (error) {
+    console.error('Error handling password reset:', error);
+    res.status(500).json({ error: 'Failed to reset password' });
   }
 });
 
@@ -373,6 +402,15 @@ router.delete('/api/nodes/delete', validateApiKey, async (req, res) => {
 });
 
 // Function
+
+function generateRandomCode(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
 
 // Helper function to delete an instance
 async function deleteInstance(instance) {
