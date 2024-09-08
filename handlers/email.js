@@ -275,40 +275,6 @@ async function sendTestEmail(recipientEmail) {
     }
   }
 
-  async function sendPasswordResetEmail(email, token) {
-    try {
-      const { transporter, smtpSettings, name } = await getSMTPSettings();
-  
-      const mailOptions = {
-        from: `${smtpSettings.fromName} <${smtpSettings.fromAddress}>`,
-        to: email,
-        subject: 'Password Reset Request',
-        html: `
-          <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; border-radius: 8px; max-width: 600px; margin: 0 auto; color: #333;">
-            <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-              <h2 style="color: #4CAF50; text-align: center;">Password Reset Request</h2>
-              <p style="font-size: 16px;">Hello,</p>
-              <p style="font-size: 16px;">We received a request to reset your password. Click the button below to reset it:</p>
-              <div style="text-align: center; margin: 20px 0;">
-                <a href="${config.baseUri}/auth/reset/${token}" style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #ffffff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">Reset Password</a>
-              </div>
-              <p style="font-size: 16px;">If the button above does not work, click the link below:</p>
-              <p style="font-size: 16px; text-align: center;"><a href="${config.baseUri}/auth/reset/${token}" style="color: #4CAF50; word-wrap: break-word;">${config.baseUri}/auth/reset/${token}</a></p>
-              <p style="font-size: 16px;">If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
-              <p style="font-size: 16px;">Thank you,</p>
-              <p style="font-size: 16px;">The ${name} Team</p>
-            </div>
-          </div>
-        `,
-      };
-  
-      await transporter.sendMail(mailOptions);
-    } catch (error) {
-      console.error('Error sending password reset email:', error);
-      throw new Error('Failed to send password reset email');
-    }
-  }
-
 module.exports = {
   sendPasswordResetEmail, 
   sendWelcomeEmail,
