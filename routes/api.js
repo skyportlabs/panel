@@ -314,7 +314,7 @@ router.post('/api/getInstance', validateApiKey, async (req, res) => {
   }
 
   const instanceExists = await db.get('instances').then(server => 
-    server && server.some(server => server.ContainerId === id)
+    server && server.some(server => server.Id === id)
   );
 
   if (!instanceExists) {
