@@ -12,7 +12,8 @@
    <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 ml-8 card" style="width: 900px;">
       <div class="flex flex-row">
          <div class="w-1/2 mr-4">
-            <h2 class="text-md font-medium text-white tracking-tight">Change Instance Name</h2>
+            <h2 class="text-md font-medium text-white tracking-tight">Settings</h2>
+            <div>
             <div class="mt-5">
                <div class="mr-4 mt-5">
                   <label class="text-neutral-400 text-sm tracking-tight mb-2">Name</label>
@@ -20,6 +21,16 @@
                   </div>
                </div>
                <button id="save" class="block rounded-xl mt-8 bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+            </div>
+
+            <div class="mt-5">
+               <div class="mr-4 mt-5">
+                  <label class="text-neutral-400 text-sm tracking-tight mb-2" for="reinstall">Reinstall server</label>
+                  <button id="reinstall" name="reinstall" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-2" onclick="reinstall()">Reinstall</button>
+                  </div>
+               </div>
+            </div>
+
             </div>
          </div>
       </div>
@@ -30,5 +41,93 @@
         const name = document.getElementById('name').value;
         window.location.href = '/instance/<%= req.params.id %>/change/name/' + name;
     });
+
+    async function reinstall() {
+    const instanceId = '<%= req.params.id %>';
+
+    const loadingPopup = document.getElementById('loadingPopup');
+    loadingPopup.classList.add('active');
+    document.getElementById('loadingBar').style.width = '0%';
+    document.getElementById('loadingMessage').textContent = 'Initializing...';
+
+    try {
+        const response = await fetch(`/instance/reinstall/${instanceId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        let progress = 0;
+        const interval = setInterval(() => {
+            if (progress < 90) {
+                progress += 10;
+                document.getElementById('loadingBar').style.width = `${progress}%`;
+                document.getElementById('loadingMessage').textContent = `Reinstalling server... ${progress}%`;
+            } else {
+                clearInterval(interval);
+            }
+        }, 200);
+
+        if (response.ok) {
+            setTimeout(() => {
+                document.getElementById('loadingBar').style.width = '100%';
+                document.getElementById('loadingMessage').textContent = 'Server reinstalled successfully!';
+                setTimeout(() => {
+                    loadingPopup.classList.remove('active');
+                    window.location.href = `/instance/${instanceId}/settings`;
+                }, 1000);
+            }, 2000);
+        } else {
+            alert('Error reinstalling server: ' + response.statusText);
+            loadingPopup.classList.remove('active');
+        }
+    } catch (error) {
+        console.error('Error during POST request:', error);
+        alert('An error occurred.');
+        loadingPopup.classList.remove('active');
+    }
+}
     </script>
 <%- include('../components/footer') %>
+
+<!-- Popup for loading -->
+<div id="loadingPopup" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+   <div class="bg-white rounded-xl p-8 max-w-md w-full transform scale-95 transition-transform duration-300">
+       <h2 class="text-2xl font-medium mb-4 text-neutral-800">Reinstalling Server</h2>
+       <div class="mb-4">
+           <div class="w-full bg-neutral-200 rounded-full h-2.5">
+               <div id="loadingBar" class="bg-neutral-400 h-2.5 rounded-full" style="width: 0%"></div>
+           </div>
+       </div>
+       <p id="loadingMessage" class="text-center text-neutral-600">Initializing...</p>
+   </div>
+</div>
+
+<style>
+   #loadingPopup {
+       display: none;
+       opacity: 0;
+       pointer-events: none;
+       transition: opacity 0.3s, transform 0.3s;
+   }
+   
+   #loadingPopup.active {
+       display: flex;
+       opacity: 1;
+       pointer-events: auto;
+   }
+   
+   #loadingPopup .bg-white {
+       transform: scale(0.95);
+       transition: transform 0.3s;
+   }
+   
+   #loadingPopup.active .bg-white {
+       transform: scale(1);
+   }
+   
+   #loadingBar {
+       transition: width 0.4s;
+   }
+   </style>

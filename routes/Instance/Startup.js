@@ -4,6 +4,7 @@ const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditlog');
 const { v4: uuid } = require('uuid');
 const { loadPlugins } = require('../../plugins/loadPls.js');
+const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const path = require('path');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
@@ -16,16 +17,32 @@ const allPluginData = Object.values(plugins).map(plugin => plugin.config);
  * Renders the instance startup page with the available alternative images.
  */
 router.get('/instance/:id/startup', async (req, res) => {
+    if (!req.user) return res.redirect('/');
+
     const { id } = req.params;
 
     if (!id) {
-        return res.redirect('/admin/instances');
+        return res.redirect('/instances');
     }
 
     try {
         const instance = await db.get(`${id}_instance`);
         if (!instance) {
-            return res.redirect('/admin/instances');
+            return res.redirect('../../instances');
+        }
+
+        const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
+        if (!isAuthorized) {
+            return res.status(403).send('Unauthorized access to this instance.');
+        }
+
+        if(!instance.suspended) {
+            instance.suspended = false;
+            db.set(id + '_instance', instance);
+        }
+    
+        if(instance.suspended === true) {
+            return res.redirect('../../instance/' + id + '/suspended');
         }
 
         res.render('instance/startup.ejs', {
@@ -48,20 +65,91 @@ router.get('/instance/:id/startup', async (req, res) => {
 });
 
 /**
+ * POST /instances/startup/changevariable/:id
+ * Handles the change of a specific environment variable for the instance.
+ */
+router.post('/instances/startup/changevariable/:id', async (req, res) => {
+    if (!req.user) return res.redirect('/');
+
+    const { id } = req.params;
+    const { variable, value, user } = req.query;
+
+    if (!id || !variable || !user) {
+        return res.status(400).json({ error: 'Missing parameters' });
+    }
+
+    try {
+
+
+        const instance = await db.get(`${id}_instance`);
+        if (!instance) {
+            return res.status(404).json({ error: 'Instance not found' });
+        }
+
+        const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
+        if (!isAuthorized) {
+            return res.status(403).send('Unauthorized access to this instance.');
+        }
+
+        if(!instance.suspended) {
+            instance.suspended = false;
+            db.set(id + '_instance', instance);
+        }
+    
+        if(instance.suspended === true) {
+            return res.redirect('../../instance/' + id + '/suspended');
+        }
+
+        const updatedEnv = instance.Env.map(envVar => {
+            const [key] = envVar.split('=');
+            return key === variable ? `${key}=${value}` : envVar;
+        });
+        const updatedInstance = { ...instance, Env: updatedEnv };
+        await db.set(`${id}_instance`, updatedInstance);
+
+        logAudit(req.user.userId, req.user.username, 'instance:variableChange', req.ip);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error updating environment variable:', error);
+        res.status(500).json({
+            error: 'Failed to update environment variable',
+            details: error.message
+        });
+    }
+});
+
+
+/**
  * GET /instances/startup/changeimage/:id
  * Handles the change of the instance image based on the parameters provided via query strings.
  */
 router.get('/instances/startup/changeimage/:id', async (req, res) => {
+    if (!req.user) return res.redirect('/');
+
     const { id } = req.params;
 
     if (!id) {
-        return res.redirect('/admin/instances');
+        return res.redirect('/instances');
     }
 
     try {
         const instance = await db.get(`${id}_instance`);
         if (!instance) {
-            return res.redirect('/admin/instances');
+            return res.redirect('/instances');
+        }
+
+        const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
+        if (!isAuthorized) {
+            return res.status(403).send('Unauthorized access to this instance.');
+        }
+
+        if(!instance.suspended) {
+            instance.suspended = false;
+            db.set(id + '_instance', instance);
+        }
+    
+        if(instance.suspended === true) {
+            return res.redirect('../../instance/' + id + '/suspended');
         }
 
         const nodeId = instance.Node.id;
@@ -76,10 +164,10 @@ router.get('/instances/startup/changeimage/:id', async (req, res) => {
             return res.status(400).json({ error: 'Invalid node' });
         }
 
-        const requestData = await prepareRequestData(image, instance.Memory, instance.Cpu, instance.Ports, instance.Name, node, id, instance.ContainerId);
+        const requestData = await prepareRequestData(image, instance.Memory, instance.Cpu, instance.Ports, instance.Name, node, id, instance.ContainerId, instance.Env);
         const response = await axios(requestData);
 
-        await updateDatabaseWithNewInstance(response.data, user, node, image, instance.Memory, instance.Cpu, instance.Ports, instance.Primary, instance.Name, id);
+        await updateDatabaseWithNewInstance(response.data, user, node, instance.imageData.Image, instance.Memory, instance.Cpu, instance.Ports, instance.Primary, instance.Name, id, image, instance.imageData, instance.Env);
 
         logAudit(req.user.userId, req.user.username, 'instance:imageChange', req.ip);
         res.status(201).redirect(`/instance/${id}/startup`);
@@ -92,7 +180,7 @@ router.get('/instances/startup/changeimage/:id', async (req, res) => {
     }
 });
 
-async function prepareRequestData(image, memory, cpu, ports, name, node, id, containerId) {
+async function prepareRequestData(image, memory, cpu, ports, name, node, id, containerId, Env) {
     const rawImages = await db.get('images');
     const imageData = rawImages.find(i => i.Image === image);
 
@@ -110,7 +198,7 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, id, con
             Name: name,
             Id: id,
             Image: image,
-            Env: imageData ? imageData.Env : undefined,
+            Env,
             Scripts: imageData ? imageData.Scripts : undefined,
             Memory: memory ? parseInt(memory) : undefined,
             Cpu: cpu ? parseInt(cpu) : undefined,
@@ -131,7 +219,7 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, id, con
     return requestData;
 }
 
-async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, id) {
+async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, id, currentimage, imagedata, Env) {
     const rawImages = await db.get('images');
     const imageData = rawImages.find(i => i.Image === image);
     const altImages = imageData ? imageData.AltImages : [];
@@ -147,8 +235,11 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
         Cpu: parseInt(cpu),
         Ports: ports,
         Primary: primary,
+        currentimage: currentimage,
+        Env,
         Image: image,
-        AltImages: altImages
+        AltImages: altImages,
+        imageData: imagedata
     };
 
     let userInstances = await db.get(`${userId}_instances`) || [];

@@ -1,87 +1,73 @@
 const express = require('express');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
-const { logAudit } = require('../../handlers/auditlog');
+const { logAudit } = require('../../handlers/auditlog.js');
+const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { v4: uuid } = require('uuid');
 
 const router = express.Router();
 
 /**
- * Middleware to verify if the user is an administrator.
- * Checks if the user object exists and if the user has admin privileges. If not, redirects to the
- * home page. If the user is an admin, proceeds to the next middleware or route handler.
- *
- * @param {Object} req - The request object, containing user data.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware or route handler to be executed.
- * @returns {void} Either redirects or proceeds by calling next().
+ * GET /instance/reinstall/:id
+ * Handles the reinstallment of an existing instance based on the parameters provided via query strings.
  */
-function isAdmin(req, res, next) {
-    if (!req.user || req.user.admin !== true) {
-        return res.redirect('../');
-    }
-    next();
-}
-
-/**
- * GET /instances/redeploy/:id
- * Handles the redeployment of an existing instance based on the parameters provided via query strings.
- */
-router.get('/instances/redeploy/:id', isAdmin, async (req, res) => {
+router.post('/instance/reinstall/:id', async (req, res) => {
+    if (!req.user) return res.redirect('/');
+    
     const { id } = req.params;
 
     if (!id) {
-        return res.redirect('/admin/instances');
+        return res.redirect('/instances');
     }
 
     try {
         const instance = await db.get(`${id}_instance`);
         if (!instance) {
-            return res.redirect('/admin/instances');
+            return res.redirect('/instances');
         }
 
-        const nodeId = instance.Node.id;
+        const isAuthorized = await isUserAuthorizedForContainer(req.user.userId, instance.Id);
+        if (!isAuthorized) {
+            return res.status(403).send('Unauthorized access to this instance.');
+        }
 
-        const {
-            image,
-            memory,
-            cpu,
-            ports,
-            name,
-            user,
-            primary
-        } = req.query;
+        if(!instance.suspended) {
+            instance.suspended = false;
+            db.set(id + '_instance', instance);
+        }
+    
+        if(instance.suspended === true) {
+            return res.redirect('../../instance/' + id + '/suspended');
+        }
 
-        const shortimage = image.match(/\(([^)]+)\)/)[1];
+        const { Node: node, imageData, Memory: memory, Cpu: cpu, Ports: ports, Name: name, User: user, Primary: primary, ContainerId: containerId, Env } = instance;
+        const nodeId = node.id;
+
+        const shortimage = instance.Image;
 
         if (!shortimage || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) {
             return res.status(400).json({ error: 'Missing parameters' });
         }
 
-        const node = await db.get(`${nodeId}_node`);
         if (!node) {
             return res.status(400).json({ error: 'Invalid node' });
         }
 
-        const requestData = await prepareRequestData(shortimage, memory, cpu, ports, name, node, id, instance.ContainerId, instance.Env);
+        const requestData = await prepareRequestData(shortimage, memory, cpu, ports, name, node, id, containerId, Env);
         const response = await axios(requestData);
 
-        await updateDatabaseWithNewInstance(response.data, user, node, shortimage, memory, cpu, ports, primary, name, id, instance.Env, instance.imageData);
+        await updateDatabaseWithNewInstance(response.data, user, node, shortimage, memory, cpu, ports, primary, name, id, Env);
 
-        logAudit(req.user.userId, req.user.username, 'instance:redeploy', req.ip);
-        res.status(201).json({
-            message: 'Container redeployed successfully and updated in user\'s servers',
-            containerId: response.data.containerId,
-            volumeId: response.data.volumeId
-        });
+        res.status(201).redirect(`../../instance/${id}`);
     } catch (error) {
-        console.error('Error redeploying instance:', error);
+        console.error('Error reinstalling instance:', error);
         res.status(500).json({
-            error: 'Failed to redeploy container',
+            error: 'Failed to reinstall container',
             details: error.response ? error.response.data : 'No additional error info'
         });
     }
 });
+
 
 async function prepareRequestData(image, memory, cpu, ports, name, node, id, containerId, Env) {
     const rawImages = await db.get('images');
@@ -89,7 +75,7 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, id, con
 
     const requestData = {
         method: 'post',
-        url: `http://${node.address}:${node.port}/instances/redeploy/${containerId}`,
+        url: `http://${node.address}:${node.port}/instances/reinstall/${containerId}`,
         auth: {
             username: 'Skyport',
             password: node.apiKey
@@ -107,7 +93,8 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, id, con
             Cpu: cpu ? parseInt(cpu) : undefined,
             ExposedPorts: {},
             PortBindings: {},
-            AltImages: imageData ? imageData.AltImages : []
+            AltImages: imageData ? imageData.AltImages : [],
+            imageData
         }
     };
 
@@ -119,10 +106,11 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, id, con
             requestData.data.PortBindings[key] = [{ HostPort: hostPort }];
         });
     }
+
     return requestData;
 }
 
-async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, id, Env, imagedata) {
+async function updateDatabaseWithNewInstance(responseData, userId, node, image, memory, cpu, ports, primary, name, id, Env) {
     const rawImages = await db.get('images');
     const imageData = rawImages.find(i => i.Image === image);
     const altImages = imageData ? imageData.AltImages : [];
@@ -138,10 +126,10 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
         Cpu: parseInt(cpu),
         Ports: ports,
         Primary: primary,
-        Env,
         Image: image,
         AltImages: altImages,
-        imageData: imagedata
+        imageData,
+        Env
     };
 
     let userInstances = await db.get(`${userId}_instances`) || [];
