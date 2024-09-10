@@ -133,7 +133,12 @@
                 <label for="nodeName" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.name %>:</label>
                 <input id="nodeName" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My node">
               </div>
-              
+
+              <div>
+                <label for="nodeIso" class="text-neutral-400 text-sm tracking-tight mb-2">Location ISO :</label>
+                <input id="nodeIso" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="DE,US and more">
+              </div>
+
               <div>
                 <label for="nodeRam" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.ram %> (GB):</label>
                 <input id="nodeRam" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="This is only for information purposes.">
@@ -340,6 +345,7 @@
     const processor = document.getElementById('nodeProcessor').value;
     const address = document.getElementById('nodeAddress').value;
     const port = document.getElementById('nodePort').value;
+    const iso = document.getElementById('nodeIso').value;
 
     const nodeData = {
       name,
@@ -348,7 +354,8 @@
       disk,
       processor,
       address,
-      port
+      port,
+      iso 
     };
 
     fetch('/nodes/create', {
