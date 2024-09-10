@@ -239,12 +239,13 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
     processor: req.body.processor,
     address: req.body.address,
     port: req.body.port,
+    iso: req.body.iso,
     apiKey: null, // Set to null initially
     configureKey: configureKey, // Add the configureKey
     status: 'Unconfigured' // Status to indicate pending configuration
   };
 
-  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.port) {
+  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.iso || !req.body.port) {
     return res.status(400).send('Form validation failure.');
   }
 
