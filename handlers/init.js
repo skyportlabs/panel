@@ -4,11 +4,6 @@ const { v4: uuidv4 } = require('uuid');
 const CatLoggr = require('cat-loggr');
 const log = new CatLoggr();
 
-if (process.env.CODESPACE_NAME) {
-        log.error("Skyport does not support running on github codespaces.")
-        process.exit(1)
-    }
-
 async function init() {
     const skyport = await db.get('skyport_instance');
     if (!skyport) {
