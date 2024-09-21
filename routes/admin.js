@@ -1,399 +1,901 @@
-<%- include('../components/template') %>
-<main id="content">
-   <div class="bg-transparent">
-      <div class="sm:flex sm:items-center px-8 pt-4">
-         <div class="sm:flex-auto">
-           <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.nodes %></h1>
-           <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.nodesText %></p>
-         </div>
-         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-           <button id="createButton" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            <%= req.translations.createNewNode %>
-          </button>
-         </div>
-       </div>
-      <% if (req.query.err == "none") { %>
-      <div class="mt-6 w-full">
-        <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
-          <div class="flex">
-             <div class="flex-shrink-0 ml-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
-                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
-                </svg>                
-             </div>
-             <div class="ml-5">
-                <h3 class="text-sm font-medium text-emerald-400">Success!</h3>
-                <div class="text-sm text-emerald-400/50">
-                   <p>The action was successfully completed.</p>
-                </div>
-             </div>
-          </div>
-       </div>
-<% } %>
-    <% if (req.query.err == "EDITED") { %>
-      <div class="mt-6 w-full">
-        <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
-          <div class="flex">
-             <div class="flex-shrink-0 ml-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
-                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
-                </svg>                
-             </div>
-             <div class="ml-5">
-                <h3 class="text-sm font-medium text-emerald-400">Success!</h3>
-                <div class="text-sm text-emerald-400/50">
-                   <p>The node was edited successfully.</p>
-                </div>
-             </div>
-          </div>
-       </div>	      
-      <% } %>
-      <% if (req.query.err == "DELETED") { %>
-        <div class="mt-6 w-full">
-          <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
-            <div class="flex">
-               <div class="flex-shrink-0 ml-1.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
-                    <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
-                  </svg>                
-               </div>
-               <div class="ml-5">
-                  <h3 class="text-sm font-medium text-emerald-400">Success!</h3>
-                  <div class="text-sm text-emerald-400/50">
-                     <p>The node was DELETED successfully.</p>
-                  </div>
-               </div>
-            </div>
-         </div>	      
-        <% } %>
-      <table id="nodeTable" class="mt-6 w-full whitespace-nowrap text-left">
-        <colgroup>
-          <col class="w-full sm:w-4/12">
-          <col class="lg:w-4/12">
-          <col class="lg:w-2/12">
-          <col class="lg:w-1/12">
-          <col class="lg:w-1/12">
-        </colgroup>
-        <thead class="border-b border-white/5 text-sm leading-6 text-white">
-          <tr>
-            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:pl-80 lg:pl-8"><%= req.translations.name %></th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell"><%= req.translations.connection %></th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"><%= req.translations.instances %></th>
-			<th scope="col" class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"><%= req.translations.actions %></th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-white/5">
-         <% nodes.forEach(function(node) { %>
-          <tr>
-            <td class="py-4 pl-4 pr-8 sm:pl-8 lg:pl-8">
-			  <div class="flex items-center gap-x-4">
-			  <% if (node.status == "Online") { %>
-				  <div class="flex items-center justify-end gap-x-2 sm:justify-start">
-					<div class="flex-none rounded-full p-1 text-emerald-400 bg-emerald-600/10">
-					  <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
-					</div>
-				  </div>
-				<% } else if (node.status == "Offline") { %>
-				   <div class="flex items-center justify-end gap-x-2 sm:justify-start">
-					  <div class="flex-none rounded-full p-1 text-neutral-600 bg-neutral-600/10">
-						<div class="h-1.5 w-1.5 rounded-full bg-current"></div>
-					  </div>
-				   </div>
-				<% } else { %>
-				   <div class="flex items-center justify-end gap-x-2 sm:justify-start">
-					  <div class="flex-none rounded-full p-1 text-neutral-400 bg-neutral-400/10">
-						 <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
-					  </div>
-				   </div>
-				<% } %>
+/**
+ * @fileoverview This module sets up administrative routes for managing and monitoring server nodes
+ * within the network. It provides functionality to create, delete, and debug nodes, as well as check
+ * their current status. User authentication and admin role verification are enforced for access to
+ * these routes.
+ */
 
-                <div class="flex items-center space-x-2">
-  <img src="https://flagsapi.com/<%= node.iso %>/shiny/64.png" alt="<%= node.name %> flag" class="w-8 h-8">
-  <div class="truncate text-sm font-medium leading-6 text-white">
-    <%= node.name %>
-  </div>
-</div>
-            </td>
-            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-              <div class="flex gap-x-3">
-                <div class="font-mono text-sm leading-6 text-neutral-400"><%= node.address %><span class="text-neutral-500">:<%= node.port %></span></div>
-                <div class="rounded-xl bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"><%= node.versionRelease || 'unknown' %></div>
-              </div>
-            </td>
-            <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"><%= set[node.id] || 0 %></td>
-			<td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3">
-        <div class="inner"><button onclick="configure('<%= node.id %>')" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          <%= req.translations.configure %>
-        </button>
-      </div>
-				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          <%= req.translations.edit %>
-        </button>
-      </a>
-    </div>
-				<div class="inner"><button id="removeButton" onclick="location.href='/admin/nodes/delete?id=<%= node.id %>'" type="button" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          <%= req.translations.remove %>
-        </button>
-      </div>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
-      <div id="notification" class="fixed bottom-5 right-5 bg-white/5 text-white px-4 py-2 rounded-xl shadow-lg transform transition-all duration-300 tranneutral-y-full opacity-0">
-        Command copied to clipboard!
-      </div>
-      </div>
-      <div id="nodeForm" class="mt-6 px-8 w-full hidden">
-        <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
-          <form>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label for="nodeName" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.name %>:</label>
-                <input id="nodeName" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My node">
-              </div>
-            
-                <div>
-                <label for="nodeIso" class="text-neutral-400 text-sm tracking-tight mb-2">Location ISO (DE,US,and other):</label>
-                <input id="nodeIso" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My node">
-              </div>
+const express = require('express');
+const router = express.Router();
+const { v4: uuidv4 } = require('uuid');
+const axios = require('axios');
+const { db } = require('../handlers/db.js');
+const config = require('../config.json');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const multer = require('multer');
+const path = require('path')
+const fs = require('node:fs')
+const {logAudit} = require('../handlers/auditlog.js');
+const nodemailer = require('nodemailer');
+const { sendTestEmail } = require('../handlers/email.js');
 
-              <div>
-                <label for="nodeRam" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.ram %> (GB):</label>
-                <input id="nodeRam" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="This is only for information purposes.">
-              </div>
-      
-              <div>
-                <label for="nodeDisk" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.disk %> (GB):</label>
-                <input id="nodeDisk" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="This is only for information purposes.">
-              </div>
-      
-              <div>
-                <label for="nodeProcessor" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.cpu %>:</label>
-                <input id="nodeProcessor" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="This is only for information purposes.">
-              </div>
-      
-              <div>
-                <label for="nodeAddress" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.addressIP %>:</label>
-                <input id="nodeAddress" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="192.168.1.1 or my.hostnamehere.com">
-              </div>
-      
-              <div>
-                <label for="nodePort" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.deamonPort %>:</label>
-                <input id="nodePort" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="3000">
-              </div>
-      
-              <div class="col-span-2">
-                <label for="tagInput" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.tags %>:</label>
-                <div id="tagContainer" class="flex flex-wrap gap-2 mb-2"></div>
-                <input id="tagInput" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="Add a tag and press Enter">
-              </div>
-      
-              <div class="col-span-2">
-                <button id="createNodeBtn" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                  <%= req.translations.create %>
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      
-</main>
-<script>
-  document.getElementById('createButton').addEventListener('click', function() {
-    var table = document.getElementById('nodeTable');
-    var form = document.getElementById('nodeForm');
-    if (table.style.display !== 'none') {
-      table.style.display = 'none';
-      form.style.display = 'block';
-    } else {
-      table.style.display = 'block';
-      form.style.display = 'none';
-    }
-  });
-
-  async function configure(nodeId) {
-    const response = await fetch(`/admin/node/${nodeId}/configure-command`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch configure command');
-    }
-    const data = await response.json();
-    showPopup(data.configureCommand);
+/**
+ * Middleware to verify if the user is an administrator.
+ * Checks if the user object exists and if the user has admin privileges. If not, redirects to the
+ * home page. If the user is an admin, proceeds to the next middleware or route handler.
+ *
+ * @param {Object} req - The request object, containing user data.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware or route handler to be executed.
+ * @returns {void} Either redirects or proceeds by calling next().
+ */
+function isAdmin(req, res, next) {
+  if (!req.user || req.user.admin !== true) {
+    return res.redirect('../');
   }
-
-  function showPopup(command) {
-    const popup = document.createElement('div');
-    popup.style.position = 'fixed';
-    popup.style.top = '50%';
-    popup.style.left = '50%';
-    popup.style.transform = 'translate(-50%, -50%)';
-    popup.style.padding = '20px';
-    popup.style.width = '550px';
-    popup.style.height = 'auto';
-    popup.style.maxHeight = '80vh';
-    popup.style.borderRadius = '10px';
-    popup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
-    popup.style.backgroundColor = '#fff';
-
-    popup.classList.add('text-white', 'border', 'border-white/5', 'rounded-xl', 'shadow-xl');
-
-    popup.innerHTML = `
-        <div class="flex justify-center items-center mb-2" style="margin-top: 75px;">
-<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
-<linearGradient id="1ayUTr30BaMDjOG69N2fSa_xTkoPEFGI0P7_gr1" x1="21.241" x2="3.541" y1="39.241" y2="21.541" gradientUnits="userSpaceOnUse"><stop offset=".108" stop-color="#0d7044"></stop><stop offset=".433" stop-color="#11945a"></stop></linearGradient><path fill="url(#1ayUTr30BaMDjOG69N2fSa_xTkoPEFGI0P7_gr1)" d="M16.599,41.42L1.58,26.401c-0.774-0.774-0.774-2.028,0-2.802l4.019-4.019	c0.774-0.774,2.028-0.774,2.802,0L23.42,34.599c0.774,0.774,0.774,2.028,0,2.802l-4.019,4.019	C18.627,42.193,17.373,42.193,16.599,41.42z"></path><linearGradient id="1ayUTr30BaMDjOG69N2fSb_xTkoPEFGI0P7_gr2" x1="-15.77" x2="26.403" y1="43.228" y2="43.228" gradientTransform="rotate(134.999 21.287 38.873)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2ac782"></stop><stop offset="1" stop-color="#21b876"></stop></linearGradient><path fill="url(#1ayUTr30BaMDjOG69N2fSb_xTkoPEFGI0P7_gr2)" d="M12.58,34.599L39.599,7.58c0.774-0.774,2.028-0.774,2.802,0l4.019,4.019	c0.774,0.774,0.774,2.028,0,2.802L19.401,41.42c-0.774,0.774-2.028,0.774-2.802,0l-4.019-4.019	C11.807,36.627,11.807,35.373,12.58,34.599z"></path>
-</svg>
-        </div>
-        <p class="font-bold mb-2 mt-3 text-black" style="font-size:30px; text-align:center">Token created.</p>
-        <h3 class="mb-5 text-neutral-600" style="text-align:center; margin-top: 25px;">To auto-configure your node, run the following command:</h3>
-        <pre class="bg-neutral-900 p-3 rounded-xl mb-4 mt-3" style="overflow-x: scroll"><code id="commandCode" class="text-emerald-500">${command}</code></pre>
-        <button id="doneBtn" class="block rounded-xl bg-black text-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-4">Done</button>
-    `;
-    document.body.appendChild(popup);
-
-    const commandCode = document.getElementById('commandCode');
-    commandCode.addEventListener('click', function() {
-        const textarea = document.createElement('textarea');
-        textarea.value = commandCode.textContent;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-      const notification = document.getElementById('notification');
-      notification.classList.remove('tranneutral-y-full', 'opacity-0');
-      
-      setTimeout(() => {
-        notification.classList.add('tranneutral-y-full', 'opacity-0');
-      }, 3000);
-    });
-
-    document.getElementById('doneBtn').addEventListener('click', function() {
-
-        document.body.removeChild(popup);
-    });
+  next();
 }
 
+async function doesUserExist(username) {
+  const users = await db.get('users');
+  if (users) {
+      return users.some(user => user.username === username);
+  } else {
+      return false; // If no users found, return false
+  }
+}
 
-  
+async function doesEmailExist(email) {
+  const users = await db.get('users');
+  if (users) {
+      return users.some(user => user.email === email);
+  } else {
+      return false; // If no users found, return false
+  }
+}
 
-  function setupBadgeInput(inputId, containerId, validator) {
-    const input = document.getElementById(inputId);
-    const container = document.getElementById(containerId);
+/**
+ * Checks the operational status of a node by making an HTTP request to its API.
+ * Updates the node's status based on the response or sets it as 'Offline' if the request fails.
+ * This status check and update are persisted in the database.
+ *
+ * @param {Object} node - The node object containing details such as address, port, and API key.
+ * @returns {Promise<Object>} Returns the updated node object after attempting to verify its status.
+ */
+async function checkNodeStatus(node) {
+  try {
+    const RequestData = {
+      method: 'get',
+      url: 'http://' + node.address + ':' + node.port + '/',
+      auth: {
+        username: 'Skyport',
+        password: node.apiKey
+      },
+      headers: { 
+        'Content-Type': 'application/json'
+      }
+    };
+    const response = await axios(RequestData);
+    const { versionFamily, versionRelease, online, remote, docker } = response.data;
 
-    function processInput() {
-        const value = input.value.trim();
+    node.status = 'Online';
+    node.versionFamily = versionFamily;
+    node.versionRelease = versionRelease;
+    node.remote = remote;
+    node.docker = docker;
 
-        const tags = value.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+    await db.set(node.id + '_node', node); // Update node info with new details
+    return node;
+  } catch (error) {
+    node.status = 'Offline';
+    await db.set(node.id + '_node', node); // Update node as offline if there's an error
+    return node;
+  }
+}
 
-        let allValid = true;
-        tags.forEach(tag => {
-            if (tag !== '' && (!validator || validator(tag))) {
-                createBadge(tag);
-            } else {
-                allValid = false;
-            }
-        });
+router.get('/admin/apikeys', isAdmin, async (req, res) => {
+  try {
+    const apiKeys = await db.get('apiKeys') || [];
+    res.render('admin/apikeys', { req, user: req.user, apiKeys, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve API keys' });
+  }
+});
 
-        if (!allValid) {
-            alert('Invalid format. Ports should be like this: 8080:8080 [external:internal]. For example, if you wanted to assign 8080 to the internal port 2022, you could do: 8080:2022.');
-        }
+router.post('/apikeys/create', isAdmin, async (req, res) => {
+  try {
+    const newApiKey = {
+      id: uuidv4(),
+      key: 'skyport_' + uuidv4(),
+      createdAt: new Date().toISOString()
+    };
+    
+    let apiKeys = await db.get('apiKeys') || [];
+    apiKeys.push(newApiKey);
+    await db.set('apiKeys', apiKeys);
+    
+    res.status(201).json(newApiKey);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create API key' });
+  }
+});
 
-        input.value = '';
+router.delete('/apikeys/delete', isAdmin, async (req, res) => {
+  try {
+    const { keyId } = req.body;
+    let apiKeys = await db.get('apiKeys') || [];
+    apiKeys = apiKeys.filter(key => key.id !== keyId);
+    await db.set('apiKeys', apiKeys);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete API key' });
+  }
+});
+
+/**
+ * GET /nodes/debug
+ * Asynchronously retrieves and updates the status of all nodes registered in the database.
+ * Available only to administrators. The status of each node is checked and updated through a
+ * specific function call which queries the node's API.
+ *
+ * @returns {Response} Returns a JSON array of all nodes with their updated statuses.
+ */
+router.get('/nodes/debug', isAdmin, async (req, res) => {
+  const nodeIds = await db.get('nodes') || [];
+  const nodes = await Promise.all(nodeIds.map(id => db.get(id + '_node').then(checkNodeStatus)));
+  res.json(nodes);
+});
+
+/**
+ * GET /account/debug
+ * Provides debug information about the currently logged-in user. Available only to administrators.
+ * Ensures that user data is available in the request object, then returns this data in JSON format.
+ *
+ * @returns {Response} Returns a JSON object containing user details if available; otherwise, sends a debug error message.
+ */
+router.get('/account/debug', isAdmin, async (req, res) => {
+  if (!req.user) res.send('no req.user present!')
+  res.json(req.user);
+});
+
+/**
+ * GET /admin/node/:id/configure-command
+ * Generates a configuration command for a specific node.
+ */
+router.get('/admin/node/:id/configure-command', isAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch the node from the database
+    const node = await db.get(id + '_node');
+
+    if (!node) {
+      return res.status(404).json({ error: 'Node not found' });
     }
 
-    input.addEventListener('blur', function() {
-        processInput();
-    });
-    input.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            processInput();
-        }
-    });
+    // Generate a new configure key
+    const configureKey = uuidv4();
 
-    input.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const value = input.value.trim();
+    // Update the node with the new configure key
+    node.configureKey = configureKey;
+    await db.set(id + '_node', node);
 
-            const tags = value.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+    // Construct the configuration command
+    const panelUrl = `${req.protocol}://${req.get('host')}`;
+    const configureCommand = `npm run configure -- --panel ${panelUrl} --key ${configureKey}`;
 
-            let allValid = true;
-            tags.forEach(tag => {
-                if (tag !== '' && (!validator || validator(tag))) {
-                    createBadge(tag, container, input);
-                } else {
-                    allValid = false;
-                }
-            });
-
-            if (!allValid) {
-                alert('Invalid format. Ports should be like this: 8080:8080 [external:internal]. For example, if you wanted to assign 8080 to the internal port 2022, you could do: 8080:2022.');
-            }
-
-            input.value = '';
-        }
+    // Return the configuration command
+    res.json({
+      nodeId: id,
+      configureCommand: configureCommand
     });
 
-
-    function createBadge(text, container, inputField) {
-    const badge = document.createElement('span');
-    badge.className = 'bg-white/5 text-neutral-300 text-xs font-medium mr-1 px-2.5 py-0.5 rounded-xl';
-    badge.textContent = text;
-
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'ml-2 text-neutral-600';
-    removeBtn.textContent = '×';
-    removeBtn.onclick = function() {
-      container.removeChild(badge);
-    };
-
-    badge.appendChild(removeBtn);
-    container.appendChild(badge);
-    inputField.value = '';
+  } catch (error) {
+    console.error('Error generating configure command:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+/**
+ * GET /admin/overview
+ * Retrieves counts of users, nodes, images, and instances from the database.
+ * Available only to administrators and renders an overview page displaying the counts.
+ *
+ * @returns {Response} Renders the 'overview' view with the total counts.
+ */
+router.get('/admin/overview', isAdmin, async (req, res) => {
+  try {
+      const users = await db.get('users') || [];
+      const nodes = await db.get('nodes') || [];
+      const images = await db.get('images') || [];
+      const instances = await db.get('instances') || [];
+
+      // Calculate the total number of each type of object
+      const usersTotal = users.length;
+      const nodesTotal = nodes.length;
+      const imagesTotal = images.length;
+      const instancesTotal = instances.length;
+
+      res.render('admin/overview', { req, user: req.user, usersTotal, nodesTotal, imagesTotal, instancesTotal, version: config.version, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  } catch (error) {
+      res.status(500).send({ error: 'Failed to retrieve data from the database.' });
+  }
+});
+
+
+/**
+ * POST /nodes/create
+ * Creates a new node with a unique configureKey for secure configuration.
+ */
+router.post('/nodes/create', isAdmin, async (req, res) => {
+  const configureKey = uuidv4(); // Generate a unique configureKey
+  const node = {
+    id: uuidv4(),
+    name: req.body.name,
+    tags: req.body.tags,
+    ram: req.body.ram,
+    disk: req.body.disk,
+    processor: req.body.processor,
+    address: req.body.address,
+    port: req.body.port,
+    apiKey: null, // Set to null initially
+    iso: req.body.iso,
+    configureKey: configureKey, // Add the configureKey
+    status: 'Unconfigured' // Status to indicate pending configuration
+  };
+
+  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address ||!req.body.iso || !req.body.port) {
+    return res.status(400).send('Form validation failure.');
   }
 
-  setupBadgeInput('tagInput', 'tagContainer');
+  await db.set(node.id + '_node', node);
 
-  document.getElementById('createNodeBtn').addEventListener('click', function() {
-    const name = document.getElementById('nodeName').value;
-    const tags = Array.from(document.getElementById('tagContainer').children).map(badge => badge.textContent.slice(0, -1).trim());
-    const ram = document.getElementById('nodeRam').value;
-    const disk = document.getElementById('nodeDisk').value;
-    const processor = document.getElementById('nodeProcessor').value;
-    const address = document.getElementById('nodeAddress').value;
-    const port = document.getElementById('nodePort').value;
-    const iso = document.getElementById('nodeIso').value;
+  const nodes = await db.get('nodes') || [];
+  nodes.push(node.id);
+  await db.set('nodes', nodes);
 
-    const nodeData = {
-      name,
-      tags: tags.join(' - '),
-      ram,
-      disk,
-      processor,
-      address,
-      port,
-      iso
-    };
-
-    fetch('/nodes/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(nodeData)
-    })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error('Failed to create node');
-    })
-    .then(data => {
-      console.log('Node created:', data);
-      window.location.href = '../admin/nodes?err=none'
-    })
-    .catch(error => alert('Error creating node:', error));
+  // Return the node object including the configureKey
+  logAudit(req.user.userId, req.user.username, 'node:create', req.ip);
+  res.status(201).json({
+    ...node,
+    configureKey: configureKey // Include configureKey in the response
   });
-</script>
-<%- include('../components/footer') %>
+});
+
+/**
+ * POST /nodes/configure
+ * Allows a node to set its own access key using the configureKey.
+ * The request must include a valid authKey from config.json for security.
+ */
+router.post('/nodes/configure', async (req, res) => {
+  const { configureKey, accessKey } = req.query;
+
+  if (!configureKey || !accessKey) {
+    return res.status(400).json({ error: 'Missing configureKey or accessKey' });
+  }
+
+  try {
+    // Find the node with the matching configureKey
+    const nodes = await db.get('nodes') || [];
+    let foundNode = null;
+    for (const nodeId of nodes) {
+      const node = await db.get(nodeId + '_node');
+      if (node && node.configureKey === configureKey) {
+        foundNode = node;
+        break;
+      }
+    }
+
+    if (!foundNode) {
+      return res.status(404).json({ error: 'Node not found' });
+    }
+
+    // Update the node with the new accessKey
+    foundNode.apiKey = accessKey;
+    foundNode.status = 'Configured';
+    foundNode.configureKey = null; // Remove the configureKey after successful configuration
+
+    await db.set(foundNode.id + '_node', foundNode);
+
+    res.status(200).json({ message: 'Node configured successfully' });
+  } catch (error) {
+    console.error('Error configuring node:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/users/create', isAdmin, async (req, res) => {
+  const { username, email, password, admin, verified } = req.body;
+
+  if (!username || !email || !password) {
+    return res.status(400).send('Username, email, and password are required.');
+  }
+
+  if (typeof admin !== 'boolean') {
+    return res.status(400).send('Admin field must be true or false.');
+  }
+
+  const userExists = await doesUserExist(username);
+  if (userExists) {
+    return res.status(400).send('User already exists.');
+  }
+
+  const emailExists = await doesEmailExist(email);
+  if (emailExists) {
+    return res.status(400).send('Email already exists.');
+  }
+
+  const userId = uuidv4();
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+  const newUser = {
+    userId,
+    username,
+    email,
+    password: hashedPassword,
+    accessTo: [],
+    admin,
+    verified: verified || false,
+  };
+
+  let users = await db.get('users') || [];
+  users.push(newUser);
+  await db.set('users', users);
+
+  logAudit(req.user.userId, req.user.username, 'user:create', req.ip);
+
+  res.status(201).send(newUser);
+});
+
+router.delete('/user/delete', isAdmin, async (req, res) => {
+  const userId = req.body.userId;
+  const users = await db.get('users') || [];
+
+  const userIndex = users.findIndex(user => user.userId === userId);
+
+  if (userIndex === -1) {
+    return res.status(400).send('The specified user does not exist');
+  }
+
+  users.splice(userIndex, 1);
+  await db.set('users', users);
+  logAudit(req.user.userId, req.user.username, 'user:delete', req.ip);
+  res.status(204).send();
+});
+
+router.get('/admin/users/edit/:userId', isAdmin, async (req, res) => {
+  const userId = req.params.userId;
+  const users = await db.get('users') || [];
+  const user = users.find(user => user.userId === userId);
+
+  if (!user) {
+    return res.status(404).send('User not found');
+  }
+
+  res.render('admin/edit-user', {
+    req,
+    user: req.user,
+    editUser: user,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false
+  });
+});
+
+router.post('/admin/users/edit/:userId', isAdmin, async (req, res, next) => {
+  const userId = req.params.userId;
+  const { username, email, password, admin, verified } = req.body;
+
+  if (!username || !email) {
+    return res.status(400).send('Username and email are required.');
+  }
+
+  const users = await db.get('users') || [];
+  const userIndex = users.findIndex(user => user.userId === userId);
+
+  if (userIndex === -1) {
+    return res.status(404).send('User not found');
+  }
+
+  const userExists = users.some(user => user.username === username && user.userId !== userId);
+  const emailExists = users.some(user => user.email === email && user.userId !== userId);
+
+  if (userExists) {
+    return res.status(400).send('Username already exists.');
+  }
+
+  if (emailExists) {
+    return res.status(400).send('Email already exists.');
+  }
+
+  users[userIndex].username = username;
+  users[userIndex].email = email;
+  users[userIndex].admin = admin === 'true';
+  users[userIndex].verified = verified === 'true';
+
+  if (password) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    users[userIndex].password = hashedPassword;
+  }
+
+  await db.set('users', users);
+
+  logAudit(req.user.userId, req.user.username, 'user:edit', req.ip);
+
+  if (req.user.userId === userId) {
+    return req.logout(err => {
+      if (err) return next(err);
+      res.redirect('/login?err=UpdatedCredentials');
+    });
+  }
+
+  res.redirect('/admin/users');
+});
+
+
+
+/**
+ * DELETE /nodes/delete
+ * Deletes a node from the database based on its identifier provided in the request body. Updates the list of
+ * all nodes in the database to reflect this deletion. This operation is restricted to administrators.
+ *
+ * @returns {Response} Sends a status response indicating the successful deletion of the node.
+ */
+router.get('/admin/nodes/delete', isAdmin, async (req, res) => {
+  const nodeId = req.query.id;
+
+  if (!nodeId) {
+    return res.status(400).send('Invaild ID');
+  }
+
+  const nodes = await db.get('nodes') || [];
+  const newNodes = nodes.filter(id => id !== nodeId);
+
+  await db.set('nodes', newNodes);
+  await db.delete(nodeId + '_node');
+
+  res.redirect('/admin/nodes?err=DELETED');
+});
+
+/**
+ * GET /admin/nodes
+ * Retrieves a list of all nodes, checks their statuses, and renders an admin page to display these nodes.
+ * This route is protected and allows only administrators to view the node management page.
+ *
+ * @returns {Response} Renders the 'nodes' view with node data and user information.
+ */
+router.get('/admin/nodes', isAdmin, async (req, res) => {
+  let nodes = await db.get('nodes') || [];
+  let instances = await db.get('instances') || [];
+  let set = {};
+  nodes.forEach(function(node) {
+	  set[node] = 0;
+	  instances.forEach(function(instance) {
+		if (instance.Node.id == node) {
+			set[node]++;
+		}
+	  });
+  });
+  nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
+
+  res.render('admin/nodes', { req, user: req.user, nodes, set, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+});
+
+
+/**
+ * GET /admin/settings
+ * Settings page. This route is protected and allows only administrators to view the settings page.
+ *
+ * @returns {Response} Renders the 'nodes' view with node data and user information.
+ */
+router.get('/admin/settings', isAdmin, async (req, res) => {
+  res.render('admin/settings/appearance', { req, user: req.user, settings: await db.get('settings'), name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+});
+
+router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
+  try {
+    const settings = await db.get('settings');
+    const smtpSettings = await db.get('smtp_settings') || {};
+    
+    res.render('admin/settings/smtp', {
+      req,
+      user: req.user,
+      settings,
+      name: await db.get('name') || 'Skyport',
+      logo: await db.get('logo') || false,
+      smtpSettings
+    });
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    res.status(500).send('Failed to fetch settings. Please try again later.');
+  }
+});
+
+
+router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => {
+  try {
+    const settings = await db.get('settings') || {};
+    settings.forceVerify = !settings.forceVerify;
+
+    await db.set('settings', settings);
+    logAudit(req.user.userId, req.user.username, 'force-verify:edit', req.ip); // Adjust as per your logging needs
+
+    res.redirect('/admin/settings');
+  } catch (err) {
+    console.error('Error toggling force verify:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
+  const name = req.body.name;
+  try {
+  await db.set('name', [name]);
+  logAudit(req.user.userId, req.user.username, 'name:edit', req.ip);
+  res.redirect('/admin/settings?changednameto=' + name);
+} catch (err) {
+  console.error(err);
+  res.status(500).send("Database error");
+}
+});
+
+router.post('/admin/settings/saveSmtpSettings', async (req, res) => {
+  const { smtpServer, smtpPort, smtpUser, smtpPass, smtpFromName, smtpFromAddress } = req.body;
+
+  try {
+    await db.set('smtp_settings', {
+      server: smtpServer,
+      port: smtpPort,
+      username: smtpUser,
+      password: smtpPass,
+      fromName: smtpFromName,
+      fromAddress: smtpFromAddress
+    });
+
+    logAudit(req.user.userId, req.user.username, 'SMTP:edit', req.ip);
+    res.redirect('/admin/settings/smtp?msg=SmtpSaveSuccess');
+  } catch (error) {
+    console.error('Error saving SMTP settings:', error);
+    res.redirect('/admin/settings/smtp?err=SmtpSaveFailed');
+  }
+});
+
+
+router.post('/sendTestEmail', async (req, res) => {
+  try {
+    const { recipientEmail } = req.body;
+
+    const emailSent = await sendTestEmail(recipientEmail);
+
+    if (emailSent) {
+      res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
+    } else {
+      res.redirect('/admin/settings/smtp?err=TestemailSentfailed'); 
+    }
+  } catch (error) {
+    console.error('Error sending test email:', error);
+    res.redirect('/admin/settings/smtp?err=TestemailSentfailed');
+  }
+});
+
+
+// Configure multer for file upload
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      const uploadPath = path.join(__dirname, '..', 'public', 'assets');
+      fs.mkdirSync(uploadPath, { recursive: true });
+      cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+      cb(null, 'logo.png');
+    }
+  }),
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Not an image! Please upload an image file.'), false);
+    }
+  }
+});
+
+router.post('/admin/settings/change/logo', isAdmin, upload.single('logo'), async (req, res) => {
+  const type = req.body.type;
+
+  try {
+    if (type === 'image' && req.file) {
+      // Image uploaded successfully
+      await db.set('logo', true);
+      res.redirect('/admin/settings');
+    } else if (type === 'none') {
+      // Remove existing logo
+      const logoPath = path.join(__dirname, '..', 'public', 'assets', 'logo.png');
+      if (fs.existsSync(logoPath)) {
+        fs.unlinkSync(logoPath);
+      }
+      await db.set('logo', false);
+      logAudit(req.user.userId, req.user.username, 'logo:edit', req.ip);
+      res.redirect('/admin/settings');
+    } else {
+      res.status(400).send('Invalid request');
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error processing logo change: " + err.message);
+  }
+});
+
+router.post('/admin/settings/toggle/register', isAdmin, upload.single('logo'), async (req, res) => {
+  let settings = await db.get('settings');
+  settings.register = !settings.register;
+  await db.set('settings', settings);
+  logAudit(req.user.userId, req.user.username, 'register:edit', req.ip);
+  res.redirect('/admin/settings');
+});
+/**
+ * GET /admin/instances
+ * Retrieves a list of all instances, checks their statuses, and renders an admin page to display these instances.
+ * This route is protected and allows only administrators to view the instance management page.
+ *
+ * @returns {Response} Renders the 'instances' view with instance data and user information.
+ */
+router.get('/admin/instances', isAdmin, async (req, res) => {
+  let instances = await db.get('instances') || [];
+  let images = await db.get('images') || [];
+  let nodes = await db.get('nodes') || [];
+  let users = await db.get('users') || [];
+
+  nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
+
+  res.render('admin/instances', { req, user: req.user, instances, images, nodes, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+});
+
+
+router.get('/admin/instances/:id/edit', isAdmin, async (req, res) => {
+  const { id } = req.params;
+  const instance = await db.get(id + '_instance');
+  let users = await db.get('users') || [];
+  let images = await db.get('images') || [];
+
+  if (!instance) return res.redirect('/admin/instances');
+  res.render('admin/instance_edit', { req, user: req.user, instance, images, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+})
+
+router.get('/admin/users', isAdmin, async (req, res) => {
+  let users = await db.get('users') || [];
+
+  res.render('admin/users', { req, user: req.user, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+});
+
+/**
+ * GET /admin/node/:id
+ * Renders the page for a specific node identified by its unique ID.
+ * The endpoint retrieves the node details from the database,
+ * and renders the 'admin/node' view with the retrieved data.
+ *
+ * @param {string} id - The unique identifier of the node to fetch.
+ * @returns {Response} Redirects to the nodes overview page if the node does not exist
+ * or the ID is not provided. Otherwise, renders the node page with appropriate data.
+ */
+ 
+router.get("/admin/node/:id", async (req, res) => {
+    const { id } = req.params;
+    const node = await db.get(id + '_node');
+
+    if (!node || !id) return res.redirect('../nodes')
+
+    res.render('admin/node', { req, node, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+});
+
+
+/**
+ * POST /admin/node/:id
+ * Edit an existing node with specified parameters from the request body, such as name, hardware specifications.
+ *
+ * @returns {Response} Sends the node data if all goes ok else 400 if the node doesn't exist.
+ */
+ 
+router.post("/admin/node/:id", async (req, res) => {
+
+	const { id } = req.params;
+	const cnode = await db.get(id + '_node');
+
+    if (!cnode || !id) return res.status(400).send();
+	
+    const node = {
+		id: id,
+		name: req.body.name,
+		tags: req.body.tags,
+		ram: req.body.ram,
+		disk: req.body.disk,
+		processor: req.body.processor,
+		address: req.body.address,
+		port: req.body.port,
+		apiKey: req.body.apiKey,
+		status: 'Unknown' // Default status
+	};
+
+    await db.set(node.id + '_node', node); 
+	const updatedNode = await checkNodeStatus(node);
+	res.status(201).send(updatedNode);
+});
+
+/**
+ * GET /admin/images
+ *
+ * @returns {Response} Renders the 'images' view with image data.
+ */
+router.get('/admin/images', isAdmin, async (req, res) => {
+  let images = await db.get('images') || [];
+
+  res.render('admin/images', { req, user: req.user, images, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+});
+
+router.post('/admin/images/upload', isAdmin, async (req, res) => {
+  try {
+    let jsonData = req.body;
+    jsonData.Id = uuidv4();
+    let images = await db.get('images') || [];
+    images.push(jsonData);
+    await db.set('images', images);
+    res.status(200).send('image uploaded successfully.');
+  } catch (err) {
+    console.error('Error uploading image:', err);
+    res.status(500).send('Error uploading image.');
+  }
+});
+
+router.post('/admin/images/delete', isAdmin, async (req, res) => {
+  try {
+    let { id } = req.body;
+    let images = await db.get('images') || [];
+    images = images.filter(image => image.Id !== id);
+    await db.set('images', images);
+    res.status(200).send('image deleted successfully.');
+  } catch (err) {
+    console.error('Error deleting image:', err);
+    res.status(500).send('Error deleting image.');
+  }
+});
+
+
+// Endpoint to delete a single instance
+router.get('/admin/instance/delete/:id', isAdmin, async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    if (!id) {
+      return res.redirect('/admin/instances');
+    }
+    
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+      return res.status(404).send('Instance not found');
+    }
+    
+    await deleteInstance(instance);
+    logAudit(req.user.userId, req.user.username, 'instance:delete', req.ip);
+    res.redirect('/admin/instances');
+  } catch (error) {
+    console.error('Error in delete instance endpoint:', error);
+    res.status(500).send('An error occurred while deleting the instance');
+  }
+});
+
+// Endpoint to purge all instances
+router.get('/admin/instances/purge/all', isAdmin, async (req, res) => {
+  try {
+    const instances = await db.get('instances') || [];
+    
+    for (const instance of instances) {
+      await deleteInstance(instance);
+    }
+    
+    await db.delete('instances');
+    res.redirect('/admin/instances');
+  } catch (error) {
+    console.error('Error in purge all instances endpoint:', error);
+    res.status(500).send('An error occurred while purging all instances');
+  }
+});
+
+router.post('/admin/instances/suspend/:id', isAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      return res.redirect('/admin/instances');
+    }
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+      return res.status(404).send('Instance not found');
+    }
+
+    instance.suspended = true;
+    await db.set(id + '_instance', instance);
+    let instances = await db.get('instances') || [];
+
+    let instanceToSuspend = instances.find(obj => obj.ContainerId === instance.ContainerId);
+    if (instanceToSuspend) {
+      instanceToSuspend.suspended = true;
+    }
+
+    await db.set('instances', instances);
+
+    logAudit(req.user.userId, req.user.username, 'instance:suspend', req.ip);
+    res.redirect('/admin/instances');
+  } catch (error) {
+    console.error('Error in suspend instance endpoint:', error);
+    res.status(500).send('An error occurred while suspending the instance');
+  }
+});
+
+router.post('/admin/instances/unsuspend/:id', isAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      return res.redirect('/admin/instances');
+    }
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+      return res.status(404).send('Instance not found');
+    }
+
+    instance.suspended = false;
+
+    await db.set(id + '_instance', instance);
+
+    let instances = await db.get('instances') || [];
+
+    let instanceToUnsuspend = instances.find(obj => obj.ContainerId === instance.ContainerId);
+    if (instanceToUnsuspend) {
+      instanceToUnsuspend.suspended = false;
+    }
+
+    await db.set('instances', instances);
+
+    logAudit(req.user.userId, req.user.username, 'instance:unsuspend', req.ip);
+
+    res.redirect('/admin/instances');
+  } catch (error) {
+    console.error('Error in unsuspend instance endpoint:', error);
+    res.status(500).send('An error occurred while unsuspending the instance');
+  }
+});
+
+
+async function deleteInstance(instance) {
+  try {
+    await axios.get(`http://Skyport:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}/delete`);
+    
+    let userInstances = await db.get(instance.User + '_instances') || [];
+    userInstances = userInstances.filter(obj => obj.ContainerId !== instance.ContainerId);
+    await db.set(instance.User + '_instances', userInstances);
+    
+    let globalInstances = await db.get('instances') || [];
+    globalInstances = globalInstances.filter(obj => obj.ContainerId !== instance.ContainerId);
+    await db.set('instances', globalInstances);
+    
+    await db.delete(instance.ContainerId + '_instance');
+  } catch (error) {
+    console.error(`Error deleting instance ${instance.ContainerId}:`, error);
+    throw error;
+  }
+}
+
+router.get('/admin/auditlogs', isAdmin, async (req, res) => {
+  try {
+    let audits = await db.get('audits');
+    audits = audits ? JSON.parse(audits) : [];
+    res.render('admin/auditlogs', { req, user: req.user, audits, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  } catch (err) {
+    console.error('Error fetching audits:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+module.exports = router;
