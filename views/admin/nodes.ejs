@@ -48,6 +48,24 @@
           </div>
        </div>	      
       <% } %>
+      <% if (req.query.err == "DELETED") { %>
+        <div class="mt-6 w-full">
+          <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
+            <div class="flex">
+               <div class="flex-shrink-0 ml-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
+                    <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                  </svg>                
+               </div>
+               <div class="ml-5">
+                  <h3 class="text-sm font-medium text-emerald-400">Success!</h3>
+                  <div class="text-sm text-emerald-400/50">
+                     <p>The node was DELETED successfully.</p>
+                  </div>
+               </div>
+            </div>
+         </div>	      
+        <% } %>
       <table id="nodeTable" class="mt-6 w-full whitespace-nowrap text-left">
         <colgroup>
           <col class="w-full sm:w-4/12">
@@ -89,8 +107,12 @@
 				   </div>
 				<% } %>
 
-                <div class="truncate text-sm font-medium leading-6 text-white"><%= node.name %></div>
-              </div>
+                <div class="flex items-center space-x-2">
+  <img src="https://flagsapi.com/<%= node.iso %>/shiny/64.png" alt="<%= node.name %> flag" class="w-8 h-8">
+  <div class="truncate text-sm font-medium leading-6 text-white">
+    <%= node.name %>
+  </div>
+</div>
             </td>
             <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
               <div class="flex gap-x-3">
@@ -109,7 +131,7 @@
         </button>
       </a>
     </div>
-				<div class="inner"><button id="removeButton" onclick="location.href='/admin/nodes/delete/<%= node.id %>'" type="button" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+				<div class="inner"><button id="removeButton" onclick="location.href='/admin/nodes/delete?id=<%= node.id %>'" type="button" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           <%= req.translations.remove %>
         </button>
       </div>
@@ -129,7 +151,12 @@
                 <label for="nodeName" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.name %>:</label>
                 <input id="nodeName" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My node">
               </div>
-      
+            
+                <div>
+                <label for="nodeIso" class="text-neutral-400 text-sm tracking-tight mb-2">Location ISO (DE,US,and other):</label>
+                <input id="nodeIso" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My node">
+              </div>
+
               <div>
                 <label for="nodeRam" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.ram %> (GB):</label>
                 <input id="nodeRam" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="This is only for information purposes.">
@@ -336,6 +363,7 @@
     const processor = document.getElementById('nodeProcessor').value;
     const address = document.getElementById('nodeAddress').value;
     const port = document.getElementById('nodePort').value;
+    const iso = document.getElementById('nodeIso').value;
 
     const nodeData = {
       name,
@@ -344,7 +372,8 @@
       disk,
       processor,
       address,
-      port
+      port,
+      iso
     };
 
     fetch('/nodes/create', {
