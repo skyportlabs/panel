@@ -354,7 +354,6 @@
     const processor = document.getElementById('nodeProcessor').value;
     const address = document.getElementById('nodeAddress').value;
     const port = document.getElementById('nodePort').value;
-    const iso = document.getElementById('nodeIso').value;
 
     const nodeData = {
       name,
@@ -363,9 +362,8 @@
       disk,
       processor,
       address,
-      port,
-      iso
-    };
+      port
+};
 
     fetch('/nodes/create', {
       method: 'POST',
