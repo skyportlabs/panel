@@ -441,7 +441,7 @@ router.post('/admin/users/edit/:userId', isAdmin, async (req, res, next) => {
  *
  * @returns {Response} Sends a status response indicating the successful deletion of the node.
  */
-router.delete('/nodes/delete', isAdmin, async (req, res) => {
+router.get('/admin/nodes/delete', isAdmin, async (req, res) => {
   const nodeId = req.body.nodeId;
   const nodes = await db.get('nodes') || [];
   const newNodes = nodes.filter(id => id !== nodeId);
@@ -450,9 +450,10 @@ router.delete('/nodes/delete', isAdmin, async (req, res) => {
 
   await db.set('nodes', newNodes);
   await db.delete(nodeId + '_node');
-  logAudit(req.user.userId, req.user.username, 'node:delete', req.ip);
-  res.status(204).send();
+
+  res.redirect('/admin/nodes?err=DELETED')
 });
+
 
 /**
  * GET /admin/nodes
