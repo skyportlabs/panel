@@ -245,7 +245,7 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
     status: 'Unconfigured' // Status to indicate pending configuration
   };
 
-  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address ||!req.body.iso || !req.body.port) {
+  if (!req.body.name || !req.body.tags || !req.body.ram || !req.body.disk || !req.body.processor || !req.body.address || !req.body.port) {
     return res.status(400).send('Form validation failure.');
   }
 
