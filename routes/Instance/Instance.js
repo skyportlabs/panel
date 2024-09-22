@@ -2,14 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
-const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
 const { config } = require('process');
 const { fetchFiles } = require('../../utils/fileHelper');
 const { isAuthenticated } = require('../../handlers/auth.js');
 
-const plugins = loadPlugins(path.join(__dirname, '../../plugins'));  // Correct import
-
+const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
 
 router.get("/instances", isAuthenticated, async (req, res) => {
     if (!req.user) return res.redirect('/');
@@ -24,21 +23,20 @@ router.get("/instances", isAuthenticated, async (req, res) => {
         const authenticatedUser = users.find(user => user.userId === userId);
         instances = await db.get(req.user.userId + '_instances') || [];
         const subUserInstances = authenticatedUser.accessTo || [];
-                        for (const instanceId of subUserInstances) {
-                            const instanceData = await db.get(`${instanceId}_instance`);
-                            if (instanceData) {
-                                instances.push(instanceData);
-                            }
-                        }
+        for (const instanceId of subUserInstances) {
+            const instanceData = await db.get(`${instanceId}_instance`);
+            if (instanceData) {
+                instances.push(instanceData);
+            }
+        }
     }
-
 
     res.render('instances', {
         req,
-        instances,
         user: req.user,
         name: await db.get('name') || 'Skyport',
         logo: await db.get('logo') || false,
+        instances,
         config: require('../../config.json')
     });
 });
@@ -57,14 +55,13 @@ router.get("/instance/:id", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-
     if(!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     const config = require('../../config.json');
@@ -86,8 +83,6 @@ router.get("/instance/:id", async (req, res) => {
             plugins: allPluginData
         }
     });
-
-    
 });
 
 module.exports = router;

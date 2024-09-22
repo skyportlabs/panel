@@ -1,3 +1,20 @@
+console.log(`
+  __                          __ 
+_____/ /____  ______  ____  _____/ /_
+/ ___/ //_/ / / / __ \\/ __ \\/ ___/ __/
+(__  ) ,< / /_/ / /_/ / /_/ / /  / /_  
+/____/_/|_|\\__, / .___/\\____/_/   \\__/  
+   /____/_/                  /   
+         /   
+
+
+https://github.com/skyportlabs
+https://skyport.dev
+
+
+(c) 2024 Matt James and contributors.
+`);
+
 const searchModal = document.getElementById('searchModal');
 const modalContent = document.querySelector('.modal-content');
 const searchInput = document.getElementById('searchInput');
@@ -70,7 +87,12 @@ function filterLinks(searchTerm) {
 }
 
 filterLinks('');
-
+document.addEventListener('keydown', function(event) {
+  if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+    event.preventDefault(); // Prevent default browser action (like search)
+    showSearchResults()
+  }
+});
 
 window.addEventListener('click', (event) => {
   if (event.target === searchModal) {

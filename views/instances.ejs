@@ -10,12 +10,12 @@
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <% if (req.query.see == 'other') { %>
             <button onclick="location.href='/instances'" type="button"
-              class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">
               <%= req.translations.showingYourInstances %>
             </button>
           <% } else { %>
             <button onclick="location.href='/instances?see=other'" type="button"
-              class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">
               <%= req.translations.seeAllInstances %>
             </button>
           <% } %>
@@ -42,7 +42,7 @@
       <% instances.forEach(function (instance) { %>
         <a id="instancesContainer" data-instance-id="<%= instance.Id %>"
           href="../instance/<%= instance.Id %>"
-          class="p-3 hover:bg-[#171717]  transition bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-8">
+          class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-8 paneltheme-hover transition-all">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
               <div class="rounded-xl border border-white/5 inline-flex">

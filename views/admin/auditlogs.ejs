@@ -4,13 +4,39 @@
     <div class="sm:flex sm:items-center px-8 pt-4">
       <div class="sm:flex-auto">
         <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.auditLogs %></h1>
-        <p class="mt-1 tracking-tight text-sm text-neutral-500">
+        <p class="mt-1 text-sm text-neutral-500">
           <%= req.translations.auditLogsText %>
         </p>
-        <div class="mt-4 text-neutral-500">
+        <div class="mt-4">
+          <div class="flex flex-wrap items-center gap-4 mb-4">
+            <div class="flex items-center gap-2">
+              <label for="actionFilter" class="text-sm text-white">Filter by Action:</label>
+              <select id="actionFilter" class="bg-neutral-600/20 border border-white/5 text-white rounded-xl px-3 py-1.5">
+                <option value="" class="text-neutral-800">All Actions</option>
+                <% const actions = [...new Set(audits.map(audit => audit.action))]; %>
+                <% actions.forEach(action => { %>
+                  <option value="<%= action %>" class="text-neutral-800"><%= action %></option>
+                <% }); %>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <label for="dateRange" class="text-sm text-white">Date Range:</label>
+              <select id="dateRange" class="bg-neutral-600/20 placeholder:text-white/20 border border-white/5 text-white rounded-xl px-3 py-1.5">
+                <option value="2">Last 2 Days</option>
+                <option value="7">Last Week</option>
+                <option value="30">Last Month</option>
+                <option value="">All Time</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="sortAsc" class="bg-blue-600 text-white rounded-xl px-4 py-1.5 hover:bg-blue-700 transition">Sort Ascending</button>
+              <button id="sortDesc" class="bg-blue-600 text-white rounded-xl px-4 py-1.5 hover:bg-blue-700 transition">Sort Descending</button>
+            </div>
+          </div>
+
           <div class="mt-8">
             <% if (audits && audits.length > 0) { %>
-              <table class="min-w-full table-auto border-separate border border-white/5 shadow rounded-xl">
+              <table id="auditTable" class="min-w-full table-auto border-separate border border-white/5 shadow rounded-xl">
                 <thead>
                   <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"><%= req.translations.user %></th>
@@ -19,14 +45,14 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"><%= req.translations.timestamp %></th>
                   </tr>
                 </thead>
-                <tbody class="bg-transparent divide-y divide-neutral-200">
+                <tbody id="auditBody" class="bg-transparent divide-y divide-neutral-200">
                   <% audits.forEach(function(audit) { %>
-                    <tr>
+                    <tr data-timestamp="<%= new Date(audit.timestamp).getTime() %>">
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                         <% if (audit.userId === req.user.userId) { %>
                           <%= req.translations.you %> <span class="text-neutral-400">(<%= audit.userId %>)</span>
                         <% } else { %>
-                          <%= audit.username %>  <span class="text-neutral-400">(<%= audit.userId %>)</span>
+                          <%= audit.username %> <span class="text-neutral-400">(<%= audit.userId %>)</span>
                         <% } %>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500"><%= audit.action %></td>
@@ -46,3 +72,53 @@
   </div>
 </main>
 <%- include('../components/footer') %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const actionFilter = document.getElementById('actionFilter');
+    const dateRange = document.getElementById('dateRange');
+    const sortAsc = document.getElementById('sortAsc');
+    const sortDesc = document.getElementById('sortDesc');
+    const tableBody = document.getElementById('auditBody');
+    const originalRows = Array.from(tableBody.querySelectorAll('tr'));
+
+    function applyFilters() {
+      const selectedAction = actionFilter.value;
+      const selectedRange = parseInt(dateRange.value) || Infinity;
+      const now = new Date().getTime();
+
+      tableBody.innerHTML = '';
+      const filteredRows = originalRows.filter(row => {
+        const action = row.children[1].textContent;
+        const timestamp = parseInt(row.getAttribute('data-timestamp'));
+        const dateDiff = (now - timestamp) / (1000 * 60 * 60 * 24);
+
+        return (selectedAction === '' || action === selectedAction) &&
+               dateDiff <= selectedRange;
+      });
+
+      filteredRows.forEach(row => tableBody.appendChild(row));
+    }
+
+    function sortTable(ascending) {
+      const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+      rows.sort((a, b) => {
+        const timestampA = parseInt(a.getAttribute('data-timestamp'));
+        const timestampB = parseInt(b.getAttribute('data-timestamp'));
+
+        return ascending ? timestampA - timestampB : timestampB - timestampA;
+      });
+
+      tableBody.innerHTML = '';
+      rows.forEach(row => tableBody.appendChild(row));
+    }
+
+    actionFilter.addEventListener('change', applyFilters);
+    dateRange.addEventListener('change', applyFilters);
+    sortAsc.addEventListener('click', () => sortTable(true));
+    sortDesc.addEventListener('click', () => sortTable(false));
+
+    applyFilters();
+  });
+</script>

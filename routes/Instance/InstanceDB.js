@@ -4,7 +4,7 @@ const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 
-const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
@@ -51,15 +51,14 @@ router.get("/instance/:id/db", async (req, res) => {
             const settings = await db.get('settings');
             res.render('instance/db', { 
                 req,
-                databases, 
-                user: req.user, 
-                instance_name: instance.Name, 
+                user: req.user,  
                 name: await db.get('name') || 'Skyport', 
                 logo: await db.get('logo') || false, 
+                databases, 
+                settings,
                 addons: {
                     plugins: allPluginData
-                },
-                settings 
+                }
             });
         } catch (error) {
             const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';

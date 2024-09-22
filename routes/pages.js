@@ -55,14 +55,14 @@ async function setupRoutes() {
                         }
                 
                         res.render(page.template, { 
-                            settings: await db.get('settings'),
-                            config, 
                             req, 
                             user: req.user, 
-                            instances, 
-                            adminInstances,
                             name: await db.get('name') || 'Skyport', 
-                            logo: await db.get('logo') || false 
+                            logo: await db.get('logo') || false,
+                            settings: await db.get('settings'),
+                            config, 
+                            instances, 
+                            adminInstances
                         });
                     } catch (error) {
                         console.error('Error fetching subuser instances:', error);
@@ -73,7 +73,12 @@ async function setupRoutes() {
                 
             } else {
                 router.get(page.path, async (req, res) => {
-                    res.render(page.template, { settings: await db.get('settings'), req, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+                    res.render(page.template, {
+                        req,
+                        name: await db.get('name') || 'Skyport',
+                        logo: await db.get('logo') || false,
+                        settings: await db.get('settings')
+                    });
                 });
             }
         });

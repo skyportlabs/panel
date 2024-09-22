@@ -1,12 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
+<doctype html>
+<html class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/assets/tailwind.css" rel="stylesheet">
-    <title>Example Plugin</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example Plugin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <meta name="description" content="404 Page Not Found">
+  <meta name="robots" content="noindex, nofollow">
 </head>
-<body>
-    example
+<body style="font-family: 'IBM Plex Sans'" class="bg-[#181818] h-full">
+  <div class="flex items-center justify-center min-h-screen px-4 py-8">
+    <div class="text-center">
+      <h1 class="mb-4 text-7xl tracking-tight font-medium lg:text-9xl text-white">Congrats</h1>
+      <p class="mb-4 text-3xl tracking-tight font-bold md:text-4xl text-white">If you see this page then your extention is working!</p>
+      <a href="/admin/plugins" class="inline-flex items-center text-white bg-white/5 hover:bg-white/10 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-xl text-sm px-5 py-2.5 text-center dark:focus:ring-primary-900 my-4 transition-all duration-300 ease-in-out">Back to configuration</a>
+    </div>   
+  </div>
 </body>
 </html>

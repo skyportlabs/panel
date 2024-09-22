@@ -19,13 +19,13 @@
                 <div class="mt-5">
                     <% if (instance.AltImages && instance.AltImages.length > 0) { %>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Image</label>
-                        <select id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" style="width: 340px;">
+                        <select id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 placeholder:text-white/20 text-white border border-black/10" style="width: 340px;">
                             <% instance.AltImages.forEach(function(altImage) { %>
                                 <option value="<%= altImage %>" <%= instance.currentimage === altImage ? 'selected' : '' %>><%= altImage %></option>
                             <% }); %>
                         </select>
 
-                        <button id="save-image" class="block rounded-xl mt-8 bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <button id="save-image" class="block mt-2 rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             <%= req.translations.save %>
                         </button>
                     <% } else { %>
@@ -50,8 +50,8 @@
                         <% const variable = instance.imageData.Variables[variableName]; %>
                         <div class="mt-5">
                             <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= variableName %></label>
-                            <input type="<%= variable.type %>" id="variable-<%= variableName %>" value="<%= envObject[variableName] || '' %>" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-900 placeholder:text-white/20 text-white border border-black/10" style="width: 340px;">
-                            <button id="save-variable-<%= variableName %>" class="block rounded-xl mt-8 bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <input type="<%= variable.type %>" id="variable-<%= variableName %>" value="<%= envObject[variableName] || '' %>" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-6 w-96 items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-neutral-600/20 placeholder:text-white/20 text-white border border-black/10" style="width: 340px;">
+                            <button id="save-variable-<%= variableName %>" class="block mt-2 rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 <%= req.translations.save %>
                             </button>
                         </div>

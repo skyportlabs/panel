@@ -1,62 +1,53 @@
 <%- include('../components/template') %>
-<main id="content">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/min/vs/loader.js"></script>
-<div class="bg-transparent">
-    <div class="sm:flex sm:items-center px-8 pt-4">
-       <div class="sm:flex-auto">
-          <h1 class="text-base font-medium leading-6 text-white">Manage Instance</h1>
-          <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
-       </div>
+<main id="content">
+    <div class="bg-transparent">
+        <div class="sm:flex sm:items-center px-8 pt-4">
+           <div class="sm:flex-auto">
+              <h1 class="text-base font-medium leading-6 text-white">Manage Instance</h1>
+              <p class="mt-1 tracking-tight text-sm text-neutral-500">View, update and manage an instance on the Skyport panel.</p>
+           </div>
+        </div>
     </div>
-</div>
-<%- include('../components/instance') %>
-<% let formattedFile; %>
-<% if (req.query.path) { %>
-    <% formattedFile = '/' + req.params.file %>
-<% } else { %>
-    <% formattedFile = req.params.file %>
-<% } %>
-
-<% let query; %>
-<% if (req.query.path) { %>
-    <% query = '?path=' + req.query.path %>
-<% } else { %>
-    <% query = '' %>
-<% } %>
-<h1 class="text-neutral-200 text-md px-8"><a class="text-neutral-400 hover:text-neutral-300 transition" href="../?path=<%= req.query.path %>">/app/data/<%= req.query.path %></a><%= formattedFile %></h1>
-
-<div class="pt-8 overflow-hidden" style="height: 500px;" id="editor"></div>
-<div class="flex mt-8 space-x-4">
-<a href="/instance/<%= req.params.id %>/files" type="button" class="block ml-8 rounded-xl bg-transparent border border-white/5 hover:bg-neutral-600/10 px-3 py-2 text-center text-sm font-normal text-neutral-300 shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-    Back
-</a>
-<button id="saveButton" onclick="saveFile()" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-    Save File
-</button>
-</div>
+    <%- include('../components/instance') %>
+    <% 
+        let formattedFile = req.query.path ? '/' + req.params.file : req.params.file;
+        let query = req.query.path ? '?path=' + req.query.path : '';
+    %>  
+    <h1 class="text-neutral-200 text-md px-8"><a class="text-neutral-400 hover:text-neutral-300 transition" href="../?path=<%= req.query.path %>">/app/data/<%= req.query.path %></a><%= formattedFile %></h1>
+    
+    <div class="pt-8 overflow-hidden" style="height: 500px;" id="editor"></div>
+    <div class="flex mt-8 space-x-4">
+        <a href="/instance/<%= req.params.id %>/files" type="button" class="block ml-8 rounded-xl bg-transparent border border-white/5 hover:bg-neutral-600/10 px-3 py-2 text-center text-sm font-normal text-neutral-300 shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            Back
+        </a>
+        <button id="saveButton" onclick="saveFile()" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">
+            Save File
+        </button>
+    </div>
 
 <%
-const fileExtension = formattedFile.split('.').pop();
-const language = fileExtension === 'js' ? 'javascript'
-                   : fileExtension === 'json' ? 'json'
-                   : fileExtension === 'html' ? 'html'
-                   : fileExtension === 'css' ? 'css'
-                   : fileExtension === 'ts' ? 'typescript'
-                   : fileExtension === 'md' ? 'markdown'
-                   : fileExtension === 'txt' ? 'plaintext'
-                   : fileExtension === 'py' ? 'python'
-                   : fileExtension === 'sh' ? 'shell'
-                   : fileExtension === 'go' ? 'go'
-                   : fileExtension === 'php' ? 'php'
-                   : fileExtension === 'sql' ? 'sql'
-                   : fileExtension === 'c' ? 'c'
-                   : fileExtension === 'cpp' ? 'cpp'
-                   : fileExtension === 'java' ? 'java'
-                   : fileExtension === 'rb' ? 'ruby'
-                   : fileExtension === 'pl' ? 'perl'
-                   : fileExtension === 'yml' ? 'yaml'
-                   : fileExtension === 'xml' ? 'xml'
-                   : 'plaintext';
+    const fileExtension = formattedFile.split('.').pop();
+    const language = fileExtension === 'js' ? 'javascript'
+                       : fileExtension === 'json' ? 'json'
+                       : fileExtension === 'html' ? 'html'
+                       : fileExtension === 'css' ? 'css'
+                       : fileExtension === 'ts' ? 'typescript'
+                       : fileExtension === 'md' ? 'markdown'
+                       : fileExtension === 'txt' ? 'plaintext'
+                       : fileExtension === 'py' ? 'python'
+                       : fileExtension === 'sh' ? 'shell'
+                       : fileExtension === 'go' ? 'go'
+                       : fileExtension === 'php' ? 'php'
+                       : fileExtension === 'sql' ? 'sql'
+                       : fileExtension === 'c' ? 'c'
+                       : fileExtension === 'cpp' ? 'cpp'
+                       : fileExtension === 'java' ? 'java'
+                       : fileExtension === 'rb' ? 'ruby'
+                       : fileExtension === 'pl' ? 'perl'
+                       : fileExtension === 'yml' ? 'yaml'
+                       : fileExtension === 'xml' ? 'xml'
+                       : 'plaintext';
 %>
 
 <script>

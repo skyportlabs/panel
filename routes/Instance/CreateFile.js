@@ -4,7 +4,7 @@ const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { createFile } = require('../../utils/fileHelper');
 
-const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
@@ -23,14 +23,13 @@ router.post("/instance/:id/files/create/:filename", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-
     if(!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     if (!instance.Node || !instance.Node.address || !instance.Node.port) {
@@ -69,14 +68,13 @@ router.get("/instance/:id/files/create", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-
     if(!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     if (!instance || !instance.VolumeId) {
@@ -85,9 +83,15 @@ router.get("/instance/:id/files/create", async (req, res) => {
 
     const allPluginData = Object.values(plugins).map(plugin => plugin.config);
 
-    res.render('instance/createFile', { req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, addons: {
-        plugins: allPluginData
-    } });
+    res.render('instance/createFile', { 
+        req,
+        user: req.user,
+        name: await db.get('name') || 'Skyport',
+        logo: await db.get('logo') || false,
+        addons: {
+            plugins: allPluginData
+        } 
+    });
 });
 
 module.exports = router;

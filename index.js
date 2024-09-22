@@ -31,8 +31,9 @@ const chalk = require('chalk');
 const expressWs = require('express-ws')(app);
 const { db } = require('./handlers/db.js')
 const translationMiddleware = require('./handlers/translation');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const theme = require('./storage/theme.json');
 
 
 const sqlite = require("better-sqlite3");
@@ -85,38 +86,42 @@ app.use(
     saveUninitialized: true
   })
 );
+app.use(async (req, res, next) => {
+  try {
+    const settings = await db.get('settings');
 
-app.use((req, res, next) => {
-  res.locals.languages = getlanguages();
-  res.locals.ogTitle = config.ogTitle;
-  res.locals.ogDescription = config.ogDescription;
-  next();
+    res.locals.languages = getlanguages();
+    res.locals.ogTitle = config.ogTitle;
+    res.locals.ogDescription = config.ogDescription;
+    res.locals.footer = settings.footer;
+    res.locals.theme = theme;
+    next();
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    next(error);
+  }
 });
 
 
 if (config.mode === 'production' || false) {
-  
+  app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '5');
+    next();
+  });
 
-app.use((req, res, next) => {
-  res.setHeader('Cache-Control', 'no-store');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '5');
-  next();
-});
-
-
-app.use('/assets', (req, res, next) => {
-  res.setHeader('Cache-Control', 'public, max-age=1');
-  next();
-});
-
+  app.use('/assets', (req, res, next) => {
+    res.setHeader('Cache-Control', 'public, max-age=1');
+    next();
+  });
 }
 
+// Initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-// init
+// Init
 init();
 
 // Log the ASCII
@@ -129,12 +134,10 @@ console.log(chalk.gray(ascii) + chalk.white(`version v${config.version}\n`));
  */
 const routesDir = path.join(__dirname, 'routes');
 
-
-
-
 function getlanguages() {
   return fs.readdirSync(__dirname + '/lang').map(file => file.split('.')[0])
 }
+
 function getlangname() {
   return fs.readdirSync(path.join(__dirname, '/lang')).map(file => {
     const langFilePath = path.join(__dirname, '/lang', file);
@@ -143,11 +146,10 @@ function getlangname() {
   });
 }
 
-
 app.get('/setLanguage', async (req, res) => {
   const lang = req.query.lang;
   if (lang && (await getlanguages()).includes(lang)) {
-      res.cookie('lang', lang, { maxAge: 90000000, httpOnly: true });
+      res.cookie('lang', lang, { maxAge: 90000000, httpOnly: true, sameSite: 'strict' });
       req.user.lang = lang; // Update user language preference
       res.json({ success: true });
   } else {
@@ -166,7 +168,7 @@ function loadRoutes(directory) {
     } else if (stat.isFile() && path.extname(file) === '.js') {
       // Only require .js files
       const route = require(fullPath);
-      //log.init('loaded route: ' + fullPath);
+      // log.init('loaded route: ' + fullPath);
       expressWs.applyTo(route);
       app.use("/", route);
     }
@@ -193,5 +195,9 @@ app.use(express.static('public'));
 app.listen(config.port, () => log.info(`skyport is listening on port ${config.port}`));
 
 app.get('*', async function(req, res){
-  res.render('errors/404', { req, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false })
+  res.render('errors/404', {
+    req,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false
+  })
 });

@@ -6,12 +6,12 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.name %>:</label>
-                        <input id="name" value="<%= instance.Name %>" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="My instance">
+                        <input id="name" value="<%= instance.Name %>" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="My instance">
                     </div>
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.user %>:</label>
-                        <select style="background: #171717;" id="user" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                        <select id="user" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5">
                             <% users.forEach(function(user) { %>
                                 <option value="<%= instance.User %>"><%= user.username %></option>
                             <% }); %>
@@ -20,7 +20,7 @@
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Image:</label>
-                        <select style="background: #171717;" id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5">
+                        <select id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5">
                             <% images.forEach(function(image) { %>
                                 <option data-configfilepath="<%= image.ConfigFilePath %>" data-configfilecontent="<%= image.ConfigFileContent %>"><%= image.Name %> (<%= image.Image %>)</option>
                             <% }); %>
@@ -30,27 +30,27 @@
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Memory (MiB):</label>
-                        <input value="<%= instance.Memory %>" type="number" id="memory" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="2048">
+                        <input value="<%= instance.Memory %>" type="number" id="memory" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="2048">
                     </div>
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">CPU Threads:</label>
-                        <input value="<%= instance.Cpu %>" id="cpu" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="1">
+                        <input value="<%= instance.Cpu %>" id="cpu" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="1">
                     </div>
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports:</label>
-                        <input value="<%= instance.Ports %>" id="ports" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
+                        <input value="<%= instance.Ports %>" id="ports" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
                     </div>
     
                     <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Primary Port:</label>
-                        <input value="<%= instance.Primary %>" id="primary" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-900 placeholder:text-white/20 border border-white/5" placeholder="25565">
+                        <input value="<%= instance.Primary %>" id="primary" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="25565">
                     </div>
                 </div>
     
                 <div class="mt-4">
-                    <button id="createNodeBtn" type="button" class="block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+                    <button id="createNodeBtn" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">Save</button>
                 </div>
             </form>
         </div>

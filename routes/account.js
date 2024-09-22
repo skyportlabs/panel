@@ -27,9 +27,13 @@ async function doesUserExist(username) {
   }
 
 router.get('/account', async (req, res) => {
-  let users = await db.get('users') || [];
-
-  res.render('account', { req, user: req.user, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  res.render('account', {
+    req,
+    user: req.user,
+    users: await db.get('users') || [], 
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false
+  });
 });
 
 router.get('/accounts', async (req, res) => {
@@ -130,10 +134,14 @@ router.get('/enable-2fa', async (req, res) => {
         await db.set('users', updatedUsers);
 
         qrcode.toDataURL(secret.otpauth_url, async (err, data_url) => {
-            if (err) {
-                return res.status(500).send('Error generating QR Code');
-            }
-            res.render('enable-2fa', { qrCode: data_url, req, user: req.user, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+            if (err) return res.status(500).send('Error generating QR Code');
+            res.render('enable-2fa', {
+                req,
+                user: req.user,
+                users, name: await db.get('name') || 'Skyport',
+                logo: await db.get('logo') || false,
+                qrCode: data_url
+            });
         });
     } catch (error) {
         console.error('Error enabling 2FA:', error);

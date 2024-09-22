@@ -83,7 +83,6 @@ async function checkNodeStatus(node) {
     node.versionFamily = versionFamily;
     node.versionRelease = versionRelease;
     node.remote = remote;
-    node.docker = docker;
 
     await db.set(node.id + '_node', node); // Update node info with new details
     return node;
@@ -96,8 +95,13 @@ async function checkNodeStatus(node) {
 
 router.get('/admin/apikeys', isAdmin, async (req, res) => {
   try {
-    const apiKeys = await db.get('apiKeys') || [];
-    res.render('admin/apikeys', { req, user: req.user, apiKeys, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    res.render('admin/apikeys', {
+      req,
+      user: req.user,
+      apiKeys: await db.get('apiKeys') || [],
+      name: await db.get('name') || 'Skyport',
+      logo: await db.get('logo') || false
+    });
   } catch (error) {
     res.status(500).json({ error: 'Failed to retrieve API keys' });
   }
@@ -217,7 +221,17 @@ router.get('/admin/overview', isAdmin, async (req, res) => {
       const imagesTotal = images.length;
       const instancesTotal = instances.length;
 
-      res.render('admin/overview', { req, user: req.user, usersTotal, nodesTotal, imagesTotal, instancesTotal, version: config.version, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+      res.render('admin/overview', {
+        req,
+        user: req.user,
+        name: await db.get('name') || 'Skyport',
+        logo: await db.get('logo') || false,
+        usersTotal,
+        nodesTotal,
+        imagesTotal,
+        instancesTotal,
+        version: config.version
+      });
   } catch (error) {
       res.status(500).send({ error: 'Failed to retrieve data from the database.' });
   }
@@ -261,6 +275,94 @@ router.post('/nodes/create', isAdmin, async (req, res) => {
     configureKey: configureKey // Include configureKey in the response
   });
 });
+
+
+/**
+ * POST /nodes/delete
+ * Deletes a node from the database based on its identifier provided in the request body.
+ */
+
+router.post('/nodes/delete', async (req, res) => {
+  const { nodeId } = req.body;
+  if (!nodeId) {
+    return res.status(400).json({ error: 'Missing nodeId' });
+  }
+
+  try {
+    const nodes = await db.get('nodes') || [];
+    let foundNode = null;
+
+    for (const id of nodes) {
+      const node = await db.get(id + '_node');
+      if (node && node.id === nodeId) {
+        foundNode = node;
+        break;
+      }
+    }
+
+    if (!foundNode) {
+      return res.status(404).json({ error: 'Node not found' });
+    }
+
+    const node = foundNode;
+    let instances = await db.get('instances') || [];
+    let set = {};
+
+    nodes.forEach(function(id) {
+      set[id] = 0;
+      instances.forEach(function(instance) {
+        if (instance.Node.id === id) {
+          set[id]++;
+        }
+      });
+    });
+
+    if (set[node.id] > 0) {
+      if (!req.query.deleteinstances || req.query.deleteinstances === 'false') {
+        return res.status(400).json({ error: 'There are instances on the node' });
+      }
+
+      if (req.query.deleteinstances === 'true') {
+        let delinstances = instances.filter(function(instance) {
+          return instance.Node.id === node.id;
+        });
+
+        instances = instances.filter(function(instance) {
+          return instance.Node.id !== node.id;
+        });
+
+        await db.set('instances', instances);
+
+        for (const instance of delinstances) {
+          await db.delete(instance.Id + '_instance');
+        }
+
+        for (const instance of delinstances) {
+          let userInstances = await db.get(instance.User + '_instances') || [];
+          userInstances = userInstances.filter(inst => inst.Id !== instance.Id);
+          await db.set(instance.User + '_instances', userInstances);
+        }
+
+        try {
+          await axios.get(`http://Skyport:${node.apiKey}@${node.address}:${node.port}/instances/purge/all`);
+        } catch (apiError) {
+          console.error('Error calling purge API:', apiError);
+        }
+      }
+    }
+
+    await db.delete(node.id + '_node');
+    nodes.splice(nodes.indexOf(node.id), 1);
+    await db.set('nodes', nodes);
+
+    logAudit(req.user.userId, req.user.username, 'node:delete', req.ip);
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error deleting node:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 /**
  * POST /nodes/configure
@@ -432,8 +534,6 @@ router.post('/admin/users/edit/:userId', isAdmin, async (req, res, next) => {
   res.redirect('/admin/users');
 });
 
-
-
 /**
  * DELETE /nodes/delete
  * Deletes a node from the database based on its identifier provided in the request body. Updates the list of
@@ -475,7 +575,14 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
   });
   nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
 
-  res.render('admin/nodes', { req, user: req.user, nodes, set, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  res.render('admin/nodes', { 
+    req,
+    user: req.user,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false,
+    nodes,
+    set
+   });
 });
 
 
@@ -486,7 +593,13 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
  * @returns {Response} Renders the 'nodes' view with node data and user information.
  */
 router.get('/admin/settings', isAdmin, async (req, res) => {
-  res.render('admin/settings/appearance', { req, user: req.user, settings: await db.get('settings'), name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  res.render('admin/settings/appearance', {
+    req,
+    user: req.user,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false,
+    settings: await db.get('settings')
+  });
 });
 
 router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
@@ -497,9 +610,9 @@ router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
     res.render('admin/settings/smtp', {
       req,
       user: req.user,
-      settings,
       name: await db.get('name') || 'Skyport',
       logo: await db.get('logo') || false,
+      settings,
       smtpSettings
     });
   } catch (error) {
@@ -507,6 +620,18 @@ router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
     res.status(500).send('Failed to fetch settings. Please try again later.');
   }
 });
+
+
+router.get('/admin/settings/theme', isAdmin, async (req, res) => {
+  res.render('admin/settings/theme', {
+    req,
+    user: req.user,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false,
+    settings: await db.get('settings')
+  });
+});
+
 
 
 router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => {
@@ -528,14 +653,61 @@ router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => 
 router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
   const name = req.body.name;
   try {
-  await db.set('name', [name]);
-  logAudit(req.user.userId, req.user.username, 'name:edit', req.ip);
-  res.redirect('/admin/settings?changednameto=' + name);
-} catch (err) {
-  console.error(err);
-  res.status(500).send("Database error");
-}
+    await db.set('name', [name]);
+    logAudit(req.user.userId, req.user.username, 'name:edit', req.ip);
+    res.redirect('/admin/settings?changednameto=' + name);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
 });
+
+
+router.post('/admin/settings/change/theme/button-color', isAdmin, async (req, res) => {
+  const buttoncolor = req.body.buttoncolor;
+  let theme = require('../storage/theme.json');
+  try {
+    theme['button-color'] = buttoncolor;
+    await fs.writeFileSync('./storage/theme.json', JSON.stringify(theme, null, 2));
+    logAudit(req.user.userId, req.user.username, 'name:edit', req.ip);
+    res.redirect('/admin/settings/theme?changedbuttoncolorto=' + buttoncolor);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("File writing error");
+  }
+});
+
+router.post('/admin/settings/change/theme/paneltheme-color', isAdmin, async (req, res) => {
+  const paneltheme = req.body.paneltheme;
+  let theme = require('../storage/theme.json');
+  try {
+    theme['paneltheme-color'] = paneltheme;
+    await fs.writeFileSync('./storage/theme.json', JSON.stringify(theme, null, 2));
+    logAudit(req.user.userId, req.user.username, 'name:edit', req.ip);
+    res.redirect('/admin/settings/theme?changedpanelcolorto=' + paneltheme);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("File writing error");
+  }
+});
+
+
+router.post('/admin/settings/toggle/theme/footer', isAdmin, async (req, res) => {
+  try {
+    const settings = await db.get('settings') || {};
+    settings.footer = !settings.footer;
+
+    await db.set('settings', settings);
+    const action = settings.footer ? 'enabled' : 'disabled';
+    logAudit(req.user.userId, req.user.username, 'footer:' + action, req.ip);
+
+    res.redirect('/admin/settings/theme');
+  } catch (err) {
+    console.error('Error toggling force verify:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
 router.post('/admin/settings/saveSmtpSettings', async (req, res) => {
   const { smtpServer, smtpPort, smtpUser, smtpPass, smtpFromName, smtpFromAddress } = req.body;
@@ -557,7 +729,6 @@ router.post('/admin/settings/saveSmtpSettings', async (req, res) => {
     res.redirect('/admin/settings/smtp?err=SmtpSaveFailed');
   }
 });
-
 
 router.post('/sendTestEmail', async (req, res) => {
   try {
@@ -646,7 +817,16 @@ router.get('/admin/instances', isAdmin, async (req, res) => {
 
   nodes = await Promise.all(nodes.map(id => db.get(id + '_node').then(checkNodeStatus)));
 
-  res.render('admin/instances', { req, user: req.user, instances, images, nodes, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  res.render('admin/instances', {
+    req,
+    user: req.user,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false,
+    instances,
+    images,
+    nodes,
+    users
+  });
 });
 
 
@@ -657,13 +837,25 @@ router.get('/admin/instances/:id/edit', isAdmin, async (req, res) => {
   let images = await db.get('images') || [];
 
   if (!instance) return res.redirect('/admin/instances');
-  res.render('admin/instance_edit', { req, user: req.user, instance, images, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  res.render('admin/instance_edit', {
+    req,
+    user: req.user,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false,
+    instance,
+    images,
+    users
+  });
 })
 
 router.get('/admin/users', isAdmin, async (req, res) => {
-  let users = await db.get('users') || [];
-
-  res.render('admin/users', { req, user: req.user, users, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  res.render('admin/users', {
+    req,
+    user: req.user,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false,
+    users: await db.get('users') || []
+  });
 });
 
 /**
@@ -683,7 +875,13 @@ router.get("/admin/node/:id", async (req, res) => {
 
     if (!node || !id) return res.redirect('../nodes')
 
-    res.render('admin/node', { req, node, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    res.render('admin/node', {
+      req,
+      user: req.user,
+      name: await db.get('name') || 'Skyport',
+      logo: await db.get('logo') || false,
+      node
+    });
 });
 
 
@@ -714,7 +912,7 @@ router.post("/admin/node/:id", async (req, res) => {
 		status: 'Unknown' // Default status
 	};
 
-    await db.set(node.id + '_node', node); 
+  await db.set(node.id + '_node', node); 
 	const updatedNode = await checkNodeStatus(node);
 	res.status(201).send(updatedNode);
 });
@@ -725,9 +923,13 @@ router.post("/admin/node/:id", async (req, res) => {
  * @returns {Response} Renders the 'images' view with image data.
  */
 router.get('/admin/images', isAdmin, async (req, res) => {
-  let images = await db.get('images') || [];
-
-  res.render('admin/images', { req, user: req.user, images, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+  res.render('admin/images', {
+    req,
+    user: req.user,
+    name: await db.get('name') || 'Skyport',
+    logo: await db.get('logo') || false,
+    images: await db.get('images') || []
+  });
 });
 
 router.post('/admin/images/upload', isAdmin, async (req, res) => {
@@ -883,11 +1085,18 @@ async function deleteInstance(instance) {
   }
 }
 
+
 router.get('/admin/auditlogs', isAdmin, async (req, res) => {
   try {
     let audits = await db.get('audits');
     audits = audits ? JSON.parse(audits) : [];
-    res.render('admin/auditlogs', { req, user: req.user, audits, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+    res.render('admin/auditlogs', {
+      req,
+      user: req.user,
+      name: await db.get('name') || 'Skyport',
+      logo: await db.get('logo') || false,
+      audits
+    });
   } catch (err) {
     console.error('Error fetching audits:', err);
     res.status(500).send('Internal Server Error');

@@ -87,7 +87,12 @@
      var slidingBackground = document.getElementById('sliding-background');
      
      function updateActiveLink(clickedLink = null) {
-       var activeLink = clickedLink || document.querySelector('.nav-link2[href="' + currentPagePath + '"]');
+      var activeLink = null;
+      navLinks2.forEach(function(link) {
+         if (currentPagePath.startsWith(link.getAttribute('href'))) {
+            activeLink = link;
+         }
+      });
        if (activeLink) {
          navLinks2.forEach(link => {
            link.classList.remove('text-white', 'font-medium', 'bg-white/10', 'shadow-sm');

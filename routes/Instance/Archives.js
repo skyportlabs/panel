@@ -3,7 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
-const { loadPlugins } = require('../../plugins/loadPls.js');  // Korrekte Importierung
+const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
@@ -53,20 +53,17 @@ router.get("/instance/:id/archives", async (req, res) => {
 
                 const allPluginData = Object.values(plugins).map(plugin => plugin.config);
                 const settings = await db.get('settings');
-                const name = await db.get('name') || 'Skyport';
-                const logo = await db.get('logo') || false;
 
                 res.render('instance/archives', { 
                     req, 
-                    archives, 
                     user: req.user, 
-                    instance_name: instance.Name, 
-                    name, 
-                    logo, 
+                    name: await db.get('name') || 'Skyport',
+                    logo: await db.get('logo') || false, 
+                    archives, 
+                    settings,
                     addons: {
                         plugins: allPluginData
                     },
-                    settings 
                 });
             } catch (error) {
                 const errorMessage = error.response?.data?.message || 'Connection to node failed.';

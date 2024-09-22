@@ -242,7 +242,7 @@ router.get('/2fa', async (req, res) => {
     req,
     name: await db.get('name') || 'Skyport',
     logo: await db.get('logo') || false
-    });
+  });
 });
 
 router.post('/2fa', async (req, res) => {
@@ -301,13 +301,10 @@ router.get('/verify/:token', async (req, res) => {
 
 router.get('/resend-verification', async (req, res) => {
   try {
-    const name = await db.get('name') || 'Skyport';
-    const logo = await db.get('logo') || false;
-
     res.render('auth/resend-verification', {
-      req: req,
-      name: name,
-      logo: logo
+      req,
+      name: await db.get('name') || 'Skyport',
+      logo: await db.get('logo') || false
     });
   } catch (error) {
     console.error('Error fetching name or logo:', error);
@@ -416,13 +413,10 @@ initializeRoutes();
 
 router.get('/auth/reset-password', async (req, res) => {
   try {
-    const name = await db.get('name') || 'Skyport';
-    const logo = await db.get('logo') || false;
-
     res.render('auth/reset-password', {
-      req: req,
-      name: name,
-      logo: logo
+      req,
+      name: await db.get('name') || 'Skyport',
+      logo: await db.get('logo') || false
     });
   } catch (error) {
     console.error('Error rendering reset password page:', error);
@@ -460,8 +454,6 @@ router.get('/auth/reset/:token', async (req, res) => {
 
   try {
     const users = await db.get('users') || [];
-    const name = await db.get('name') || 'Skyport';
-    const logo = await db.get('logo') || false;
     const user = users.find(u => u.resetToken === token);
 
     if (!user) {
@@ -470,9 +462,9 @@ router.get('/auth/reset/:token', async (req, res) => {
     }
 
     res.render('auth/password-reset-form', {
-      req: req,
-      name: name,
-      logo: logo,
+      req,
+      name: await db.get('name') || 'Skyport',
+      logo: await db.get('logo') || false,
       token: token
     });
   } catch (error) {
@@ -535,6 +527,5 @@ router.get("/auth/logout", (req, res) => {
 initializeRoutes().catch(error => {
   console.error('Error initializing routes:', error);
 });
-
 
 module.exports = router;

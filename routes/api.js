@@ -13,7 +13,7 @@ async function validateApiKey(req, res, next) {
   const apiKey = req.headers['x-api-key'];
   
   if (!apiKey) {
-    return res.status(401).json({ error: 'API key is required' });
+    return res.status(401).json({error: 'API key is required' });
   }
 
   try {
@@ -21,7 +21,7 @@ async function validateApiKey(req, res, next) {
     const validKey = apiKeys.find(key => key.key === apiKey);
 
     if (!validKey) {
-      return res.status(401).json({ error: 'Invalid API key' });
+      return res.status(401).json({ error: '' });
     }
 
     req.apiKey = validKey;
@@ -262,7 +262,6 @@ router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
     });
   }
 });
-
 router.delete('/api/instance/delete', validateApiKey, async (req, res) => {
   const { id } = req.body;
   

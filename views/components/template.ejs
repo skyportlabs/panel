@@ -12,9 +12,10 @@
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link rel="preconnect" href="https://cdn.fontshare.com">
       <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,300,600,400,700&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
       <link href="https://fonts.cdnfonts.com/css/graphik-trial" rel="stylesheet">
    </head>
-   <body style="font-family: 'General Sans'" class="bg-[#141414] h-full w-full">
+   <body style="font-family: 'Inter'" class="<%= theme['paneltheme-color'] %> h-full w-full">
       <div>
       <style>
          .collapsed span {
@@ -46,7 +47,6 @@
             left: 1rem;
             width: calc(100% - 2rem);
             height: 2.25rem;
-            background-color: #171717;
             border-radius: 0.5rem;
             transition: transform 0.2s ease-in-out;
             z-index: 0;
@@ -82,59 +82,62 @@
                width: 100%;
             }
          }
+
+         .paneltheme-hover:hover {
+            background-color: rgb(0, 0, 0, 0.1);
+         }
+
+
+
+
+.loading-spin {
+  svg {
+    fill: #868686;
+    
+    path:nth-of-type(1) {
+      animation: pulse 1s infinite linear;
+    }
+    path:nth-of-type(2) {
+      animation: pulse 1s -.083s infinite linear;
+    }
+    path:nth-of-type(3) {
+      animation: pulse 1s -.166s infinite linear;
+    }
+    path:nth-of-type(4) {
+      animation: pulse 1s -.249s infinite linear;
+    }
+    path:nth-of-type(5) {
+      animation: pulse 1s -.332s infinite linear;
+    }
+    path:nth-of-type(6) {
+      animation: pulse 1s -.415s infinite linear;
+    }
+    path:nth-of-type(7) {
+      animation: pulse 1s -.498s infinite linear;
+    }
+    path:nth-of-type(8) {
+      animation: pulse 1s -.581s infinite linear;
+    }  
+    path:nth-of-type(9) {
+      animation: pulse 1s -.664s infinite linear;
+    }
+    path:nth-of-type(10) {
+      animation: pulse 1s -.747s infinite linear;
+    }
+    path:nth-of-type(11) {
+      animation: pulse 1s -.83s infinite linear;
+    }
+    path:nth-of-type(12) {
+      animation: pulse 1s -.913s infinite linear;
+    }
+  }
+}
+  
+@keyframes pulse {
+  50% { fill: #868686; }
+  to { fill: rgba(134,134,134,.4); }
+}
       </style>
-      <script>
-         document.addEventListener('DOMContentLoaded', () => {
-            const sidebar = document.querySelector('.sidebar');
-            const toggleButton = document.getElementById('sidebar-toggle');
-            const colcont = document.getElementById('colcont');
-
-            function setCookie(name, value, days) {
-               const date = new Date();
-               date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-               const expires = "expires=" + date.toUTCString();
-               document.cookie = name + "=" + value + ";" + expires + ";path=/";
-            }
-            function getCookie(name) {
-               const nameEQ = name + "=";
-               const ca = document.cookie.split(';');
-               for(let i = 0; i < ca.length; i++) {
-                  let c = ca[i];
-                  while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                  if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-               }
-               return null;
-            }
-            const sidebarState = getCookie('sidebar-collapsed');
-            if (sidebarState === 'true') {
-               sidebar.classList.add('collapsed');
-               colcont.classList.add('colcont');
-            } else {
-               sidebar.classList.remove('collapsed');
-               colcont.classList.remove('colcont');
-            }
-            toggleButton.addEventListener('click', () => {
-               sidebar.classList.toggle('collapsed');
-               colcont.classList.toggle('colcont');
-               const isCollapsed = sidebar.classList.contains('collapsed');
-               setCookie('sidebar-collapsed', isCollapsed, 7);
-            });
-
-            const mobileToggleButton = document.getElementById('mobile-sidebar-toggle');
-            if (mobileToggleButton) {
-               mobileToggleButton.addEventListener('click', () => {
-                  sidebar.classList.toggle('open');
-                  if (sidebar.classList.contains('open')) {
-                     mobileToggleButton.classList.add('right-4');
-                     mobileToggleButton.classList.remove('left-4');
-                  } else {
-                     mobileToggleButton.classList.add('left-4');
-                     mobileToggleButton.classList.remove('right-4');
-                  }
-               });
-            }
-         });
-      </script>
       <script>
          document.addEventListener('DOMContentLoaded', () => {
             const loader = document.getElementById('loader');
@@ -146,8 +149,8 @@
                
                setTimeout(() => {
                   loader.style.display = 'none';
-               }, 150);
-            }, 300);
+               }, 250);
+            }, 500);
          });
       </script>
       <button id="mobile-sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-50 w-fit p-2 rounded-xl text-white border border-white/5 bg-[#141414] hover:scale-110 active:scale-100 duration-200 transition-all">
@@ -157,7 +160,7 @@
       </button>
       <!-- Static sidebar for desktop -->
       <div class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
-         <div class="flex grow flex-col gap-y-5 overflow-hidden bg-[#101010] border-r border-white/5">
+         <div class="flex grow flex-col gap-y-5 overflow-hidden <%= theme['paneltheme-color'] %> border-r border-white/5" style="background-color: rgba(0, 0, 0, 0.2);">
             <nav class="flex flex-1 flex-col">
                <div class="pl-6 pt-5 pb-4 flex">
                   <a href="/" class="flex">
@@ -170,13 +173,13 @@
                <ul role="list" class="flex flex-1 flex-col gap-y-7">
                   <li>
                      <ul role="list" class="-mx-2 space-y-1">
-                        <div id="active-background" class="absolute left-0 w-full h-8 bg-[#171717] rounded-2xl transition-all duration-300 ease-in-out"></div>
+                        <div id="active-background" class="absolute left-0 w-full h-8 <%= theme['paneltheme-color'] %> rounded-2xl transition-all duration-300 ease-in-out"></div>
                         <li>
-                           <a href="/instances" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal" searchdata="container instances servers" subterm="jegli:/server/servername">
+                           <a href="/instances" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal" searchdata="container instances servers" subterm="jegli:/server/servername">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M220,169.09l-92,53.65L36,169.09A8,8,0,0,0,28,182.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,169.09Z"/><path d="M220,121.09l-92,53.65L36,121.09A8,8,0,0,0,28,134.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,121.09Z"/><path d="M28,86.91l96,56a8,8,0,0,0,8.06,0l96-56a8,8,0,0,0,0-13.82l-96-56a8,8,0,0,0-8.06,0l-96,56a8,8,0,0,0,0,13.82Z"/></svg>
                               <span><%= req.translations.instances %></span>
                            </a>
-                           <a href="/account" searchdata="account profile <%= user.username %>" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                           <a href="/account" searchdata="account profile <%= user.username %>" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="w-5 mt-0.5 h-5" viewBox="0 0 256 256"><path d="M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z"></path></svg>
                               <span><%= req.translations.account %></span>
                            </a>
@@ -184,55 +187,55 @@
                         <% if (user.admin == true) { %>
                         <p class="pl-8 text-neutral-400 text-xs font-medium pt-6 pb-2"><span>Admin Panel</span></p>
                         <li>
-                           <a href="/admin/overview" searchdata="admin overview control" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                           <a href="/admin/overview" searchdata="admin overview control" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z"/></svg>
                               <span><%= req.translations.overview %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/settings" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                           <a href="/admin/settings" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M237.94,107.21a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A111.92,111.92,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.63a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"/></svg>
                               <span><%= req.translations.settings %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/users" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                           <a href="/admin/users" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M164.47,195.63a8,8,0,0,1-6.7,12.37H10.23a8,8,0,0,1-6.7-12.37,95.83,95.83,0,0,1,47.22-37.71,60,60,0,1,1,66.5,0A95.83,95.83,0,0,1,164.47,195.63Zm87.91-.15a95.87,95.87,0,0,0-47.13-37.56A60,60,0,0,0,144.7,54.59a4,4,0,0,0-1.33,6A75.83,75.83,0,0,1,147,150.53a4,4,0,0,0,1.07,5.53,112.32,112.32,0,0,1,29.85,30.83,23.92,23.92,0,0,1,3.65,16.47,4,4,0,0,0,3.95,4.64h60.3a8,8,0,0,0,7.73-5.93A8.22,8.22,0,0,0,252.38,195.48Z"/></svg>
                               <span><%= req.translations.users %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/instances" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                           <a href="/admin/instances" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M24,80a8,8,0,0,1,4-6.91l96-56a8,8,0,0,1,8.06,0l96,56a8,8,0,0,1,0,13.82l-96,56a8,8,0,0,1-8.06,0l-96-56A8,8,0,0,1,24,80Zm196,41.09-92,53.65L36,121.09A8,8,0,0,0,28,134.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,121.09ZM232,192H216V176a8,8,0,0,0-16,0v16H184a8,8,0,0,0,0,16h16v16a8,8,0,0,0,16,0V208h16a8,8,0,0,0,0-16Zm-92,23.76-12,7L36,169.09A8,8,0,0,0,28,182.91l96,56a8,8,0,0,0,8.06,0l16-9.33A8,8,0,1,0,140,215.76Z"/></svg>
                               <span><%= req.translations.instances %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/nodes" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                           <a href="/admin/nodes" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M208,40H48A16,16,0,0,0,32,56v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40ZM180,92a12,12,0,1,1,12-12A12,12,0,0,1,180,92Z"/><path d="M208,136H48a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V152A16,16,0,0,0,208,136Zm-28,52a12,12,0,1,1,12-12A12,12,0,0,1,180,188Z"/></svg>
                               <span><%= req.translations.nodes %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/images" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                           <a href="/admin/images" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63ZM84,96A12,12,0,1,1,96,84,12,12,0,0,1,84,96Z"/></svg>
                               <span><%= req.translations.images %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/apikeys" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                           <a href="/admin/apikeys" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M216.57,39.43A80,80,0,0,0,83.91,120.78L28.69,176A15.86,15.86,0,0,0,24,187.31V216a16,16,0,0,0,16,16H72a8,8,0,0,0,8-8V208H96a8,8,0,0,0,8-8V184h16a8,8,0,0,0,5.66-2.34l9.56-9.57A79.73,79.73,0,0,0,160,176h.1A80,80,0,0,0,216.57,39.43ZM180,92a16,16,0,1,1,16-16A16,16,0,0,1,180,92Z"/></svg>
                               <span><%= req.translations.APIKeys %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/auditlogs" searchdata="audit logs admin" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                           <a href="/admin/auditlogs" searchdata="audit logs admin" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M220.8,169.6A8,8,0,0,0,216,168h-8V64a32,32,0,0,0-32-32H40A32,32,0,0,0,8,64C8,77.61,18.05,85.54,19.2,86.4h0A7.89,7.89,0,0,0,24,88a8,8,0,0,0,4.87-14.33h0C28.83,73.62,24,69.74,24,64a16,16,0,0,1,32,0V192a32,32,0,0,0,32,32H200a32,32,0,0,0,32-32C232,178.39,222,170.46,220.8,169.6ZM104,96h64a8,8,0,0,1,0,16H104a8,8,0,0,1,0-16Zm-8,40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H104A8,8,0,0,1,96,136Zm104,72H107.71A31.82,31.82,0,0,0,112,192a26.92,26.92,0,0,0-1.21-8h102a12.58,12.58,0,0,1,3.23,8A16,16,0,0,1,200,208Z"/></svg>
                               <span><%= req.translations.auditLogs %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/plugins" searchdata="addons plugins admin" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
+                           <a href="/admin/plugins" searchdata="addons plugins admin" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M165.78,224H208a16,16,0,0,0,16-16V170.35A8,8,0,0,0,212.94,163a23.37,23.37,0,0,1-8.94,1.77c-13.23,0-24-11.1-24-24.73s10.77-24.73,24-24.73a23.37,23.37,0,0,1,8.94,1.77A8,8,0,0,0,224,109.65V72a16,16,0,0,0-16-16H171.78a35.36,35.36,0,0,0,.22-4,36,36,0,0,0-72,0,35.36,35.36,0,0,0,.22,4H64A16,16,0,0,0,48,72v32.22a35.36,35.36,0,0,0-4-.22,36,36,0,0,0,0,72,35.36,35.36,0,0,0,4-.22V208a16,16,0,0,0,16,16h42.22"/></svg>
                               <span><%= req.translations.plugins %></span>
                            </a>
@@ -240,29 +243,6 @@
                         <% } %>
                      </ul>
                   </li>
-                  <!--<li>
-                     <div class="text-xs font-medium leading-6 text-neutral-400">Your teams</div>
-                     <ul role="list" class="-mx-2 mt-2 space-y-1">
-                       <li>
-                         <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-xl p-2 text-sm leading-6 font-medium">
-                           <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">H</span>
-                           <span class="truncate">Heroicons</span>
-                         </a>
-                       </li>
-                       <li>
-                         <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-xl p-2 text-sm leading-6 font-medium">
-                           <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">T</span>
-                           <span class="truncate">Tailwind Labs</span>
-                         </a>
-                       </li>
-                       <li>
-                         <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-xl p-2 text-sm leading-6 font-medium">
-                           <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">W</span>
-                           <span class="truncate">Workcation</span>
-                         </a>
-                       </li>
-                     </ul>
-                     </li> -->
                   <li class="mt-auto border-t border-white/5">
                      <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-xl pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition hover:text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
@@ -276,7 +256,7 @@
          </div>
       </div>
       <div id="colcont" class="lg:pl-56">
-      <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 shadow-sm sm:gap-x-6 sm:px-4 lg:px-4">
+      <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 sm:gap-x-6 sm:px-4 lg:px-4">
          <div class="hidden lg:block">
          <button type="button" id="sidebar-toggle" class="hidden lg:block w-fit p-2 mt-1 rounded-xl text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
             <span class="sr-only">Open sidebar</span>
@@ -305,6 +285,7 @@
             </div>
             <script src="/javascript/search/index.js"></script>
             <script>
+               
                document.addEventListener('keydown', function(event) {
                  if (event.key === 'F1') {
                    event.preventDefault();
@@ -331,9 +312,9 @@
                        searchResults.classList.add('hidden');
                    }
                });
+
+               
             </script>
-
-
 <div class="flex items-center gap-x-4 lg:gap-x-6">
    <!-- Profile dropdown -->
    <div class="relative mt-3 mr-4">
@@ -396,7 +377,9 @@
    function updateSelectedFlag() {
      const select = document.getElementById('language-selector');
      const selectedFlag = document.getElementById('selected-flag');
-     selectedFlag.className = `flag-icon flag-icon-${select.value}`;
+     if(selectedFlag) {
+         selectedFlag.className = `flag-icon flag-icon-${select.value}`;
+      }
    }
 
    function changeLanguage(lang) {
@@ -429,54 +412,163 @@
          </div>
       </div>
       <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const navLinks = document.querySelectorAll('.nav-link');
-  const activeBackground = document.getElementById('active-background');
-  const contentSection = document.getElementById('content');
-  let isAnimating = false;
+         document.addEventListener('DOMContentLoaded', function() {
+           const navLinks = document.querySelectorAll('.nav-link');
+           const activeBackground = document.getElementById('active-background');
+           const contentSection = document.getElementById('content');
+           let isAnimating = false;
+           let currentActiveLink = null;
+         
+           function getCookie(name) {
+             const value = `; ${document.cookie}`;
+             const parts = value.split(`; ${name}=`);
+             if (parts.length === 2) return parts.pop().split(';').shift();
+           }
+         
+           function setCookie(name, value, days) {
+             let expires = '';
+             if (days) {
+               const date = new Date();
+               date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+               expires = `; expires=${date.toUTCString()}`;
+             }
+             document.cookie = `${name}=${value || ''}${expires}; path=/`;
+           }
+         
+           function updateActiveBackground(link) {
+             const linkRect = link.getBoundingClientRect();
+             const navRect = link.closest('ul').getBoundingClientRect();
+             const topOffset = linkRect.top - navRect.top + link.closest('ul').scrollTop;
+         
+             activeBackground.style.height = `${linkRect.height}px`;
+             activeBackground.style.transform = `translateY(${topOffset}px)`;
+         
+             setCookie('lastActiveLink', link.id, 7);
+             currentActiveLink = link;
+           }
+         
+           function moveActiveBackgroundInstantly(link) {
+             activeBackground.style.transition = 'none';
+             updateActiveBackground(link);
+             setTimeout(() => {
+               activeBackground.style.transition = 'transform 0.3s ease, height 0.3s ease';
+             }, 50);
+           }
+         
+           function updateActiveLink(currentPath) {
+             let foundActive = false;
+             navLinks.forEach((link) => {
+               let currentpathx2 = currentPath.replace('instance/', 'instances');
+               if (currentpathx2.startsWith(link.getAttribute('href'))) {
+                 link.classList.add('active');
+                 if (currentActiveLink) {
+                   updateActiveBackground(link);
+                 } else {
+                   moveActiveBackgroundInstantly(link);
+                 }
+                 foundActive = true;
+               } else {
+                 link.classList.remove('active');
+               }
+             });
+         
+             if (!foundActive) {
+               activeBackground.style.transform = 'translateY(0)';
+               activeBackground.style.height = '0px';
+             }
+           }
+         
+           const lastActiveLinkId = getCookie('lastActiveLink');
+           if (lastActiveLinkId) {
+             const lastActiveLink = document.getElementById(lastActiveLinkId);
+             if (lastActiveLink) {
+               lastActiveLink.classList.add('active');
+               moveActiveBackgroundInstantly(lastActiveLink);
+             }
+           }
+         
+           function animatePageTransition(href) {
+             if (isAnimating) return;
+             isAnimating = true;
+         
+             contentSection.style.opacity = '0';
+             contentSection.style.transform = 'translateX(-20px)';
+         
+             setTimeout(() => {
+               window.location.href = href;
+             }, 300);
+           }
+         
+           navLinks.forEach(link => {
+             link.addEventListener('click', (e) => {
+               e.preventDefault();
+               const href = link.getAttribute('href');
+               updateActiveLink(href);
+               animatePageTransition(href);
+             });
+           });
+         
+           updateActiveLink(window.location.pathname);
+         
+           window.addEventListener('popstate', () => {
+             updateActiveLink(window.location.pathname);
+           });
+         });
 
-  function updateActiveLink(currentPath) {
-    navLinks.forEach((link) => {
-      if (link.getAttribute('href') === currentPath) {
-        link.classList.add('active');
-        const linkRect = link.getBoundingClientRect();
-        const navRect = link.closest('ul').getBoundingClientRect();
-        activeBackground.style.transform = `translateY(${linkRect.top - navRect.top}px)`;
-      } else {
-        link.classList.remove('active');
-      }
-    });
-  }
 
-  function animatePageTransition(href) {
-    if (isAnimating) return;
-    isAnimating = true;
+         document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleButton = document.getElementById('sidebar-toggle');
+            const colcont = document.getElementById('colcont');
 
-    contentSection.style.opacity = '0';
-    contentSection.style.transform = 'translateX(-20px)';
+            function setCookie(name, value, days) {
+               const date = new Date();
+               date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+               const expires = "expires=" + date.toUTCString();
+               document.cookie = name + "=" + value + ";" + expires + ";path=/";
+            }
+            function getCookie(name) {
+               const nameEQ = name + "=";
+               const ca = document.cookie.split(';');
+               for(let i = 0; i < ca.length; i++) {
+                  let c = ca[i];
+                  while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                  if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+               }
+               return null;
+            }
+            const sidebarState = getCookie('sidebar-collapsed');
+            if (sidebarState === 'true') {
+               sidebar.classList.add('collapsed');
+               colcont.classList.add('colcont');
+            } else {
+               sidebar.classList.remove('collapsed');
+               colcont.classList.remove('colcont');
+            }
+            toggleButton.addEventListener('click', () => {
+               sidebar.classList.toggle('collapsed');
+               colcont.classList.toggle('colcont');
+               const isCollapsed = sidebar.classList.contains('collapsed');
+               setCookie('sidebar-collapsed', isCollapsed, 7);
+            });
 
-    setTimeout(() => {
-      window.location.href = href;
-    }, 10);
-  }
-
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const href = link.getAttribute('href');
-      animatePageTransition(href);
-    });
-  });
-
-  // Update active link on page load
-  updateActiveLink(window.location.pathname);
-
-  // Handle browser back/forward
-  window.addEventListener('popstate', () => {
-    updateActiveLink(window.location.pathname);
-  });
-});
-      </script>
+            const mobileToggleButton = document.getElementById('mobile-sidebar-toggle');
+            if (mobileToggleButton) {
+               mobileToggleButton.addEventListener('click', () => {
+                  sidebar.classList.toggle('open');
+                  if (sidebar.classList.contains('open')) {
+                     mobileToggleButton.classList.add('right-4');
+                     mobileToggleButton.classList.remove('left-4');
+                  } else {
+                     mobileToggleButton.classList.add('left-4');
+                     mobileToggleButton.classList.remove('right-4');
+                  }
+               });
+            }
+         });
+         </script>         
+         
+         
           <script>
             function changeLanguage(lang) {
                 fetch(`/setLanguage?lang=${lang}`)
@@ -491,13 +583,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         </script>
 
-      <div id="loader" class="fixed ml-56 mt-16 inset-0 flex items-center justify-center bg-[#141414] transition-opacity duration-300 opacity-100 z-50">
-         <svg class="animate-spin h-5 w-5 text-white inline-flex"
-            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-               stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor"
-               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-            </path>
-         </svg>
+      <div id="loader" class="loading-spin fixed ml-56 mt-16 inset-0 flex items-center justify-center <%= theme['paneltheme-color'] %> transition-opacity duration-300 opacity-100 z-50">
+         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="currentColor">
+            <path d="M18.696,10.5c-0.275-0.479-0.113-1.09,0.365-1.367l4.759-2.751c0.482-0.273,1.095-0.11,1.37,0.368 c0.276,0.479,0.115,1.092-0.364,1.364l-4.764,2.751C19.583,11.141,18.973,10.977,18.696,10.5z"/>
+            <path d="M16.133,6.938l2.75-4.765c0.276-0.478,0.889-0.643,1.367-0.366c0.479,0.276,0.641,0.886,0.365,1.366l-2.748,4.762 C17.591,8.415,16.979,8.58,16.5,8.303C16.021,8.027,15.856,7.414,16.133,6.938z"/>
+            <path d="M13.499,7.5c-0.552,0-1-0.448-1-1.001V1c0-0.554,0.448-1,1-1c0.554,0,1.003,0.447,1.003,1v5.499 C14.5,7.053,14.053,7.5,13.499,7.5z"/>
+            <path d="M8.303,10.5c-0.277,0.477-0.888,0.641-1.365,0.365L2.175,8.114C1.697,7.842,1.532,7.229,1.808,6.75 c0.277-0.479,0.89-0.642,1.367-0.368l4.762,2.751C8.416,9.41,8.58,10.021,8.303,10.5z"/>
+            <path d="M9.133,7.937l-2.75-4.763c-0.276-0.48-0.111-1.09,0.365-1.366c0.479-0.277,1.09-0.114,1.367,0.366l2.75,4.765 c0.274,0.476,0.112,1.088-0.367,1.364C10.021,8.581,9.409,8.415,9.133,7.937z"/>
+            <path d="M6.499,14.5H1c-0.554,0-1-0.448-1-1c0-0.554,0.447-1.001,1-1.001h5.499c0.552,0,1.001,0.448,1.001,1.001 C7.5,14.052,7.052,14.5,6.499,14.5z"/>
+            <path d="M8.303,16.502c0.277,0.478,0.113,1.088-0.365,1.366l-4.762,2.749c-0.478,0.273-1.091,0.112-1.368-0.366 c-0.276-0.479-0.111-1.089,0.367-1.368l4.762-2.748C7.415,15.856,8.026,16.021,8.303,16.502z"/>
+            <path d="M10.866,20.062l-2.75,4.767c-0.277,0.475-0.89,0.639-1.367,0.362c-0.477-0.277-0.642-0.886-0.365-1.365l2.75-4.764 c0.277-0.477,0.888-0.638,1.366-0.365C10.978,18.974,11.141,19.585,10.866,20.062z"/>
+            <path d="M13.499,19.502c0.554,0,1.003,0.448,1.003,1.002v5.498c0,0.55-0.448,0.999-1.003,0.999c-0.552,0-1-0.447-1-0.999v-5.498 C12.499,19.95,12.946,19.502,13.499,19.502z"/>
+            <path d="M17.867,19.062l2.748,4.764c0.275,0.479,0.113,1.088-0.365,1.365c-0.479,0.276-1.091,0.112-1.367-0.362l-2.75-4.767 c-0.276-0.477-0.111-1.088,0.367-1.365C16.979,18.424,17.591,18.585,17.867,19.062z"/>
+            <path d="M18.696,16.502c0.276-0.48,0.887-0.646,1.365-0.367l4.765,2.748c0.479,0.279,0.64,0.889,0.364,1.368 c-0.275,0.479-0.888,0.64-1.37,0.366l-4.759-2.749C18.583,17.59,18.421,16.979,18.696,16.502z"/>
+            <path d="M25.998,12.499h-5.501c-0.552,0-1.001,0.448-1.001,1.001c0,0.552,0.447,1,1.001,1h5.501c0.554,0,1.002-0.448,1.002-1 C27,12.946,26.552,12.499,25.998,12.499z"/>
+          </svg>
       </div>

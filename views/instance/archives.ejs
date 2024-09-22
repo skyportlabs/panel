@@ -8,7 +8,7 @@
          </div>
          <% let query = req.query.path ? '?path=' + req.query.path : ''; %>
          <div class="mt-4 sm:ml-16 sm:mt-0 flex space-x-4">
-            <button onclick="createArchive()" class="block rounded-xl bg-white px-4 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <button onclick="createArchive()" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Create Backup
             </button>
             <input type="file" id="fileInput" multiple style="display: none;">

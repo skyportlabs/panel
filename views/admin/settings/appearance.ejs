@@ -17,7 +17,7 @@
             <form action="/admin/settings/change/name" method="POST">
                <label for="name" class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.panelName %></label>
                <input id="name" name="name" type="text" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-fit items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-white/5 placeholder:text-white/20 text-white border border-black/10" value="<%= name %>" placeholder="<%= name %>" required>
-               <button id="Save-Name" type="submit" class="mt-6 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.save %></button>
+               <button id="Save-Name" type="submit" class="mt-6 block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.save %></button>
             </form>
          </div>
          <div id="changelogoform" class="mt-6">
@@ -32,7 +32,7 @@
                   <input type="file" name="logo" id="logo" accept="image/*" class="block w-full text-sm text-neutral-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-white/5 file:text-neutral-300 hover:file:bg-white/10 transition">
                </div>
                <input type="hidden" name="type" id="logoType" value="none">
-               <button id="logoButton" type="submit" class="mt-6 block rounded-xl bg-white px-3 py-2 text-center text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.removeLogo %></button>
+               <button id="logoButton" type="submit" class="mt-6 block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.removeLogo %></button>
             </form>
          </div>
          <div id="registerpage" class="mt-6">

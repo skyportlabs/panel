@@ -4,7 +4,7 @@ const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { fetchFiles } = require('../../utils/fileHelper');
 
-const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));

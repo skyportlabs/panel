@@ -46,14 +46,14 @@ router.get('/instance/:id/startup', async (req, res) => {
         }
 
         res.render('instance/startup.ejs', {
-            name: await db.get('name') || 'Skyport',
-            logo: await db.get('logo') || false,
             req,
             user: req.user,
+            name: await db.get('name') || 'Skyport',
+            logo: await db.get('logo') || false,
+            instance,
             addons: {
                 plugins: allPluginData
-            },
-            instance
+            }
         });
     } catch (error) {
         console.error('Error fetching instance data:', error);
@@ -79,8 +79,6 @@ router.post('/instances/startup/changevariable/:id', async (req, res) => {
     }
 
     try {
-
-
         const instance = await db.get(`${id}_instance`);
         if (!instance) {
             return res.status(404).json({ error: 'Instance not found' });

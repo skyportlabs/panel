@@ -1,0 +1,84 @@
+<%- include('../../components/template') %>
+
+<main id="content">
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+            <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.settings %></h1>
+            <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.changeSettings %></p>
+         </div>
+      </div>
+   </div>
+   <%- include('../../components/settings') %>
+   <div class="flex flex-col bg-white/5 m-8 pt-0 py-5 rounded-xl">
+      <h1 class="text-white text-[18px] px-5 py-4 mb-1 w-full bg-white/5 rounded-t-xl font-medium">Theme</h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-5">
+         <div id="changenameform" class="mt-4">
+            <form action="/admin/settings/change/theme/button-color" method="POST">
+               <label for="name" class="text-neutral-400 text-sm tracking-tight mb-2">Button color</label>
+
+               <select name="buttoncolor" id="button-color" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-fit items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-white/5 placeholder:text-white/20 text-white border border-black/10" style="width: 100px;">
+                  <option value="bg-white hover:bg-neutral-300 text-neutral-800" class="text-neutral-800 text-sm tracking-tight mb-2" <%= theme['button-color'] == 'bg-white hover:bg-neutral-300 text-neutral-800' ? 'selected' : '' %>>White</option>
+                  <option value="bg-blue-500 hover:bg-blue-600 text-neutral-100" class="text-neutral-800 text-sm tracking-tight mb-2" <%= theme['button-color'] == 'bg-blue-500 hover:bg-blue-600 text-neutral-100' ? 'selected' : '' %>>Blue</option>
+                  <option value="bg-pink-500 hover:bg-pink-600 text-neutral-100" class="text-neutral-800 text-sm tracking-tight mb-2" <%= theme['button-color'] == 'bg-pink-500 hover:bg-pink-600 text-neutral-100' ? 'selected' : '' %>>Pink</option>
+               </select>
+               <button id="Save-button-color" type="submit" class="mt-6 block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.save %></button>
+            </form>
+         </div>
+         <div id="changePanelThemeform" class="mt-6">
+            <form action="/admin/settings/change/theme/paneltheme-color" method="POST">
+               <label for="name" class="text-neutral-400 text-sm tracking-tight mb-2">Panel Theme</label>
+
+               <select name="paneltheme" id="paneltheme" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-fit items-center transition justify-left gap-16 hover:bg-white/5 px-4 py-2 flex border-white/5 bg-white/5 placeholder:text-white/20 text-white border border-black/10" style="width: 150px;">
+                  <option value="bg-[#1f1e1e]" class="text-neutral-800 text-sm tracking-tight mb-2" <%= theme['paneltheme-color'] == 'bg-[#141414]' ? 'selected' : '' %>>Dark</option>
+                  <option value="bg-sky-950" class="text-neutral-800 text-sm tracking-tight mb-2" <%= theme['paneltheme-color'] == 'bg-sky-950' ? 'selected' : '' %>>Sky Blue</option>
+                  <option value="bg-fuchsia-950" class="text-neutral-800 text-sm tracking-tight mb-2" <%= theme['paneltheme-color'] == 'bg-fuchsia-950' ? 'selected' : '' %>>Fuchsia</option>
+                  <option value="bg-[#33404d]" class="text-neutral-800 text-sm tracking-tight mb-2" <%= theme['paneltheme-color'] == 'bg-[#33404d]' ? 'selected' : '' %>>Pterodactyl</option>
+                  <option value="bg-neutral-800" class="text-neutral-800 text-sm tracking-tight mb-2" <%= theme['paneltheme-color'] == 'bg-neutral-800' ? 'selected' : '' %>>Bright</option>
+               </select>
+               <button id="Save-paneltheme-color" type="submit" class="mt-6 block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.save %></button>
+            </form>
+         </div>
+         <div id="togglefooterform" class="mt-6">
+            <form action="/admin/settings/toggle/theme/footer" method="POST">
+               <div class="flex items-center mb-2">
+                  <% if (settings.footer === true) { %>
+                  <span class="text-neutral-400 text-sm tracking-tight mb-2">Skyport Credits: <span class="font-medium text-green-500"><%= req.translations.enabled %></span></span>
+                  <% } else { %>
+                  <span class="text-neutral-400 text-sm tracking-tight mb-2">Skyport Credits: <span class="font-medium text-red-500"><%= req.translations.disabled %></span></span>
+                  <% } %>
+               </div>
+               <div class="flex flex-col sm:flex-row">
+                  <% if (settings.footer === true) { %>  
+                  <button id="togglefooter" type="submit" class="block rounded-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-l-lg sm:rounded-r-none"><%= req.translations.disable %></button>
+                  <button id="togglefooter" type="submit" class="block rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-green-500 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-none sm:rounded-r-lg opacity-[0.7]" disabled><%= req.translations.enable %></button>
+                  <% } else { %>
+                  <button id="togglefooter" type="submit" class="block rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-l-lg sm:rounded-r-none opacity-[0.7]" disabled><%= req.translations.disable %></button>
+                  <button id="togglefooter" type="submit" class="block rounded-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-none sm:rounded-r-lg"><%= req.translations.enable %></button>
+                  <% } %>  
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</main>
+
+<%- include('../../components/footer') %>
+
+<script>
+   document.getElementById('useImage').addEventListener('change', function() {
+     const imageUploadBox = document.getElementById('imageUploadBox');
+     const logoButton = document.getElementById('logoButton');
+     const logoType = document.getElementById('logoType');
+     
+     if (this.checked) {
+       imageUploadBox.classList.remove('hidden');
+       logoButton.textContent = '<%= req.translations.saveNewLogo %>';
+       logoType.value = 'image';
+     } else {
+       imageUploadBox.classList.add('hidden');
+       logoButton.textContent = '<%= req.translations.removeLogo %>';
+       logoType.value = 'none';
+     }
+   });
+</script>

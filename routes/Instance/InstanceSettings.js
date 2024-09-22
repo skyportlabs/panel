@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
-const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
@@ -43,9 +43,16 @@ router.get("/instance/:id/settings", async (req, res) => {
     }
 
     const allPluginData = Object.values(plugins).map(plugin => plugin.config);
-    res.render('instance/settings', { req, instance, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false, addons: {
-        plugins: allPluginData
-    } });
+    res.render('instance/settings', {
+        req,
+        user: req.user,
+        name: await db.get('name') || 'Skyport',
+        logo: await db.get('logo') || false, 
+        instance,
+        addons: {
+            plugins: allPluginData
+        } 
+    });
 });
 
 router.get("/instance/:id/change/name/:name", async (req, res) => {
@@ -84,7 +91,7 @@ router.get("/instance/:id/change/name/:name", async (req, res) => {
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     const trimmedName = name.trim();

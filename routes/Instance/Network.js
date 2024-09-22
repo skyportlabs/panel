@@ -3,7 +3,7 @@ const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 
-const { loadPlugins } = require('../../plugins/loadPls.js');  // Correct import
+const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
@@ -41,11 +41,11 @@ router.get("/instance/:id/network", async (req, res) => {
 
     res.render('instance/network', {
         req,
-        instance,
-        ports,
         user: req.user,
         name: await db.get('name') || 'Skyport',
         logo: await db.get('logo') || false,
+        instance,
+        ports,
         addons: {
             plugins: allPluginData
         }

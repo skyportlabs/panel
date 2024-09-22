@@ -35,7 +35,7 @@
       <label for="smtpFromAddress" class="text-neutral-400 text-sm block mt-4"><%= req.translations.mailFromAddress %>:</label>
       <input type="email" id="smtpFromAddress" name="smtpFromAddress" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 w-full px-4 py-2 border-white/5 bg-white/5 placeholder-neutral-500" value="<%= smtpSettings.fromAddress || '' %>" placeholder="<%= req.translations.mailFromAddress %>" required>
       
-      <button type="submit" class="mt-6 block rounded-xl bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"><%= req.translations.saveSmtpSettings %></button>
+      <button type="submit" class="mt-6 block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2"><%= req.translations.saveSmtpSettings %></button>
     </form>
 
     <!-- Test SMTP Settings Form -->
