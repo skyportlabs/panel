@@ -79,7 +79,6 @@ async function loadAndActivatePlugins() {
                 manifest.manifestpath = manifestPath;
                 pluginList.push(manifest);
                 pluginNames.push(manifest.name);
-                log.init(`Loaded plugin: ${manifest.name}`);
 
                 const mainFilePath = path.join(pluginPath, manifest.main);
                 const pluginModule = require(mainFilePath);
@@ -92,7 +91,6 @@ async function loadAndActivatePlugins() {
 
                 if (pluginModule.router) {
                     router.use(`/${manifest.router}`, pluginModule.router);
-                    log.init(`Routes for plugin ${manifest.name} added`);
                 } else {
                     log.error(`Error: plugin ${manifest.name} has no 'router' property.`);
                 }

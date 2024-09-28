@@ -21,10 +21,9 @@
           <% } %>
         </div>
       <% } %>
-      
     </div>
   </div>
-  <div class="px-4 sm:px-6 lg:px-8">
+  <div class="px-4 sm:px-6 lg:px-8 mt-8">
     <% if (instances.length == 0) { %>
       <!-- No instances -->
       <div id="noInstancesContainer" class="text-center mt-64">
@@ -37,73 +36,65 @@
         <h3 class="mt-4 text-md font-medium text-white"><%= req.translations.noInstances %></h3>
         <p class="mt-1 text-sm text-neutral-400"><%= req.translations.noInstancesText %></p>
       </div>
+    <% } else { %>
+      <div class="overflow-hidden shadow ring-1 ring-white/5 rounded-lg">
+        <table class="min-w-full divide-y divide-white/10">
+          <thead class="bg-white/5">
+            <tr>
+              <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-6">Instance</th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">Status</th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">RAM Usage</th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">CPU Usage</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 bg-white/5">
+            <% instances.forEach(function (instance) { %>
+              <tr onclick="window.location.href = href='../instance/<%= instance.Id %>';" class="hover:bg-white/[0.05] cursor-pointer transition-colors" data-instance-id="<%= instance.Id %>">
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                  <div class="flex items-center">
+                    <div class="rounded-xl bg-white/5 p-2 mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white">
+                        <path d="M12.378 1.602a.75.75 0 0 0-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03ZM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 0 0 .372-.648V7.93ZM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 0 0 .372.648l8.628 5.033Z" />
+                      </svg>
+                    </div>
+                    <a href="../instance/<%= instance.Id %>" class="font-medium text-white hover:text-neutral-300"><%= instance.Name %></a>
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                  <span data-status-bg class="bg-neutral-600/20 text-neutral-400 px-2.5 py-1 rounded-full text-xs font-medium">
+                    <span data-status>
+                      <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <%= req.translations.loading %>
+                    </span>
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-neutral-400">
+                  <span data-ram-usage>
+                    <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <%= req.translations.loading %>
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-neutral-400">
+                  <span data-cpu-usage>
+                    <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <%= req.translations.loading %>
+                  </span>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
     <% } %>
-    <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-      <% instances.forEach(function (instance) { %>
-        <a id="instancesContainer" data-instance-id="<%= instance.Id %>"
-          href="../instance/<%= instance.Id %>"
-          class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-8 paneltheme-hover transition-all">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-              <div class="rounded-xl border border-white/5 inline-flex">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                  class="size-5 mt-2.5 mb-2.5 mr-2.5 ml-2.5 text-white">
-                  <path
-                    d="M12.378 1.602a.75.75 0 0 0-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03ZM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 0 0 .372-.648V7.93ZM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 0 0 .372.648l8.628 5.033Z" />
-                </svg>
-              </div>
-              <h2 class="text-lg font-medium pl-0 pr-3 md:sm:pl-3 text-white tracking-tight">
-                <%= instance.Name %>
-              </h2>
-            </div>
-            <div class="flex items-center space-x-2">
-              <span data-status-bg
-                class="bg-neutral-600/20 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-xl flex items-center">
-                <span data-status>
-                  <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                    </circle>
-                    <path class="opacity-75" fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                    </path>
-                  </svg>
-                  <%= req.translations.loading %>
-                </span>
-              </span>
-              <span
-                class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-xl flex items-center">
-                <span data-ram-usage>
-                  <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                    </circle>
-                    <path class="opacity-75" fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                    </path>
-                  </svg>
-                  <%= req.translations.loading %>
-                </span>
-              </span>
-              <span
-                class="border border-neutral-600/30 text-neutral-400 text-xs font-medium px-2.5 py-1 rounded-xl flex items-center">
-                <span data-cpu-usage>
-                  <svg class="animate-spin h-3 w-3 text-white mr-1 inline-flex"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                    </circle>
-                    <path class="opacity-75" fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                    </path>
-                  </svg>
-                  <%= req.translations.loading %>
-                </span>
-              </span>
-            </div>
-          </div>
-        </a>
-      <% }); %>
-    </dl>
   </div>
 </main>
 <%- include('components/footer') %>

@@ -1,0 +1,154 @@
+<%- include('../components/template') %>
+<main id="content">
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+           <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.analytics || 'Analytics' %></h1>
+           <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.analyticsText || 'View detailed analytics of your Skyport Panel' %></p>
+         </div>
+       </div>
+       <div class="px-8 mt-5">
+        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
+            <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+               <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.totalRequests || 'Total Requests' %></dt>
+               <dd class="mt-1 text-3xl font-medium tracking-tight text-white" id="totalRequests">
+                  <!-- This will be filled by JavaScript -->
+               </dd>
+            </div>
+            <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+               <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.uniqueVisitors || 'Unique Visitors' %></dt>
+               <dd class="mt-1 text-3xl font-medium tracking-tight text-white" id="uniqueVisitors">
+                  <!-- This will be filled by JavaScript -->
+               </dd>
+            </div>
+            <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+               <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.avgRequestsPerHour || 'Avg Requests/Hour' %></dt>
+               <dd class="mt-1 text-3xl font-medium tracking-tight text-white" id="avgRequestsPerHour">
+                  <!-- This will be filled by JavaScript -->
+               </dd>
+            </div>
+            <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+               <dt class="truncate text-sm font-medium text-neutral-400"><%= req.translations.topPage || 'Top Page' %></dt>
+               <dd class="mt-1 text-xl font-medium tracking-tight text-white" id="topPage">
+                  <!-- This will be filled by JavaScript -->
+               </dd>
+            </div>
+         </dl>
+         <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+               <h3 class="text-sm font-medium text-neutral-400 mb-4"><%= req.translations.trafficOverTime || 'Traffic Over Time' %></h3>
+               <canvas id="trafficChart"></canvas>
+            </div>
+            <div class="overflow-hidden rounded-xl bg-neutral-700/10 px-4 py-5 shadow sm:p-6">
+               <h3 class="text-sm font-medium text-neutral-400 mb-4"><%= req.translations.topPages || 'Top Pages' %></h3>
+               <canvas id="topPagesChart"></canvas>
+            </div>
+         </div>
+       </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Fetch analytics data
+fetch('/api/analytics')
+  .then(response => response.json())
+  .then(data => {
+    // Update summary statistics
+    document.getElementById('totalRequests').textContent = data.totalRequests;
+    document.getElementById('uniqueVisitors').textContent = data.uniqueVisitors;
+    document.getElementById('avgRequestsPerHour').textContent = data.avgRequestsPerHour.toFixed(2);
+    document.getElementById('topPage').textContent = data.topPage;
+
+    // Create traffic over time chart
+    new Chart(document.getElementById('trafficChart'), {
+      type: 'line',
+      data: {
+        labels: data.trafficOverTime.labels,
+        datasets: [{
+          label: '<%= req.translations.requests || "Requests" %>',
+          data: data.trafficOverTime.data,
+          borderColor: 'rgb(200, 200, 200)', // Light gray
+          backgroundColor: 'rgba(200, 200, 200, 0.1)', // Light gray with low opacity
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: 'rgb(200, 200, 200)' // Light gray for y-axis ticks
+            },
+            grid: {
+              color: 'rgba(200, 200, 200, 0.1)' // Light gray with low opacity for y-axis grid
+            }
+          },
+          x: {
+            ticks: {
+              color: 'rgb(200, 200, 200)' // Light gray for x-axis ticks
+            },
+            grid: {
+              color: 'rgba(200, 200, 200, 0.1)' // Light gray with low opacity for x-axis grid
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: 'rgb(200, 200, 200)' // Light gray for legend labels
+            }
+          }
+        }
+      }
+    });
+
+    // Create top pages chart
+    new Chart(document.getElementById('topPagesChart'), {
+      type: 'bar',
+      data: {
+        labels: data.topPages.labels,
+        datasets: [{
+          label: '<%= req.translations.pageViews || "Page Views" %>',
+          data: data.topPages.data,
+          backgroundColor: 'rgba(255, 255, 255, 0.6)' // White with some transparency
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: 'rgb(200, 200, 200)' // Light gray for y-axis ticks
+            },
+            grid: {
+              color: 'rgba(200, 200, 200, 0.1)' // Light gray with low opacity for y-axis grid
+            }
+          },
+          x: {
+            ticks: {
+              color: 'rgb(200, 200, 200)' // Light gray for x-axis ticks
+            },
+            grid: {
+              color: 'rgba(200, 200, 200, 0.1)' // Light gray with low opacity for x-axis grid
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: 'rgb(200, 200, 200)' // Light gray for legend labels
+            }
+          }
+        }
+      }
+    });
+  })
+  .catch(error => {
+    console.error('Error fetching analytics data:', error);
+  });
+</script>
+
+<%- include('../components/footer') %>

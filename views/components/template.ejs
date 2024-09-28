@@ -157,7 +157,7 @@
       </button>
       <!-- Static sidebar for desktop -->
       <div class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 p-2 lg:flex lg:w-56 lg:flex-col">
-         <div class="flex grow flex-col gap-y-5 overflow-hidden rounded-r-3xl rounded-l-lg <%= theme['paneltheme-color'] %> border-r border-white/5" style="background-color: rgba(0, 0, 0, 0.2);">
+         <div class="flex grow flex-col gap-y-5 overflow-hidden rounded-r-3xl rounded-l-lg bg-transparent border border-white/5">
             <nav class="flex flex-1 flex-col">
                <div class="pl-6 pt-5 pb-4 flex">
                   <a href="/" class="flex">
@@ -167,10 +167,18 @@
                      <h1 class="text-white font-medium tracking-tight text-lg"><%= name %></h1>
                   </a>
                </div>
-               <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                    <!-- User info -->
+     <div class="flex items-center space-x-4 py-4 px-4 border-y border-white/5">
+      <img class="h-8 w-8 rounded-xl" src="https://api.dicebear.com/9.x/thumbs/svg?seed=<%= user.username %>" alt="User avatar">
+      <div>
+        <p class="text-sm font-medium text-white"><%= user.username %></p>
+        <p class="text-xs text-neutral-500"><%= user.userId.substring(0, 6) %></p>
+      </div>
+    </div>
+               <ul role="list" class="flex flex-1 flex-col gap-y-7 mt-2">
                   <li>
                      <ul role="list" class="-mx-2 space-y-1">
-                        <div id="active-background" class="absolute left-0 w-full h-8 <%= theme['paneltheme-color'] %> rounded-2xl transition-all duration-300 ease-in-out"></div>
+                        <div id="active-background" class="absolute left-0 w-full h-8 bg-white/5 rounded-2xl transition-all duration-300 ease-in-out"></div>
                         <li>
                            <a href="/instances" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal" searchdata="container instances servers" subterm="jegli:/server/servername">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M220,169.09l-92,53.65L36,169.09A8,8,0,0,0,28,182.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,169.09Z"/><path d="M220,121.09l-92,53.65L36,121.09A8,8,0,0,0,28,134.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,121.09Z"/><path d="M28,86.91l96,56a8,8,0,0,0,8.06,0l96-56a8,8,0,0,0,0-13.82l-96-56a8,8,0,0,0-8.06,0l-96,56a8,8,0,0,0,0,13.82Z"/></svg>
@@ -195,6 +203,12 @@
                            <a href="/admin/settings" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M237.94,107.21a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A111.92,111.92,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.63a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"/></svg>
                               <span><%= req.translations.settings %></span>
+                           </a>
+                        </li>
+                        <li>
+                           <a href="/admin/analytics" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM200,176a8,8,0,0,1,0,16H56a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v62.92l34.88-29.07a8,8,0,0,1,9.56-.51l43,28.69,43.41-36.18a8,8,0,0,1,10.24,12.3l-48,40a8,8,0,0,1-9.56.51l-43-28.69L64,155.75V176Z"/></svg>
+                              <span>Analytics</span>
                            </a>
                         </li>
                         <li>
@@ -235,12 +249,15 @@
                               <span><%= req.translations.auditLogs %></span>
                            </a>
                         </li>
+
+                        <!-- 
+                        Deprecated
                         <li>
                            <a href="/admin/plugins" searchdata="addons plugins admin" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M165.78,224H208a16,16,0,0,0,16-16V170.35A8,8,0,0,0,212.94,163a23.37,23.37,0,0,1-8.94,1.77c-13.23,0-24-11.1-24-24.73s10.77-24.73,24-24.73a23.37,23.37,0,0,1,8.94,1.77A8,8,0,0,0,224,109.65V72a16,16,0,0,0-16-16H171.78a35.36,35.36,0,0,0,.22-4,36,36,0,0,0-72,0,35.36,35.36,0,0,0,.22,4H64A16,16,0,0,0,48,72v32.22a35.36,35.36,0,0,0-4-.22,36,36,0,0,0,0,72,35.36,35.36,0,0,0,4-.22V208a16,16,0,0,0,16,16h42.22"/></svg>
                               <span><%= req.translations.plugins %></span>
                            </a>
-                        </li>
+                        </li> -->
                         <% } %>
                      </ul>
                   </li>
