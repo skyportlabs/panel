@@ -42,7 +42,7 @@
                </dd>
             </div>
          </dl>
-          <div class="bg-neutral-700/10 rounded-xl py-8 mt-5 shadow sm:p-6">
+          <div class="bg-neutral-700/10 rounded-xl pb-4 mt-5 shadow sm:p-6">
             <script>
                 fetch('https://atqr.pages.dev/skyport.json')
                   .then(response => response.json())
@@ -74,8 +74,8 @@
                     console.error('Error fetching latest version:', error);
                   });
               </script>
-             <h1 class="text-white text-lg font-medium tracking-tight pl-8"><%= req.translations.sysInfo %></h1>
-             <p class="text-sm mt-1 font-normal text-neutral-300 mb-2 pl-8">
+             <img src="https://i.imgur.com/llwMKX4.png" class="h-24">
+             <p class="text-sm mt-1 font-normal text-neutral-300 mb-2">
                 <%= req.translations.sysInfoText %> <span id="currentVersion"></span>. <span id="versionStatus"></span>
               </p>
           </div>
@@ -86,13 +86,13 @@
                 </svg>
                 Discord Server
             </a>
-            <a href="https://skyport.dev" class="block rounded-xl bg-blue-500 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-blue-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full">
+            <a href="https://skyport.dev" class="block rounded-xl bg-blue-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-blue-700 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 inline-flex mr-1">
                     <path d="M10.75 16.82A7.462 7.462 0 0 1 15 15.5c.71 0 1.396.098 2.046.282A.75.75 0 0 0 18 15.06v-11a.75.75 0 0 0-.546-.721A9.006 9.006 0 0 0 15 3a8.963 8.963 0 0 0-4.25 1.065V16.82ZM9.25 4.065A8.963 8.963 0 0 0 5 3c-.85 0-1.673.118-2.454.339A.75.75 0 0 0 2 4.06v11a.75.75 0 0 0 .954.721A7.506 7.506 0 0 1 5 15.5c1.579 0 3.042.487 4.25 1.32V4.065Z" />
                 </svg>                  
                 Documentation
             </a>
-            <a href="https://github.com/skyportlabs" class="block rounded-xl bg-blue-500 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-blue-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full">
+            <a href="https://github.com/skyportlabs" class="block rounded-xl bg-blue-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-blue-700 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full">
                 <svg class="h-5 w-5 text-white inline-flex mr-1" height="1792" viewBox="0 0 1792 1792" width="1792" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M1664 896q0 251-146.5 451.5t-378.5 277.5q-27 5-39.5-7t-12.5-30v-211q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-121-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-86-13.5q-44 113-7 204-79 85-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-40 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 89t.5 54q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/></svg>            
                 GitHub
             </a>
