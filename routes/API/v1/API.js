@@ -3,8 +3,8 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
-const { sendPasswordResetEmail } = require('../handlers/email.js');
-const { db } = require('../handlers/db.js');
+const { sendPasswordResetEmail } = require('../../../handlers/email.js');
+const { db } = require('../../../handlers/db.js');
 
 const saltRounds = 10;
 

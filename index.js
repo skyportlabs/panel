@@ -35,6 +35,7 @@ const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const theme = require('./storage/theme.json');
 const analytics = require('./utils/analytics.js');
+const { isAdmin } = require('./utils/isAdmin');
 
 const sqlite = require("better-sqlite3");
 const SqliteStore = require("better-sqlite3-session-store")(session);
@@ -172,7 +173,13 @@ function loadRoutes(directory) {
       const route = require(fullPath);
       // log.init('loaded route: ' + fullPath);
       expressWs.applyTo(route);
-      app.use("/", route);
+
+      if (fullPath.includes(path.join('routes', 'Admin'))) {
+        // Apply the isAdmin middleware to admin routes
+        app.use("/", isAdmin, route);
+      } else {
+        app.use("/", route);
+      }
     }
   });
 }
