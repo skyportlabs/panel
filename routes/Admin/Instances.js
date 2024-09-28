@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditlog.js');
+const { isAdmin } = require('../../utils/isAdmin.js');
 
 // we forgot checkNodeStatus
 async function checkNodeStatus(node) {
@@ -54,7 +55,7 @@ async function deleteInstance(instance) {
   }
 }
 
-router.get('/admin/instances', async (req, res) => {
+router.get('/admin/instances', isAdmin, async (req, res) => {
   let instances = await db.get('instances') || [];
   let images = await db.get('images') || [];
   let nodes = await db.get('nodes') || [];
@@ -74,7 +75,7 @@ router.get('/admin/instances', async (req, res) => {
   });
 });
 
-router.get('/admin/instances/:id/edit', async (req, res) => {
+router.get('/admin/instances/:id/edit', isAdmin, async (req, res) => {
   const { id } = req.params;
   const instance = await db.get(id + '_instance');
   let users = await db.get('users') || [];
@@ -92,7 +93,7 @@ router.get('/admin/instances/:id/edit', async (req, res) => {
   });
 });
 
-router.get('/admin/instance/delete/:id', async (req, res) => {
+router.get('/admin/instance/delete/:id', isAdmin, async (req, res) => {
   const { id } = req.params;
   
   try {
@@ -114,7 +115,7 @@ router.get('/admin/instance/delete/:id', async (req, res) => {
   }
 });
 
-router.get('/admin/instances/purge/all', async (req, res) => {
+router.get('/admin/instances/purge/all', isAdmin, async (req, res) => {
   try {
     const instances = await db.get('instances') || [];
     
@@ -130,7 +131,7 @@ router.get('/admin/instances/purge/all', async (req, res) => {
   }
 });
 
-router.post('/admin/instances/suspend/:id', async (req, res) => {
+router.post('/admin/instances/suspend/:id', isAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -161,7 +162,7 @@ router.post('/admin/instances/suspend/:id', async (req, res) => {
   }
 });
 
-router.post('/admin/instances/unsuspend/:id', async (req, res) => {
+router.post('/admin/instances/unsuspend/:id', isAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {

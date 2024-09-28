@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditlog.js');
+const { isAdmin } = require('../../utils/isAdmin.js');
 
 async function checkNodeStatus(node) {
   try {
@@ -35,7 +36,7 @@ async function checkNodeStatus(node) {
   }
 }
 
-router.get('/admin/nodes', async (req, res) => {
+router.get('/admin/nodes', isAdmin, async (req, res) => {
   let nodes = await db.get('nodes') || [];
   let instances = await db.get('instances') || [];
   let set = {};
@@ -59,7 +60,7 @@ router.get('/admin/nodes', async (req, res) => {
   });
 });
 
-router.post('/nodes/create', async (req, res) => {
+router.post('/nodes/create', isAdmin, async (req, res) => {
   const configureKey = uuidv4();
   const node = {
     id: uuidv4(),
@@ -92,7 +93,7 @@ router.post('/nodes/create', async (req, res) => {
   });
 });
 
-router.post('/nodes/delete', async (req, res) => {
+router.post('/nodes/delete', isAdmin, async (req, res) => {
   const { nodeId } = req.body;
   if (!nodeId) {
     return res.status(400).json({ error: 'Missing nodeId' });
@@ -173,7 +174,7 @@ router.post('/nodes/delete', async (req, res) => {
   }
 });
 
-router.get('/admin/node/:id', async (req, res) => {
+router.get('/admin/node/:id', isAdmin, async (req, res) => {
   const { id } = req.params;
   const node = await db.get(id + '_node');
 
@@ -188,7 +189,7 @@ router.get('/admin/node/:id', async (req, res) => {
   });
 });
 
-router.post('/admin/node/:id', async (req, res) => {
+router.post('/admin/node/:id', isAdmin, async (req, res) => {
   const { id } = req.params;
   const cnode = await db.get(id + '_node');
 

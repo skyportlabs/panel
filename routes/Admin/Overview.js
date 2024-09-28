@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const config = require('../../config.json');
+const { isAdmin } = require('../../utils/isAdmin.js');
 
-router.get('/admin/overview', async (req, res) => {
+router.get('/admin/overview', isAdmin, async (req, res) => {
   try {
     const users = await db.get('users') || [];
     const nodes = await db.get('nodes') || [];

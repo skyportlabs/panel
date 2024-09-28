@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditlog.js');
 const { sendTestEmail } = require('../../handlers/email.js');
+const { isAdmin } = require('../../utils/isAdmin.js');
 
 // Configure multer for file upload
 const upload = multer({
@@ -28,7 +29,7 @@ const upload = multer({
   }
 });
 
-router.get('/admin/settings', async (req, res) => {
+router.get('/admin/settings', isAdmin, async (req, res) => {
   res.render('admin/settings/appearance', {
     req,
     user: req.user,
@@ -38,7 +39,7 @@ router.get('/admin/settings', async (req, res) => {
   });
 });
 
-router.get('/admin/settings/smtp', async (req, res) => {
+router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
   try {
     const settings = await db.get('settings');
     const smtpSettings = await db.get('smtp_settings') || {};
@@ -57,7 +58,7 @@ router.get('/admin/settings/smtp', async (req, res) => {
   }
 });
 
-router.get('/admin/settings/theme', async (req, res) => {
+router.get('/admin/settings/theme', isAdmin, async (req, res) => {
   res.render('admin/settings/theme', {
     req,
     user: req.user,
@@ -67,7 +68,7 @@ router.get('/admin/settings/theme', async (req, res) => {
   });
 });
 
-router.post('/admin/settings/toggle/force-verify', async (req, res) => {
+router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => {
   try {
     const settings = await db.get('settings') || {};
     settings.forceVerify = !settings.forceVerify;
@@ -82,7 +83,7 @@ router.post('/admin/settings/toggle/force-verify', async (req, res) => {
   }
 });
 
-router.post('/admin/settings/change/name', async (req, res) => {
+router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
   const name = req.body.name;
   try {
     await db.set('name', [name]);
@@ -94,7 +95,7 @@ router.post('/admin/settings/change/name', async (req, res) => {
   }
 });
 
-router.post('/admin/settings/change/theme/button-color', async (req, res) => {
+router.post('/admin/settings/change/theme/button-color', isAdmin, async (req, res) => {
   const buttoncolor = req.body.buttoncolor;
   let theme = require('../../storage/theme.json');
   try {
@@ -108,7 +109,7 @@ router.post('/admin/settings/change/theme/button-color', async (req, res) => {
   }
 });
 
-router.post('/admin/settings/change/theme/paneltheme-color', async (req, res) => {
+router.post('/admin/settings/change/theme/paneltheme-color', isAdmin, async (req, res) => {
   const paneltheme = req.body.paneltheme;
   let theme = require('../../storage/theme.json');
   try {
@@ -122,7 +123,7 @@ router.post('/admin/settings/change/theme/paneltheme-color', async (req, res) =>
   }
 });
 
-router.post('/admin/settings/toggle/theme/footer', async (req, res) => {
+router.post('/admin/settings/toggle/theme/footer', isAdmin, async (req, res) => {
   try {
     const settings = await db.get('settings') || {};
     settings.footer = !settings.footer;
@@ -138,7 +139,7 @@ router.post('/admin/settings/toggle/theme/footer', async (req, res) => {
   }
 });
 
-router.post('/admin/settings/saveSmtpSettings', async (req, res) => {
+router.post('/admin/settings/saveSmtpSettings', isAdmin, async (req, res) => {
   const { smtpServer, smtpPort, smtpUser, smtpPass, smtpFromName, smtpFromAddress } = req.body;
 
   try {
@@ -159,7 +160,7 @@ router.post('/admin/settings/saveSmtpSettings', async (req, res) => {
   }
 });
 
-router.post('/sendTestEmail', async (req, res) => {
+router.post('/sendTestEmail', isAdmin, async (req, res) => {
   try {
     const { recipientEmail } = req.body;
 
@@ -176,7 +177,7 @@ router.post('/sendTestEmail', async (req, res) => {
   }
 });
 
-router.post('/admin/settings/change/logo', upload.single('logo'), async (req, res) => {
+router.post('/admin/settings/change/logo', isAdmin, upload.single('logo'), async (req, res) => {
   const type = req.body.type;
 
   try {
@@ -202,7 +203,7 @@ router.post('/admin/settings/change/logo', upload.single('logo'), async (req, re
   }
 });
 
-router.post('/admin/settings/toggle/register', async (req, res) => {
+router.post('/admin/settings/toggle/register', isAdmin, async (req, res) => {
   let settings = await db.get('settings');
   settings.register = !settings.register;
   await db.set('settings', settings);

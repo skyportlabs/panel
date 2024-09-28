@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
+const { isAdmin } = require('../../utils/isAdmin.js');
 
-router.get('/admin/analytics', async (req, res) => {
+router.get('/admin/analytics', isAdmin, async (req, res) => {
   const analytics = await db.get('analytics') || [];
   
   const pageViews = analytics.reduce((acc, item) => {
@@ -31,7 +32,7 @@ router.get('/admin/analytics', async (req, res) => {
   });
 });
 
-router.get('/api/analytics', async (req, res) => {
+router.get('/api/analytics', isAdmin, async (req, res) => {
   // Check if user is authenticated and has admin rights
   if (!req.user || !req.user.admin) {
     return res.status(403).json({ error: 'Unauthorized' });

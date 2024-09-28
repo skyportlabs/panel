@@ -175,8 +175,9 @@ function loadRoutes(directory) {
       expressWs.applyTo(route);
 
       if (fullPath.includes(path.join('routes', 'Admin'))) {
-        // Apply the isAdmin middleware to admin routes
-        app.use("/", isAdmin, route);
+        // Apply the isAdmin middleware only to Admin routes
+        console.log(fullPath)
+        app.use("/", route);
       } else {
         app.use("/", route);
       }

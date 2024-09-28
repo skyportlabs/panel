@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditlog.js');
+const { isAdmin } = require('../../utils/isAdmin.js');
 
 const saltRounds = 10;
 
@@ -17,7 +18,7 @@ async function doesEmailExist(email) {
   return users ? users.some(user => user.email === email) : false;
 }
 
-router.get('/admin/users', async (req, res) => {
+router.get('/admin/users', isAdmin, async (req, res) => {
   res.render('admin/users', {
     req,
     user: req.user,
@@ -27,7 +28,7 @@ router.get('/admin/users', async (req, res) => {
   });
 });
 
-router.post('/users/create', async (req, res) => {
+router.post('/users/create', isAdmin, async (req, res) => {
   const { username, email, password, admin, verified } = req.body;
 
   if (!username || !email || !password) {
@@ -70,7 +71,7 @@ router.post('/users/create', async (req, res) => {
   res.status(201).send(newUser);
 });
 
-router.delete('/user/delete', async (req, res) => {
+router.delete('/user/delete', isAdmin, async (req, res) => {
   const userId = req.body.userId;
   const users = await db.get('users') || [];
 
@@ -86,7 +87,7 @@ router.delete('/user/delete', async (req, res) => {
   res.status(204).send();
 });
 
-router.get('/admin/users/edit/:userId', async (req, res) => {
+router.get('/admin/users/edit/:userId', isAdmin, async (req, res) => {
   const userId = req.params.userId;
   const users = await db.get('users') || [];
   const user = users.find(user => user.userId === userId);
@@ -104,7 +105,7 @@ router.get('/admin/users/edit/:userId', async (req, res) => {
   });
 });
 
-router.post('/admin/users/edit/:userId', async (req, res, next) => {
+router.post('/admin/users/edit/:userId', isAdmin, async (req, res, next) => {
   const userId = req.params.userId;
   const { username, email, password, admin, verified } = req.body;
 

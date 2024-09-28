@@ -3,8 +3,9 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditlog.js');
+const { isAdmin } = require('../../utils/isAdmin.js');
 
-router.get('/admin/images', async (req, res) => {
+router.get('/admin/images', isAdmin, async (req, res) => {
   const images = await db.get('images') || [];
   res.render('admin/images', {
     req,
@@ -15,7 +16,7 @@ router.get('/admin/images', async (req, res) => {
   });
 });
 
-router.post('/admin/images/upload', async (req, res) => {
+router.post('/admin/images/upload', isAdmin, async (req, res) => {
   try {
     let jsonData = req.body;
     jsonData.Id = uuidv4();
@@ -30,7 +31,7 @@ router.post('/admin/images/upload', async (req, res) => {
   }
 });
 
-router.post('/admin/images/delete', async (req, res) => {
+router.post('/admin/images/delete', isAdmin, async (req, res) => {
   try {
     let { id } = req.body;
     let images = await db.get('images') || [];

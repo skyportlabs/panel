@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
+const { isAdmin } = require('../../utils/isAdmin.js');
 
-router.get('/admin/auditlogs', async (req, res) => {
+router.get('/admin/auditlogs', isAdmin, async (req, res) => {
   try {
     let audits = await db.get('audits');
     audits = audits ? JSON.parse(audits) : [];

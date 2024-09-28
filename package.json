@@ -1,6 +1,6 @@
 {
   "name": "skyport",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Skyport is an open source panel for managing and operating game servers and applications built using Node.js with Express and Dockerode.",
   "main": "index.js",
   "bin": {
