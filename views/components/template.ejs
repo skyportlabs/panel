@@ -9,13 +9,10 @@
       <meta content="<%= ogDescription %>" property="og:description">
       <link href="/assets/tailwind.css" rel="stylesheet">
       <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link rel="preconnect" href="https://cdn.fontshare.com">
-      <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,300,600,400,700&display=swap" rel="stylesheet">
-      <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-      <link href="https://fonts.cdnfonts.com/css/graphik-trial" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
    </head>
-   <body style="font-family: 'Inter'" class="<%= theme['paneltheme-color'] %> h-full w-full">
+   <body style="font-family: 'Public Sans'" class="<%= theme['paneltheme-color'] %> h-full w-full">
       <div>
       <style>
          .collapsed span {
@@ -159,8 +156,8 @@
          </svg>
       </button>
       <!-- Static sidebar for desktop -->
-      <div class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
-         <div class="flex grow flex-col gap-y-5 overflow-hidden <%= theme['paneltheme-color'] %> border-r border-white/5" style="background-color: rgba(0, 0, 0, 0.2);">
+      <div class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 p-2 lg:flex lg:w-56 lg:flex-col">
+         <div class="flex grow flex-col gap-y-5 overflow-hidden rounded-r-3xl rounded-l-lg <%= theme['paneltheme-color'] %> border-r border-white/5" style="background-color: rgba(0, 0, 0, 0.2);">
             <nav class="flex flex-1 flex-col">
                <div class="pl-6 pt-5 pb-4 flex">
                   <a href="/" class="flex">
@@ -180,7 +177,9 @@
                               <span><%= req.translations.instances %></span>
                            </a>
                            <a href="/account" searchdata="account profile <%= user.username %>" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="w-5 mt-0.5 h-5" viewBox="0 0 256 256"><path d="M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z"></path></svg>
+                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
+                               </svg>                                                           
                               <span><%= req.translations.account %></span>
                            </a>
                         </li>
@@ -200,7 +199,9 @@
                         </li>
                         <li>
                            <a href="/admin/users" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M164.47,195.63a8,8,0,0,1-6.7,12.37H10.23a8,8,0,0,1-6.7-12.37,95.83,95.83,0,0,1,47.22-37.71,60,60,0,1,1,66.5,0A95.83,95.83,0,0,1,164.47,195.63Zm87.91-.15a95.87,95.87,0,0,0-47.13-37.56A60,60,0,0,0,144.7,54.59a4,4,0,0,0-1.33,6A75.83,75.83,0,0,1,147,150.53a4,4,0,0,0,1.07,5.53,112.32,112.32,0,0,1,29.85,30.83,23.92,23.92,0,0,1,3.65,16.47,4,4,0,0,0,3.95,4.64h60.3a8,8,0,0,0,7.73-5.93A8.22,8.22,0,0,0,252.38,195.48Z"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                 <path d="M7 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM1.615 16.428a1.224 1.224 0 0 1-.569-1.175 6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 18a9.953 9.953 0 0 1-5.385-1.572ZM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755 4.502 4.502 0 0 1 5.874 2.636.818.818 0 0 1-.36.98A7.465 7.465 0 0 1 14.5 16Z" />
+                               </svg>                               
                               <span><%= req.translations.users %></span>
                            </a>
                         </li>

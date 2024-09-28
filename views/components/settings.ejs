@@ -4,7 +4,7 @@
       <nav class="flex">
         <ul role="list" class="flex min-w-full flex-none gap-x-2 text-sm font-normal leading-6 text-neutral-400">
           <li class=" transition">
-            <a href="/admin/settings" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+            <a href="/admin/settings" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-xl">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
               </svg>                                                                   
@@ -12,7 +12,7 @@
             </a>
           </li>
           <li class=" transition">
-            <a href="/admin/settings/smtp" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+            <a href="/admin/settings/smtp" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-xl">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 mb-0.5 inline-flex mr-1">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 1 0-2.636 6.364M16.5 12V8.25" />
               </svg>                                                                        
@@ -20,7 +20,7 @@
             </a>
           </li>
           <li class=" transition">
-            <a href="/admin/settings/theme" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-full">
+            <a href="/admin/settings/theme" class="nav-link2 py-2 px-3 transition border hover:bg-white/5 border-transparent hover:text-white hover:shadow rounded-xl">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="size-4 mb-0.5 inline-flex mr-1"><rect width="256" height="256" fill="none"/><path d="M216,24H72A40,40,0,0,0,32,64v72a24,24,0,0,0,24,24h48l-7.89,46.67A8.42,8.42,0,0,0,96,208a32,32,0,0,0,64,0,8.42,8.42,0,0,0-.11-1.33L152,160h48a24,24,0,0,0,24-24V32A8,8,0,0,0,216,24ZM72,40H176V80a8,8,0,0,0,16,0V40h16v72H48V64A24,24,0,0,1,72,40Z"/></svg>
               Theme
             </a>
@@ -39,7 +39,7 @@
        var linkPath = new URL(link.getAttribute('href'), window.location.origin).pathname;
        if (currentPagePath === linkPath) {
          link.className = 'nav-link';
-         link.classList.add('text-white', 'font-medium', 'border', 'border-transparent', 'bg-white/10', 'font-medium', 'py-2', 'px-3', 'rounded-full', 'shadow-sm');
+         link.classList.add('text-white', 'font-medium', 'border', 'border-transparent', 'bg-white/10', 'font-medium', 'py-2', 'px-3', 'rounded-xl', 'shadow-sm');
        }
      });
    });

@@ -1,18 +1,29 @@
 <% if (footer === true) { %>
-    <footer class="mt-5 flex justify-center fixed bottom-[10px] left-0 right-0">
+    <footer id="footer" class="mt-5 flex justify-center fixed bottom-[10px] ml-48 left-0 right-0 transition-opacity duration-300 ease-in-out">
         <div class="w-full md:w-6/12 px-4">
-            <div class="text-sm text-neutral-500 font-semibold py-1 text-center">
-                Copyright © <span id="copyright-year"></span> <span id="copyright"></span>
-                <a href="https://github.com/skyportlabs/panel" class="text-neutral-500 hover:text-blue-500 text-sm font-semibold py-1">
-                    <u>Skyport Panel</u>
+            <div class="text-sm text-neutral-500 font-normal py-1 text-center">
+                © <span id="copyright-year"></span> <span id="copyright"></span>
+                <a href="https://github.com/skyportlabs/panel" class="text-neutral-500 transition hover:text-neutral-400 text-sm font-normal py-1">
+                    Skyport Panel
                 </a>
             </div>
         </div>
     </footer>
     <script>
         document.getElementById("copyright-year").textContent = new Date().getFullYear();
+
+        const footer = document.getElementById('footer');
+        let isScrolling;
+
+        window.addEventListener('scroll', function() {
+            footer.style.opacity = '0.2';
+            clearTimeout(isScrolling);
+
+            isScrolling = setTimeout(function() {
+                footer.style.opacity = '0.5';
+            }, 250);
+        });
     </script>
-    
 <% } %>
 
 </body>
