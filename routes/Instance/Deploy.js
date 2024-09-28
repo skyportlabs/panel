@@ -54,7 +54,6 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
       await db.set('instances', updatedGlobalInstances);
 
       if (state === 'READY') {
-        console.log(`Container ${volumeId} is now active - installation has finished.`);
         return;
       }
 
