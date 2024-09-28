@@ -72,6 +72,51 @@ app.use((req, res, next) => {
   }
 });
 
+/**
+ * Generates a random 16-character hexadecimal string.
+ * 
+ * @param {number} length - The length of the string to generate.
+ * @returns {string} - The generated string.
+ */
+function generateRandomString(length) {
+  return crypto.getRandomValues(new Uint8Array(length)).reduce((str, byte) => str + String.fromCharCode(byte), '');
+}
+
+/**
+ * Recursively traverses an object and replaces any value that is exactly "random"
+ * with a randomly generated string.
+ * 
+ * @param {Object} obj - The object to traverse.
+ */
+function replaceRandomValues(obj) {
+  for (const key in obj) {
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+      replaceRandomValues(obj[key]);
+    } else if (obj[key] === 'Random') {
+      obj[key] = generateRandomString(16);
+    }
+  }
+}
+
+/**
+ * Updates the config.json file by replacing "random" values with random strings.
+ */
+async function updateConfig() {
+  const configPath = './config.json';
+  
+  try {
+    let configData = fs.readFileSync(configPath, 'utf8');
+    let config = JSON.parse(configData);
+
+    replaceRandomValues(config);
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8');
+  } catch (error) {
+    console.error('Error updating config:', error);
+  }
+}
+
+updateConfig();
+
 app.set('view engine', 'ejs');
 app.use(
   session({
@@ -82,7 +127,7 @@ app.use(
         intervalMs: 9000000
       }
     }),
-    secret: "secret",
+    secret: config.session_secret || "secret",
     resave: true,
     saveUninitialized: true
   })
@@ -120,14 +165,11 @@ if (config.mode === 'production' || false) {
   });
 }
 
-// Initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Init
 init();
 
-// Log the ASCII
 console.log(chalk.gray(ascii) + chalk.white(`version v${config.version}\n`));
 
 /**
@@ -141,19 +183,12 @@ function getlanguages() {
   return fs.readdirSync(__dirname + '/lang').map(file => file.split('.')[0])
 }
 
-function getlangname() {
-  return fs.readdirSync(path.join(__dirname, '/lang')).map(file => {
-    const langFilePath = path.join(__dirname, '/lang', file);
-    const langFileContent = JSON.parse(fs.readFileSync(langFilePath, 'utf-8'));
-    return langFileContent.langname;
-  });
-}
 
 app.get('/setLanguage', async (req, res) => {
   const lang = req.query.lang;
-  if (lang && (await getlanguages()).includes(lang)) {
+  if (lang && (getlanguages()).includes(lang)) {
       res.cookie('lang', lang, { maxAge: 90000000, httpOnly: true, sameSite: 'strict' });
-      req.user.lang = lang; // Update user language preference
+      req.user.lang = lang;
       res.json({ success: true });
   } else {
       res.json({ success: false });
@@ -166,16 +201,12 @@ function loadRoutes(directory) {
     const stat = fs.statSync(fullPath);
 
     if (stat.isDirectory()) {
-      // Recursively load routes from subdirectories
       loadRoutes(fullPath);
     } else if (stat.isFile() && path.extname(file) === '.js') {
-      // Only require .js files
       const route = require(fullPath);
-      // log.init('loaded route: ' + fullPath);
       expressWs.applyTo(route);
 
       if (fullPath.includes(path.join('routes', 'Admin'))) {
-        // Apply the isAdmin middleware only to Admin routes
         app.use("/", route);
       } else {
         app.use("/", route);
@@ -184,7 +215,6 @@ function loadRoutes(directory) {
   });
 }
 
-// Start loading routes from the root routes directory
 loadRoutes(routesDir);
 
 const pluginroutes = require('./plugins/pluginmanager.js');

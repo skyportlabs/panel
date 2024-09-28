@@ -1,13 +1,8 @@
 #!/usr/bin/env node
 
-const { Command } = require('commander'); // Aktualisiere den Import von Commander
-const { exec } = require('child_process');
+const { Command } = require('commander');
 
 const program = new Command();
-
-async function loadChalk() {
-    return await import('chalk');
-}
 
 program
     .version("0.1.0-beta6")
@@ -23,7 +18,6 @@ program
         const log = new CatLoggr();
         const readline = require('readline');
         const { v4: uuidv4 } = require('uuid');
-        const config = require('../../config.json');
 
         const rl = readline.createInterface({
         input: process.stdin,
@@ -32,7 +26,6 @@ program
 
         async function seed() {
         try {
-            // First check if there are any images already in the database
             const existingImages = await db.get('images');
             if (existingImages && existingImages.length > 0) {
             rl.question('\'images\' is already set in the database. Do you want to continue seeding? (y/n) ', async (answer) => {
@@ -123,7 +116,7 @@ program
             if (users) {
                 return users.some(user => user.username === username);
             } else {
-                return false; // If no users found, return false
+                return false;
             }
         }
         
@@ -133,11 +126,10 @@ program
             if (users) {
                 return users.some(user => user.email === email);
             } else {
-                return false; // If no users found, return false
+                return false;
             }
         }
         
-        // Function to create the users table and add the first user
         async function initializeUsersTable(username, email, password) {
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             const userId = uuidv4();
@@ -145,7 +137,6 @@ program
             return db.set('users', users);
         }
         
-        // Function to add a new user to the existing users table
         async function addUserToUsersTable(username, email, password) {
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             const userId = uuidv4();
@@ -154,14 +145,11 @@ program
             return db.set('users', users);
         }
         
-        // Function to create a new user
         async function createUser(username, email, password) {
             const users = await db.get('users');
             if (!users) {
-                // If users table doesn't exist, initialize it with the first user
                 return initializeUsersTable(username, email, password);
             } else {
-                // If users table exists, add the new user to it
                 return addUserToUsersTable(username, email, password);
             }
         }

@@ -345,6 +345,31 @@ router.post('/resend-verification', async (req, res) => {
   }
 });
 
+
+router.get('/', (req, res) => {
+  if (req.user) {
+    res.redirect('/instances');
+  } else {
+    res.redirect('/login');
+  }
+});
+
+
+router.get('/login', async (req, res) => {
+  if (!req.user) {
+    res.render('auth/login', {
+      req,
+      user: req.user,
+      name: await db.get('name') || 'Skyport',
+      logo: await db.get('logo') || false
+    });
+  } else {
+    res.redirect('/instances');
+  }
+  });
+
+
+
 async function initializeRoutes() {
   async function updateRoutes() {
     try {
@@ -356,12 +381,16 @@ async function initializeRoutes() {
         if (settings.register === true) {
           router.get('/register', async (req, res) => {
             try {
-              res.render('auth/register', {
-                req,
-                user: req.user,
-                name: await db.get('name') || 'Skyport',
-                logo: await db.get('logo') || false
-              });
+              if (!req.user) {
+                res.render('auth/register', {
+                  req,
+                  user: req.user,
+                  name: await db.get('name') || 'Skyport',
+                  logo: await db.get('logo') || false
+                });
+              } else {
+                res.redirect('/instances');
+              }
             } catch (error) {
               console.error('Error fetching name or logo:', error);
               res.status(500).send('Internal server error');

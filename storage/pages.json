@@ -1,7 +1,0 @@
-[
-    {
-        "path": "/login",
-        "template": "auth/login",
-        "requiresAuth": false
-    }
-]

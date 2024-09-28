@@ -11,7 +11,6 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-// Check for command-line arguments
 function parseArguments() {
     const args = {};
     process.argv.slice(2).forEach(arg => {
