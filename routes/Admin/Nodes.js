@@ -174,6 +174,49 @@ router.post('/nodes/delete', isAdmin, async (req, res) => {
   }
 });
 
+
+/**
+ * POST /nodes/configure
+ * Allows a node to set its own access key using the configureKey.
+ * The request must include a valid authKey from config.json for security.
+ */
+router.post('/nodes/configure', async (req, res) => {
+    const { configureKey, accessKey } = req.query;
+  
+    if (!configureKey || !accessKey) {
+      return res.status(400).json({ error: 'Missing configureKey or accessKey' });
+    }
+  
+    try {
+      // Find the node with the matching configureKey
+      const nodes = await db.get('nodes') || [];
+      let foundNode = null;
+      for (const nodeId of nodes) {
+        const node = await db.get(nodeId + '_node');
+        if (node && node.configureKey === configureKey) {
+          foundNode = node;
+          break;
+        }
+      }
+  
+      if (!foundNode) {
+        return res.status(404).json({ error: 'Node not found' });
+      }
+  
+      // Update the node with the new accessKey
+      foundNode.apiKey = accessKey;
+      foundNode.status = 'Configured';
+      foundNode.configureKey = null; // Remove the configureKey after successful configuration
+  
+      await db.set(foundNode.id + '_node', foundNode);
+  
+      res.status(200).json({ message: 'Node configured successfully' });
+    } catch (error) {
+      console.error('Error configuring node:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
 router.get('/admin/node/:id/configure-command', isAdmin, async (req, res) => {
   const { id } = req.params;
 
