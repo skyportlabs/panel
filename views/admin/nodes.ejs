@@ -12,6 +12,21 @@
           </button>
          </div>
        </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 m-8">
+        <div class="bg-white/5 rounded-xl p-6 shadow-lg">
+          <h2 class="text-lg font-semibold text-white mb-2">Total Nodes</h2>
+          <p class="text-4xl font-bold text-white"><%= nodes.length %></p>
+          <p class="text-sm text-neutral-400 mt-2">Online Nodes: <%= nodes.filter(node => node.status === 'Online').length %></p>
+        </div>
+        <div class="bg-white/5 rounded-xl p-6 shadow-lg">
+          <h2 class="text-lg font-semibold text-white mb-2">Server Count</h2>
+          <p class="text-4xl font-bold text-white"><%= Object.values(set).reduce((a, b) => a + b, 0) %></p>
+          <p class="text-sm text-neutral-400 mt-2">Average Node Density: <%= (Object.values(set).reduce((a, b) => a + b, 0) / nodes.length).toFixed(2) %></p>
+        </div>
+      </div>
+
       <% if (req.query.err == "none") { %>
       <div class="mt-6 w-full">
         <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
@@ -48,75 +63,71 @@
           </div>
        </div>	      
       <% } %>
-      <table id="nodeTable" class="mt-6 w-full whitespace-nowrap text-left">
-        <colgroup>
-          <col class="w-full sm:w-4/12">
-          <col class="lg:w-4/12">
-          <col class="lg:w-2/12">
-          <col class="lg:w-1/12">
-          <col class="lg:w-1/12">
-        </colgroup>
-        <thead class="border-b border-white/5 text-sm leading-6 text-white">
-          <tr>
-            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:pl-80 lg:pl-8"><%= req.translations.name %></th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell"><%= req.translations.connection %></th>
-            <th scope="col" class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"><%= req.translations.instances %></th>
-			<th scope="col" class="py-2 pl-0 pr-8 font-medium md:table-cell lg:pr-20"><%= req.translations.actions %></th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-white/5">
-         <% nodes.forEach(function(node) { %>
-          <tr>
-            <td class="py-4 pl-4 pr-8 sm:pl-8 lg:pl-8">
-			  <div class="flex items-center gap-x-4">
-			  <% if (node.status == "Online") { %>
-				  <div class="flex items-center justify-end gap-x-2 sm:justify-start">
-					<div class="flex-none rounded-full p-1 text-emerald-400 bg-emerald-600/10">
-					  <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
-					</div>
-				  </div>
-				<% } else if (node.status == "Offline") { %>
-				   <div class="flex items-center justify-end gap-x-2 sm:justify-start">
-					  <div class="flex-none rounded-full p-1 text-neutral-600 bg-neutral-600/10">
-						<div class="h-1.5 w-1.5 rounded-full bg-current"></div>
-					  </div>
-				   </div>
-				<% } else { %>
-				   <div class="flex items-center justify-end gap-x-2 sm:justify-start">
-					  <div class="flex-none rounded-full p-1 text-neutral-400 bg-neutral-400/10">
-						 <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
-					  </div>
-				   </div>
-				<% } %>
-
-                <div class="truncate text-sm font-medium leading-6 text-white"><%= node.name %></div>
-              </div>
-            </td>
-            <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-              <div class="flex gap-x-3">
-                <div class="font-mono text-sm leading-6 text-neutral-400"><%= node.address %><span class="text-neutral-500">:<%= node.port %></span></div>
-                <div class="rounded-xl bg-neutral-800/40 px-2 py-1 text-xs font-medium text-neutral-400 ring-1 ring-inset ring-white/10"><%= node.versionRelease || 'unknown' %></div>
-              </div>
-            </td>
-            <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-neutral-400 md:table-cell lg:pr-20"><%= set[node.id] || 0 %></td>
-			<td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20 flex gap-3">
-        <div class="inner"><button onclick="configure('<%= node.id %>')" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          <%= req.translations.configure %>
-        </button>
+      <!-- Improved table -->
+      <div class="overflow-hidden shadow ring-1 ring-white/5 rounded-lg m-8">
+        <table class="min-w-full divide-y divide-white/10">
+          <thead class="bg-white/5">
+            <tr>
+              <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-6"><%= req.translations.name %></th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white"><%= req.translations.connection %></th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white"><%= req.translations.instances %></th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white"><%= req.translations.actions %></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 bg-white/5">
+            <% nodes.forEach(function(node) { %>
+              <tr class="hover:bg-white/[0.05] transition-colors">
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                  <div class="flex items-center">
+                    <div class="mr-5">
+                      <% if (node.status == "Online") { %>
+                        <span class="flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                      <% } else if (node.status == "Offline") { %>
+                        <span class="flex h-2 w-2">
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-neutral-500"></span>
+                        </span>
+                      <% } else { %>
+                        <span class="flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-amber-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                        </span>
+                      <% } %>
+                    </div>
+                    <div class="font-medium text-white"><%= node.name %></div>
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                  <div class="flex">
+                    <div class="font-mono text-sm leading-6 mt-1 mr-3 text-neutral-400"><%= node.address %><span class="text-neutral-500">:<%= node.port %></span></div>
+                    <div class="mt-1 inline-flex items-center rounded-md bg-emerald-600/10 px-2 py-1 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-600/20">
+                      <%= node.versionRelease || 'unknown' %>
+                    </div>
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-neutral-400"><%= set[node.id] || 0 %></td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                  <div class="flex gap-3">
+                    <button onclick="configure('<%= node.id %>')" type="button" class="rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      <%= req.translations.configure %>
+                    </button>
+                    <a href="./node/<%= node.id %>">
+                      <button type="button" class="rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <%= req.translations.edit %>
+                      </button>
+                    </a>
+                    <button onclick="deletenode('<%= node.id %>')" type="button" class="rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      <%= req.translations.remove %>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
       </div>
-				<div class="inner"><a href="./node/<%= node.id %>"><button id="editButton" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          <%= req.translations.edit %>
-        </button>
-      </a>
-    </div>
-				<div class="inner"><button id="removeButton" onclick="deletenode('<%= node.id %>')" type="button" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          <%= req.translations.remove %>
-        </button>
-      </div>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
       <div id="notification" class="fixed bottom-5 right-5 bg-white/5 text-white px-4 py-2 rounded-xl shadow-lg transform transition-all duration-300 tranneutral-y-full opacity-0">
         Command copied to clipboard!
       </div>
