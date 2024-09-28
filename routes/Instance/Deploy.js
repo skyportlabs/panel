@@ -7,6 +7,97 @@ const { v4: uuid } = require('uuid');
 const router = express.Router();
 
 /**
+ * Checks the state of a container and updates the database accordingly.
+ * @param {string} volumeId - The ID of the volume.
+ * @param {string} nodeAddress - The address of the node.
+ * @param {string} nodePort - The port of the node.
+ * @param {string} apiKey - The API key for authentication.
+ * @param {string} userId - The ID of the user.
+ * @returns {Promise<void>}
+ */
+async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, userId) {
+  let attempts = 0;
+  const maxAttempts = 50;
+  const delay = 30000; // 30 seconds
+
+  const checkState = async () => {
+    try {
+      const response = await axios({
+        method: 'get',
+        url: `http://${nodeAddress}:${nodePort}/state/${volumeId}`,
+        auth: {
+          username: 'Skyport',
+          password: apiKey,
+        },
+      });
+
+      const { state, containerId } = response.data;
+
+      // Update the database with the new state and containerId
+      const instance = await db.get(`${volumeId}_instance`);
+      instance.InternalState = state;
+      instance.ContainerId = containerId;
+      await db.set(`${volumeId}_instance`, instance);
+
+      // Update user instances
+      const userInstances = await db.get(`${userId}_instances`);
+      const updatedUserInstances = userInstances.map(i => 
+        i.Id === volumeId ? { ...i, InternalState: state, ContainerId: containerId } : i
+      );
+      await db.set(`${userId}_instances`, updatedUserInstances);
+
+      // Update global instances
+      const globalInstances = await db.get('instances');
+      const updatedGlobalInstances = globalInstances.map(i => 
+        i.Id === volumeId ? { ...i, InternalState: state, ContainerId: containerId } : i
+      );
+      await db.set('instances', updatedGlobalInstances);
+
+      if (state === 'READY') {
+        console.log(`Container ${volumeId} is now active - installation has finished.`);
+        return;
+      }
+
+      if (++attempts < maxAttempts) {
+        setTimeout(checkState, delay);
+      } else {
+        console.log(`Container ${volumeId} failed to become active after ${maxAttempts} attempts.`);
+        // Update state to FAILED in all relevant places
+        instance.InternalState = 'FAILED';
+        await db.set(`${volumeId}_instance`, instance);
+        await db.set(`${userId}_instances`, updatedUserInstances.map(i => 
+          i.Id === volumeId ? { ...i, InternalState: 'FAILED' } : i
+        ));
+        await db.set('instances', updatedGlobalInstances.map(i => 
+          i.Id === volumeId ? { ...i, InternalState: 'FAILED' } : i
+        ));
+      }
+    } catch (error) {
+      console.error(`Error checking state for container ${volumeId}:`, error);
+      if (++attempts < maxAttempts) {
+        setTimeout(checkState, delay);
+      } else {
+        console.log(`Container ${volumeId} state check failed after ${maxAttempts} attempts.`);
+        // Update state to FAILED in all relevant places (same as above)
+        const instance = await db.get(`${volumeId}_instance`);
+        instance.InternalState = 'FAILED';
+        await db.set(`${volumeId}_instance`, instance);
+        const userInstances = await db.get(`${userId}_instances`);
+        await db.set(`${userId}_instances`, userInstances.map(i => 
+          i.Id === volumeId ? { ...i, InternalState: 'FAILED' } : i
+        ));
+        const globalInstances = await db.get('instances');
+        await db.set('instances', globalInstances.map(i => 
+          i.Id === volumeId ? { ...i, InternalState: 'FAILED' } : i
+        ));
+      }
+    }
+  };
+
+  checkState();
+}
+
+/**
  * Middleware to verify if the user is an administrator.
  * Checks if the user object exists and if the user has admin privileges. If not, redirects to the
  * home page. If the user is an admin, proceeds to the next middleware or route handler.
@@ -68,11 +159,14 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
       imagename,
     );
 
+    // Start the state checking process
+    checkContainerState(Id, node.address, node.port, node.apiKey, user);
+
     logAudit(req.user.userId, req.user.username, 'instance:create', req.ip);
     res.status(201).json({
-      message: "Container created successfully and added to user's servers",
-      containerId: response.data.containerId,
-      volumeId: response.data.volumeId,
+      message: "Container creation initiated. State will be updated asynchronously.",
+      volumeId: Id,
+      state: 'INSTALLING'
     });
   } catch (error) {
     console.error('Error deploying instance:', error);
@@ -82,6 +176,7 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
     });
   }
 });
+
 
 async function prepareRequestData(image, memory, cpu, ports, name, node, Id, variables, imagename) {
   const rawImages = await db.get('images');
@@ -166,6 +261,7 @@ async function updateDatabaseWithNewInstance(
     Id,
     Node: node,
     User: userId,
+    InternalState: 'INSTALLING',
     ContainerId: responseData.containerId,
     VolumeId: Id,
     Memory: parseInt(memory),

@@ -54,7 +54,8 @@
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
             <th scope="col" class="py-2 pl-4 pr-8 font-medium sm:pl-6 lg:pl-8"><%= req.translations.name %></th>
-		      	<th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell"><%= req.translations.node %></th>
+		      	<th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">State</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell"><%= req.translations.node %></th>
             <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell"><%= req.translations.dockerID %></th>
             <th scope="col" class="py-2 pl-0 pr-4 text-right font-medium sm:pr-8 sm:text-left lg:pr-20"><%= req.translations.volumeANDMount %></th>
           </tr>
@@ -70,6 +71,11 @@
             <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
               <div class="flex gap-x-3">
                 <div class="font-mono text-sm leading-6 text-neutral-400"><%= instance.Node.name %></div>
+              </div>
+            </td>
+            <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+              <div class="flex gap-x-3">
+                <div class="font-mono text-sm leading-6 text-neutral-400"><%= instance.InternalState %></div>
               </div>
             </td>
             <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">

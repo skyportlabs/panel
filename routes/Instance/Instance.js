@@ -64,6 +64,10 @@ router.get("/instance/:id", async (req, res) => {
         return res.redirect('../../instance/' + id + '/suspended');
     }
 
+    if(instance.InternalState !== 'READY') {
+        return res.redirect('/instances?err=NOTACTIVEYET');
+    }
+
     const config = require('../../config.json');
     const { port, domain } = config;
 
