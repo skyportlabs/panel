@@ -3,7 +3,7 @@
     "port": 3001,
     "domain": "localhost",
     "mode": "production",
-    "version": "0.2.2",
+    "version": "0.3.0",
     "ogTitle": "Skyport Panel",
     "ogDescription": "This is an instance of the Skyport Panel - learn more at github.com/skyportlabs"
 } 
