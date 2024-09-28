@@ -11,23 +11,26 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-// 7gv.png
+// Check for command-line arguments
+function parseArguments() {
+    const args = {};
+    process.argv.slice(2).forEach(arg => {
+        const [key, value] = arg.split('=');
+        if (key.startsWith('--')) {
+            args[key.slice(2)] = value;
+        }
+    });
+    return args;
+}
+
 async function doesUserExist(username) {
     const users = await db.get('users');
-    if (users) {
-        return users.some(user => user.username === username);
-    } else {
-        return false;
-    }
+    return users ? users.some(user => user.username === username) : false;
 }
 
 async function doesEmailExist(email) {
     const users = await db.get('users');
-    if (users) {
-        return users.some(user => user.email === email);
-    } else {
-        return false;
-    }
+    return users ? users.some(user => user.email === email) : false;
 }
 
 async function initializeUsersTable(username, email, password) {
@@ -68,35 +71,45 @@ function isValidEmail(email) {
 }
 
 async function main() {
-    while (true) {
+    const args = parseArguments();
+    
+    let username, email, password;
+
+    if (args.username && args.email && args.password) {
+        username = args.username;
+        email = args.email;
+        password = args.password;
+    } else {
         log.init('Create a new *admin* user for the Skyport Panel:');
         log.init('You can make regular users from the admin -> users page.');
         
-        const username = await askQuestion("Username: ");
-        const email = await askQuestion("Email: ");
-
+        username = await askQuestion("Username: ");
+        email = await askQuestion("Email: ");
+        
         if (!isValidEmail(email)) {
             log.error("Invalid email!");
-            continue;
-        }
-
-        const password = await askQuestion("Password: ");
-
-        const userExists = await doesUserExist(username);
-        const emailExists = await doesEmailExist(email);
-        if (userExists || emailExists) {
-            log.error("User already exists!");
-            continue;
-        }
-
-        try {
-            await createUser(username, email, password);
-            log.info("Done! User created.");
             rl.close();
-            break;
-        } catch (err) {
-            log.error('Error creating user:', err);
+            return;
         }
+
+        password = await askQuestion("Password: ");
+    }
+
+    const userExists = await doesUserExist(username);
+    const emailExists = await doesEmailExist(email);
+    if (userExists || emailExists) {
+        log.error("User already exists!");
+        rl.close();
+        return;
+    }
+
+    try {
+        await createUser(username, email, password);
+        log.info("Done! User created.");
+    } catch (err) {
+        log.error('Error creating user:', err);
+    } finally {
+        rl.close();
     }
 }
 
