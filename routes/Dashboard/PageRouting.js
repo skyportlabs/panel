@@ -25,7 +25,7 @@ const { db } = require('../../handlers/db.js');
 
 async function setupRoutes() {
     try {
-        const data = await fs.readFile('pages.json', 'utf8'); 
+        const data = await fs.readFile('../pages.json', 'utf8'); 
         const pages = JSON.parse(data);
 
         pages.forEach(async page => {
