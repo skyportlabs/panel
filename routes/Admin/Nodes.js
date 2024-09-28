@@ -174,6 +174,40 @@ router.post('/nodes/delete', isAdmin, async (req, res) => {
   }
 });
 
+router.get('/admin/node/:id/configure-command', isAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch the node from the database
+    const node = await db.get(id + '_node');
+
+    if (!node) {
+      return res.status(404).json({ error: 'Node not found' });
+    }
+
+    // Generate a new configure key
+    const configureKey = uuidv4();
+
+    // Update the node with the new configure key
+    node.configureKey = configureKey;
+    await db.set(id + '_node', node);
+
+    // Construct the configuration command
+    const panelUrl = `${req.protocol}://${req.get('host')}`;
+    const configureCommand = `npm run configure -- --panel ${panelUrl} --key ${configureKey}`;
+
+    // Return the configuration command
+    res.json({
+      nodeId: id,
+      configureCommand: configureCommand
+    });
+
+  } catch (error) {
+    console.error('Error generating configure command:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.get('/admin/node/:id', isAdmin, async (req, res) => {
   const { id } = req.params;
   const node = await db.get(id + '_node');
