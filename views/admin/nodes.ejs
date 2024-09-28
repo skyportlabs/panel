@@ -14,7 +14,7 @@
        </div>
 
       <!-- Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 m-8">
+      <div id="stats" class="grid grid-cols-1 md:grid-cols-2 gap-6 m-8">
         <div class="bg-white/5 rounded-xl p-6 shadow-lg">
           <h2 class="text-lg font-semibold text-white mb-2">Total Nodes</h2>
           <p class="text-4xl font-bold text-white"><%= nodes.length %></p>
@@ -64,7 +64,7 @@
        </div>	      
       <% } %>
       <!-- Improved table -->
-      <div class="overflow-hidden shadow ring-1 ring-white/5 rounded-lg m-8">
+      <div class="overflow-hidden shadow ring-1 ring-white/5 rounded-lg m-8" id="nodeTable"> <!-- ID hinzugefügt -->
         <table class="min-w-full divide-y divide-white/10">
           <thead class="bg-white/5">
             <tr>
@@ -102,9 +102,11 @@
                 <td class="whitespace-nowrap px-3 py-4 text-sm">
                   <div class="flex">
                     <div class="font-mono text-sm leading-6 mt-1 mr-3 text-neutral-400"><%= node.address %><span class="text-neutral-500">:<%= node.port %></span></div>
-                    <div class="mt-1 inline-flex items-center rounded-md bg-emerald-600/10 px-2 py-1 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-600/20">
-                      <%= node.versionRelease || 'unknown' %>
-                    </div>
+                    <div class="mt-1 inline-flex items-center rounded-md 
+                    <%= node.versionRelease ? 'bg-emerald-600/10 text-emerald-400 ring-emerald-600/20' : 'bg-red-600/10 text-red-400 ring-red-600/20' %> 
+                    px-2 py-1 text-xs font-medium ring-1 ring-inset">
+                    <%= node.versionRelease || 'unknown' %>
+                  </div>                  
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-neutral-400"><%= set[node.id] || 0 %></td>
@@ -124,10 +126,10 @@
                   </div>
                 </td>
               </tr>
-            <% }); %>
-          </tbody>
-        </table>
-      </div>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
       <div id="notification" class="fixed bottom-5 right-5 bg-white/5 text-white px-4 py-2 rounded-xl shadow-lg transform transition-all duration-300 tranneutral-y-full opacity-0">
         Command copied to clipboard!
       </div>
@@ -226,17 +228,23 @@ async function deletenode(nodeId) {
 
 
 
-  document.getElementById('createButton').addEventListener('click', function() {
-    var table = document.getElementById('nodeTable');
-    var form = document.getElementById('nodeForm');
-    if (table.style.display !== 'none') {
-      table.style.display = 'none';
-      form.style.display = 'block';
-    } else {
-      table.style.display = 'block';
-      form.style.display = 'none';
-    }
-  });
+document.getElementById('createButton').addEventListener('click', function() {
+  var table = document.getElementById('nodeTable');
+  var form = document.getElementById('nodeForm');
+  var stats = document.getElementById('stats');
+
+  if (table.classList.contains('hidden')) {
+    stats.classList.remove('hidden');
+    table.classList.remove('hidden');
+    form.classList.add('hidden');
+  } else {
+    stats.classList.add('hidden');
+    table.classList.add('hidden');
+    form.classList.remove('hidden');
+  }
+});
+
+
   async function configure(nodeId) {
   const response = await fetch(`/admin/node/${nodeId}/configure-command`);
   if (!response.ok) {
