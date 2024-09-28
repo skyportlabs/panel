@@ -15,6 +15,19 @@
    <body style="font-family: 'Public Sans'" class="<%= theme['paneltheme-color'] %> h-full w-full">
       <div>
       <style>
+
+#loader {
+   transition: opacity 0.5s ease;
+}
+
+.opacity-0 {
+   opacity: 0;
+}
+
+.opacity-1 {
+   opacity: 1;
+}
+
          .collapsed span {
             display: none;
          }
@@ -135,21 +148,22 @@
   to { fill: rgba(134,134,134,.4); }
 }
       </style>
-      <script>
-         document.addEventListener('DOMContentLoaded', () => {
-            const loader = document.getElementById('loader');
-            const content = document.getElementById('content');
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+      const loader = document.getElementById('loader');
+      const content = document.getElementById('content');
 
-            setTimeout(() => {
-               loader.classList.add('opacity-0');
-               content.classList.remove('opacity-0');
-               
-               setTimeout(() => {
-                  loader.style.display = 'none';
-               }, 250);
-            }, 500);
-         });
-      </script>
+      setTimeout(() => {
+         loader.classList.add('opacity-0');
+         content.classList.add('opacity-1');
+      
+         setTimeout(() => {
+            loader.style.display = 'none';
+         }, 400);
+      }, 300);
+   });
+</script>
+
       <button id="mobile-sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-50 w-fit p-2 rounded-xl text-white border border-white/5 bg-[#141414] hover:scale-110 active:scale-100 duration-200 transition-all">
          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -511,10 +525,7 @@
          
              contentSection.style.opacity = '0';
              contentSection.style.transform = 'translateX(-20px)';
-         
-             setTimeout(() => {
                window.location.href = href;
-             }, 300);
            }
          
            navLinks.forEach(link => {
