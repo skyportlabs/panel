@@ -112,6 +112,7 @@
         <tbody>
           <% files.filter(file => file.isDirectory).forEach(function(directory) { %>
             <% let currentPath = req.query.path ? req.query.path + '/' : ''; %>
+            <% let extension = req.query.path ? '?path=' + req.query.path : ''; %>
             <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
                 <input type="checkbox" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/5 border border-white/10 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox" data-filename="<%= directory.name %>">
@@ -140,8 +141,8 @@
                 </button>
                 <div id="dropdown-<%= directory.name %>" class="absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 transform opacity-0 scale-95 transition-all duration-200 ease-out pointer-events-none">
                   <div class="p-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                    <a href="#" onclick="openRenameModal('<%= directory.name %>', '<%= currentPath %>')" class="transition rounded-xl block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 text-left" role="menuitem">Rename</a>
-                    <a href="#" onclick="openDeleteModal('<%= directory.name %>', '<%= currentPath %>')" class="transition rounded-xl block px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left" role="menuitem">Delete</a>
+                    <a href="#" onclick="openRenameModal('<%= directory.name %>', '<%= extension %>')" class="transition rounded-xl block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 text-left" role="menuitem">Rename</a>
+                    <a href="#" onclick="openDeleteModal('<%= directory.name %>', '<%= extension %>')" class="transition rounded-xl block px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left" role="menuitem">Delete</a>
                   </div>
                 </div>
               </td>
