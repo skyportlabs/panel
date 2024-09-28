@@ -176,7 +176,6 @@ function loadRoutes(directory) {
 
       if (fullPath.includes(path.join('routes', 'Admin'))) {
         // Apply the isAdmin middleware only to Admin routes
-        console.log(fullPath)
         app.use("/", route);
       } else {
         app.use("/", route);
