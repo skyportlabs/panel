@@ -19,6 +19,9 @@ async function logAudit(userId, username, action, ip) {
         console.error('Error fetching audits:', err);
     }
 
+    const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    audits = audits.filter(audit => new Date(audit.timestamp) >= oneMonthAgo);
+
     audits.push(newAudit);
 
     try {

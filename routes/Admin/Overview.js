@@ -20,8 +20,7 @@ router.get('/admin/overview', isAdmin, async (req, res) => {
     res.render('admin/overview', {
       req,
       user: req.user,
-      name: await db.get('name') || 'Skyport',
-      logo: await db.get('logo') || false,
+
       usersTotal,
       nodesTotal,
       imagesTotal,

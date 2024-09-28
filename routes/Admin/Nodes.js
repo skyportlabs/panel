@@ -53,8 +53,7 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
   res.render('admin/nodes', { 
     req,
     user: req.user,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false,
+
     nodes,
     set
   });
@@ -260,8 +259,7 @@ router.get('/admin/node/:id', isAdmin, async (req, res) => {
   res.render('admin/node', {
     req,
     user: req.user,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false,
+
     node
   });
 });

@@ -21,61 +21,46 @@ const upload = multer({
     }
   }),
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Not an image! Please upload an image file.'), false);
-    }
+    cb(null, file.mimetype.startsWith('image/') || new Error('Not an image! Please upload an image file.'));
   }
 });
 
-router.get('/admin/settings', isAdmin, async (req, res) => {
-  res.render('admin/settings/appearance', {
+async function fetchCommonSettings(req) {
+  const settings = await db.get('settings') || {};
+  return {
     req,
     user: req.user,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false,
-    settings: await db.get('settings')
-  });
+    settings
+  };
+}
+
+router.get('/admin/settings', isAdmin, async (req, res) => {
+  const settings = await fetchCommonSettings(req);
+  res.render('admin/settings/appearance', settings);
 });
 
 router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
   try {
-    const settings = await db.get('settings');
+    const settings = await fetchCommonSettings(req);
     const smtpSettings = await db.get('smtp_settings') || {};
-    
-    res.render('admin/settings/smtp', {
-      req,
-      user: req.user,
-      name: await db.get('name') || 'Skyport',
-      logo: await db.get('logo') || false,
-      settings,
-      smtpSettings
-    });
+    res.render('admin/settings/smtp', { ...settings, smtpSettings });
   } catch (error) {
-    console.error('Error fetching settings:', error);
-    res.status(500).send('Failed to fetch settings. Please try again later.');
+    console.error('Error fetching SMTP settings:', error);
+    res.status(500).send('Failed to fetch SMTP settings. Please try again later.');
   }
 });
 
 router.get('/admin/settings/theme', isAdmin, async (req, res) => {
-  res.render('admin/settings/theme', {
-    req,
-    user: req.user,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false,
-    settings: await db.get('settings')
-  });
+  const settings = await fetchCommonSettings(req);
+  res.render('admin/settings/theme', settings);
 });
 
 router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => {
   try {
     const settings = await db.get('settings') || {};
     settings.forceVerify = !settings.forceVerify;
-
     await db.set('settings', settings);
     logAudit(req.user.userId, req.user.username, 'force-verify:edit', req.ip);
-
     res.redirect('/admin/settings');
   } catch (err) {
     console.error('Error toggling force verify:', err);
@@ -84,41 +69,30 @@ router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => 
 });
 
 router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
-  const name = req.body.name;
+  const { name } = req.body;
   try {
-    await db.set('name', [name]);
+    const settings = await db.get('settings') || {};
+    settings.name = name;
+    await db.set('settings', settings);
     logAudit(req.user.userId, req.user.username, 'name:edit', req.ip);
-    res.redirect('/admin/settings?changednameto=' + name);
+    res.redirect(`/admin/settings?changednameto=${name}`);
   } catch (err) {
-    console.error(err);
+    console.error('Error changing name:', err);
     res.status(500).send("Database error");
   }
 });
 
-router.post('/admin/settings/change/theme/button-color', isAdmin, async (req, res) => {
-  const buttoncolor = req.body.buttoncolor;
+router.post('/admin/settings/change/theme/color', isAdmin, async (req, res) => {
+  const { buttoncolor, paneltheme } = req.body;
   let theme = require('../../storage/theme.json');
   try {
-    theme['button-color'] = buttoncolor;
-    await fs.writeFileSync('./storage/theme.json', JSON.stringify(theme, null, 2));
+    if (buttoncolor) theme['button-color'] = buttoncolor;
+    if (paneltheme) theme['paneltheme-color'] = paneltheme;
+    await fs.promises.writeFile('./storage/theme.json', JSON.stringify(theme, null, 2));
     logAudit(req.user.userId, req.user.username, 'theme:edit', req.ip);
-    res.redirect('/admin/settings/theme?changedbuttoncolorto=' + buttoncolor);
+    res.redirect('/admin/settings/theme?changedcolor=' + (buttoncolor || paneltheme));
   } catch (err) {
-    console.error(err);
-    res.status(500).send("File writing error");
-  }
-});
-
-router.post('/admin/settings/change/theme/paneltheme-color', isAdmin, async (req, res) => {
-  const paneltheme = req.body.paneltheme;
-  let theme = require('../../storage/theme.json');
-  try {
-    theme['paneltheme-color'] = paneltheme;
-    await fs.writeFileSync('./storage/theme.json', JSON.stringify(theme, null, 2));
-    logAudit(req.user.userId, req.user.username, 'theme:edit', req.ip);
-    res.redirect('/admin/settings/theme?changedpanelcolorto=' + paneltheme);
-  } catch (err) {
-    console.error(err);
+    console.error('Error updating theme:', err);
     res.status(500).send("File writing error");
   }
 });
@@ -127,11 +101,8 @@ router.post('/admin/settings/toggle/theme/footer', isAdmin, async (req, res) => 
   try {
     const settings = await db.get('settings') || {};
     settings.footer = !settings.footer;
-
     await db.set('settings', settings);
-    const action = settings.footer ? 'enabled' : 'disabled';
-    logAudit(req.user.userId, req.user.username, 'footer:' + action, req.ip);
-
+    logAudit(req.user.userId, req.user.username, `footer:${settings.footer ? 'enabled' : 'disabled'}`, req.ip);
     res.redirect('/admin/settings/theme');
   } catch (err) {
     console.error('Error toggling footer:', err);
@@ -151,7 +122,6 @@ router.post('/admin/settings/saveSmtpSettings', isAdmin, async (req, res) => {
       fromName: smtpFromName,
       fromAddress: smtpFromAddress
     });
-
     logAudit(req.user.userId, req.user.username, 'SMTP:edit', req.ip);
     res.redirect('/admin/settings/smtp?msg=SmtpSaveSuccess');
   } catch (error) {
@@ -163,52 +133,52 @@ router.post('/admin/settings/saveSmtpSettings', isAdmin, async (req, res) => {
 router.post('/sendTestEmail', isAdmin, async (req, res) => {
   try {
     const { recipientEmail } = req.body;
-
-    const emailSent = await sendTestEmail(recipientEmail);
-
-    if (emailSent) {
-      res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
-    } else {
-      res.redirect('/admin/settings/smtp?err=TestemailSentfailed'); 
-    }
+    await sendTestEmail(recipientEmail);
+    res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
   } catch (error) {
     console.error('Error sending test email:', error);
     res.redirect('/admin/settings/smtp?err=TestemailSentfailed');
   }
 });
 
+// Update logo handling to store it in settings
 router.post('/admin/settings/change/logo', isAdmin, upload.single('logo'), async (req, res) => {
-  const type = req.body.type;
+  const { type } = req.body;
 
   try {
+    const settings = await db.get('settings') || {};
+
     if (type === 'image' && req.file) {
-      // Image uploaded successfully
-      await db.set('logo', true);
+      settings.logo = true; // Set logo to true in settings
+      await db.set('settings', settings); // Save settings with logo
       res.redirect('/admin/settings');
     } else if (type === 'none') {
-      // Remove existing logo
       const logoPath = path.join(__dirname, '..', '..', 'public', 'assets', 'logo.png');
-      if (fs.existsSync(logoPath)) {
-        fs.unlinkSync(logoPath);
-      }
-      await db.set('logo', false);
+      if (fs.existsSync(logoPath)) fs.unlinkSync(logoPath);
+      settings.logo = false; // Set logo to false in settings
+      await db.set('settings', settings); // Save settings without logo
       logAudit(req.user.userId, req.user.username, 'logo:edit', req.ip);
       res.redirect('/admin/settings');
     } else {
       res.status(400).send('Invalid request');
     }
   } catch (err) {
-    console.error(err);
+    console.error('Error processing logo change:', err);
     res.status(500).send("Error processing logo change: " + err.message);
   }
 });
 
 router.post('/admin/settings/toggle/register', isAdmin, async (req, res) => {
-  let settings = await db.get('settings');
-  settings.register = !settings.register;
-  await db.set('settings', settings);
-  logAudit(req.user.userId, req.user.username, 'register:edit', req.ip);
-  res.redirect('/admin/settings');
+  try {
+    const settings = await db.get('settings') || {};
+    settings.register = !settings.register;
+    await db.set('settings', settings);
+    logAudit(req.user.userId, req.user.username, 'register:edit', req.ip);
+    res.redirect('/admin/settings');
+  } catch (err) {
+    console.error('Error toggling registration:', err);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 module.exports = router;

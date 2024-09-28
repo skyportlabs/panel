@@ -10,8 +10,6 @@ router.get('/admin/auditlogs', isAdmin, async (req, res) => {
     res.render('admin/auditlogs', {
       req,
       user: req.user,
-      name: await db.get('name') || 'Skyport',
-      logo: await db.get('logo') || false,
       audits
     });
   } catch (err) {

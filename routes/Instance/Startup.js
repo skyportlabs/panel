@@ -48,8 +48,7 @@ router.get('/instance/:id/startup', async (req, res) => {
         res.render('instance/startup.ejs', {
             req,
             user: req.user,
-            name: await db.get('name') || 'Skyport',
-            logo: await db.get('logo') || false,
+
             instance,
             addons: {
                 plugins: allPluginData

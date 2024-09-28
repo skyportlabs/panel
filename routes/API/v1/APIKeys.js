@@ -11,8 +11,8 @@ router.get('/admin/apikeys', isAdmin, async (req, res) => {
       req,
       user: req.user,
       apiKeys: await db.get('apiKeys') || [],
-      name: await db.get('name') || 'Skyport',
-      logo: await db.get('logo') || false
+  
+      
     });
   } catch (error) {
     res.status(500).json({ error: 'Failed to retrieve API keys' });

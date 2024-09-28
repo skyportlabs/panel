@@ -45,8 +45,7 @@ router.get("/instance/:id/files", async (req, res) => {
             req, 
             files: files, 
             user: req.user, 
-            name: await db.get('name') || 'Skyport', 
-            logo: await db.get('logo') || false ,
+
             addons: {
                 plugins: allPluginData
             }
@@ -57,8 +56,7 @@ router.get("/instance/:id/files", async (req, res) => {
             error: errorMessage, 
             req, 
             user: req.user, 
-            name: await db.get('name') || 'Skyport', 
-            logo: await db.get('logo') || false,
+
             addons: {
                 plugins: allPluginData
             }

@@ -27,8 +27,8 @@ router.get('/admin/analytics', isAdmin, async (req, res) => {
     timeSeriesData,
     req,
     user: req.user,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false
+
+    
   });
 });
 

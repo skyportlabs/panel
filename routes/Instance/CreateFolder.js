@@ -47,8 +47,7 @@ router.get("/instance/:id/files/folder/create", async (req, res) => {
     res.render('instance/createFolder', {
         req,
         user: req.user,
-        name: await db.get('name') || 'Skyport',
-        logo: await db.get('logo') || false,
+
         addons: {
             plugins: allPluginData
         } 

@@ -34,8 +34,7 @@ router.get("/instances", isAuthenticated, async (req, res) => {
     res.render('instances', {
         req,
         user: req.user,
-        name: await db.get('name') || 'Skyport',
-        logo: await db.get('logo') || false,
+
         instances,
         config: require('../../config.json')
     });
@@ -80,8 +79,7 @@ router.get("/instance/:id", async (req, res) => {
         port,
         domain,
         user: req.user,
-        name: await db.get('name') || 'Skyport',
-        logo: await db.get('logo') || false,
+
         files: await fetchFiles(instance, ""),
         addons: {
             plugins: allPluginData

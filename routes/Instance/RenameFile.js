@@ -58,7 +58,7 @@ router.get("/instance/:id/files/rename/:file/:newfile", async (req, res) => {
             res.redirect(`/instance/${id}/files${query}`);
         } catch (error) {
             const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
-            res.status(500).render('500', { error: errorMessage, req, user: req.user, name: await db.get('name') || 'Skyport', logo: await db.get('logo') || false });
+            res.status(500).render('500', { error: errorMessage, req, user: req.user, name: await db.get('name') || 'Skyport',  });
         }
     } else {
         res.status(500).send('Invalid instance node configuration');

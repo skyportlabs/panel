@@ -40,8 +40,8 @@ router.get("/instance/:id/suspended", async (req, res) => {
     res.render('instance/suspended', {
         req,
         user: req.user,
-        name: await db.get('name') || 'Skyport',
-        logo: await db.get('logo') || false
+    
+        
     });
 });
 

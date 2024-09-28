@@ -22,8 +22,7 @@ router.get('/admin/users', isAdmin, async (req, res) => {
   res.render('admin/users', {
     req,
     user: req.user,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false,
+
     users: await db.get('users') || []
   });
 });
@@ -100,8 +99,8 @@ router.get('/admin/users/edit/:userId', isAdmin, async (req, res) => {
     req,
     user: req.user,
     editUser: user,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false
+
+    
   });
 });
 

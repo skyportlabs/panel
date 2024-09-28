@@ -66,8 +66,7 @@ router.get('/admin/instances', isAdmin, async (req, res) => {
   res.render('admin/instances', {
     req,
     user: req.user,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false,
+
     instances,
     images,
     nodes,
@@ -85,8 +84,7 @@ router.get('/admin/instances/:id/edit', isAdmin, async (req, res) => {
   res.render('admin/instance_edit', {
     req,
     user: req.user,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false,
+
     instance,
     images,
     users

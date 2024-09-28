@@ -240,8 +240,8 @@ router.get('/2fa', async (req, res) => {
   }
   res.render('auth/2fa', {
     req,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false
+
+    
   });
 });
 
@@ -303,8 +303,8 @@ router.get('/resend-verification', async (req, res) => {
   try {
     res.render('auth/resend-verification', {
       req,
-      name: await db.get('name') || 'Skyport',
-      logo: await db.get('logo') || false
+  
+      
     });
   } catch (error) {
     console.error('Error fetching name or logo:', error);
@@ -360,8 +360,8 @@ router.get('/login', async (req, res) => {
     res.render('auth/login', {
       req,
       user: req.user,
-      name: await db.get('name') || 'Skyport',
-      logo: await db.get('logo') || false
+  
+      
     });
   } else {
     res.redirect('/instances');
@@ -385,8 +385,8 @@ async function initializeRoutes() {
                 res.render('auth/register', {
                   req,
                   user: req.user,
-                  name: await db.get('name') || 'Skyport',
-                  logo: await db.get('logo') || false
+              
+                  
                 });
               } else {
                 res.redirect('/instances');
@@ -444,8 +444,8 @@ router.get('/auth/reset-password', async (req, res) => {
   try {
     res.render('auth/reset-password', {
       req,
-      name: await db.get('name') || 'Skyport',
-      logo: await db.get('logo') || false
+  
+      
     });
   } catch (error) {
     console.error('Error rendering reset password page:', error);
@@ -492,8 +492,7 @@ router.get('/auth/reset/:token', async (req, res) => {
 
     res.render('auth/password-reset-form', {
       req,
-      name: await db.get('name') || 'Skyport',
-      logo: await db.get('logo') || false,
+
       token: token
     });
   } catch (error) {

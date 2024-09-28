@@ -35,7 +35,6 @@ const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const theme = require('./storage/theme.json');
 const analytics = require('./utils/analytics.js');
-const { isAdmin } = require('./utils/isAdmin');
 
 const sqlite = require("better-sqlite3");
 const SqliteStore = require("better-sqlite3-session-store")(session);
@@ -143,6 +142,8 @@ app.use(async (req, res, next) => {
     res.locals.ogDescription = config.ogDescription;
     res.locals.footer = settings.footer;
     res.locals.theme = theme;
+    res.locals.name = settings.name;
+    res.locals.logo = settings.logo;
     next();
   } catch (error) {
     console.error('Error fetching settings:', error);
@@ -236,7 +237,7 @@ app.listen(config.port, () => log.info(`skyport is listening on port ${config.po
 app.get('*', async function(req, res){
   res.render('errors/404', {
     req,
-    name: await db.get('name') || 'Skyport',
-    logo: await db.get('logo') || false
+
+    
   })
 });
