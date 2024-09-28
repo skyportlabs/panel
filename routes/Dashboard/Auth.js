@@ -7,11 +7,11 @@
 
 const express = require('express');
 const passport = require('passport');
-const config = require('../config.json');
+const config = require('../../config.json');
 const LocalStrategy = require('passport-local').Strategy;
 const { v4: uuidv4 } = require('uuid');
-const { db } = require('../handlers/db.js');
-const { sendWelcomeEmail, sendPasswordResetEmail, sendVerificationEmail } = require('../handlers/email.js');
+const { db } = require('../../handlers/db.js');
+const { sendWelcomeEmail, sendPasswordResetEmail, sendVerificationEmail } = require('../../handlers/email.js');
 const speakeasy = require('speakeasy');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;

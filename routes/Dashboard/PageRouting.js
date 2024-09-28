@@ -7,10 +7,10 @@
 const express = require('express');
 const fs = require('fs').promises;
 const router = express.Router();
-const config = require('../config.json')
+const config = require('../../config.json')
 
-const { isAuthenticated } = require('../handlers/auth.js');
-const { db } = require('../handlers/db.js');
+const { isAuthenticated } = require('../../handlers/auth.js');
+const { db } = require('../../handlers/db.js');
 
 /**
  * Dynamically reads the page configurations from a JSON file and sets up express routes accordingly.
