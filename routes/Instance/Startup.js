@@ -7,6 +7,8 @@ const { loadPlugins } = require('../../plugins/loadPls.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const path = require('path');
 
+const { checkContainerState } = require('../../utils/checkstate');
+
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
 const router = express.Router();
 
@@ -166,6 +168,7 @@ router.get('/instances/startup/changeimage/:id', async (req, res) => {
 
         await updateDatabaseWithNewInstance(response.data, user, node, instance.imageData.Image, instance.Memory, instance.Cpu, instance.Ports, instance.Primary, instance.Name, id, image, instance.imageData, instance.Env);
 
+        checkContainerState(id, node.address, node.port, node.apiKey, user);
         logAudit(req.user.userId, req.user.username, 'instance:imageChange', req.ip);
         res.status(201).redirect(`/instance/${id}/startup`);
     } catch (error) {
@@ -183,7 +186,7 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, id, con
 
     const requestData = {
         method: 'post',
-        url: `http://${node.address}:${node.port}/instances/redeploy/${containerId}`,
+        url: `http://${node.address}:${node.port}/instances/redeploy/${containerId}/${id}`,
         auth: {
             username: 'Skyport',
             password: node.apiKey
@@ -226,6 +229,7 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
         Id: id,
         Node: node,
         User: userId,
+        InternalState: 'INSTALLING',
         ContainerId: responseData.containerId,
         VolumeId: id,
         Memory: parseInt(memory),
@@ -237,7 +241,6 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
         Image: image,
         AltImages: altImages,
         imageData: imagedata,
-        InternalState: 'READY'
     };
 
     let userInstances = await db.get(`${userId}_instances`) || [];

@@ -5,6 +5,8 @@ const { logAudit } = require('../../handlers/auditlog.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { v4: uuid } = require('uuid');
 
+const { checkContainerState } = require('../../utils/checkstate');
+
 const router = express.Router();
 
 /**
@@ -58,6 +60,8 @@ router.post('/instance/reinstall/:id', async (req, res) => {
 
         await updateDatabaseWithNewInstance(response.data, user, node, shortimage, memory, cpu, ports, primary, name, id, Env);
 
+        checkContainerState(id, node.address, node.port, node.apiKey, user);
+
         res.status(201).redirect(`../../instance/${id}`);
     } catch (error) {
         console.error('Error reinstalling instance:', error);
@@ -75,7 +79,7 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, id, con
 
     const requestData = {
         method: 'post',
-        url: `http://${node.address}:${node.port}/instances/reinstall/${containerId}`,
+        url: `http://${node.address}:${node.port}/instances/reinstall/${containerId}/${id}`,
         auth: {
             username: 'Skyport',
             password: node.apiKey
@@ -120,6 +124,7 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
         Id: id,
         Node: node,
         User: userId,
+        InternalState: 'INSTALLING',
         ContainerId: responseData.containerId,
         VolumeId: id,
         Memory: parseInt(memory),
@@ -130,7 +135,6 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
         AltImages: altImages,
         imageData,
         Env,
-        InternalState: 'READY'
     };
 
     let userInstances = await db.get(`${userId}_instances`) || [];
