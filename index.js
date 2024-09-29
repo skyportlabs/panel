@@ -7,7 +7,7 @@
  *           /____/_/                  
  *              
  *  Skyport Panel 0.3.0 (Desiro City)
- *  (c) 2024 Matt James and contributers
+ *  (c) 2024 Matt James and contributors
  * 
 */
 
@@ -23,13 +23,13 @@ const passport = require('passport');
 const bodyParser = require('body-parser');
 const CatLoggr = require('cat-loggr');
 const fs = require('node:fs');
-const config = require('./config.json')
+const config = require('./config.json');
 const ascii = fs.readFileSync('./handlers/ascii.txt', 'utf8');
 const app = express();
 const path = require('path');
 const chalk = require('chalk');
 const expressWs = require('express-ws')(app);
-const { db } = require('./handlers/db.js')
+const { db } = require('./handlers/db.js');
 const translationMiddleware = require('./handlers/translation');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
@@ -52,10 +52,12 @@ const log = new CatLoggr();
  */
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-app.use(cookieParser())
-
+app.use(cookieParser());
+app.use(analytics);
 app.use(translationMiddleware);
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 const postRateLimiter = rateLimit({
   windowMs: 60 * 100,
@@ -116,7 +118,6 @@ async function updateConfig() {
 
 updateConfig();
 
-app.set('view engine', 'ejs');
 app.use(
   session({
     store: new SqliteStore({
@@ -131,7 +132,6 @@ app.use(
     saveUninitialized: true
   })
 );
-app.use(analytics);
 
 app.use(async (req, res, next) => {
   try {
@@ -166,28 +166,28 @@ if (config.mode === 'production' || false) {
   });
 }
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-init();
-
-console.log(chalk.gray(ascii) + chalk.white(`version v${config.version}\n`));
+app.set('view engine', 'ejs');
+/**
+ * Configures the Express application to serve static files from the 'public' directory, providing
+ * access to client-side resources like images, JavaScript files, and CSS stylesheets without additional
+ * routing. The server then starts listening on a port defined in the configuration file, logging the port
+ * number to indicate successful startup.
+ */
+app.use(express.static('public'));
 
 /**
  * Dynamically loads all route modules from the 'routes' directory, applying WebSocket support to each.
  * Logs the loaded routes and mounts them to the Express application under the root path. This allows for
  * modular route definitions that can be independently maintained and easily scaled.
  */
-const routesDir = path.join(__dirname, 'routes');
 
 function getlanguages() {
-  return fs.readdirSync(__dirname + '/lang').map(file => file.split('.')[0])
+  return fs.readdirSync(__dirname + '/lang').map(file => file.split('.')[0]);
 }
-
 
 app.get('/setLanguage', async (req, res) => {
   const lang = req.query.lang;
-  if (lang && (getlanguages()).includes(lang)) {
+  if (lang && getlanguages().includes(lang)) {
       res.cookie('lang', lang, { maxAge: 90000000, httpOnly: true, sameSite: 'strict' });
       req.user.lang = lang;
       res.json({ success: true });
@@ -196,6 +196,7 @@ app.get('/setLanguage', async (req, res) => {
   }
 });
 
+const routesDir = path.join(__dirname, 'routes');
 function loadRoutes(directory) {
   fs.readdirSync(directory).forEach(file => {
     const fullPath = path.join(directory, file);
@@ -215,29 +216,24 @@ function loadRoutes(directory) {
     }
   });
 }
-
 loadRoutes(routesDir);
 
-const pluginroutes = require('./plugins/pluginmanager.js');
-app.use("/", pluginroutes);
-
+// Plugin routes and views
+const pluginRoutes = require('./plugins/pluginmanager.js');
+app.use("/", pluginRoutes);
 const pluginDir = path.join(__dirname, 'plugins');
 const PluginViewsDir = fs.readdirSync(pluginDir).map(addonName => path.join(pluginDir, addonName, 'views'));
 app.set('views', [path.join(__dirname, 'views'), ...PluginViewsDir]);
 
-/**
- * Configures the Express application to serve static files from the 'public' directory, providing
- * access to client-side resources like images, JavaScript files, and CSS stylesheets without additional
- * routing. The server then starts listening on a port defined in the configuration file, logging the port
- * number to indicate successful startup.
- */
-app.use(express.static('public'));
-app.listen(config.port, () => log.info(`skyport is listening on port ${config.port}`));
+// Init
+init();
+
+console.log(chalk.gray(ascii) + chalk.white(`version v${config.version}\n`));
+app.listen(config.port, () => log.info(`Skyport is listening on port ${config.port}`));
 
 app.get('*', async function(req, res){
   res.render('errors/404', {
     req,
-
-    
+    name: await db.get('name') || 'Skyport'
   })
 });
