@@ -905,6 +905,14 @@ select {
   inset: 0px;
 }
 
+.-left-1 {
+  left: -0.25rem;
+}
+
+.-top-1 {
+  top: -0.25rem;
+}
+
 .bottom-0 {
   bottom: 0px;
 }
@@ -1063,6 +1071,10 @@ select {
   margin-left: 0.625rem;
 }
 
+.ml-3 {
+  margin-left: 0.75rem;
+}
+
 .ml-4 {
   margin-left: 1rem;
 }
@@ -1173,6 +1185,10 @@ select {
 
 .mt-auto {
   margin-top: auto;
+}
+
+.ml-0\.5 {
+  margin-left: 0.125rem;
 }
 
 .block {
@@ -1298,6 +1314,10 @@ select {
   width: 50%;
 }
 
+.w-10 {
+  width: 2.5rem;
+}
+
 .w-12 {
   width: 3rem;
 }
@@ -1365,6 +1385,10 @@ select {
 
 .w-full {
   width: 100%;
+}
+
+.w-9 {
+  width: 2.25rem;
 }
 
 .min-w-0 {
@@ -1657,10 +1681,6 @@ select {
   border-radius: 0.75rem;
 }
 
-.rounded-sm {
-  border-radius: 0.125rem;
-}
-
 .rounded-b-xl {
   border-bottom-right-radius: 0.75rem;
   border-bottom-left-radius: 0.75rem;
@@ -1940,6 +1960,10 @@ select {
   background-color: rgb(220 38 38 / var(--tw-bg-opacity));
 }
 
+.bg-red-600\/10 {
+  background-color: rgb(220 38 38 / 0.1);
+}
+
 .bg-red-800\/10 {
   background-color: rgb(153 27 27 / 0.1);
 }
@@ -1968,10 +1992,6 @@ select {
 
 .bg-white\/5 {
   background-color: rgb(255 255 255 / 0.05);
-}
-
-.bg-red-600\/10 {
-  background-color: rgb(220 38 38 / 0.1);
 }
 
 .bg-opacity-50 {
@@ -2509,6 +2529,12 @@ select {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.shadow-inner {
+  --tw-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: inset 0 2px 4px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .shadow-lg {
   --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
@@ -2548,6 +2574,14 @@ select {
   --tw-ring-color: rgb(0 0 0 / var(--tw-ring-opacity));
 }
 
+.ring-emerald-600\/20 {
+  --tw-ring-color: rgb(5 150 105 / 0.2);
+}
+
+.ring-red-600\/20 {
+  --tw-ring-color: rgb(220 38 38 / 0.2);
+}
+
 .ring-transparent {
   --tw-ring-color: transparent;
 }
@@ -2558,14 +2592,6 @@ select {
 
 .ring-white\/5 {
   --tw-ring-color: rgb(255 255 255 / 0.05);
-}
-
-.ring-emerald-600\/20 {
-  --tw-ring-color: rgb(5 150 105 / 0.2);
-}
-
-.ring-red-600\/20 {
-  --tw-ring-color: rgb(220 38 38 / 0.2);
 }
 
 .ring-opacity-5 {

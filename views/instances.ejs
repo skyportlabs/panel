@@ -8,17 +8,15 @@
       </div>
       <% if (req.user.admin === true) { %>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <% if (req.query.see == 'other') { %>
-            <button onclick="location.href='/instances'" type="button"
-              class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">
-              <%= req.translations.showingYourInstances %>
-            </button>
-          <% } else { %>
-            <button onclick="location.href='/instances?see=other'" type="button"
-              class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">
-              <%= req.translations.seeAllInstances %>
-            </button>
-          <% } %>
+          <label for="instance-toggle" class="flex items-center cursor-pointer">
+            <span class="mr-3 text-sm font-medium text-white">Your Instances</span>
+            <div class="relative">
+              <input type="checkbox" id="instance-toggle" class="sr-only" <%= req.query.see === 'other' ? 'checked' : '' %>>
+              <div class="w-9 px-1 h-5 bg-white/10 rounded-full shadow-inner"></div>
+              <div class="dot absolute w-4 mt-1.5 ml-1.5 mr-1.5 h-4 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+            </div>
+            <span class="ml-3 text-sm font-medium text-white">All Instances</span>
+          </label>
         </div>
       <% } %>
     </div>
@@ -121,8 +119,27 @@
 </main>
 <%- include('components/footer') %>
 
+<style>
+  #instance-toggle:checked + .bg-white\/10 {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  #instance-toggle:checked + .bg-white\/10 + .dot {
+    transform: translateX(100%);
+  }
+</style>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    const toggleSwitch = document.getElementById('instance-toggle');
+    if (toggleSwitch) {
+      toggleSwitch.addEventListener('change', function() {
+        if (this.checked) {
+          window.location.href = '/instances?see=other';
+        } else {
+          window.location.href = '/instances';
+        }
+      });
+    }
+
     const instances = document.querySelectorAll('[data-instance-id]');
 
     instances.forEach(instance => {
