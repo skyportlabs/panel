@@ -8,30 +8,40 @@ const { isAdmin } = require('../../utils/isAdmin.js');
 // we forgot checkNodeStatus
 async function checkNodeStatus(node) {
   try {
-    const RequestData = {
+    const requestData = {
       method: 'get',
-      url: 'http://' + node.address + ':' + node.port + '/',
+      url: `http://${node.address}:${node.port}/`,
       auth: {
         username: 'Skyport',
-        password: node.apiKey
+        password: node.apiKey,
       },
       headers: { 
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     };
-    const response = await axios(RequestData);
-    const { versionFamily, versionRelease, online, remote, docker } = response.data;
 
-    node.status = 'Online';
-    node.versionFamily = versionFamily;
-    node.versionRelease = versionRelease;
-    node.remote = remote;
+    const response = await axios(requestData);
+    if (response.data && response.data.versionFamily && response.data.versionRelease) {
+      const { versionFamily, versionRelease, online, remote, docker } = response.data;
 
-    await db.set(node.id + '_node', node);
-    return node;
+      node.status = online ? 'Online' : 'Offline';
+      node.versionFamily = versionFamily;
+      node.versionRelease = versionRelease;
+      node.remote = remote;
+      if (docker) {
+        node.docker = docker;
+      }
+
+      await db.set(`${node.id}_node`, node);
+      return node;
+    } else {
+      throw new Error('Invalid response structure');
+    }
   } catch (error) {
+    console.error(`Error checking status for node ${node.id}: ${error.message}`);
+
     node.status = 'Offline';
-    await db.set(node.id + '_node', node);
+    await db.set(`${node.id}_node`, node);
     return node;
   }
 }
