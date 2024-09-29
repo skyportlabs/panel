@@ -129,7 +129,8 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
         Image: image,
         AltImages: altImages,
         imageData,
-        Env
+        Env,
+        InternalState: 'READY'
     };
 
     let userInstances = await db.get(`${userId}_instances`) || [];
