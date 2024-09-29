@@ -44,6 +44,21 @@ const { init } = require('./handlers/init.js');
 
 const log = new CatLoggr();
 
+app.use(
+  session({
+    store: new SqliteStore({
+      client: sessionstorage,
+      expired: {
+        clear: true,
+        intervalMs: 9000000
+      }
+    }),
+    secret: config.session_secret || "secret",
+    resave: true,
+    saveUninitialized: true
+  })
+);
+
 /**
  * Initializes the Express application with necessary middleware for parsing HTTP request bodies,
  * handling sessions, and integrating WebSocket functionalities. It sets EJS as the view engine,
@@ -117,21 +132,6 @@ async function updateConfig() {
 }
 
 updateConfig();
-
-app.use(
-  session({
-    store: new SqliteStore({
-      client: sessionstorage,
-      expired: {
-        clear: true,
-        intervalMs: 9000000
-      }
-    }),
-    secret: config.session_secret || "secret",
-    resave: true,
-    saveUninitialized: true
-  })
-);
 
 app.use(async (req, res, next) => {
   try {
