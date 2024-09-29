@@ -48,7 +48,7 @@
                   .then(response => response.json())
                   .then(data => {
                     const currentVersion = '<%= version %>';
-                    const latestVersion = data.panel_latest;
+                    const latestVersion = data.skyport_canary.panel_latest;
                     const versionSpan = document.getElementById('currentVersion');
                     const releaseSpan = document.getElementById('releaseInfo');
                     const versionStatusSpan = document.getElementById('versionStatus');

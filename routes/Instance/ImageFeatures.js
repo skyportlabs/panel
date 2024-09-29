@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
-const { createFile, fetchFiles } = require('../../utils/fileHelper');
+const { createFile, fetchFiles, editFile } = require('../../utils/fileHelper');
 
 router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
     if (!req.user) return res.redirect('/');
@@ -31,6 +31,7 @@ router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
         return res.redirect('../../instance/' + id + '/suspended');
     }
         createFile(instance, 'eula.txt', 'eula=true');
+        editFile(instance, 'eula.txt', 'eula=true');
 
     res.status(200).send('OK');
 
