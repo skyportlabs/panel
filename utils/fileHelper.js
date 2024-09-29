@@ -1,134 +1,89 @@
 const axios = require('axios');
 
-/**
- * Fetches files for a given instance.
- * @param {Object} instance - The instance object.
- * @param {string} path - The path to fetch files from.
- * @returns {Promise<Array>} - The list of files.
- */
-async function fetchFiles(instance, path = '') {
-    const query = path ? `?path=${path}` : '';
-    const url = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files${query}`;
-    
+class FileOperations {
+  constructor(instance) {
+    this.instance = instance;
+    this.baseUrl = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}`;
+    this.auth = {
+      username: 'Skyport',
+      password: instance.Node.apiKey
+    };
+  }
+
+  async request(method, endpoint, data = null) {
+    const url = `${this.baseUrl}${endpoint}`;
     try {
-    const response = await axios.get(url, {
-        auth: {
-            username: 'Skyport',
-            password: instance.Node.apiKey
-        }
-    });
-
-    return response.data.files || [];
+      const response = await axios({
+        method,
+        url,
+        data,
+        auth: this.auth
+      });
+      return response.data;
     } catch (error) {
-        return [];
+      console.error(`Error in ${method} request to ${endpoint}:`, error);
+      return null;
     }
-}
+  }
 
-
-
-
-
-/**
- * Fetches content of a specific file.
- * @param {Object} instance - The instance object.
- * @param {string} filename - The name of the file to fetch.
- * @param {string} path - The path of the file.
- * @returns {Promise<string>} - The content of the file.
- */
-async function fetchFileContent(instance, filename, path = '') {
-    const query = path ? `?path=${path}` : '';
-    const url = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/view/${filename}${query}`;
-    
-
-    try {
-    const response = await axios.get(url, {
-        auth: {
-            username: 'Skyport',
-            password: instance.Node.apiKey
-        }
-    });
-    return response.data.content;
-    } catch (error) {
-        console.error('Error fetching file content:', error);
-        return null;
-    }
-
-}
-
-/**
- * Creates a new file on the daemon.
- * @param {Object} instance - The instance object.
- * @param {string} filename - The name of the file to create.
- * @param {string} content - The content of the file.
- * @param {string} path - The path where to create the file.
- * @returns {Promise<Object>} - The response from the server.
- */
-async function createFile(instance, filename, content, path = '') {
+  async fetchFiles(path = '') {
     const query = path ? `?path=${encodeURIComponent(path)}` : '';
-    const url = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/create/${filename}${query}`;
-    
-    try {
-        const response = await axios.post(url, { content }, {
-            auth: {
-                username: 'Skyport',
-                password: instance.Node.apiKey
-            }
-        });
+    const data = await this.request('get', `/files${query}`);
+    return data?.files || [];
+  }
 
-        return response.data;
-    } catch (error) {
-        console.error('Error creating file:', error);
-        return null;
-    }
+  async fetchFileContent(filename, path = '') {
+    const query = path ? `?path=${encodeURIComponent(path)}` : '';
+    const data = await this.request('get', `/files/view/${filename}${query}`);
+    return data?.content;
+  }
+
+  async createFile(filename, content, path = '') {
+    const query = path ? `?path=${encodeURIComponent(path)}` : '';
+    return this.request('post', `/files/create/${filename}${query}`, { content });
+  }
+
+  async editFile(filename, content, path = '') {
+    const query = path ? `?path=${encodeURIComponent(path)}` : '';
+    return this.request('post', `/files/edit/${filename}${query}`, { content });
+  }
+
+  async deleteFile(filename, path = '') {
+    const query = path ? `?path=${encodeURIComponent(path)}` : '';
+    return this.request('delete', `/files/delete/${filename}${query}`);
+  }
 }
 
-/**
- * Edits an existing file.
- * @param {Object} instance - The instance object.
- * @param {string} filename - The name of the file to edit.
- * @param {string} content - The new content of the file.
- * @param {string} path - The path of the file.
- * @returns {Promise<Object>} - The response from the server.
- */
-async function editFile(instance, filename, content, path = '') {
-    const query = path ? `?path=${path}` : '';
-    const url = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/edit/${filename}${query}`;
-    
-    const response = await axios.post(url, { content }, {
-        auth: {
-            username: 'Skyport',
-            password: instance.Node.apiKey
-        }
-    });
-
-    return response.data;
+// Wrapper functions to maintain the original interface
+function fetchFiles(instance, path = '') {
+  const fileOps = new FileOperations(instance);
+  return fileOps.fetchFiles(path);
 }
 
-/**
- * Deletes a file.
- * @param {Object} instance - The instance object.
- * @param {string} filename - The name of the file to delete.
- * @param {string} path - The path of the file.
- * @returns {Promise<Object>} - The response from the server.
- */
-async function deleteFile(instance, filename, path = '') {
-    const query = path ? `?path=${path}` : '';
-    const url = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/delete/${filename}${query}`;
-    
-    const response = await axios.delete(url, {
-        auth: {
-            username: 'Skyport',
-            password: instance.Node.apiKey
-        }
-    });
+function fetchFileContent(instance, filename, path = '') {
+  const fileOps = new FileOperations(instance);
+  return fileOps.fetchFileContent(filename, path);
+}
 
-    return response.data;
+function createFile(instance, filename, content, path = '') {
+  const fileOps = new FileOperations(instance);
+  return fileOps.createFile(filename, content, path);
+}
+
+function editFile(instance, filename, content, path = '') {
+  const fileOps = new FileOperations(instance);
+  return fileOps.editFile(filename, content, path);
+}
+
+function deleteFile(instance, filename, path = '') {
+  const fileOps = new FileOperations(instance);
+  return fileOps.deleteFile(filename, path);
 }
 
 module.exports = {
-    fetchFiles,
-    fetchFileContent,
-    createFile,
-    editFile,
-    deleteFile
+  fetchFiles,
+  fetchFileContent,
+  createFile,
+  editFile,
+  deleteFile
 };
