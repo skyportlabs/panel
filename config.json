@@ -1,7 +1,7 @@
 {
   "baseUri": "http://localhost:3001",
   "port": 3001,
-  "session_secret": "Random",
+  "session_secret": "ðvª;·cë\u000b¶m¼À^",
   "domain": "localhost",
   "mode": "production",
   "version": "0.3.0",
