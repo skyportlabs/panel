@@ -1,13 +1,13 @@
 const express = require('express');
 const axios = require('axios');
-const { db } = require('../../handlers/db');
-const { logAudit } = require('../../handlers/auditLog');
+const { db } = require('../../handlers/db.js');
+const { logAudit } = require('../../handlers/auditLog.js');
 const { v4: uuid } = require('uuid');
-const { loadPlugins } = require('../../plugins/loadPls');
-const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
+const { loadPlugins } = require('../../plugins/loadPls.js');
+const { isUserAuthorizedForContainer } = require('../../utils/authHelper.js');
 const path = require('path');
 
-const { checkContainerState } = require('../../utils/checkstate');
+const { checkContainerState } = require('../../utils/checkstate.js');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
 const router = express.Router();

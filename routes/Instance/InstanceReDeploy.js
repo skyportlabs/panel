@@ -1,8 +1,8 @@
 const express = require('express');
 const axios = require('axios');
-const { db } = require('../../handlers/db');
-const { logAudit } = require('../../handlers/auditLog');
-const { isAdmin } = require('../../utils/isAdmin');
+const { db } = require('../../handlers/db.js');
+const { logAudit } = require('../../handlers/auditLog.js');
+const { isAdmin } = require('../../utils/isAdmin.js');
 
 const router = express.Router();
 

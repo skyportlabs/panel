@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
-const { db } = require('../../handlers/db');
-const { logAudit } = require('../../handlers/auditLog');
-const { isAdmin } = require('../../utils/isAdmin');
+const { db } = require('../../handlers/db.js');
+const { logAudit } = require('../../handlers/auditLog.js');
+const { isAdmin } = require('../../utils/isAdmin.js');
 
 router.get('/admin/apikeys', isAdmin, async (req, res) => {
   try {

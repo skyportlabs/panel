@@ -1,8 +1,8 @@
 const express = require('express');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
-const { logAudit } = require('../../handlers/auditLog');
-const { checkContainerState } = require('../../utils/checkstate');
+const { logAudit } = require('../../handlers/auditLog.js');
+const { checkContainerState } = require('../../utils/checkstate.js');
 const { v4: uuid } = require('uuid');
 const { isAdmin } = require('../../utils/isAdmin.js');
 
@@ -70,7 +70,6 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
     });
   }
 });
-
 
 async function prepareRequestData(image, memory, cpu, ports, name, node, Id, variables, imagename) {
   const rawImages = await db.get('images');

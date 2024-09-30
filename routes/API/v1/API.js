@@ -11,10 +11,9 @@ const saltRounds = 10;
 // Middleware to check for a valid API key
 async function validateApiKey(req, res, next) {
   const apiKey = req.headers['x-api-key'];
-  console.log(apiKey);
   
   if (!apiKey) {
-    return res.status(401).json({error: 'API key is required' });
+    return res.status(401).json({ error: 'API key is required' });
   }
 
   try {
@@ -28,6 +27,7 @@ async function validateApiKey(req, res, next) {
     req.apiKey = validKey;
     next();
   } catch (error) {
+    console.error('Error validating API key:', error);
     res.status(500).json({ error: 'Failed to validate API key' });
   }
 }
@@ -36,10 +36,10 @@ async function validateApiKey(req, res, next) {
 router.get('/api/users', validateApiKey, async (req, res) => {
   try {
     const users = await db.get('users') || [];
-
     res.json(users);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to retrieve user' });
+    console.error('Error retrieving users:', error);
+    res.status(500).json({ error: 'Failed to retrieve users' });
   }
 });
 
@@ -63,10 +63,10 @@ router.post('/api/getUser', validateApiKey, async (req, res) => {
     }
     
     if (!user) {
-      return res.status(400).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'User not found' });
     }
     
-    res.status(201).json(user);
+    res.json(user);
   } catch (error) {
     console.error('Error retrieving user:', error);
     res.status(500).json({ error: 'Failed to retrieve user' });
@@ -78,23 +78,20 @@ router.post('/api/auth/create-user', validateApiKey, async (req, res) => {
     const { username, email, password, userId, admin } = req.body;
     
     if (!username || !email || !password) {
-      return res.status(400).json({ error: 'Username and password are required' });
+      return res.status(400).json({ error: 'Username, email, and password are required' });
     }
 
-    const userExists = await db.get('users').then(users => 
-      users && users.some(user => user.username === username)
-    );
+    const users = await db.get('users') || [];
+    const userExists = users.some(user => user.username === username || user.email === email);
 
     if (userExists) {
       return res.status(409).json({ error: 'User already exists' });
     }
 
-    if (!req.body.userId) {
-      userId = uuidv4();
-    }
+    const newUserId = userId || uuidv4();
 
     const user = {
-      userId: userId,
+      userId: newUserId,
       username,
       email,
       password: await bcrypt.hash(password, saltRounds),
@@ -102,12 +99,12 @@ router.post('/api/auth/create-user', validateApiKey, async (req, res) => {
       admin: admin === true
     };
 
-    let users = await db.get('users') || [];
     users.push(user);
     await db.set('users', users);
 
-    res.status(201).json({ userId: user.userId, email, username: user.username, admin: user.admin });
+    res.status(201).json({ userId: newUserId, username, email, admin: user.admin });
   } catch (error) {
+    console.error('Error creating user:', error);
     res.status(500).json({ error: 'Failed to create user' });
   }
 });
@@ -132,7 +129,7 @@ router.post('/api/auth/reset-password', validateApiKey, async (req, res) => {
       await sendPasswordResetEmail(email, resetToken);
       res.status(200).json({ message: `Password reset email sent successfully (${resetToken})` });
     } else {
-      res.status(200).json({ message: resetToken });
+      res.status(200).json({ password: resetToken });
     }
   } catch (error) {
     console.error('Error handling password reset:', error);
@@ -140,12 +137,13 @@ router.post('/api/auth/reset-password', validateApiKey, async (req, res) => {
   }
 });
 
-// Instance
+// Instances
 router.get('/api/instances', validateApiKey, async (req, res) => {
   try {
     const instances = await db.get('instances') || [];
     res.json(instances);
   } catch (error) {
+    console.error('Error retrieving instances:', error);
     res.status(500).json({ error: 'Failed to retrieve instances' });
   }
 });
@@ -176,20 +174,7 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
       });
 
       const { state, containerId } = response.data;
-      const instance = await db.get(`${volumeId}_instance`);
-      instance.InternalState = state;
-      instance.ContainerId = containerId;
-      await db.set(`${volumeId}_instance`, instance);
-      const userInstances = await db.get(`${userId}_instances`);
-      const updatedUserInstances = userInstances.map(i => 
-        i.Id === volumeId ? { ...i, InternalState: state, ContainerId: containerId } : i
-      );
-      await db.set(`${userId}_instances`, updatedUserInstances);
-      const globalInstances = await db.get('instances');
-      const updatedGlobalInstances = globalInstances.map(i => 
-        i.Id === volumeId ? { ...i, InternalState: state, ContainerId: containerId } : i
-      );
-      await db.set('instances', updatedGlobalInstances);
+      await updateInstanceState(volumeId, state, containerId, userId);
 
       if (state === 'READY') {
         return;
@@ -199,15 +184,7 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
         setTimeout(checkState, delay);
       } else {
         console.log(`Container ${volumeId} failed to become active after ${maxAttempts} attempts.`);
-        // Update state to FAILED in all relevant places
-        instance.InternalState = 'FAILED';
-        await db.set(`${volumeId}_instance`, instance);
-        await db.set(`${userId}_instances`, updatedUserInstances.map(i => 
-          i.Id === volumeId ? { ...i, InternalState: 'FAILED' } : i
-        ));
-        await db.set('instances', updatedGlobalInstances.map(i => 
-          i.Id === volumeId ? { ...i, InternalState: 'FAILED' } : i
-        ));
+        await updateInstanceState(volumeId, 'FAILED', containerId, userId);
       }
     } catch (error) {
       console.error(`Error checking state for container ${volumeId}:`, error);
@@ -215,18 +192,7 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
         setTimeout(checkState, delay);
       } else {
         console.log(`Container ${volumeId} state check failed after ${maxAttempts} attempts.`);
-        // Update state to FAILED in all relevant places (same as above)
-        const instance = await db.get(`${volumeId}_instance`);
-        instance.InternalState = 'FAILED';
-        await db.set(`${volumeId}_instance`, instance);
-        const userInstances = await db.get(`${userId}_instances`);
-        await db.set(`${userId}_instances`, userInstances.map(i => 
-          i.Id === volumeId ? { ...i, InternalState: 'FAILED' } : i
-        ));
-        const globalInstances = await db.get('instances');
-        await db.set('instances', globalInstances.map(i => 
-          i.Id === volumeId ? { ...i, InternalState: 'FAILED' } : i
-        ));
+        await updateInstanceState(volumeId, 'FAILED', null, userId);
       }
     }
   };
@@ -234,18 +200,39 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
   checkState();
 }
 
+async function updateInstanceState(volumeId, state, containerId, userId) {
+  const instance = await db.get(`${volumeId}_instance`);
+  if (instance) {
+    instance.InternalState = state;
+    instance.ContainerId = containerId;
+    await db.set(`${volumeId}_instance`, instance);
+
+    const userInstances = await db.get(`${userId}_instances`) || [];
+    const updatedUserInstances = userInstances.map(i => 
+      i.Id === volumeId ? { ...i, InternalState: state, ContainerId: containerId } : i
+    );
+    await db.set(`${userId}_instances`, updatedUserInstances);
+
+    const globalInstances = await db.get('instances') || [];
+    const updatedGlobalInstances = globalInstances.map(i => 
+      i.Id === volumeId ? { ...i, InternalState: state, ContainerId: containerId } : i
+    );
+    await db.set('instances', updatedGlobalInstances);
+  }
+}
+
 router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
   const { image, imagename, memory, cpu, ports, nodeId, name, user, primary, variables } = req.body;
 
-  if (!image || !imagename || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) {
-    return res.status(400).json({ error: 'Missing parameters' });
+  if (!image || !imagename || !memory || !cpu || !ports || !nodeId || !name || !user || primary === undefined) {
+    return res.status(400).json({ error: 'Missing required parameters' });
   }
 
   try {
     const Id = uuidv4().split('-')[0];
     const node = await db.get(`${nodeId}_node`);
     if (!node) {
-      return res.status(400).json({ error: 'Invalid node' });
+      return res.status(404).json({ error: 'Invalid node' });
     }
 
     const requestData = await prepareRequestData(
@@ -256,9 +243,10 @@ router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
       name,
       node,
       Id,
-      variables,  // Even if it's undefined, we'll handle it in `prepareRequestData`
-      imagename,
+      variables || [],
+      imagename
     );
+
     const response = await axios(requestData);
 
     await updateDatabaseWithNewInstance(
@@ -272,17 +260,16 @@ router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
       primary,
       name,
       Id,
-      imagename,
+      imagename
     );
 
-    // Start the state checking process
+    // Start checking the container state asynchronously
     checkContainerState(Id, node.address, node.port, node.apiKey, user);
 
-    logAudit(req.user.userId, req.user.username, 'instance:create', req.ip);
     res.status(201).json({
       message: "Container creation initiated. State will be updated asynchronously.",
       volumeId: Id,
-      state: 'INSTALLING'
+      state: 'INSTALLING',
     });
   } catch (error) {
     console.error('Error deploying instance:', error);
@@ -294,38 +281,8 @@ router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
 });
 
 async function prepareRequestData(image, memory, cpu, ports, name, node, Id, variables, imagename) {
-  const rawImages = await db.get('images');
+  const rawImages = await db.get('images') || [];
   const imageData = rawImages.find(i => i.Name === imagename);
-
-const data1 = {
-  method: 'post',
-  url: `http://${node.address}:${node.port}/instances/create`,
-  auth: {
-    username: 'Skyport',
-    password: node.apiKey,
-  },
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  data: {
-    Name: name,
-    Id,
-    Image: image,
-    Env: imageData ? imageData.Env : undefined,
-    Scripts: imageData ? imageData.Scripts : undefined,
-    Memory: memory ? parseInt(memory) : undefined,
-    Cpu: cpu ? parseInt(cpu) : undefined,
-    ExposedPorts: {},
-    PortBindings: {},
-    Cmd: [],
-    Ports: ports,
-    AltImages: imageData ? imageData.AltImages : [],
-    StopCommand: imageData ? imageData.StopCommand : undefined,
-    imageData,
-  },
-};
-
-console.log(data1)
 
   const requestData = {
     method: 'post',
@@ -343,23 +300,17 @@ console.log(data1)
       Image: image,
       Env: imageData ? imageData.Env : undefined,
       Scripts: imageData ? imageData.Scripts : undefined,
-      Memory: memory ? parseInt(memory) : undefined,
-      Cpu: cpu ? parseInt(cpu) : undefined,
+      Memory: parseInt(memory),
+      Cpu: parseInt(cpu),
       ExposedPorts: {},
       PortBindings: {},
-      Cmd: [],
-      Ports: ports,
+      variables,
       AltImages: imageData ? imageData.AltImages : [],
       StopCommand: imageData ? imageData.StopCommand : undefined,
-      imageData,
     },
   };
 
-  // Only add variables if they are provided
-  if (variables) {
-    requestData.data.variables = variables;
-  }
-
+  // Process port mappings
   if (ports) {
     ports.split(',').forEach(portMapping => {
       const [containerPort, hostPort] = portMapping.split(':');
@@ -383,6 +334,12 @@ console.log(data1)
       if (!requestData.data.PortBindings[udpKey]) {
         requestData.data.PortBindings[udpKey] = [{ HostPort: hostPort }];
       }
+
+      //['tcp', 'udp'].forEach(protocol => {
+      //  const key = `${containerPort}/${protocol}`;
+      //  requestData.data.ExposedPorts[key] = {};
+      //  requestData.data.PortBindings[key] = [{ HostPort: hostPort }];
+      //});
     });
   }
 
@@ -400,12 +357,10 @@ async function updateDatabaseWithNewInstance(
   primary,
   name,
   Id,
-  imagename,
+  imagename
 ) {
-  const rawImages = await db.get('images');
+  const rawImages = await db.get('images') || [];
   const imageData = rawImages.find(i => i.Name === imagename);
-
-  let altImages = imageData ? imageData.AltImages : [];
 
   const instanceData = {
     Name: name,
@@ -420,46 +375,41 @@ async function updateDatabaseWithNewInstance(
     Ports: ports,
     Primary: primary,
     Image: image,
-    AltImages: altImages,
+    AltImages: imageData ? imageData.AltImages : [],
     StopCommand: imageData ? imageData.StopCommand : undefined,
     imageData,
     Env: responseData.Env,
   };
 
-  // Only add variables to the instance data if they exist
-  if (responseData.variables) {
-    instanceData.variables = responseData.variables;
-  }
-
-  const userInstances = (await db.get(`${userId}_instances`)) || [];
+  const userInstances = await db.get(`${userId}_instances`) || [];
   userInstances.push(instanceData);
   await db.set(`${userId}_instances`, userInstances);
 
-  const globalInstances = (await db.get('instances')) || [];
+  const globalInstances = await db.get('instances') || [];
   globalInstances.push(instanceData);
   await db.set('instances', globalInstances);
 
   await db.set(`${Id}_instance`, instanceData);
 }
 
-
 router.delete('/api/instance/delete', validateApiKey, async (req, res) => {
   const { id } = req.body;
   
+  if (!id) {
+    return res.status(400).json({ error: 'Missing ID parameter' });
+  }
+  
   try {
-    if (!id) {
-      return res.status(400).json({ error: 'Missing ID parameter' });
-    }
-    
     const instance = await db.get(id + '_instance');
     if (!instance) {
-      return res.status(400).json({ error: 'Instance not found' });
+      return res.status(404).json({ error: 'Instance not found' });
     }
     
     await deleteInstance(instance);
-    res.status(201).json({ Message: 'The instance has successfully been deleted.' });
+    res.status(200).json({ message: 'The instance has been successfully deleted.' });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete instances' });
+    console.error('Error deleting instance:', error);
+    res.status(500).json({ error: 'Failed to delete instance' });
   }
 });
 
@@ -470,18 +420,18 @@ router.post('/api/getUserInstance', validateApiKey, async (req, res) => {
     return res.status(400).json({ error: 'Parameter "userId" is required' });
   }
 
-  const userExists = await db.get('users').then(users => 
-    users && users.some(user => user.userId === userId)
-  );
-
-  if (!userExists) {
-    return res.status(400).json({ error: 'User not found' });
-  }
-
   try {
+    const users = await db.get('users') || [];
+    const userExists = users.some(user => user.userId === userId);
+
+    if (!userExists) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
     const userInstances = await db.get(`${userId}_instances`) || [];
     res.json(userInstances);
   } catch (error) {
+    console.error('Error retrieving user instances:', error);
     res.status(500).json({ error: 'Failed to retrieve user instances' });
   }
 });
@@ -493,19 +443,19 @@ router.post('/api/getInstance', validateApiKey, async (req, res) => {
     return res.status(400).json({ error: 'Parameter "id" is required' });
   }
 
-  const instanceExists = await db.get('instances').then(server => 
-    server && server.some(server => server.Id === id)
-  );
-
-  if (!instanceExists) {
-    return res.status(400).json({ error: 'Instance not found' });
-  }
-
   try {
-    const instances = await db.get(`${id}_instance`) || [];
-    res.json(instances);
+    const instances = await db.get('instances') || [];
+    const instanceExists = instances.some(instance => instance.Id === id);
+
+    if (!instanceExists) {
+      return res.status(404).json({ error: 'Instance not found' });
+    }
+
+    const instance = await db.get(id + '_instance');
+    res.json(instance);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to retrieve instances' });
+    console.error('Error retrieving instance:', error);
+    res.status(500).json({ error: 'Failed to retrieve instance' });
   }
 });
 
@@ -515,6 +465,7 @@ router.get('/api/images', validateApiKey, async (req, res) => {
     const images = await db.get('images') || [];
     res.json(images);
   } catch (error) {
+    console.error('Error retrieving images:', error);
     res.status(500).json({ error: 'Failed to retrieve images' });
   }
 });
@@ -524,6 +475,7 @@ router.get('/api/name', validateApiKey, async (req, res) => {
     const name = await db.get('name') || 'Skyport';
     res.json({ name });
   } catch (error) {
+    console.error('Error retrieving name:', error);
     res.status(500).json({ error: 'Failed to retrieve name' });
   }
 });
@@ -535,6 +487,7 @@ router.get('/api/nodes', validateApiKey, async (req, res) => {
     const nodeDetails = await Promise.all(nodes.map(id => db.get(id + '_node')));
     res.json(nodeDetails);
   } catch (error) {
+    console.error('Error retrieving nodes:', error);
     res.status(500).json({ error: 'Failed to retrieve nodes' });
   }
 });
@@ -573,7 +526,7 @@ router.delete('/api/nodes/delete', validateApiKey, async (req, res) => {
   const nodes = await db.get('nodes') || [];
   const newNodes = nodes.filter(id => id !== nodeId);
 
-  if (!nodeId) return res.send('Invalid node')
+  if (!nodeId) return res.send('The node ID was invalid');
 
   await db.set('nodes', newNodes);
   await db.delete(nodeId + '_node');

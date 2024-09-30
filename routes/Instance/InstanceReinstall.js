@@ -1,9 +1,9 @@
 const express = require('express');
 const axios = require('axios');
-const { db } = require('../../handlers/db');
-const { logAudit } = require('../../handlers/auditLog');
-const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
-const { checkContainerState } = require('../../utils/checkstate');
+const { db } = require('../../handlers/db.js');
+const { logAudit } = require('../../handlers/auditLog.js');
+const { isUserAuthorizedForContainer } = require('../../utils/authHelper.js');
+const { checkContainerState } = require('../../utils/checkstate.js');
 
 const router = express.Router();
 
