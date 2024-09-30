@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { db } = require('../handlers/db.js');
+const log = new (require('cat-loggr'))();
 
 /**
  * Checks the state of a container and updates the database accordingly.
@@ -67,7 +68,7 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
           ));
         }
       } catch (error) {
-        console.error(`Error checking state for container ${volumeId}:`, error);
+        log.error(`Error checking state for container ${volumeId}:`, error);
         if (++attempts < maxAttempts) {
           setTimeout(checkState, delay);
         } else {

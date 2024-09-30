@@ -3,6 +3,7 @@ const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { loadPlugins } = require('../../plugins/loadPls.js');
+const log = new (require('cat-loggr'))();
 const path = require('path');
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
@@ -18,12 +19,12 @@ router.get("/instance/:id/settings", async (req, res) => {
     }
 
     const instance = await db.get(id + '_instance').catch(err => {
-        console.error('Failed to fetch instance:', err);
+        log.error('Failed to fetch instance:', err);
         return null;
     });
 
     if (!instance || !instance.VolumeId) {
-        console.log(instance);
+        // console.log(instance);
         return res.redirect('../instances');
     }
 
@@ -32,13 +33,12 @@ router.get("/instance/:id/settings", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-
-    if(!instance.suspended) {
+    if (!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
-    }
+    }    
 
-    if(instance.suspended === true) {
+    if (instance.suspended === true) {
         return res.redirect('../../instance/' + id + '/suspended');
     }
 
@@ -52,6 +52,7 @@ router.get("/instance/:id/settings", async (req, res) => {
         } 
     });
 });
+
 
 router.get("/instance/:id/change/name/:name", async (req, res) => {
     if (!req.user) {
@@ -82,12 +83,12 @@ router.get("/instance/:id/change/name/:name", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-    if(!instance.suspended) {
+    if (!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
-    if(instance.suspended === true) {
+    if (instance.suspended === true) {
         return res.redirect('../../instance/' + id + '/suspended');
     }
 

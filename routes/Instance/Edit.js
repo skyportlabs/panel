@@ -3,6 +3,7 @@ const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditLog.js');
 const { isAdmin } = require('../../utils/isAdmin.js');
+const log = new (require('cat-loggr'))();
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ router.put('/instances/edit/:id', isAdmin, async (req, res) => {
     const requestData = prepareEditRequestData(instance, Image, Memory, Cpu);
     const response = await axios(requestData);
 
-    const updatedInstance = await updateInstanceInDatabase(id, instance, Image, Memory, Cpu, response.data.newContainerId);
+    await updateInstanceInDatabase(id, instance, Image, Memory, Cpu, response.data.newContainerId);
 
     logAudit(req.user.userId, req.user.username, 'instance:edit', req.ip);
 
@@ -38,7 +39,7 @@ router.put('/instances/edit/:id', isAdmin, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error updating instance:', error);
+    log.error('Error updating instance:', error);
     res.status(500).json({ message: 'Failed to update instance', error: error.message });
   }
 });

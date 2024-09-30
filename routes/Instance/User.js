@@ -4,6 +4,7 @@ const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
+const log = new (require('cat-loggr'))();s
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
 
@@ -34,7 +35,7 @@ router.get('/instance/:id/users', async (req, res) => {
             } 
         });
     } catch (err) {
-        console.error('Error fetching data:', err);
+        log.error('Error fetching data:', err);
         res.status(500).send('Internal Server Error.');
     }
 });
@@ -59,7 +60,7 @@ router.post('/instance/:id/users/add', async (req, res) => {
         await db.set('users', users);
         return res.redirect('/instance/' + id + '/users');
     } catch (error) {
-        console.error('Error updating user access:', error);
+        log.error('Error updating user access:', error);
         return res.status(500).send('Internal Server Error');
     }
 });
@@ -84,7 +85,7 @@ router.get('/instance/:id/users/remove/:username', async (req, res) => {
 
         return res.redirect(`/instance/${id}/users`);
     } catch (error) {
-        console.error('Error updating user access:', error);
+        log.error('Error updating user access:', error);
         return res.status(500).send('Internal Server Error');
     }
 });

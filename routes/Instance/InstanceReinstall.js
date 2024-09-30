@@ -1,9 +1,9 @@
 const express = require('express');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
-const { logAudit } = require('../../handlers/auditLog.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper.js');
 const { checkContainerState } = require('../../utils/checkstate.js');
+const log = new (require('cat-loggr'))();
 
 const router = express.Router();
 
@@ -31,12 +31,12 @@ router.post('/instance/reinstall/:id', async (req, res) => {
             return res.status(403).send('Unauthorized access to this instance.');
         }
 
-        if(!instance.suspended) {
+        if (!instance.suspended) {
             instance.suspended = false;
             db.set(id + '_instance', instance);
         }
     
-        if(instance.suspended === true) {
+        if (instance.suspended === true) {
             return res.redirect('../../instance/' + id + '/suspended');
         }
 
@@ -62,7 +62,7 @@ router.post('/instance/reinstall/:id', async (req, res) => {
 
         res.status(201).redirect(`../../instance/${id}`);
     } catch (error) {
-        console.error('Error reinstalling instance:', error);
+        log.error('Error reinstalling instance:', error);
         res.status(500).json({
             error: 'Failed to reinstall container',
             details: error.response ? error.response.data : 'No additional error info'

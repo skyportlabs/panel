@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
+const log = new (require('cat-loggr'))();
 
 router.get("/instance/:id/suspended", async (req, res) => {
     if (!req.user) {
@@ -14,7 +15,7 @@ router.get("/instance/:id/suspended", async (req, res) => {
     }
 
     const instance = await db.get(id + '_instance').catch(err => {
-        console.error('Failed to fetch instance:', err);
+        log.error('Failed to fetch instance:', err);
         return null;
     });
 
@@ -27,13 +28,12 @@ router.get("/instance/:id/suspended", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-
-    if(!instance.suspended) {
+    if (!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
-    if(instance.suspended === false) {
+    if (instance.suspended === false) {
         return res.redirect('../instance/' + id);
     }
 

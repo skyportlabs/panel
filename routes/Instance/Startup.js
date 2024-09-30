@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditLog.js');
-const { v4: uuid } = require('uuid');
+const log = new (require('cat-loggr'))();
 const { loadPlugins } = require('../../plugins/loadPls.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper.js');
 const path = require('path');
@@ -38,26 +38,25 @@ router.get('/instance/:id/startup', async (req, res) => {
             return res.status(403).send('Unauthorized access to this instance.');
         }
 
-        if(!instance.suspended) {
+        if (!instance.suspended) {
             instance.suspended = false;
             db.set(id + '_instance', instance);
         }
     
-        if(instance.suspended === true) {
+        if (instance.suspended === true) {
             return res.redirect('../../instance/' + id + '/suspended');
         }
 
         res.render('instance/startup.ejs', {
             req,
             user: req.user,
-
             instance,
             addons: {
                 plugins: allPluginData
             }
         });
     } catch (error) {
-        console.error('Error fetching instance data:', error);
+        log.error('Error fetching instance data:', error);
         res.status(500).json({
             error: 'Failed to load instance data',
             details: error.message
@@ -90,12 +89,12 @@ router.post('/instances/startup/changevariable/:id', async (req, res) => {
             return res.status(403).send('Unauthorized access to this instance.');
         }
 
-        if(!instance.suspended) {
+        if (!instance.suspended) {
             instance.suspended = false;
             db.set(id + '_instance', instance);
         }
     
-        if(instance.suspended === true) {
+        if (instance.suspended === true) {
             return res.redirect('../../instance/' + id + '/suspended');
         }
 
@@ -109,7 +108,7 @@ router.post('/instances/startup/changevariable/:id', async (req, res) => {
         logAudit(req.user.userId, req.user.username, 'instance:variableChange', req.ip);
         res.json({ success: true });
     } catch (error) {
-        console.error('Error updating environment variable:', error);
+        log.error('Error updating environment variable:', error);
         res.status(500).json({
             error: 'Failed to update environment variable',
             details: error.message
@@ -141,12 +140,12 @@ router.get('/instances/startup/changeimage/:id', async (req, res) => {
             return res.status(403).send('Unauthorized access to this instance.');
         }
 
-        if(!instance.suspended) {
+        if (!instance.suspended) {
             instance.suspended = false;
             db.set(id + '_instance', instance);
         }
     
-        if(instance.suspended === true) {
+        if (instance.suspended === true) {
             return res.redirect('../../instance/' + id + '/suspended');
         }
 
@@ -171,7 +170,7 @@ router.get('/instances/startup/changeimage/:id', async (req, res) => {
         logAudit(req.user.userId, req.user.username, 'instance:imageChange', req.ip);
         res.status(201).redirect(`/instance/${id}/startup`);
     } catch (error) {
-        console.error('Error changing instance image:', error);
+        log.error('Error changing instance image:', error);
         res.status(500).json({
             error: 'Failed to change container image',
             details: error.response ? error.response.data : 'No additional error info'

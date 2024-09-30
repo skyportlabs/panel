@@ -3,6 +3,7 @@ const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { createFile, editFile } = require('../../utils/fileHelper');
+const log = new (require('cat-loggr'))();
 
 router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
     if (!req.user) return res.redirect('/');
@@ -10,7 +11,7 @@ router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
     const { id } = req.params;
 
     const instance = await db.get(id + '_instance').catch(err => {
-        console.error('Failed to fetch instance:', err);
+        log.error('Failed to fetch instance:', err);
         return null;
     });
 
@@ -21,12 +22,12 @@ router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-    if(!instance.suspended) {
+    if (!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
-    if(instance.suspended === true) {
+    if (instance.suspended === true) {
         return res.redirect('../../instance/' + id + '/suspended');
     }
 
@@ -35,6 +36,5 @@ router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
 
     res.status(200).send('OK');
 });
-
 
 module.exports = router;

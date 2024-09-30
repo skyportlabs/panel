@@ -4,6 +4,7 @@ const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditLog.js');
 const { isAdmin } = require('../../utils/isAdmin.js');
+const log = new (require('cat-loggr'))();
 
 // we forgot checkNodeStatus
 async function checkNodeStatus(node) {
@@ -38,7 +39,7 @@ async function checkNodeStatus(node) {
       throw new Error('Invalid response structure');
     }
   } catch (error) {
-    console.error(`Error checking status for node ${node.id}: ${error.message}`);
+    log.error(`Error checking status for node ${node.id}: ${error.message}`);
 
     node.status = 'Offline';
     await db.set(`${node.id}_node`, node);
@@ -60,7 +61,7 @@ async function deleteInstance(instance) {
     
     await db.delete(instance.ContainerId + '_instance');
   } catch (error) {
-    console.error(`Error deleting instance ${instance.ContainerId}:`, error);
+    log.error(`Error deleting instance ${instance.ContainerId}:`, error);
     throw error;
   }
 }
@@ -118,7 +119,7 @@ router.get('/admin/instance/delete/:id', isAdmin, async (req, res) => {
     logAudit(req.user.userId, req.user.username, 'instance:delete', req.ip);
     res.redirect('/admin/instances');
   } catch (error) {
-    console.error('Error in delete instance endpoint:', error);
+    log.error('Error in delete instance endpoint:', error);
     res.status(500).send('An error occurred while deleting the instance');
   }
 });
@@ -134,7 +135,7 @@ router.get('/admin/instances/purge/all', isAdmin, async (req, res) => {
     await db.delete('instances');
     res.redirect('/admin/instances');
   } catch (error) {
-    console.error('Error in purge all instances endpoint:', error);
+    log.error('Error in purge all instances endpoint:', error);
     res.status(500).send('An error occurred while purging all instances');
   }
 });
@@ -165,7 +166,7 @@ router.post('/admin/instances/suspend/:id', isAdmin, async (req, res) => {
     logAudit(req.user.userId, req.user.username, 'instance:suspend', req.ip);
     res.redirect('/admin/instances');
   } catch (error) {
-    console.error('Error in suspend instance endpoint:', error);
+    log.error('Error in suspend instance endpoint:', error);
     res.status(500).send('An error occurred while suspending the instance');
   }
 });
@@ -199,7 +200,7 @@ router.post('/admin/instances/unsuspend/:id', isAdmin, async (req, res) => {
 
     res.redirect('/admin/instances');
   } catch (error) {
-    console.error('Error in unsuspend instance endpoint:', error);
+    log.error('Error in unsuspend instance endpoint:', error);
     res.status(500).send('An error occurred while unsuspending the instance');
   }
 });

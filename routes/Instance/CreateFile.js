@@ -23,12 +23,12 @@ router.post("/instance/:id/files/create/:filename", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-    if(!instance.suspended) {
+    if (!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
-    if(instance.suspended === true) {
+    if (instance.suspended === true) {
         return res.redirect('../../instance/' + id + '/suspended');
     }
 
@@ -68,12 +68,12 @@ router.get("/instance/:id/files/create", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-    if(!instance.suspended) {
+    if (!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
-    if(instance.suspended === true) {
+    if (instance.suspended === true) {
         return res.redirect('../../instance/' + id + '/suspended');
     }
 

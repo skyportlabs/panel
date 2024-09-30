@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditLog.js');
 const { isAdmin } = require('../../utils/isAdmin.js');
+const log = new (require('cat-loggr'))();
 
 router.get('/admin/images', isAdmin, async (req, res) => {
   const images = await db.get('images') || [];
@@ -24,7 +25,7 @@ router.post('/admin/images/upload', isAdmin, async (req, res) => {
     logAudit(req.user.userId, req.user.username, 'image:upload', req.ip);
     res.status(200).send('Image uploaded successfully.');
   } catch (err) {
-    console.error('Error uploading image:', err);
+    log.error('Error uploading image:', err);
     res.status(500).send('Error uploading image.');
   }
 });
@@ -38,7 +39,7 @@ router.post('/admin/images/delete', isAdmin, async (req, res) => {
     logAudit(req.user.userId, req.user.username, 'image:delete', req.ip);
     res.status(200).send('Image deleted successfully.');
   } catch (err) {
-    console.error('Error deleting image:', err);
+    log.error('Error deleting image:', err);
     res.status(500).send('Error deleting image.');
   }
 });

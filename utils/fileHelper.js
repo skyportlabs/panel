@@ -1,4 +1,5 @@
 const axios = require('axios');
+const log = new (require('cat-loggr'))();
 
 class FileOperations {
   constructor(instance) {
@@ -21,7 +22,7 @@ class FileOperations {
       });
       return response.data;
     } catch (error) {
-      console.error(`Error in ${method} request to ${endpoint}:`, error);
+      log.error(`Error in ${method} request to ${endpoint}:`, error);
       return null;
     }
   }

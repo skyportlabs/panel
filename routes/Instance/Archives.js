@@ -65,14 +65,14 @@ router.get("/instance/:id/archives", async (req, res) => {
                 });
             } catch (error) {
                 const errorMessage = error.response?.data?.message || 'Connection to node failed.';
-                console.error('Error fetching archives from node:', errorMessage);
+                log.error('Error fetching archives from node:', errorMessage);
                 res.status(500).send({ message: errorMessage });
             }
         } else {
             res.status(500).send('Invalid instance node configuration');
         }
     } catch (err) {
-        console.error('Error fetching instance or settings:', err);
+        log.error('Error fetching instance or settings:', err);
         res.status(500).send('Server error');
     }
 });
@@ -99,12 +99,12 @@ router.post('/instance/:id/archives/create', async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-    if(!instance.suspended) {
+    if (!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
-    if(instance.suspended === true) {
+    if (instance.suspended === true) {
         return res.redirect('../../instance/' + id + '/suspended');
     }
 
@@ -149,13 +149,12 @@ router.post('/instance/:id/archives/delete/:archivename', async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-
-    if(!instance.suspended) {
+    if (!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
-    if(instance.suspended === true) {
+    if (instance.suspended === true) {
         return res.redirect('../../instance/' + id + '/suspended');
     }
 
@@ -199,13 +198,12 @@ router.post('/instance/:id/archives/rollback/:archivename', async (req, res) => 
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-
-    if(!instance.suspended) {
+    if (!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
-    if(instance.suspended === true) {
+    if (instance.suspended === true) {
         return res.redirect('../../instance/' + id + '/suspended');
     }
 

@@ -7,15 +7,12 @@
 
 const express = require('express');
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
-const axios = require('axios');
 const { db } = require('../../handlers/db.js');
-const config = require('../../config.json');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto'); 
 const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
 const saltRounds = process.env.SALT_ROUNDS || 10;
+const log = new (require('cat-loggr'))();
 
 async function doesUserExist(username) {
     const users = await db.get('users');
@@ -70,7 +67,7 @@ router.post('/update-username', async (req, res) => {
         // Logout the user
         req.logout(async (err) => {
             if (err) {
-                //console.error('Error logging out user:', err);
+                //log.error('Error logging out user:', err);
                 //return res.status(500).send('Error logging out user.');
                 next(err);
             }
@@ -104,7 +101,7 @@ router.post('/update-username', async (req, res) => {
             res.status(200).json({ success: true, username: newUsername });
         });
     } catch (error) {
-        console.error('Error updating username:', error);
+        log.error('Error updating username:', error);
         res.status(500).send('Internal Server Error');
     }
 });
@@ -144,7 +141,7 @@ router.get('/enable-2fa', async (req, res) => {
             });
         });
     } catch (error) {
-        console.error('Error enabling 2FA:', error);
+        log.error('Error enabling 2FA:', error);
         res.status(500).send('Internal Server Error');
     }
 });
@@ -180,7 +177,7 @@ router.post('/verify-2fa', async (req, res) => {
             res.status(400).send('Invalid token');
         }
     } catch (error) {
-        console.error('Error verifying 2FA:', error);
+        log.error('Error verifying 2FA:', error);
         res.status(500).send('Internal Server Error');
     }
 });
@@ -206,7 +203,7 @@ router.post('/disable-2fa', async (req, res) => {
 
         res.redirect('/account');
     } catch (error) {
-        console.error('Error disabling 2FA:', error);
+        log.error('Error disabling 2FA:', error);
         res.status(500).send('Internal Server Error');
     }
 });
@@ -251,7 +248,7 @@ router.post('/change-password', async (req, res) => {
         // Log the user out
         req.logout(async (err) => {
             if (err) {
-                //console.error('Error logging out user:', err);
+                //log.error('Error logging out user:', err);
                 //return res.status(500).send('Error logging out user.');
                 next(err);
             }
@@ -260,7 +257,7 @@ router.post('/change-password', async (req, res) => {
         // Redirect the user to the login page with a success message
         res.status(200).redirect('/login?err=UpdatedCredentials');
     } catch (error) {
-        console.error('Error changing password:', error);
+        log.error('Error changing password:', error);
         res.status(500).send('Internal Server Error');
     }
 });
@@ -294,7 +291,7 @@ router.post('/validate-password', async (req, res) => {
             res.status(404).json({ message: 'User not found or password not available.' });
         }
     } catch (error) {
-        console.error('Error validating password:', error);
+        log.error('Error validating password:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });

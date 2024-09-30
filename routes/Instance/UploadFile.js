@@ -7,6 +7,7 @@ const fs = require('node:fs');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
+const log = new (require('cat-loggr'))();
 
 router.post("/instance/:id/files/upload", upload.array('files'), async (req, res) => {
     if (!req.user) {
@@ -57,12 +58,12 @@ router.post("/instance/:id/files/upload", upload.array('files'), async (req, res
         });
         res.json({ message: 'Files uploaded successfully', details: response.data });
     } catch (error) {
-        console.error(error);
+        log.error(error);
         res.status(500).send('Failed to upload files to node.');
     } finally {
         // Clean up temporary files
         files.forEach(file => fs.unlink(file.path, err => {
-            if (err) console.error(`Failed to delete temporary file: ${file.path}`, err);
+            if (err) log.error(`Failed to delete temporary file: ${file.path}`, err);
         }));
     }
 });

@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const { sendPasswordResetEmail } = require('../../../handlers/email.js');
 const { db } = require('../../../handlers/db.js');
+const log = new (require('cat-loggr'))();
 
 const saltRounds = 10;
 
@@ -27,7 +28,7 @@ async function validateApiKey(req, res, next) {
     req.apiKey = validKey;
     next();
   } catch (error) {
-    console.error('Error validating API key:', error);
+    log.error('Error validating API key:', error);
     res.status(500).json({ error: 'Failed to validate API key' });
   }
 }
@@ -38,7 +39,7 @@ router.get('/api/users', validateApiKey, async (req, res) => {
     const users = await db.get('users') || [];
     res.json(users);
   } catch (error) {
-    console.error('Error retrieving users:', error);
+    log.error('Error retrieving users:', error);
     res.status(500).json({ error: 'Failed to retrieve users' });
   }
 });
@@ -68,7 +69,7 @@ router.post('/api/getUser', validateApiKey, async (req, res) => {
     
     res.json(user);
   } catch (error) {
-    console.error('Error retrieving user:', error);
+    log.error('Error retrieving user:', error);
     res.status(500).json({ error: 'Failed to retrieve user' });
   }
 });
@@ -104,7 +105,7 @@ router.post('/api/auth/create-user', validateApiKey, async (req, res) => {
 
     res.status(201).json({ userId: newUserId, username, email, admin: user.admin });
   } catch (error) {
-    console.error('Error creating user:', error);
+    log.error('Error creating user:', error);
     res.status(500).json({ error: 'Failed to create user' });
   }
 });
@@ -132,7 +133,7 @@ router.post('/api/auth/reset-password', validateApiKey, async (req, res) => {
       res.status(200).json({ password: resetToken });
     }
   } catch (error) {
-    console.error('Error handling password reset:', error);
+    log.error('Error handling password reset:', error);
     res.status(500).json({ error: 'Failed to reset password' });
   }
 });
@@ -143,7 +144,7 @@ router.get('/api/instances', validateApiKey, async (req, res) => {
     const instances = await db.get('instances') || [];
     res.json(instances);
   } catch (error) {
-    console.error('Error retrieving instances:', error);
+    log.error('Error retrieving instances:', error);
     res.status(500).json({ error: 'Failed to retrieve instances' });
   }
 });
@@ -183,15 +184,15 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
       if (++attempts < maxAttempts) {
         setTimeout(checkState, delay);
       } else {
-        console.log(`Container ${volumeId} failed to become active after ${maxAttempts} attempts.`);
+        log.log(`Container ${volumeId} failed to become active after ${maxAttempts} attempts.`);
         await updateInstanceState(volumeId, 'FAILED', containerId, userId);
       }
     } catch (error) {
-      console.error(`Error checking state for container ${volumeId}:`, error);
+      log.error(`Error checking state for container ${volumeId}:`, error);
       if (++attempts < maxAttempts) {
         setTimeout(checkState, delay);
       } else {
-        console.log(`Container ${volumeId} state check failed after ${maxAttempts} attempts.`);
+        log.log(`Container ${volumeId} state check failed after ${maxAttempts} attempts.`);
         await updateInstanceState(volumeId, 'FAILED', null, userId);
       }
     }
@@ -272,7 +273,7 @@ router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
       state: 'INSTALLING',
     });
   } catch (error) {
-    console.error('Error deploying instance:', error);
+    log.error('Error deploying instance:', error);
     res.status(500).json({
       error: 'Failed to create container',
       details: error.response ? error.response.data : 'No additional error info',
@@ -408,7 +409,7 @@ router.delete('/api/instance/delete', validateApiKey, async (req, res) => {
     await deleteInstance(instance);
     res.status(200).json({ message: 'The instance has been successfully deleted.' });
   } catch (error) {
-    console.error('Error deleting instance:', error);
+    log.error('Error deleting instance:', error);
     res.status(500).json({ error: 'Failed to delete instance' });
   }
 });
@@ -431,7 +432,7 @@ router.post('/api/getUserInstance', validateApiKey, async (req, res) => {
     const userInstances = await db.get(`${userId}_instances`) || [];
     res.json(userInstances);
   } catch (error) {
-    console.error('Error retrieving user instances:', error);
+    log.error('Error retrieving user instances:', error);
     res.status(500).json({ error: 'Failed to retrieve user instances' });
   }
 });
@@ -454,7 +455,7 @@ router.post('/api/getInstance', validateApiKey, async (req, res) => {
     const instance = await db.get(id + '_instance');
     res.json(instance);
   } catch (error) {
-    console.error('Error retrieving instance:', error);
+    log.error('Error retrieving instance:', error);
     res.status(500).json({ error: 'Failed to retrieve instance' });
   }
 });
@@ -465,7 +466,7 @@ router.get('/api/images', validateApiKey, async (req, res) => {
     const images = await db.get('images') || [];
     res.json(images);
   } catch (error) {
-    console.error('Error retrieving images:', error);
+    log.error('Error retrieving images:', error);
     res.status(500).json({ error: 'Failed to retrieve images' });
   }
 });
@@ -475,7 +476,7 @@ router.get('/api/name', validateApiKey, async (req, res) => {
     const name = await db.get('name') || 'Skyport';
     res.json({ name });
   } catch (error) {
-    console.error('Error retrieving name:', error);
+    log.error('Error retrieving name:', error);
     res.status(500).json({ error: 'Failed to retrieve name' });
   }
 });
@@ -487,7 +488,7 @@ router.get('/api/nodes', validateApiKey, async (req, res) => {
     const nodeDetails = await Promise.all(nodes.map(id => db.get(id + '_node')));
     res.json(nodeDetails);
   } catch (error) {
-    console.error('Error retrieving nodes:', error);
+    log.error('Error retrieving nodes:', error);
     res.status(500).json({ error: 'Failed to retrieve nodes' });
   }
 });
@@ -562,7 +563,7 @@ async function deleteInstance(instance) {
     // Delete instance-specific data
     await db.delete(instance.ContainerId + '_instance');
   } catch (error) {
-    console.error(`Error deleting instance ${instance.ContainerId}:`, error);
+    log.error(`Error deleting instance ${instance.ContainerId}:`, error);
     throw error;
   }
 }

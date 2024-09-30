@@ -3,6 +3,7 @@ const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditLog.js');
 const { isAdmin } = require('../../utils/isAdmin.js');
+const log = new (require('cat-loggr'))();
 
 const router = express.Router();
 
@@ -58,7 +59,7 @@ router.get('/instances/redeploy/:id', isAdmin, async (req, res) => {
             volumeId: response.data.volumeId
         });
     } catch (error) {
-        console.error('Error redeploying instance:', error);
+        log.error('Error redeploying instance:', error);
         res.status(500).json({
             error: 'Failed to redeploy container',
             details: error.response ? error.response.data : 'No additional error info'

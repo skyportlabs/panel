@@ -112,6 +112,6 @@ async function main() {
 }
 
 main().catch(err => {
-    console.error('Unexpected error:', err);
+    log.error('Unexpected error:', err);
     rl.close();
 });

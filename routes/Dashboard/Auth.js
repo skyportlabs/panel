@@ -7,7 +7,7 @@
 
 const express = require('express');
 const passport = require('passport');
-const config = require('../../config.json');
+const log = new (require('cat-loggr'))();
 const LocalStrategy = require('passport-local').Strategy;
 const { v4: uuidv4 } = require('uuid');
 const { db } = require('../../handlers/db.js');
@@ -119,7 +119,7 @@ async function addUserToUsersTable(username, email, password, verified) {
 
     return users;
   } catch (error) {
-    console.error('Error adding user to database:', error);
+    log.error('Error adding user to database:', error);
     throw error;
   }
 }
@@ -220,7 +220,7 @@ router.post('/auth/login', passport.authenticate('local', {
       return res.redirect('/login?err=InvalidCredentials&state=failed');
     }
   } catch (error) {
-    console.error('Error during login:', error);
+    log.error('Error during login:', error);
     return res.status(500).send('Internal Server Error');
   }
 });
@@ -282,7 +282,7 @@ router.get('/verify/:token', async (req, res) => {
       res.redirect('/login?msg=InvalidVerificationToken');
     }
   } catch (error) {
-    console.error('Error verifying email:', error);
+    log.error('Error verifying email:', error);
     res.status(500).send('Internal server error');
   }
 });
@@ -293,7 +293,7 @@ router.get('/resend-verification', async (req, res) => {
       req
     });
   } catch (error) {
-    console.error('Error fetching name or logo:', error);
+    log.error('Error fetching name or logo:', error);
     res.status(500).send('Internal server error');
   }
 });
@@ -326,7 +326,7 @@ router.post('/resend-verification', async (req, res) => {
 
     res.redirect('/login?msg=VerificationEmailResent');
   } catch (error) {
-    console.error('Error resending verification email:', error);
+    log.error('Error resending verification email:', error);
     res.status(500).send('Internal server error');
   }
 });
@@ -370,7 +370,7 @@ async function initializeRoutes() {
                 res.redirect('/instances');
               }
             } catch (error) {
-              console.error('Error fetching name or logo:', error);
+              log.error('Error fetching name or logo:', error);
               res.status(500).send('Internal server error');
             }
           });
@@ -398,7 +398,7 @@ async function initializeRoutes() {
                 res.redirect('/login?msg=AccountCreated');
               }
             } catch (error) {
-              console.error('Error handling registration:', error);
+              log.error('Error handling registration:', error);
               res.status(500).send('Internal server error');
             }
           });
@@ -409,7 +409,7 @@ async function initializeRoutes() {
         }
       }
     } catch (error) {
-      console.error('Error initializing routes:', error);
+      log.error('Error initializing routes:', error);
     }
   }
   await updateRoutes();
@@ -424,7 +424,7 @@ router.get('/auth/reset-password', async (req, res) => {
       req
     });
   } catch (error) {
-    console.error('Error rendering reset password page:', error);
+    log.error('Error rendering reset password page:', error);
     res.status(500).send('Internal server error');
   }
 });
@@ -449,7 +449,7 @@ router.post('/auth/reset-password', async (req, res) => {
 
     res.redirect('/auth/reset-password?msg=PasswordSent');
   } catch (error) {
-    console.error('Error handling password reset:', error);
+    log.error('Error handling password reset:', error);
     res.redirect('/auth/reset-password?msg=PasswordResetFailed');
   }
 });
@@ -471,7 +471,7 @@ router.get('/auth/reset/:token', async (req, res) => {
       token: token
     });
   } catch (error) {
-    console.error('Error rendering password reset form:', error);
+    log.error('Error rendering password reset form:', error);
     res.status(500).send('Internal server error');
   }
 });
@@ -500,7 +500,7 @@ router.post('/auth/reset/:token', async (req, res) => {
 
     res.redirect('/login?msg=PasswordReset&state=success');
   } catch (error) {
-    console.error('Error handling password reset:', error);
+    log.error('Error handling password reset:', error);
     res.redirect('/login?msg=PasswordReset&state=failed');
   }
 });
@@ -528,7 +528,7 @@ router.get("/auth/logout", (req, res) => {
 });
 
 initializeRoutes().catch(error => {
-  console.error('Error initializing routes:', error);
+  log.error('Error initializing routes:', error);
 });
 
 module.exports = router;

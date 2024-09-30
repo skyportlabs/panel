@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isAdmin } = require('../../utils/isAdmin.js');
+const log = new (require('cat-loggr'))();
 
 router.get('/admin/auditlogs', isAdmin, async (req, res) => {
   try {
@@ -13,7 +14,7 @@ router.get('/admin/auditlogs', isAdmin, async (req, res) => {
       audits
     });
   } catch (err) {
-    console.error('Error fetching audits:', err);
+    log.error('Error fetching audits:', err);
     res.status(500).send('Internal Server Error');
   }
 });

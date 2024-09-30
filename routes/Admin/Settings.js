@@ -7,6 +7,7 @@ const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditLog.js');
 const { sendTestEmail } = require('../../handlers/email.js');
 const { isAdmin } = require('../../utils/isAdmin.js');
+const log = new (require('cat-loggr'))();
 
 // Configure multer for file upload
 const upload = multer({
@@ -45,7 +46,7 @@ router.get('/admin/settings/smtp', isAdmin, async (req, res) => {
     const smtpSettings = await db.get('smtp_settings') || {};
     res.render('admin/settings/smtp', { ...settings, smtpSettings });
   } catch (error) {
-    console.error('Error fetching SMTP settings:', error);
+    log.error('Error fetching SMTP settings:', error);
     res.status(500).send('Failed to fetch SMTP settings. Please try again later.');
   }
 });
@@ -63,7 +64,7 @@ router.post('/admin/settings/toggle/force-verify', isAdmin, async (req, res) => 
     logAudit(req.user.userId, req.user.username, 'force-verify:edit', req.ip);
     res.redirect('/admin/settings');
   } catch (err) {
-    console.error('Error toggling force verify:', err);
+    log.error('Error toggling force verify:', err);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -77,7 +78,7 @@ router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
     logAudit(req.user.userId, req.user.username, 'name:edit', req.ip);
     res.redirect(`/admin/settings?changednameto=${name}`);
   } catch (err) {
-    console.error('Error changing name:', err);
+    log.error('Error changing name:', err);
     res.status(500).send("Database error");
   }
 });
@@ -92,7 +93,7 @@ router.post('/admin/settings/change/theme/color', isAdmin, async (req, res) => {
     logAudit(req.user.userId, req.user.username, 'theme:edit', req.ip);
     res.redirect('/admin/settings/theme?changedcolor=' + (buttoncolor || paneltheme));
   } catch (err) {
-    console.error('Error updating theme:', err);
+    log.error('Error updating theme:', err);
     res.status(500).send("File writing error");
   }
 });
@@ -105,7 +106,7 @@ router.post('/admin/settings/toggle/theme/footer', isAdmin, async (req, res) => 
     logAudit(req.user.userId, req.user.username, `footer:${settings.footer ? 'enabled' : 'disabled'}`, req.ip);
     res.redirect('/admin/settings/theme');
   } catch (err) {
-    console.error('Error toggling footer:', err);
+    log.error('Error toggling footer:', err);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -125,7 +126,7 @@ router.post('/admin/settings/saveSmtpSettings', isAdmin, async (req, res) => {
     logAudit(req.user.userId, req.user.username, 'SMTP:edit', req.ip);
     res.redirect('/admin/settings/smtp?msg=SmtpSaveSuccess');
   } catch (error) {
-    console.error('Error saving SMTP settings:', error);
+    log.error('Error saving SMTP settings:', error);
     res.redirect('/admin/settings/smtp?err=SmtpSaveFailed');
   }
 });
@@ -136,7 +137,7 @@ router.post('/sendTestEmail', isAdmin, async (req, res) => {
     await sendTestEmail(recipientEmail);
     res.redirect('/admin/settings/smtp?msg=TestemailSentsuccess');
   } catch (error) {
-    console.error('Error sending test email:', error);
+    log.error('Error sending test email:', error);
     res.redirect('/admin/settings/smtp?err=TestemailSentfailed');
   }
 });
@@ -163,7 +164,7 @@ router.post('/admin/settings/change/logo', isAdmin, upload.single('logo'), async
       res.status(400).send('Invalid request');
     }
   } catch (err) {
-    console.error('Error processing logo change:', err);
+    log.error('Error processing logo change:', err);
     res.status(500).send("Error processing logo change: " + err.message);
   }
 });
@@ -176,7 +177,7 @@ router.post('/admin/settings/toggle/register', isAdmin, async (req, res) => {
     logAudit(req.user.userId, req.user.username, 'register:edit', req.ip);
     res.redirect('/admin/settings');
   } catch (err) {
-    console.error('Error toggling registration:', err);
+    log.error('Error toggling registration:', err);
     res.status(500).send('Internal Server Error');
   }
 });

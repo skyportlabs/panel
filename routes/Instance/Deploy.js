@@ -5,6 +5,7 @@ const { logAudit } = require('../../handlers/auditLog.js');
 const { checkContainerState } = require('../../utils/checkstate.js');
 const { v4: uuid } = require('uuid');
 const { isAdmin } = require('../../utils/isAdmin.js');
+const log = new (require('cat-loggr'))();
 
 const router = express.Router();
 
@@ -63,7 +64,7 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
       state: 'INSTALLING'
     });
   } catch (error) {
-    console.error('Error deploying instance:', error);
+    log.error('Error deploying instance:', error);
     res.status(500).json({
       error: 'Failed to create container',
       details: error.response ? error.response.data : 'No additional error info',

@@ -1,4 +1,5 @@
 const { db } = require('./db');
+const log = new (require('cat-loggr'))();
 
 function AdminAudit(userId, username, action, ip) {
     this.userId = userId;
@@ -16,7 +17,7 @@ async function logAudit(userId, username, action, ip) {
         const data = await db.get('audits');
         audits = data ? JSON.parse(data) : [];
     } catch (err) {
-        console.error('Error fetching audits:', err);
+        log.error('Error fetching audits:', err);
     }
 
     const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -27,7 +28,7 @@ async function logAudit(userId, username, action, ip) {
     try {
         await db.set('audits', JSON.stringify(audits));
     } catch (err) {
-        console.error('Error saving audits:', err);
+        log.error('Error saving audits:', err);
     }
 }
 

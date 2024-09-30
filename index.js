@@ -125,7 +125,7 @@ async function updateConfig() {
     replaceRandomValues(config);
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8');
   } catch (error) {
-    console.error('Error updating config:', error);
+    log.error('Error updating config:', error);
   }
 }
 
@@ -144,7 +144,7 @@ app.use(async (req, res, next) => {
     res.locals.logo = settings.logo;
     next();
   } catch (error) {
-    console.error('Error fetching settings:', error);
+    log.error('Error fetching settings:', error);
     next(error);
   }
 });

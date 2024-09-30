@@ -5,6 +5,7 @@ const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditLog.js');
 const { isAdmin } = require('../../utils/isAdmin.js');
+const log = new (require('cat-loggr'))();
 
 async function checkNodeStatus(node) {
   try {
@@ -156,7 +157,7 @@ router.post('/nodes/delete', isAdmin, async (req, res) => {
         try {
           await axios.get(`http://Skyport:${node.apiKey}@${node.address}:${node.port}/instances/purge/all`);
         } catch (apiError) {
-          console.error('Error calling purge API:', apiError);
+          log.error('Error calling purge API:', apiError);
         }
       }
     }
@@ -168,7 +169,7 @@ router.post('/nodes/delete', isAdmin, async (req, res) => {
     logAudit(req.user.userId, req.user.username, 'node:delete', req.ip);
     res.status(200).json({ success: true });
   } catch (error) {
-    console.error('Error deleting node:', error);
+    log.error('Error deleting node:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -211,7 +212,7 @@ router.post('/nodes/configure', async (req, res) => {
   
       res.status(200).json({ message: 'Node configured successfully' });
     } catch (error) {
-      console.error('Error configuring node:', error);
+      log.error('Error configuring node:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
@@ -245,7 +246,7 @@ router.get('/admin/node/:id/configure-command', isAdmin, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error generating configure command:', error);
+    log.error('Error generating configure command:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

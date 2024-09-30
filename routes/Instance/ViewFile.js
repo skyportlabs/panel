@@ -3,6 +3,7 @@ const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { fetchFileContent } = require('../../utils/fileHelper');
+const log = new (require('cat-loggr'))();
 
 const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
@@ -16,7 +17,7 @@ router.get("/instance/:id/files/view/:file", async (req, res) => {
     if (!id || !file) return res.redirect('../instances');
 
     const instance = await db.get(id + '_instance').catch(err => {
-        console.error('Failed to fetch instance:', err);
+        log.error('Failed to fetch instance:', err);
         return null;
     });
 
