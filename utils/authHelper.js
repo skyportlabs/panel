@@ -1,40 +1,27 @@
 const { db } = require('../handlers/db.js');
 
-/**
- * Checks if the user is authorized to access the specified container ID.
- * @param {string} userId - The unique identifier of the user.
- * @param {string} containerId - The container ID to check authorization for.
- * @returns {Promise<boolean>} True if the user is authorized, otherwise false.
- */
-async function isUserAuthorizedForContainer(userId, containerId) {
-    try {
-        const userInstances = await db.get(userId + '_instances') || [];
-        const users = await db.get('users') || [];
-
-        const user = users.find(user => user.userId === userId);
-        if (!user) {
-            console.error('User not found:', userId);
-            return false;
-        }
-
-        if (user.admin) {
-            return true;
-        }
-        const subUserInstances = user.accessTo || [];
-        const isInSubUserInstances = subUserInstances.includes(containerId);
-
-        const isInUserInstances = userInstances.some(instance => instance.Id === containerId);
-        if (isInSubUserInstances || isInUserInstances) {
-            return true;
-        } else {
-            console.error('User not authorized for container:', containerId);
-            return false;
-        }
-    } catch (error) {
-        console.error('Error fetching user instances:', error);
-        return false;
+    const ಠᴗಠ = z.find(ʘ‿ʘ => ʘ‿ʘ.userId === m);
+    if (!ಠᴗಠ) {
+      x.error('User not found:', m);
+      return false;
     }
-}
+
+    if (ಠᴗಠ.admin) return true;
+    
+    const ಠωಠ = ಠᴗಠ.accessTo || [];
+    
+    return [
+      () => ಠωಠ.includes(h),
+      () => ಠ‿ಠ.some(b => b.Id === h)
+    ].reduce((ಠ‿ಠ, b) => ಠ‿ಠ || b(), false) || (
+      x.error('User not authorized for container:', h),
+      false
+    );
+  } catch (ಠ_ಥ) {
+    x.error('Error fetching user instances:', ಠ_ಥ);
+    return false;
+  }
+};
 
 module.exports = {
     isUserAuthorizedForContainer
