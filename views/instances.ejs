@@ -166,48 +166,65 @@
       }
 
       socket.onmessage = event => {
+      let stats;
 
-        let stats;
-
-        try {
-          stats = JSON.parse(event.data);
-        } catch (e) {
-          console.error('Error parsing JSON:', e);
-          console.log('Raw data:', event.data);
-          return;
-        }
-
-        if (stats.error) {
-          console.error('Error fetching stats:', stats.error);
-          return;
-        }
-
-        // Update RAM usage
-        const ramUsageRaw = stats.memory_stats.usage / 1024;
-        const ramUsage = isNaN(ramUsageRaw) ? '0 B' : formatBytes(ramUsageRaw);
-        const ramLimitRaw = stats.memory_stats.limit / 1024;
-        const ramLimit = isNaN(ramLimitRaw) ? '0 B' : formatBytes(ramLimitRaw);
-        ramUsageElement.textContent = ramUsage + ' <%= req.translations.ramUsage %>';
-
-        // Determine status based on RAM usage
-        if (isNaN(ramUsageRaw)) {
-          statusElement.className = 'text-neutral-500';
-          statusElement.textContent = 'Offline';
-        } else if (ramUsageRaw > 1) {
+      try {
+        stats = JSON.parse(event.data);
+      } catch (e) {
+        if (event.data.includes('The skyportd instance appears to be down. Retrying...')) {
           statusBg.classList.remove('bg-neutral-600/20');
-          statusBg.classList.add('bg-emerald-600/10');
-          statusElement.className = 'text-emerald-500';
-          statusElement.textContent = 'Online';
+          statusBg.classList.add('bg-yellow-600/10');
+          statusElement.className = 'text-orange-500';
+          statusElement.textContent = 'Skyportd is Offline!';
+          socket.close();
+          return;
+        } else if (event.data.includes('Container not found')) {
+          statusBg.classList.remove('bg-neutral-600/20');
+          statusBg.classList.add('bg-yellow-600/10');
+          statusElement.className = 'text-orange-500';
+          statusElement.textContent = 'Container not found!';
+          socket.close();
+          return null;
         }
+      }
 
-        // Update CPU usage
-        const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
-        const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
-        const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta))
-          ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%'
-          : '0%';
-        cpuUsageElement.textContent = cpuUsagePercent + ' <%= req.translations.cpuUsage %>';
-      };
-    });
+      if (stats && stats.error) {
+        console.error('Error fetching stats:', stats.error);
+        return;
+      }
+
+      if (!stats || stats.error) {
+        ramUsageElement.textContent = '0 B <%= req.translations.ramUsage %>';
+        cpuUsageElement.textContent = '0% <%= req.translations.cpuUsage %>';
+        return;
+      }
+
+      const ramUsageRaw = stats.memory_stats.usage / 1024;
+      const ramUsage = isNaN(ramUsageRaw) ? '0 B' : formatBytes(ramUsageRaw);
+      const ramLimitRaw = stats.memory_stats.limit / 1024;
+      const ramLimit = isNaN(ramLimitRaw) ? '0 B' : formatBytes(ramLimitRaw);
+      ramUsageElement.textContent = ramUsage + ' <%= req.translations.ramUsage %>';
+
+
+      if (isNaN(ramUsageRaw)) {
+        statusElement.className = 'text-neutral-500'
+        statusBg.classList.remove('bg-neutral-600/20');
+        statusBg.classList.add('bg-red-700/30');
+        statusElement.classList.add('text-red-500');
+        statusElement.textContent = 'Offline';
+      } else if (ramUsageRaw > 1) {
+        statusBg.classList.remove('bg-neutral-600/20');
+        statusBg.classList.add('bg-emerald-600/10');
+        statusElement.className = 'text-emerald-500';
+        statusElement.textContent = 'Online';
+      }
+
+      const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - stats.precpu_stats.cpu_usage.total_usage;
+      const systemCpuDelta = stats.cpu_stats.system_cpu_usage - stats.precpu_stats.system_cpu_usage;
+      const cpuUsagePercent = (cpuDelta && systemCpuDelta && !isNaN(cpuDelta) && !isNaN(systemCpuDelta))
+        ? ((cpuDelta / systemCpuDelta) * 100).toFixed(2) + '%'
+        : '0%';
+      cpuUsageElement.textContent = cpuUsagePercent + ' <%= req.translations.cpuUsage %>';
+    }});
   });
 </script>
