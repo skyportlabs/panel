@@ -3,7 +3,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
-const { logAudit } = require('../../handlers/auditlog.js');
+const { logAudit } = require('../../handlers/auditLog.js');
 const { isAdmin } = require('../../utils/isAdmin.js');
 
 async function checkNodeStatus(node) {

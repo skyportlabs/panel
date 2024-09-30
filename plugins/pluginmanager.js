@@ -2,13 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const { db, userdb } = require('../handlers/db.js');
 const CatLoggr = require('cat-loggr');
 const log = new CatLoggr();
+const { isAdmin } = require('../utils/isAdmin');
 
 let pluginList = [];
 let pluginNames = [];
-let pluginsidebar = {};
+let pluginSidebar = {};
 let sidebar = {};
 
 const pluginsDir = path.join(__dirname, '../plugins');
@@ -32,11 +32,10 @@ async function writePluginsJson(plugins) {
     }
 }
 
-
 async function loadAndActivatePlugins() {
     pluginList = [];
     pluginNames = [];
-    pluginsidebar = {};
+    pluginSidebar = {};
     sidebar = {};
 
     Object.keys(require.cache).forEach(key => {
@@ -84,7 +83,7 @@ async function loadAndActivatePlugins() {
                 const pluginModule = require(mainFilePath);
 
                 if (typeof pluginModule.register === 'function') {
-                    pluginModule.register(global.pluginmanager);
+                    pluginModule.register(global.pluginManager);
                 } else {
                     log.error(`Error: plugin ${manifest.name} has no 'register' function.`);
                 }
@@ -96,7 +95,7 @@ async function loadAndActivatePlugins() {
                 }
 
                 if (manifest.adminsidebar) {
-                    Object.assign(pluginsidebar, manifest.adminsidebar);
+                    Object.assign(pluginSidebar, manifest.adminsidebar);
                     Object.assign(sidebar, manifest.sidebar);
                 }
             } catch (error) {
@@ -104,13 +103,6 @@ async function loadAndActivatePlugins() {
             }
         }
     }
-}
-
-function isAdmin(req, res, next) {
-    if (!req.user || req.user.admin !== true) {
-        return res.redirect('../');
-    }
-    next();
 }
 
 router.get('/admin/plugins', isAdmin, async (req, res) => {
@@ -126,11 +118,9 @@ router.get('/admin/plugins', isAdmin, async (req, res) => {
     res.render('admin/plugins', {
         req,
         plugins: pluginList,
-        pluginsidebar,
+        pluginSidebar,
         enabledPlugins,
         user: req.user,
-    
-        
     });
 });
 
@@ -153,12 +143,10 @@ router.get('/admin/plugins/:dir/edit', isAdmin, async (req, res) => {
 
     res.render('admin/plugin', {
         req,
-        pluginsidebar,
+        pluginSidebar,
         dir,
         content: manifestJson,
         user: req.user,
-    
-        
     });
 });
 

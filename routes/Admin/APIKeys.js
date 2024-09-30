@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
-const { db } = require('../../handlers/db.js');
-const { logAudit } = require('../../handlers/auditlog.js');
-const { isAdmin } = require('../../utils/isAdmin.js');
+const { db } = require('../../handlers/db');
+const { logAudit } = require('../../handlers/auditLog');
+const { isAdmin } = require('../../utils/isAdmin');
 
 router.get('/admin/apikeys', isAdmin, async (req, res) => {
   try {
@@ -11,8 +11,6 @@ router.get('/admin/apikeys', isAdmin, async (req, res) => {
       req,
       user: req.user,
       apiKeys: await db.get('apiKeys') || [],
-  
-      
     });
   } catch (error) {
     res.status(500).json({ error: 'Failed to retrieve API keys' });

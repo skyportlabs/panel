@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('node:fs');
 const { db } = require('../../handlers/db.js');
-const { logAudit } = require('../../handlers/auditlog.js');
+const { logAudit } = require('../../handlers/auditLog.js');
 const { sendTestEmail } = require('../../handlers/email.js');
 const { isAdmin } = require('../../utils/isAdmin.js');
 

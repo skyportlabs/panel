@@ -22,7 +22,7 @@ async function validateApiKey(req, res, next) {
     const validKey = apiKeys.find(key => key.key === apiKey);
 
     if (!validKey) {
-      return res.status(401).json({ error: '' });
+      return res.status(401).json({ error: 'API Key Invalid' });
     }
 
     req.apiKey = validKey;
@@ -150,9 +150,6 @@ router.get('/api/instances', validateApiKey, async (req, res) => {
   }
 });
 
-
-
-
 /**
  * Checks the state of a container and updates the database accordingly.
  * @param {string} volumeId - The ID of the volume.
@@ -236,9 +233,6 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
 
   checkState();
 }
-
-
-
 
 router.post('/api/instances/deploy', validateApiKey, async (req, res) => {
   const { image, imagename, memory, cpu, ports, nodeId, name, user, primary, variables } = req.body;
@@ -588,7 +582,6 @@ router.delete('/api/nodes/delete', validateApiKey, async (req, res) => {
 });
 
 // Function
-
 function generateRandomCode(length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';

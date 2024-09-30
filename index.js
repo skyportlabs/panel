@@ -38,7 +38,7 @@ const analytics = require('./utils/analytics.js');
 
 const sqlite = require("better-sqlite3");
 const SqliteStore = require("better-sqlite3-session-store")(session);
-const sessionstorage = new sqlite("sessions.db");
+const sessionStorage = new sqlite("sessions.db");
 
 const { init } = require('./handlers/init.js');
 
@@ -47,7 +47,7 @@ const log = new CatLoggr();
 app.use(
   session({
     store: new SqliteStore({
-      client: sessionstorage,
+      client: sessionStorage,
       expired: {
         clear: true,
         intervalMs: 9000000
@@ -72,7 +72,6 @@ app.use(analytics);
 app.use(translationMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 const postRateLimiter = rateLimit({
   windowMs: 60 * 100,
@@ -137,7 +136,7 @@ app.use(async (req, res, next) => {
   try {
     const settings = await db.get('settings');
 
-    res.locals.languages = getlanguages();
+    res.locals.languages = getLanguages();
     res.locals.ogTitle = config.ogTitle;
     res.locals.ogDescription = config.ogDescription;
     res.locals.footer = settings.footer;
@@ -181,13 +180,13 @@ app.use(express.static('public'));
  * modular route definitions that can be independently maintained and easily scaled.
  */
 
-function getlanguages() {
+function getLanguages() {
   return fs.readdirSync(__dirname + '/lang').map(file => file.split('.')[0]);
 }
 
 app.get('/setLanguage', async (req, res) => {
   const lang = req.query.lang;
-  if (lang && getlanguages().includes(lang)) {
+  if (lang && getLanguages().includes(lang)) {
       res.cookie('lang', lang, { maxAge: 90000000, httpOnly: true, sameSite: 'strict' });
       req.user.lang = lang;
       res.json({ success: true });
@@ -219,7 +218,7 @@ function loadRoutes(directory) {
 loadRoutes(routesDir);
 
 // Plugin routes and views
-const pluginRoutes = require('./plugins/pluginmanager.js');
+const pluginRoutes = require('./plugins/pluginManager.js');
 app.use("/", pluginRoutes);
 const pluginDir = path.join(__dirname, 'plugins');
 const PluginViewsDir = fs.readdirSync(pluginDir).map(addonName => path.join(pluginDir, addonName, 'views'));

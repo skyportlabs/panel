@@ -1,9 +1,9 @@
 const express = require('express');
 const axios = require('axios');
-const { db } = require('../../handlers/db.js');
-const { logAudit } = require('../../handlers/auditlog');
+const { db } = require('../../handlers/db');
+const { logAudit } = require('../../handlers/auditLog');
 const { v4: uuid } = require('uuid');
-const { loadPlugins } = require('../../plugins/loadPls.js');
+const { loadPlugins } = require('../../plugins/loadPls');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const path = require('path');
 
