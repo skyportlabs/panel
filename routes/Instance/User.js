@@ -4,7 +4,7 @@ const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
-const log = new (require('cat-loggr'))();s
+const log = new (require('cat-loggr'))();
 
 const plugins = loadPlugins(path.join(__dirname, '../../plugins'));
 
