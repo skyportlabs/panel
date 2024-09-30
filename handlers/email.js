@@ -12,13 +12,14 @@ async function getSMTPSettings() {
 
   return {
     transporter: nodemailer.createTransport({
-      host: smtpSettings.host,
+      host: smtpSettings.server,
       port: smtpSettings.port,
       secure: smtpSettings.port !== 587 && smtpSettings.port !== 25,
       auth: {
-        user: smtpSettings.user,
-        pass: smtpSettings.pass,
+        user: smtpSettings.username,
+        pass: smtpSettings.password,
       },
+      tls: {rejectUnauthorized: false},
     }),
     name,
     smtpSettings,
