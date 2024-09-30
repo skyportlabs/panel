@@ -2,8 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const CatLoggr = require('cat-loggr');
-const log = new CatLoggr();
+const log = new (require('cat-loggr'))();
 const { isAdmin } = require('../utils/isAdmin');
 
 let pluginList = [];

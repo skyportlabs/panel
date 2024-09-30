@@ -1,4 +1,5 @@
 const { db } = require('../handlers/db.js');
+const log = new (require('cat-loggr'))();
 
 /**
  * Checks if the user is authorized to access the specified container ID.
@@ -7,35 +8,33 @@ const { db } = require('../handlers/db.js');
  * @returns {Promise<boolean>} True if the user is authorized, otherwise false.
  */
 async function isUserAuthorizedForContainer(userId, containerId) {
-    try {
-        const userInstances = await db.get(userId + '_instances') || [];
-        const users = await db.get('users') || [];
+  try {
+    const userInstances = await db.get(userId + '_instances') || [];
+    const users = await db.get('users') || [];
 
-        const user = users.find(user => user.userId === userId);
-        if (!user) {
-            console.error('User not found:', userId);
-            return false;
-        }
-
-        if (user.admin) {
-            return true;
-        }
-        const subUserInstances = user.accessTo || [];
-        const isInSubUserInstances = subUserInstances.includes(containerId);
-
-        const isInUserInstances = userInstances.some(instance => instance.Id === containerId);
-        if (isInSubUserInstances || isInUserInstances) {
-            return true;
-        } else {
-            console.error('User not authorized for container:', containerId);
-            return false;
-        }
-    } catch (error) {
-        console.error('Error fetching user instances:', error);
-        return false;
+    const user = users.find(u => u.userId === userId);
+    if (!user) {
+        log.error('User not found:', userId);
+      return false;
     }
-}
+
+    if (user.admin) return true;
+    
+    const accessTo = user.accessTo || [];
+    
+    return [
+      () => accessTo.includes(containerId),
+      () => userInstances.some(instance => instance.Id === containerId)
+    ].reduce((result, check) => result || check(), false) || (
+      (log.error('User not authorized for container:', containerId),
+      false)
+    );
+  } catch (error) {
+    log.error('Error fetching user instances:', error);
+    return false;
+  }
+};
 
 module.exports = {
-    isUserAuthorizedForContainer
+  isUserAuthorizedForContainer
 };

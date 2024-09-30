@@ -1,8 +1,7 @@
 const { db } = require('../handlers/db.js');
 const config = require('../config.json');
 const { v4: uuidv4 } = require('uuid');
-const CatLoggr = require('cat-loggr');
-const log = new CatLoggr();
+const log = new (require('cat-loggr'))();
 
 async function init() {
     const skyport = await db.get('skyport_instance');

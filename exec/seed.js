@@ -1,7 +1,6 @@
 const axios = require('axios');
 const { db } = require('../handlers/db');
-const CatLoggr = require('cat-loggr');
-const log = new CatLoggr();
+const log = new (require('cat-loggr'))();
 const readline = require('readline');
 const { v4: uuidv4 } = require('uuid');
 const config = require('../config.json');

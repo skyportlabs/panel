@@ -21,7 +21,6 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const bodyParser = require('body-parser');
-const CatLoggr = require('cat-loggr');
 const fs = require('node:fs');
 const config = require('./config.json');
 const ascii = fs.readFileSync('./handlers/ascii.txt', 'utf8');
@@ -42,7 +41,7 @@ const sessionStorage = new sqlite("sessions.db");
 
 const { init } = require('./handlers/init.js');
 
-const log = new CatLoggr();
+const log = new (require('cat-loggr'))();
 
 app.use(
   session({

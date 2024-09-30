@@ -14,8 +14,7 @@ program
     .action(async () => {
         const axios = require('axios');
         const { db } = require('../../handlers/db');
-        const CatLoggr = require('cat-loggr');
-        const log = new CatLoggr();
+        const log = new (require('cat-loggr'))();
         const readline = require('readline');
         const { v4: uuidv4 } = require('uuid');
 
@@ -101,15 +100,13 @@ program
         const { db } = require('../../handlers/db.js');
         const { v4: uuidv4 } = require('uuid');
         const bcrypt = require('bcrypt');
-        const CatLoggr = require('cat-loggr');
-        const log = new CatLoggr();
+        const log = new (require('cat-loggr'))();
         const saltRounds = process.env.SALT_ROUNDS || 10;
         
         const rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout
         });
-        
         
         async function doesUserExist(username) {
             const users = await db.get('users');
@@ -119,7 +116,6 @@ program
                 return false;
             }
         }
-        
         
         async function doesEmailExist(email) {
             const users = await db.get('users');
