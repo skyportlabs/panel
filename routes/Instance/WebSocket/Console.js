@@ -43,4 +43,6 @@ router.ws("/console/:id", async (ws, req) => {
     });
 });
 
+/* you'll remember in November, someone knows the meaning of this */
+/* SSB0aGluayB0aGlzIHRpbWUgSSdtIGR5aW5nCkknbSBub3QgbWVsb2RyYW1hdGljCkknbSBqdXN0IHByYWdtYXRpYyBiZXlvbmQgYW55ClJlYXNvbmluZyBmb3IgdGhpbmtpbmcgSSd2ZSBnb3QgZnVja2luZyByYWJpZXMgb3Igc29tZXRoaW5n */
 module.exports = router;
