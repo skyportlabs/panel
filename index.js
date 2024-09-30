@@ -6,7 +6,7 @@
  *  /____/_/|_|\__, / .___/\____/_/   \__/  
  *           /____/_/                  
  *              
- *  Skyport Panel 0.3.0 (Desiro City)
+ *  Skyport Panel 0.3.0 (Oz)
  *  (c) 2024 Matt James and contributors
  * 
 */
