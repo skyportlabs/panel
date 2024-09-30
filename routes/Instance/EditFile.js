@@ -25,7 +25,7 @@ router.post("/instance/:id/files/edit/:filename", async (req, res) => {
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     if (!instance.Node || !instance.Node.address || !instance.Node.port) {

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
-const { createFile, fetchFiles, editFile } = require('../../utils/fileHelper');
+const { createFile, editFile } = require('../../utils/fileHelper');
 
 router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
     if (!req.user) return res.redirect('/');
@@ -21,7 +21,6 @@ router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-
     if(!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
@@ -30,13 +29,12 @@ router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
     if(instance.suspended === true) {
         return res.redirect('../../instance/' + id + '/suspended');
     }
-        createFile(instance, 'eula.txt', 'eula=true');
-        editFile(instance, 'eula.txt', 'eula=true');
+
+    createFile(instance, 'eula.txt', 'eula=true');
+    editFile(instance, 'eula.txt', 'eula=true');
 
     res.status(200).send('OK');
-
 });
-
 
 
 module.exports = router;

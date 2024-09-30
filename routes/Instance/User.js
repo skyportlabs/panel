@@ -28,7 +28,6 @@ router.get('/instance/:id/users', async (req, res) => {
         res.render('instance/users', {
             req,
             user: req.user,
-
             users,
             addons: {
                 plugins: allPluginData
@@ -45,11 +44,11 @@ router.post('/instance/:id/users/add', async (req, res) => {
     const { username } = req.body;
 
     try {
-        let usersData = await db.get('users');
-        if (typeof usersData !== 'object') {
+        let users = await db.get('users');
+        if (typeof users !== 'object') {
             throw new Error('Users data is not in the expected format.');
         }
-        let user = usersData.find(user => user.username === username);
+        let user = users.find(user => user.username === username);
 
         if (!user) {
             return res.redirect('/instance/' + id + '/users?err=usernotfound.');
@@ -57,7 +56,7 @@ router.post('/instance/:id/users/add', async (req, res) => {
         if (!user.accessTo.includes(id)) {
             user.accessTo.push(id);
         }
-        await db.set('users', usersData);
+        await db.set('users', users);
         return res.redirect('/instance/' + id + '/users');
     } catch (error) {
         console.error('Error updating user access:', error);
@@ -70,18 +69,18 @@ router.get('/instance/:id/users/remove/:username', async (req, res) => {
     const { username } = req.params;
 
     try {
-        let usersData = await db.get('users');
-        if (typeof usersData !== 'object') {
+        let users = await db.get('users');
+        if (typeof users !== 'object') {
             throw new Error('Users data is not in the expected format.');
         }
-        let user = usersData.find(user => user.username === username);
+        let user = users.find(user => user.username === username);
 
         if (!user) {
             return res.redirect(`/instance/${id}/users?err=usernotfound.`);
         }
         user.accessTo = user.accessTo.filter(accessId => accessId !== id);
 
-        await db.set('users', usersData);
+        await db.set('users', users);
 
         return res.redirect(`/instance/${id}/users`);
     } catch (error) {

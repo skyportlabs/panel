@@ -117,7 +117,6 @@ router.post('/instances/startup/changevariable/:id', async (req, res) => {
     }
 });
 
-
 /**
  * GET /instances/startup/changeimage/:id
  * Handles the change of the instance image based on the parameters provided via query strings.
@@ -236,7 +235,7 @@ async function updateDatabaseWithNewInstance(responseData, userId, node, image, 
         Cpu: parseInt(cpu),
         Ports: ports,
         Primary: primary,
-        currentimage: currentimage,
+        currentimage,
         Env,
         Image: image,
         AltImages: altImages,

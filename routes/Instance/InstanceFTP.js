@@ -57,22 +57,19 @@ router.get("/instance/:id/ftp", async (req, res) => {
         };
 
         try {
-
             const allPluginData = Object.values(plugins).map(plugin => plugin.config);
             const response = await axios(RequestData);
-            const logindata = response.data || [];
+            const loginData = response.data || [];
 
             const settings = await db.get('settings');
             res.render('instance/ftp', { 
                 req, 
-                logindata, 
                 user: req.user, 
-             
- 
+                loginData, 
+                settings,
                 addons: {
                     plugins: allPluginData
-                },
-                settings 
+                }
             });
         } catch (error) {
             const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';

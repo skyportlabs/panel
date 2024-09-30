@@ -39,14 +39,13 @@ router.get("/instance/:id/settings", async (req, res) => {
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     const allPluginData = Object.values(plugins).map(plugin => plugin.config);
     res.render('instance/settings', {
         req,
         user: req.user,
- 
         instance,
         addons: {
             plugins: allPluginData
@@ -82,7 +81,6 @@ router.get("/instance/:id/change/name/:name", async (req, res) => {
     if (!isAuthorized) {
         return res.status(403).send('Unauthorized access to this instance.');
     }
-
 
     if(!instance.suspended) {
         instance.suspended = false;

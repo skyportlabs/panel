@@ -4,7 +4,6 @@ const { db } = require('../../handlers/db.js');
 const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
 const { loadPlugins } = require('../../plugins/loadPls.js');
 const path = require('path');
-const { config } = require('process');
 const { fetchFiles } = require('../../utils/fileHelper');
 const { isAuthenticated } = require('../../handlers/auth.js');
 

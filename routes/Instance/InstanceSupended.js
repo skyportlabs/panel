@@ -39,9 +39,7 @@ router.get("/instance/:id/suspended", async (req, res) => {
 
     res.render('instance/suspended', {
         req,
-        user: req.user,
-    
-        
+        user: req.user
     });
 });
 

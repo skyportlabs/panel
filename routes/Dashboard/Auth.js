@@ -18,10 +18,6 @@ const saltRounds = 10;
 
 const router = express.Router();
 
-// Initialize passport
-router.use(passport.initialize());
-router.use(passport.session());
-
 /**
  * Configures Passport's local strategy for user authentication. It checks the provided
  * username (or email) and password against stored credentials in the database. If the credentials
@@ -66,7 +62,6 @@ passport.use(new LocalStrategy(
     }
   }
 ));
-
 
 async function doesUserExist(username) {
   const users = await db.get('users');
@@ -152,13 +147,13 @@ passport.deserializeUser(async (username, done) => {
     }
     
     // Search for the user with the provided username in the users array
-    const foundUser = users.find(user => user.username === username);
+    const user = users.find(user => user.username === username);
 
-    if (!foundUser) {
+    if (!user) {
       throw new Error('User not found');
     }
 
-    done(null, foundUser); // Deserialize user by retrieving full user details from the database
+    done(null, user); // Deserialize user by retrieving full user details from the database
   } catch (error) {
     done(error);
   }
@@ -183,14 +178,12 @@ router.get('/auth/login', async (req, res, next) => {
       return res.redirect('/login?err=InvalidCredentials&state=failed');
     }
     req.logIn(user, async (err) => {
-      if (err) {
-        return next(err);
-      }
+      if (err) return next(err);
       
       const users = await db.get('users');
-      const dbUser = users.find(u => u.username === user.username);
+      const user2 = users.find(u => u.username === user.username);
 
-      if (dbUser && dbUser.twoFAEnabled) {
+      if (user2 && user2.twoFAEnabled) {
         req.session.tempUser = user;
         req.user = null;
         return res.redirect('/2fa');
@@ -200,7 +193,6 @@ router.get('/auth/login', async (req, res, next) => {
     });
   })(req, res, next);
 });
-
 
 router.post('/auth/login', passport.authenticate('local', { 
   failureRedirect: '/login?err=InvalidCredentials&state=failed' 
@@ -217,9 +209,8 @@ router.post('/auth/login', passport.authenticate('local', {
       if (user && user.twoFAEnabled) {
         req.session.tempUser = req.user;
         req.logout(err => {
-          if (err) {
-            return next(err);
-          }
+          if (err) return next(err);
+        
           return res.redirect('/2fa');
         });
       } else {
@@ -239,9 +230,7 @@ router.get('/2fa', async (req, res) => {
     return res.redirect('/login');
   }
   res.render('auth/2fa', {
-    req,
-
-    
+    req
   });
 });
 
@@ -254,19 +243,18 @@ router.post('/2fa', async (req, res) => {
   }
 
   const users = await db.get('users');
-  const currentUser = users.find(user => user.username === tempUser.username);
+  const user = users.find(user => user.username === tempUser.username);
 
   const verified = speakeasy.totp.verify({
-    secret: currentUser.twoFASecret,
+    secret: user.twoFASecret,
     encoding: 'base32',
     token
   });
 
   if (verified) {
     req.login(tempUser, err => {
-      if (err) {
-        return next(err);
-      }
+      if (err) return next(err);
+      
       req.session.tempUser = null;
       return res.redirect('/instances');
     });
@@ -302,9 +290,7 @@ router.get('/verify/:token', async (req, res) => {
 router.get('/resend-verification', async (req, res) => {
   try {
     res.render('auth/resend-verification', {
-      req,
-  
-      
+      req
     });
   } catch (error) {
     console.error('Error fetching name or logo:', error);
@@ -345,7 +331,6 @@ router.post('/resend-verification', async (req, res) => {
   }
 });
 
-
 router.get('/', (req, res) => {
   if (req.user) {
     res.redirect('/instances');
@@ -354,21 +339,16 @@ router.get('/', (req, res) => {
   }
 });
 
-
 router.get('/login', async (req, res) => {
   if (!req.user) {
     res.render('auth/login', {
       req,
-      user: req.user,
-  
-      
+      user: req.user
     });
   } else {
     res.redirect('/instances');
   }
-  });
-
-
+});
 
 async function initializeRoutes() {
   async function updateRoutes() {
@@ -384,9 +364,7 @@ async function initializeRoutes() {
               if (!req.user) {
                 res.render('auth/register', {
                   req,
-                  user: req.user,
-              
-                  
+                  user: req.user
                 });
               } else {
                 res.redirect('/instances');
@@ -443,9 +421,7 @@ initializeRoutes();
 router.get('/auth/reset-password', async (req, res) => {
   try {
     res.render('auth/reset-password', {
-      req,
-  
-      
+      req
     });
   } catch (error) {
     console.error('Error rendering reset password page:', error);
@@ -492,7 +468,6 @@ router.get('/auth/reset/:token', async (req, res) => {
 
     res.render('auth/password-reset-form', {
       req,
-
       token: token
     });
   } catch (error) {

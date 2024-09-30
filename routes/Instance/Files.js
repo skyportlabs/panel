@@ -34,7 +34,7 @@ router.get("/instance/:id/files", async (req, res) => {
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     const allPluginData = Object.values(plugins).map(plugin => plugin.config);

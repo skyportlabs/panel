@@ -57,13 +57,11 @@ router.get("/instance/:id/archives", async (req, res) => {
                 res.render('instance/archives', { 
                     req, 
                     user: req.user, 
-                
-     
                     archives, 
                     settings,
                     addons: {
                         plugins: allPluginData
-                    },
+                    }
                 });
             } catch (error) {
                 const errorMessage = error.response?.data?.message || 'Connection to node failed.';
@@ -78,7 +76,6 @@ router.get("/instance/:id/archives", async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-
 
 router.post('/instance/:id/archives/create', async (req, res) => {
     console.log(req.body);
@@ -102,14 +99,13 @@ router.post('/instance/:id/archives/create', async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-
     if(!instance.suspended) {
         instance.suspended = false;
         db.set(id + '_instance', instance);
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     const RequestData = {
@@ -160,7 +156,7 @@ router.post('/instance/:id/archives/delete/:archivename', async (req, res) => {
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     const RequestData = {
@@ -180,9 +176,6 @@ router.post('/instance/:id/archives/delete/:archivename', async (req, res) => {
     }
 
 });
-
-
-
 
 router.post('/instance/:id/archives/rollback/:archivename', async (req, res) => {
     console.log(req.body);
@@ -213,7 +206,7 @@ router.post('/instance/:id/archives/rollback/:archivename', async (req, res) => 
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     const RequestData = {
@@ -233,6 +226,5 @@ router.post('/instance/:id/archives/rollback/:archivename', async (req, res) => 
     }
 
 });
-
 
 module.exports = router;

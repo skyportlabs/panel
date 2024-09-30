@@ -40,7 +40,7 @@ router.get("/instance/:id/db", async (req, res) => {
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     if (instance.Node && instance.Node.address && instance.Node.port) {
@@ -51,9 +51,7 @@ router.get("/instance/:id/db", async (req, res) => {
             const settings = await db.get('settings');
             res.render('instance/db', { 
                 req,
-                user: req.user,  
-             
- 
+                user: req.user, 
                 databases, 
                 settings,
                 addons: {
@@ -105,7 +103,7 @@ router.post("/instance/:id/db/create/:name", async (req, res) => {
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     if (instance.Node && instance.Node.address && instance.Node.port) {

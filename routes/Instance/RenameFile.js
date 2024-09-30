@@ -31,7 +31,7 @@ router.get("/instance/:id/files/rename/:file/:newfile", async (req, res) => {
     }
 
     if(instance.suspended === true) {
-                return res.redirect('../../instance/' + id + '/suspended');
+        return res.redirect('../../instance/' + id + '/suspended');
     }
 
     if (!instance.VolumeId) {

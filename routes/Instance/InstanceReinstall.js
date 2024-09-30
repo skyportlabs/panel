@@ -70,7 +70,6 @@ router.post('/instance/reinstall/:id', async (req, res) => {
     }
 });
 
-
 async function prepareRequestData(image, memory, cpu, ports, name, node, id, containerId, Env) {
     const rawImages = await db.get('images');
     const imageData = rawImages.find(i => i.Image === image);

@@ -1,7 +1,4 @@
 const { db } = require('../handlers/db.js');
-const CatLoggr = require('cat-loggr');
-const log = new CatLoggr();
-
 
 /**
  * Checks if the user is authorized to access the specified container ID.

@@ -17,29 +17,29 @@
             <div class="mt-5">
                <div class="mr-4 mt-5">
                   <label class="text-neutral-400 text-sm tracking-tight mb-2">Server Address</label>
-                  <div onclick="navigator.clipboard.writeText(`ftp://<%- logindata.host %>:<%- logindata.port %>`)" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-600/20 placeholder:text-white/20 border border-black/10" style="width: 340px;">
-                     <span onclick="navigator.clipboard.writeText(`ftp://<%- logindata.host %>:<%- logindata.port %>`);">ftp://<%- logindata.host %>:<%- logindata.port %></span>
+                  <div onclick="navigator.clipboard.writeText(`ftp://<%- loginData.host %>:<%- loginData.port %>`)" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-600/20 placeholder:text-white/20 border border-black/10" style="width: 340px;">
+                     <span onclick="navigator.clipboard.writeText(`ftp://<%- loginData.host %>:<%- loginData.port %>`);">ftp://<%- loginData.host %>:<%- loginData.port %></span>
                   </div>
                </div>
                <div class="mr-4 mt-5">
                   <label class="text-neutral-400 text-sm tracking-tight mb-2">Username:</label>
-                  <div onclick="navigator.clipboard.writeText('<%- logindata.username %>');" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-600/20 placeholder:text-white/20 border border-black/10" style="width: 340px;">
-                     <span id="usernameText" onclick="navigator.clipboard.writeText('<%- logindata.username %>');" onmouseover="this.style.filter = 'none';"><%- logindata.username %></span>
+                  <div onclick="navigator.clipboard.writeText('<%- loginData.username %>');" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-600/20 placeholder:text-white/20 border border-black/10" style="width: 340px;">
+                     <span id="usernameText" onclick="navigator.clipboard.writeText('<%- loginData.username %>');" onmouseover="this.style.filter = 'none';"><%- loginData.username %></span>
                   </div>
                </div>
                <div class="mr-4 mt-5">
                   <label class="text-neutral-400 text-sm tracking-tight mb-2">Password:</label>
-                  <div onclick="navigator.clipboard.writeText('<%- logindata.password %>');" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-600/20 placeholder:text-white/20 border border-black/10" style="width: 340px;">
-                     <span id="passwordText" style="filter: blur(5px)" onclick="navigator.clipboard.writeText('<%- logindata.password %>');" onmouseover="this.style.filter = 'none';" onmouseout="this.style.filter = 'blur(5px)';"><%- logindata.password %></span>
+                  <div onclick="navigator.clipboard.writeText('<%- loginData.password %>');" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-3 mb-0 w-full transition justify-left hover:bg-white/5 px-4 py-2 flex bg-neutral-600/20 placeholder:text-white/20 border border-black/10" style="width: 340px;">
+                     <span id="passwordText" style="filter: blur(5px)" onclick="navigator.clipboard.writeText('<%- loginData.password %>');" onmouseover="this.style.filter = 'none';" onmouseout="this.style.filter = 'blur(5px)';"><%- loginData.password %></span>
                   </div>
                </div>
                <button class="block mt-8 rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" onclick="loginToWinSCP()">Connect via your FTP client</button>
                <script>
                   function loginToWinSCP() {
-                      const username = "<%- logindata.username %>";
-                      const password = "<%- logindata.password %>";
-                      const hostname = "<%- logindata.host %>";
-                      const port = "<%- logindata.port %>";
+                      const username = "<%- loginData.username %>";
+                      const password = "<%- loginData.password %>";
+                      const hostname = "<%- loginData.host %>";
+                      const port = "<%- loginData.port %>";
           
                       const winscpUrl = `ftp://${username}:${password}@${hostname}:${port}`;
                       window.location.href = winscpUrl;
