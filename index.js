@@ -217,7 +217,7 @@ function loadRoutes(directory) {
 loadRoutes(routesDir);
 
 // Plugin routes and views
-const pluginRoutes = require('./plugins/pluginmanager.js');
+const pluginRoutes = require('./plugins/pluginManager.js');
 app.use("/", pluginRoutes);
 const pluginDir = path.join(__dirname, 'plugins');
 const PluginViewsDir = fs.readdirSync(pluginDir).map(addonName => path.join(pluginDir, addonName, 'views'));
