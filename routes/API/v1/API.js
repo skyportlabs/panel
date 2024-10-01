@@ -44,7 +44,7 @@ router.get('/api/users', validateApiKey, async (req, res) => {
   }
 });
 
-router.post('/api/getUser', validateApiKey, async (req, res) => {
+router.get('/api/getUser', validateApiKey, async (req, res) => {
   try {
     const { type, value } = req.body;
 
