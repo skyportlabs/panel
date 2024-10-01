@@ -51,6 +51,12 @@
          .colcont {
             padding-left: 4.2rem
          }
+         .colcontextream {
+            padding-left: 1.2rem
+         }
+         .colcont-right {
+            padding-right: 14.2rem
+         }
          .transition {
             transition: all 0.3s ease-in-out;
          }
@@ -102,7 +108,13 @@
             background-color: rgb(0, 0, 0, 0.1);
          }
 
+   .sidebar-left {
+      left: 0;
+   }
 
+   .sidebar-right {
+      right: 0;
+   }
 
 
 .loading-spin {
@@ -169,14 +181,32 @@
    });
 </script>
 
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+      const sidebar = document.getElementById('pc-sidebar');
+      const sidebar2 = document.getElementById('pc-sidebar2');
+      const colcont = document.getElementById('colcont');
+
+      if ('<%= theme["sidebar-direction"] %>' === 'right') {
+         sidebar.classList.add('sidebar-right');
+         colcont.classList.add('colcontextream');
+         colcont.classList.add('colcont-right');
+         sidebar2.classList.remove('rounded-r-3xl', 'rounded-l-lg');
+         sidebar2.classList.add('rounded-r-lg', 'rounded-l-3xl');
+      } else {
+         sidebar.classList.add('sidebar-left');
+      }
+   });
+</script>
+
       <button id="mobile-sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-50 w-fit p-2 rounded-xl text-white border border-white/5 bg-[#141414] hover:scale-110 active:scale-100 duration-200 transition-all">
          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
          </svg>
       </button>
       <!-- Static sidebar for desktop -->
-      <div class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 p-2 lg:flex lg:w-56 lg:flex-col">
-         <div class="flex grow flex-col gap-y-5 overflow-hidden rounded-r-3xl rounded-l-lg bg-transparent border border-white/5">
+      <div id="pc-sidebar" class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 p-2 lg:flex lg:w-56 lg:flex-col">
+         <div id="pc-sidebar2" class="flex grow flex-col gap-y-5 overflow-hidden rounded-r-3xl rounded-l-lg bg-transparent border border-white/5">
             <nav class="flex flex-1 flex-col">
                <div class="pl-6 pt-4 pb-4 flex">
                   <a href="/" class="flex">

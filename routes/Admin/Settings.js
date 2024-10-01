@@ -84,14 +84,17 @@ router.post('/admin/settings/change/name', isAdmin, async (req, res) => {
 });
 
 router.post('/admin/settings/change/theme/color', isAdmin, async (req, res) => {
-  const { buttoncolor, paneltheme } = req.body;
+  const { buttoncolor, paneltheme, sidebardirection } = req.body;
   let theme = require('../../storage/theme.json');
   try {
     if (buttoncolor) theme['button-color'] = buttoncolor;
     if (paneltheme) theme['paneltheme-color'] = paneltheme;
+    if (sidebardirection) {
+      theme['sidebar-direction'] = theme['sidebar-direction'] === 'left' ? 'right' : 'left';
+  }  
     await fs.promises.writeFile('./storage/theme.json', JSON.stringify(theme, null, 2));
     logAudit(req.user.userId, req.user.username, 'theme:edit', req.ip);
-    res.redirect('/admin/settings/theme?changedcolor=' + (buttoncolor || paneltheme));
+    res.redirect('/admin/settings/theme?changed=' + (buttoncolor || paneltheme || sidebardirection));
   } catch (err) {
     log.error('Error updating theme:', err);
     res.status(500).send("File writing error");

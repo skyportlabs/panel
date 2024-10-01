@@ -59,27 +59,30 @@
                   <% } %>  
                </div>
             </form>
+            <div id="sidebar-direction" class="mt-4 mb-4">
+            <form action="/admin/settings/change/theme/color" method="POST">
+               <div class="flex items-center mb-2">
+                  <% if (theme['sidebar-direction'] === "right") { %>
+                  <span class="text-neutral-400 text-sm tracking-tight mb-2">Sidebar position: <span class="font-medium text-purple-800">Right</span></span>
+                  <% } else { %>
+                  <span class="text-neutral-400 text-sm tracking-tight mb-2">Sidebar position: <span class="font-medium text-blue-800">Left</span></span>
+                  <% } %>
+               </div>
+               <div class="flex flex-col sm:flex-row">
+                  <input id="sidebardirection" name="sidebardirection" type="hidden" value="none">
+                  <% if (theme['sidebar-direction'] === "right") { %>  
+                  <button id="sidebardirection" type="submit" class="block rounded-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-l-lg sm:rounded-r-none">Left</button>
+                  <button id="sidebardirection" type="submit" class="block rounded-lg bg-purple-800 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-green-500 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-none sm:rounded-r-lg opacity-[0.7]" disabled>Right</button>
+                  <% } else { %>
+                  <button id="sidebardirection" type="submit" class="block rounded-lg bg-blue-800 px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-l-lg sm:rounded-r-none opacity-[0.7]" disabled>Left</button>
+                  <button id="sidebardirection" type="submit" class="block rounded-lg bg-white px-3 py-2 text-sm font-medium text-neutral-800 shadow-lg hover:bg-neutral-200 transition focus:outline focus:outline-2 focus:outline-offset-2 sm:rounded-none sm:rounded-r-lg">Right</button>
+                  <% } %>  
+               </div>
+            </form>
+            </div>
          </div>
       </div>
    </div>
 </main>
 
 <%- include('../../components/footer') %>
-
-<script>
-   document.getElementById('useImage').addEventListener('change', function() {
-     const imageUploadBox = document.getElementById('imageUploadBox');
-     const logoButton = document.getElementById('logoButton');
-     const logoType = document.getElementById('logoType');
-     
-     if (this.checked) {
-       imageUploadBox.classList.remove('hidden');
-       logoButton.textContent = '<%= req.translations.saveNewLogo %>';
-       logoType.value = 'image';
-     } else {
-       imageUploadBox.classList.add('hidden');
-       logoButton.textContent = '<%= req.translations.removeLogo %>';
-       logoType.value = 'none';
-     }
-   });
-</script>
