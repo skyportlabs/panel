@@ -26,8 +26,8 @@
         <p class="text-4xl font-bold text-white"><%= stats.uptime || '0m' %></p>
           <p class="text-sm text-neutral-400 mt-2">
             Status: 
-            <span class="<%= stats.uptime && stats.uptime !== '0m' ? 'text-green-500' : 'text-red-500' %>">
-              <%= stats.uptime && stats.uptime !== '0m' ? 'Online' : 'Offline' %>
+            <span class="<%= stats.uptime && status === 'Online' ? 'text-green-500' : 'text-red-500' %>">
+              <%= stats.uptime && status === 'Online' ? 'Online' : 'Offline' %>
             </span>
         </p>
       </div>
@@ -135,31 +135,20 @@
               <td class="whitespace-nowrap px-3 py-4 text-sm text-neutral-400"><%= set[node.id] || 0 %></td>
               <td class="whitespace-nowrap px-3 py-4 text-sm">
                 <div class="flex gap-3">
-                  <button onclick="configure('<%= node.id %>')" type="button" class="rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                    <%= req.translations.configure %>
-                  </button>
-                  <a href="./node/<%= node.id %>">
+                  <a href="/admin/node/<%= node.id %>">
                     <button type="button" class="rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                       <%= req.translations.edit %>
                     </button>
                   </a>
-                  <button onclick="deletenode('<%= node.id %>')" type="button" class="rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                    <%= req.translations.remove %>
-                  </button>
                 </div>
               </td>
             </tr>
         </tbody>
       </table>
     </div>
-
-    <div id="notification" class="fixed bottom-5 right-5 bg-white/5 text-white px-4 py-2 rounded-xl shadow-lg transform transition-all duration-300 tranneutral-y-full opacity-0">
-      Command copied to clipboard!
-    </div>
   </div>
 </main>
 
-<!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -174,8 +163,8 @@
   }
 
   const ramTimestamps = stats.length ? stats.map(stat => new Date(stat.timestamp).toLocaleTimeString()) : ['0:00', '0:00', '0:00']; 
-  const ramData = stats.length ? stats.map(stat => parseRam(stat.Ram)) : [0, 0, 0]; // Zeige 0 Werte, wenn keine Daten vorhanden sind
-  const ramMax = stats.length ? Math.max(...ramData, parseRam(stats[0].RamMax)) : 1; // Maximalwert auf 1 setzen, damit die Skala nicht zerfällt
+  const ramData = stats.length ? stats.map(stat => parseRam(stat.Ram)) : [0, 0, 0];
+  const ramMax = stats.length ? Math.max(...ramData, parseRam(stats[0].RamMax)) : 1;
 
   const ctxRam = document.getElementById('ramChart').getContext('2d');
   const ramChart = new Chart(ctxRam, {
@@ -226,7 +215,7 @@
     }
   });
 
-  const cpuData = stats.length ? stats.map(stat => parseCpu(stat.Cores)) : [0, 0, 0]; // Zeige 0 Werte, wenn keine Daten vorhanden sind
+  const cpuData = stats.length ? stats.map(stat => parseCpu(stat.Cores)) : [0, 0, 0];
   const cpuMax = 100;
 
   const ctxCpu = document.getElementById('cpuChart').getContext('2d');
@@ -278,6 +267,4 @@
     }
   });
 </script>
-
-
 <%- include('../components/footer') %>
