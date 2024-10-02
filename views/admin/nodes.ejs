@@ -80,7 +80,7 @@
           </thead>
           <tbody class="divide-y divide-white/5 bg-white/5">
             <% nodes.forEach(function(node) { %>
-              <tr class="hover:bg-white/[0.05] transition-colors">
+              <tr class="hover:bg-white/[0.05] transition-colors clickable-row cursor-pointer" onclick="window.location='/admin/node/<%= node.id %>/stats'">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <div class="flex items-center">
                     <div class="mr-5">
@@ -109,8 +109,8 @@
                     <div class="mt-1 inline-flex items-center rounded-md 
                     <%= node.versionRelease ? 'bg-emerald-600/10 text-emerald-400 ring-emerald-600/20' : 'bg-red-600/10 text-red-400 ring-red-600/20' %> 
                     px-2 py-1 text-xs font-medium ring-1 ring-inset">
-                    <%= node.versionRelease || 'unknown' %>
-                  </div>                  
+                      <%= node.versionRelease || 'unknown' %>
+                    </div>                  
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-neutral-400"><%= set[node.id] || 0 %></td>
@@ -130,7 +130,7 @@
                   </div>
                 </td>
               </tr>
-              <% }); %>
+            <% }); %>
             </tbody>
           </table>
         </div>

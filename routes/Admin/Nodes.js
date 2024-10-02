@@ -54,11 +54,56 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
   res.render('admin/nodes', { 
     req,
     user: req.user,
-
     nodes,
     set
   });
 });
+
+
+router.get('/admin/node/:id/stats', isAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  let node = await db.get(id + '_node').then(checkNodeStatus);
+  if (!node) {
+    return res.status(404).send('Node not found');
+  }
+
+  let instances = await db.get('instances') || [];
+  let instanceCount = 0;
+  instances.forEach(function(instance) {
+    if (instance.Node.id == id) {
+      instanceCount++;
+    }
+  });
+
+  let stats = {};
+  let status = 'Offline';
+  
+  try {
+    const response = await axios.get(`http://Skyport:${node.apiKey}@${node.address}:${node.port}/stats`);
+    stats = response.data;
+
+    if (stats && stats.uptime !== '0d 0h 0m') {
+      status = 'Online';
+    }
+  } catch (error) {
+  }
+
+  let set = {};
+  set[id] = instanceCount;
+
+  res.render('admin/nodestats', { 
+    req,
+    user: req.user,
+    stats,
+    node,
+    set,
+    status
+  });
+});
+
+
+
 
 router.post('/nodes/create', isAdmin, async (req, res) => {
   const configureKey = uuidv4();

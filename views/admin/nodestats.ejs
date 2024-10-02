@@ -1,0 +1,283 @@
+<%- include('../components/template') %>
+<main id="content">
+  <div class="bg-transparent">
+    <div class="sm:flex sm:items-center px-8 pt-4">
+      <div class="sm:flex-auto">
+        <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.nodes %></h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.nodesText %></p>
+      </div>
+      <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+        <button onclick="location.href='/admin/nodes'" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">
+          Back
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div id="stats" class="grid grid-cols-1 md:grid-cols-2 gap-6 m-8">
+      <div class="bg-white/5 rounded-xl p-6 shadow-lg">
+        <h2 class="text-lg font-semibold text-white mb-2">Instances</h2>
+        <p class="text-4xl font-bold text-white"><%= Object.values(set).reduce((a, b) => a + b, 0) %></p>
+        <p class="text-sm text-neutral-400 mt-2">Online Instances: <%= stats.onlineContainersCount || 0 %></p>
+      </div>
+
+      <div class="bg-white/5 rounded-xl p-6 shadow-lg">
+        <h2 class="text-lg font-semibold text-white mb-2">Uptime</h2>
+        <p class="text-4xl font-bold text-white"><%= stats.uptime || '0m' %></p>
+          <p class="text-sm text-neutral-400 mt-2">
+            Status: 
+            <span class="<%= stats.uptime && stats.uptime !== '0m' ? 'text-green-500' : 'text-red-500' %>">
+              <%= stats.uptime && stats.uptime !== '0m' ? 'Online' : 'Offline' %>
+            </span>
+        </p>
+      </div>
+    </div>
+
+    <!-- RAM and CPU Stats Charts -->
+    <div id="charts" class="grid grid-cols-1 md:grid-cols-2 gap-6 m-8">
+      <!-- RAM Usage Chart -->
+      <div class="bg-white/5 rounded-xl p-6 shadow-lg">
+        <h2 class="text-lg font-semibold text-white mb-4">RAM Usage</h2>
+        <canvas id="ramChart" class="w-full h-64"></canvas>
+      </div>
+      
+      <!-- CPU Usage Chart -->
+      <div class="bg-white/5 rounded-xl p-6 shadow-lg">
+        <h2 class="text-lg font-semibold text-white mb-4">CPU Usage</h2>
+        <canvas id="cpuChart" class="w-full h-64"></canvas>
+      </div>
+    </div>
+
+    <% if (req.query.err == "none") { %>
+    <div class="mt-6 w-full">
+      <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
+        <div class="flex">
+          <div class="flex-shrink-0 ml-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
+              <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+            </svg>                
+          </div>
+          <div class="ml-5">
+            <h3 class="text-sm font-medium text-emerald-400">Success!</h3>
+            <div class="text-sm text-emerald-400/50">
+              <p>The action was successfully completed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <% if (req.query.err == "EDITED") { %>
+      <div class="mt-6 w-full">
+        <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
+          <div class="flex">
+            <div class="flex-shrink-0 ml-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
+                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+              </svg>                
+            </div>
+            <div class="ml-5">
+              <h3 class="text-sm font-medium text-emerald-400">Success!</h3>
+              <div class="text-sm text-emerald-400/50">
+                <p>The node was edited successfully.</p>
+              </div>
+            </div>
+          </div>
+        </div>	      
+      </div>
+    <% } %>
+
+    <!-- Improved table -->
+    <div class="overflow-hidden shadow ring-1 ring-white/5 rounded-lg m-8" id="nodeTable">
+      <table class="min-w-full divide-y divide-white/10">
+        <thead class="bg-white/5">
+          <tr>
+            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-6"><%= req.translations.name %></th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white"><%= req.translations.connection %></th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white"><%= req.translations.instances %></th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white"><%= req.translations.actions %></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5 bg-white/5">
+            <tr class="hover:bg-white/[0.05] transition-colors">
+              <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                <div class="flex items-center">
+                  <div class="mr-5">
+                    <% if (node.status == "Online") { %>
+                      <span class="flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      </span>
+                    <% } else if (node.status == "Offline") { %>
+                      <span class="flex h-2 w-2">
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-neutral-500"></span>
+                      </span>
+                    <% } else { %>
+                      <span class="flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-amber-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                      </span>
+                    <% } %>
+                  </div>
+                  <div class="font-medium text-white"><%= node.name %></div>
+                </div>
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm">
+                <div class="flex">
+                  <div class="font-mono text-sm leading-6 mt-1 mr-3 text-neutral-400"><%= node.address %><span class="text-neutral-500">:<%= node.port %></span></div>
+                  <div class="mt-1 inline-flex items-center rounded-md 
+                  <%= node.versionRelease ? 'bg-emerald-600/10 text-emerald-400 ring-emerald-600/20' : 'bg-red-600/10 text-red-400 ring-red-600/20' %> 
+                  px-2 py-1 text-xs font-medium ring-1 ring-inset">
+                    <%= node.versionRelease || 'unknown' %>
+                  </div>                  
+                </div>
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-neutral-400"><%= set[node.id] || 0 %></td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm">
+                <div class="flex gap-3">
+                  <button onclick="configure('<%= node.id %>')" type="button" class="rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    <%= req.translations.configure %>
+                  </button>
+                  <a href="./node/<%= node.id %>">
+                    <button type="button" class="rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      <%= req.translations.edit %>
+                    </button>
+                  </a>
+                  <button onclick="deletenode('<%= node.id %>')" type="button" class="rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    <%= req.translations.remove %>
+                  </button>
+                </div>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="notification" class="fixed bottom-5 right-5 bg-white/5 text-white px-4 py-2 rounded-xl shadow-lg transform transition-all duration-300 tranneutral-y-full opacity-0">
+      Command copied to clipboard!
+    </div>
+  </div>
+</main>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const stats = <%- JSON.stringify(stats.totalStats) || '[]' %>;
+
+  function parseRam(ramString) {
+    return parseFloat(ramString.replace(' MB', ''));
+  }
+
+  function parseCpu(cpuString) {
+    return parseFloat(cpuString.replace('%', ''));
+  }
+
+  const ramTimestamps = stats.length ? stats.map(stat => new Date(stat.timestamp).toLocaleTimeString()) : ['0:00', '0:00', '0:00']; 
+  const ramData = stats.length ? stats.map(stat => parseRam(stat.Ram)) : [0, 0, 0]; // Zeige 0 Werte, wenn keine Daten vorhanden sind
+  const ramMax = stats.length ? Math.max(...ramData, parseRam(stats[0].RamMax)) : 1; // Maximalwert auf 1 setzen, damit die Skala nicht zerfällt
+
+  const ctxRam = document.getElementById('ramChart').getContext('2d');
+  const ramChart = new Chart(ctxRam, {
+    type: 'line',
+    data: {
+      labels: ramTimestamps,
+      datasets: [{
+        label: 'RAM Usage (MB)',
+        data: ramData,
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 2,
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#FFFFFF'
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: '#FFFFFF'
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        },
+        y: {
+          suggestedMax: ramMax,
+          beginAtZero: true,
+          ticks: {
+            color: '#FFFFFF'
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        }
+      }
+    }
+  });
+
+  const cpuData = stats.length ? stats.map(stat => parseCpu(stat.Cores)) : [0, 0, 0]; // Zeige 0 Werte, wenn keine Daten vorhanden sind
+  const cpuMax = 100;
+
+  const ctxCpu = document.getElementById('cpuChart').getContext('2d');
+  const cpuChart = new Chart(ctxCpu, {
+    type: 'line',
+    data: {
+      labels: ramTimestamps,
+      datasets: [{
+        label: 'CPU Usage (%)',
+        data: cpuData,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 2,
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#FFFFFF'
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: '#FFFFFF'
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        },
+        y: {
+          suggestedMax: cpuMax,
+          beginAtZero: true,
+          ticks: {
+            color: '#FFFFFF'
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        }
+      }
+    }
+  });
+</script>
+
+
+<%- include('../components/footer') %>
