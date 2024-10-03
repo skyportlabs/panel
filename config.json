@@ -5,6 +5,9 @@
   "domain": "localhost",
   "mode": "production",
   "version": "0.3.0",
+  "note": "you can also use Mysql if you put mysql://user:pass@localhost:3306/dbname into databaseURL!",
+  "databaseURL": "sqlite://skyport.db",
+  "databaseTable": "skyport",
   "ogTitle": "Skyport Panel",
   "ogDescription": "This is an instance of the Skyport Panel - learn more at github.com/skyportlabs"
 }
