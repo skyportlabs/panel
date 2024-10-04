@@ -68,7 +68,7 @@
        </div>	      
       <% } %>
       <!-- Improved table -->
-      <div class="overflow-hidden shadow ring-1 ring-white/5 rounded-lg m-8" id="nodeTable"> <!-- ID hinzugefügt -->
+      <div class="overflow-hidden shadow ring-1 ring-white/5 rounded-lg m-8" id="nodeTable">
         <table class="min-w-full divide-y divide-white/10">
           <thead class="bg-white/5">
             <tr>
@@ -80,7 +80,7 @@
           </thead>
           <tbody class="divide-y divide-white/5 bg-white/5">
             <% nodes.forEach(function(node) { %>
-              <tr class="hover:bg-white/[0.05] transition-colors clickable-row cursor-pointer" onclick="window.location='/admin/node/<%= node.id %>/stats'">
+              <tr class="hover:bg-white/[0.05] transition-colors clickable-row cursor-pointer" onclick="handleRowClick(event, '/admin/node/<%= node.id %>/stats')">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <div class="flex items-center">
                     <div class="mr-5">
@@ -190,6 +190,13 @@
       
 </main>
 <script>
+
+  function handleRowClick(event, url) {
+    if (event.target.tagName !== 'BUTTON' && event.target.tagName !== 'A') {
+      window.location = url;
+    }
+  }
+
 async function deletenode(nodeId) {
   try {
     let response = await fetch('/nodes/delete', {
