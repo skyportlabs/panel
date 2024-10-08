@@ -178,14 +178,14 @@
             }
         })
         .then(data => {
-        window.location.href = '../../../admin/instances?err=CREATED'
+        window.location.href = '../../../admin/instances?err=EDITED'
             console.log('Instance created:', data);
             createBtn.textContent = 'Create';
             createBtn.disabled = false;
         })
         .catch(error => {
-            console.error('Error creating instance:', error);
-            alert('Error! Instance creation failed. Check the console for more details.');
+            console.error('Error Editing instance:', error);
+            alert('Error! Instance editing failed. Check the console for more details.');
             createBtn.textContent = 'Create';
             createBtn.disabled = false;
         });
@@ -199,7 +199,7 @@
     }
     
     function handleError(error) {
-        console.error('Error creating instance:', error);
+        console.error('Error Editing instance:', error);
         alert('Error! Check the console for more details.');
         createBtn.textContent = 'Create';
         createBtn.disabled = false;
