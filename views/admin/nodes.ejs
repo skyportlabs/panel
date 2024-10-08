@@ -340,8 +340,9 @@ function showPopup(command) {
     
     fetch(url, {
       method: 'GET',
-      headers: {
-        'Authorization': 'Basic ' + btoa('Skyport' + ':' + apiKey)
+      auth: {
+      username: 'Skyport',
+      password: apiKey,
       }
     })
     .then(response => {
