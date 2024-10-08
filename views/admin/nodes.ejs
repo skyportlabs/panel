@@ -127,6 +127,9 @@
                     <button onclick="deletenode('<%= node.id %>')" type="button" class="rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                       <%= req.translations.remove %>
                     </button>
+                      <button onclick="purgeInstances('<%= node.address %>', '<%= node.port %>', '<%= node.apiKey %>')" type="button" class="rounded-xl bg-yellow-500 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-yellow-400 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                          Purge Instances
+                     </button>
                   </div>
                 </td>
               </tr>
@@ -332,7 +335,27 @@ function showPopup(command) {
 }
 
 
-  
+  function purgeInstances(address, port, apiKey) {
+    const url = `http://${address}:${port}/instances/purge/all`;
+    
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Basic ' + btoa('Skyport' + ':' + apiKey)
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Instances Purged Successfully!');
+      } else {
+        alert('Failed to Purge Instances. Status Code: ' + response.status);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while purging instances.');
+    });
+  }
 
   function setupBadgeInput(inputId, containerId, validator) {
     const input = document.getElementById(inputId);
