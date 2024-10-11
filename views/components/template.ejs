@@ -233,12 +233,57 @@
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M220,169.09l-92,53.65L36,169.09A8,8,0,0,0,28,182.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,169.09Z"/><path d="M220,121.09l-92,53.65L36,121.09A8,8,0,0,0,28,134.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,121.09Z"/><path d="M28,86.91l96,56a8,8,0,0,0,8.06,0l96-56a8,8,0,0,0,0-13.82l-96-56a8,8,0,0,0-8.06,0l-96,56a8,8,0,0,0,0,13.82Z"/></svg>
                               <span><%= req.translations.instances %></span>
                            </a>
-                           <a href="/account" searchdata="account profile <%= user.username %>" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                           <a href="/account" searchdata="account profile <%= user.username %>" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
                                  <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
                                </svg>                                                           
                               <span><%= req.translations.account %></span>
                            </a>
+                           <% plugins.forEach(plugin => { %>
+                              <% if (plugin.sidebar) { %>
+                                  <% Object.entries(plugin.sidebar).forEach(([key, value]) => { %>
+                                      <a href="<%= value.url %>" searchdata="<%= value.search_data %>" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                                          <% if (value.icon) { %>
+                                              <span class="svg-icon" data-icon-url="<%= value.icon %>"></span>
+                                          <% } else { %>
+                                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                                                  <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
+                                              </svg>
+                                          <% } %>
+                                          <span><%= key %></span>
+                                      </a>
+                                  <% }); %>
+                              <% } %>
+                          <% }); %>
+                          
+                          <script>
+                              document.addEventListener("DOMContentLoaded", function() {
+                                  document.querySelectorAll('.svg-icon').forEach(function(span) {
+                                      const url = span.getAttribute('data-icon-url');
+                          
+                                      fetch(url)
+                                          .then(response => {
+                                              if (!response.ok) {
+                                                  throw new Error('Network response was not ok');
+                                              } else if (response.status !== 200) {
+                                                  throw new Error(`Request failed with status ${response.status}`);
+                                              } else if (!response.text().includes('<svg')) {
+                                                 throw new Error('Response does not contain an SVG');
+                                              }
+                                              return response.text();
+                                          })
+                                          .then(svgContent => {
+                                              span.innerHTML = svgContent;
+                                          })
+                                          .catch(error => {
+                                              console.error('Fehler beim Laden des SVGs:', error);
+                                          });
+                                  });
+                              });
+                          </script>
+                          
+                          
+                          
                         </li>
                         <% if (user.admin == true) { %>
                         <p class="pl-8 text-neutral-400 text-xs font-medium pt-6 pb-2"><span>Admin Panel</span></p>
@@ -299,14 +344,12 @@
                            </a>
                         </li>
 
-                        <!-- 
-                        Deprecated
                         <li>
                            <a href="/admin/plugins" searchdata="addons plugins admin" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M165.78,224H208a16,16,0,0,0,16-16V170.35A8,8,0,0,0,212.94,163a23.37,23.37,0,0,1-8.94,1.77c-13.23,0-24-11.1-24-24.73s10.77-24.73,24-24.73a23.37,23.37,0,0,1,8.94,1.77A8,8,0,0,0,224,109.65V72a16,16,0,0,0-16-16H171.78a35.36,35.36,0,0,0,.22-4,36,36,0,0,0-72,0,35.36,35.36,0,0,0,.22,4H64A16,16,0,0,0,48,72v32.22a35.36,35.36,0,0,0-4-.22,36,36,0,0,0,0,72,35.36,35.36,0,0,0,4-.22V208a16,16,0,0,0,16,16h42.22"/></svg>
                               <span><%= req.translations.plugins %></span>
                            </a>
-                        </li> -->
+                        </li>
                         <% } %>
                      </ul>
                   </li>
@@ -441,31 +484,6 @@
      }
    }
 
-   function updateSelectedFlag() {
-     const select = document.getElementById('language-selector');
-     const selectedFlag = document.getElementById('selected-flag');
-     if(selectedFlag) {
-         selectedFlag.className = `flag-icon flag-icon-${select.value}`;
-      }
-   }
-
-   function changeLanguage(lang) {
-     fetch(`/setLanguage?lang=${lang}`)
-       .then(response => response.json())
-       .then(data => {
-         if (data.success) {
-           updateSelectedFlag();
-           location.reload();
-         } else {
-           alert('Failed to change language');
-         }
-       });
-   }
-
-   // Initialize the selected flag on page load
-   document.addEventListener('DOMContentLoaded', updateSelectedFlag);
-
-   // Optional: Close the dropdown when clicking outside
    window.addEventListener('click', function(e) {
      const userMenuButton = document.getElementById('user-menu-button');
      const dropdownMenu = document.getElementById('dropdown-menu');
@@ -476,6 +494,7 @@
      }
    });
  </script>
+           <script src="/javascript/language/index.js"></script>
          </div>
       </div>
       <script>
@@ -632,20 +651,6 @@
          });
          </script>         
          
-         
-          <script>
-            function changeLanguage(lang) {
-                fetch(`/setLanguage?lang=${lang}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            location.reload();
-                        } else {
-                            alert('Failed to change language');
-                        }
-                    });
-            }
-        </script>
 
       <div id="loader" class="loading-spin fixed ml-56 mt-16 inset-0 flex items-center justify-center <%= theme['paneltheme-color'] %> transition-opacity duration-300 opacity-100 z-50">
          <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="currentColor">

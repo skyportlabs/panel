@@ -38,6 +38,9 @@ const analytics = require('./utils/analytics.js');
 const sqlite = require("better-sqlite3");
 const SqliteStore = require("better-sqlite3-session-store")(session);
 const sessionStorage = new sqlite("sessions.db");
+const { loadPlugins } = require('./plugins/loadPls.js');
+let plugins = loadPlugins(path.join(__dirname, './plugins'));
+plugins = Object.values(plugins).map(plugin => plugin.config);
 
 const { init } = require('./handlers/init.js');
 
@@ -142,6 +145,7 @@ app.use(async (req, res, next) => {
     res.locals.theme = theme;
     res.locals.name = settings.name;
     res.locals.logo = settings.logo;
+    res.locals.plugins = plugins;
     next();
   } catch (error) {
     log.error('Error fetching settings:', error);

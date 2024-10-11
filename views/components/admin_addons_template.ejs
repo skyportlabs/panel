@@ -2,383 +2,567 @@
 <html class="h-full w-full">
    <head>
       <title><%= name %></title>
+      <% if (logo == true) { %>
+         <link rel="icon" href="/assets/logo.png" type="image/x-icon">
+         <% }  else { %>
+            <link rel="icon" href="https://i.imgur.com/uvDunAR.png" type="image/x-icon">
+         <% } %>
+
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta content="<%= ogTitle %>" property="og:title">
+      <meta content="<%= ogDescription %>" property="og:description">
       <link href="/assets/tailwind.css" rel="stylesheet">
       <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link rel="preconnect" href="https://cdn.fontshare.com">
-      <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,300,600,400,700&display=swap" rel="stylesheet">
-      <link href="https://fonts.cdnfonts.com/css/graphik-trial" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
    </head>
-   <body style="font-family: 'General Sans" class="bg-[#141414] h-full w-full">
+   <body style="font-family: 'Public Sans'" class="<%= theme['paneltheme-color'] %> h-full w-full">
       <div>
       <style>
+
+#loader {
+   transition: opacity 0.5s ease;
+}
+
+.opacity-0 {
+   opacity: 0;
+}
+
+.opacity-1 {
+   opacity: 1;
+}
+
          .collapsed span {
-         display: none;
+            display: none;
          }
          .collapsed p {
-         display: none;
+            display: none;
          }
          .collapsed h1 {
-         display: none;
+            display: none;
          }
          .collapsed .nav-link svg {
-         margin-right: 0;
+            margin-right: 0;
          }
          .collapsed {
-         width: 4% !important;
+            width: 4% !important;
          }
          .colcont {
-         padding-left: 4.2rem
+            padding-left: 4.2rem
+         }
+         .colcontextream {
+            padding-left: 1.2rem
+         }
+         .colcont-right {
+            padding-right: 14.2rem
          }
          .transition {
-         transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
          }
          .sidebar nav ul {
-         position: relative;
+            position: relative;
          }
          #active-background {
-         position: absolute;
-         left: 1rem; /* Adjust based on your layout */
-         width: calc(100% - 2rem); /* Adjust based on your layout */
-         height: 2.25rem; /* Adjust based on your nav item height */
-         background-color: #171717;
-         border-radius: 0.5rem;
-         transition: transform 0.2s ease-in-out;
-         z-index: 0;
+            position: absolute;
+            left: 1rem;
+            width: calc(100% - 2rem);
+            height: 2.25rem;
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease-in-out;
+            z-index: 0;
          }
          .nav-link {
-         position: relative;
-         z-index: 1;
+            position: relative;
+            z-index: 1;
          }
          .nav-link.active {
-         color: white;
-         font-weight: 500;
+            color: white;
+            font-weight: 500;
          }
+         @media (max-width: 1024px) {
+            .sidebar {
+               display: none;
+               position: fixed;
+               z-index: 50;
+               height: 100%;
+               width: 80%;
+               background-color: #101010;
+               overflow-y: auto;
+               transform: translateX(-100%);
+               transition: transform 0.3s ease-in-out;
+            }
+            .sidebar.open {
+               display: block;
+               transform: translateX(0);
+            }
+            #sidebar-toggle {
+               display: block;
+            }
+            .sidebar.expanded {
+               width: 100%;
+            }
+         }
+
+         .paneltheme-hover:hover {
+            background-color: rgb(0, 0, 0, 0.1);
+         }
+
+   .sidebar-left {
+      left: 0;
+   }
+
+   .sidebar-right {
+      right: 0;
+   }
+
+
+.loading-spin {
+  svg {
+    fill: #868686;
+    
+    path:nth-of-type(1) {
+      animation: pulse 1s infinite linear;
+    }
+    path:nth-of-type(2) {
+      animation: pulse 1s -.083s infinite linear;
+    }
+    path:nth-of-type(3) {
+      animation: pulse 1s -.166s infinite linear;
+    }
+    path:nth-of-type(4) {
+      animation: pulse 1s -.249s infinite linear;
+    }
+    path:nth-of-type(5) {
+      animation: pulse 1s -.332s infinite linear;
+    }
+    path:nth-of-type(6) {
+      animation: pulse 1s -.415s infinite linear;
+    }
+    path:nth-of-type(7) {
+      animation: pulse 1s -.498s infinite linear;
+    }
+    path:nth-of-type(8) {
+      animation: pulse 1s -.581s infinite linear;
+    }  
+    path:nth-of-type(9) {
+      animation: pulse 1s -.664s infinite linear;
+    }
+    path:nth-of-type(10) {
+      animation: pulse 1s -.747s infinite linear;
+    }
+    path:nth-of-type(11) {
+      animation: pulse 1s -.83s infinite linear;
+    }
+    path:nth-of-type(12) {
+      animation: pulse 1s -.913s infinite linear;
+    }
+  }
+}
+  
+@keyframes pulse {
+  50% { fill: #868686; }
+  to { fill: rgba(134,134,134,.4); }
+}
       </style>
-      <script>
-         document.addEventListener('DOMContentLoaded', () => {
-             const sidebar = document.querySelector('.sidebar');
-             const toggleButton = document.getElementById('sidebar-toggle');
-             const colcont = document.getElementById('colcont');
-         
-             function setCookie(name, value, days) {
-                 const date = new Date();
-                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                 const expires = "expires=" + date.toUTCString();
-                 document.cookie = name + "=" + value + ";" + expires + ";path=/";
-             }
-             function getCookie(name) {
-                 const nameEQ = name + "=";
-                 const ca = document.cookie.split(';');
-                 for(let i = 0; i < ca.length; i++) {
-                     let c = ca[i];
-                     while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                     if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-                 }
-                 return null;
-             }
-             const sidebarState = getCookie('sidebar-collapsed');
-             if (sidebarState === 'true') {
-                 sidebar.classList.add('collapsed');
-                 colcont.classList.add('colcont');
-             } else {
-                 sidebar.classList.remove('collapsed');
-                 colcont.classList.remove('colcont');
-             }
-             toggleButton.addEventListener('click', () => {
-                 sidebar.classList.toggle('collapsed');
-                 colcont.classList.toggle('colcont');
-                 const isCollapsed = sidebar.classList.contains('collapsed');
-                 setCookie('sidebar-collapsed', isCollapsed, 7);
-             });
-         });
-      </script>
-      <script>
-         document.addEventListener('DOMContentLoaded', () => {
-             const loader = document.getElementById('loader');
-             const content = document.getElementById('content');
-         
-             setTimeout(() => {
-                 loader.classList.add('opacity-0');
-                 content.classList.remove('opacity-0');
-                 
-                 setTimeout(() => {
-                     loader.style.display = 'none';
-                 }, 150);
-             }, 300);
-         });
-      </script>
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+      const loader = document.getElementById('loader');
+      const content = document.getElementById('content');
+
+      setTimeout(() => {
+         loader.classList.add('opacity-0');
+         content.classList.add('opacity-1');
+      
+         setTimeout(() => {
+            loader.style.display = 'none';
+         }, 400);
+      }, 300);
+   });
+</script>
+
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+      const sidebar = document.getElementById('pc-sidebar');
+      const sidebar2 = document.getElementById('pc-sidebar2');
+      const colcont = document.getElementById('colcont');
+
+      if ('<%= theme["sidebar-direction"] %>' === 'right') {
+         sidebar.classList.add('sidebar-right');
+         colcont.classList.add('colcontextream');
+         colcont.classList.add('colcont-right');
+         sidebar2.classList.remove('rounded-r-3xl', 'rounded-l-lg');
+         sidebar2.classList.add('rounded-r-lg', 'rounded-l-3xl');
+      } else {
+         sidebar.classList.add('sidebar-left');
+      }
+   });
+</script>
+
+      <button id="mobile-sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-50 w-fit p-2 rounded-xl text-white border border-white/5 bg-[#141414] hover:scale-110 active:scale-100 duration-200 transition-all">
+         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+         </svg>
+      </button>
       <!-- Static sidebar for desktop -->
-      <div class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
-        <div class="flex grow flex-col gap-y-5 overflow-hidden bg-[#101010] border-r border-white/5">
-           <nav class="flex flex-1 flex-col">
-              <div class="pl-6 pt-5 pb-4 flex">
-                 <a href="/" class="flex">
-                    <% if (logo == true) { %>
-                    <img src="../assets/logo.png" class="h-7 w-7 rounded mr-3 inline-flex">
+      <div id="pc-sidebar" class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 p-2 lg:flex lg:w-56 lg:flex-col">
+         <div id="pc-sidebar2" class="flex grow flex-col gap-y-5 overflow-hidden rounded-r-3xl rounded-l-lg bg-transparent border border-white/5">
+            <nav class="flex flex-1 flex-col">
+               <div class="pl-6 pt-4 pb-4 flex">
+                  <a href="/" class="flex">
+                     <% if (logo == true) { %>
+                     <img src="/assets/logo.png" class="h-7 w-7 rounded mr-3 inline-flex">
                      <% } %>
                      <h1 class="text-white font-medium tracking-tight text-lg"><%= name %></h1>
                   </a>
                </div>
-               <ul role="list" class="flex flex-1 flex-col gap-y-7">
+              <!-- User info -->
+            <div class="flex items-center space-x-4 py-4 px-4 border-y border-white/5">
+              <img class="h-8 w-8 rounded-xl" src="https://api.dicebear.com/9.x/thumbs/svg?seed=<%= user.username %>" alt="User avatar">
+              <div>
+                <p class="text-sm font-medium text-white"><%= user.username %></p>
+                <p class="text-xs text-neutral-500"><%= user.userId.substring(0, 6) %></p>
+              </div>
+            </div>
+            <ul role="list" class="-mx-2 space-y-1">
+              <div id="active-background" class="absolute left-0 w-full h-8 bg-white/5 rounded-2xl transition-all duration-300 ease-in-out"></div>
                   <li>
-                     <ul role="list" class="-mx-2 space-y-1">
-                        <div id="active-background" class="absolute left-0 w-full h-8 bg-[#171717] rounded-2xl transition-all duration-300 ease-in-out"></div>
-                        <li>
-                          <a href="/admin/overview" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-                            </svg>                                                              
-                            Go Back
-                          </a>
-                        </li>
-                        <li>
-                          <a href="/admin/plugins" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
-                              <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v2.5A2.25 2.25 0 0 0 4.25 9h2.5A2.25 2.25 0 0 0 9 6.75v-2.5A2.25 2.25 0 0 0 6.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 2 13.25v2.5A2.25 2.25 0 0 0 4.25 18h2.5A2.25 2.25 0 0 0 9 15.75v-2.5A2.25 2.25 0 0 0 6.75 11h-2.5Zm9-9A2.25 2.25 0 0 0 11 4.25v2.5A2.25 2.25 0 0 0 13.25 9h2.5A2.25 2.25 0 0 0 18 6.75v-2.5A2.25 2.25 0 0 0 15.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 11 13.25v2.5A2.25 2.25 0 0 0 13.25 18h2.5A2.25 2.25 0 0 0 18 15.75v-2.5A2.25 2.25 0 0 0 15.75 11h-2.5Z" clip-rule="evenodd" />
-                            </svg>                                               
-                            Overview
-                          </a>
-                        </li>
-          
-                        <p class="pl-8 text-neutral-400 text-xs font-semibold pt-6 pb-2">Plugins</p>
-                        <% Object.keys(pluginSidebar).forEach(plugin => { %>
-                        <li>
-                          <a href="<%= pluginSidebar[plugin] %>" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 shadow-none py-1.5 rounded-xl shadow-sm text-sm leading-6 font-normal">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
-                              <path d="M11.25 5.337c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.036 1.007-1.875 2.25-1.875S15 2.34 15 3.375c0 .369-.128.713-.349 1.003-.215.283-.401.604-.401.959 0 .332.278.598.61.578 1.91-.114 3.79-.342 5.632-.676a.75.75 0 0 1 .878.645 49.17 49.17 0 0 1 .376 5.452.657.657 0 0 1-.66.664c-.354 0-.675-.186-.958-.401a1.647 1.647 0 0 0-1.003-.349c-1.035 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401.31 0 .557.262.534.571a48.774 48.774 0 0 1-.595 4.845.75.75 0 0 1-.61.61c-1.82.317-3.673.533-5.555.642a.58.58 0 0 1-.611-.581c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.035-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959a.641.641 0 0 1-.658.643 49.118 49.118 0 0 1-4.708-.36.75.75 0 0 1-.645-.878c.293-1.614.504-3.257.629-4.924A.53.53 0 0 0 5.337 15c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.036 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.369 0 .713.128 1.003.349.283.215.604.401.959.401a.656.656 0 0 0 .659-.663 47.703 47.703 0 0 0-.31-4.82.75.75 0 0 1 .83-.832c1.343.155 2.703.254 4.077.294a.64.64 0 0 0 .657-.642Z" />
-                            </svg>                                                               
-                            <%= plugin %>
-                          </a>
-                        </li>
-                        <% }) %>
-                     </ul>
+                       <a href="/admin/overview"  class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                         </svg>                                                              
+                         Go Back
+                       </a>
+                       <a href="/admin/plugins" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                           <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v2.5A2.25 2.25 0 0 0 4.25 9h2.5A2.25 2.25 0 0 0 9 6.75v-2.5A2.25 2.25 0 0 0 6.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 2 13.25v2.5A2.25 2.25 0 0 0 4.25 18h2.5A2.25 2.25 0 0 0 9 15.75v-2.5A2.25 2.25 0 0 0 6.75 11h-2.5Zm9-9A2.25 2.25 0 0 0 11 4.25v2.5A2.25 2.25 0 0 0 13.25 9h2.5A2.25 2.25 0 0 0 18 6.75v-2.5A2.25 2.25 0 0 0 15.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 11 13.25v2.5A2.25 2.25 0 0 0 13.25 18h2.5A2.25 2.25 0 0 0 18 15.75v-2.5A2.25 2.25 0 0 0 15.75 11h-2.5Z" clip-rule="evenodd" />
+                         </svg>                                               
+                         Overview
+                       </a>
+                     </li>
+       
+                     <p class="pl-8 text-neutral-400 text-xs font-semibold pt-6 pb-2">Plugins</p>
+                     <% Object.keys(pluginSidebar).forEach(plugin => { %>
+                       <a href="<%= pluginSidebar[plugin] %>"  class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 mt-0.5 h-5">
+                           <path d="M11.25 5.337c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.036 1.007-1.875 2.25-1.875S15 2.34 15 3.375c0 .369-.128.713-.349 1.003-.215.283-.401.604-.401.959 0 .332.278.598.61.578 1.91-.114 3.79-.342 5.632-.676a.75.75 0 0 1 .878.645 49.17 49.17 0 0 1 .376 5.452.657.657 0 0 1-.66.664c-.354 0-.675-.186-.958-.401a1.647 1.647 0 0 0-1.003-.349c-1.035 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401.31 0 .557.262.534.571a48.774 48.774 0 0 1-.595 4.845.75.75 0 0 1-.61.61c-1.82.317-3.673.533-5.555.642a.58.58 0 0 1-.611-.581c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.035-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959a.641.641 0 0 1-.658.643 49.118 49.118 0 0 1-4.708-.36.75.75 0 0 1-.645-.878c.293-1.614.504-3.257.629-4.924A.53.53 0 0 0 5.337 15c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.036 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.369 0 .713.128 1.003.349.283.215.604.401.959.401a.656.656 0 0 0 .659-.663 47.703 47.703 0 0 0-.31-4.82.75.75 0 0 1 .83-.832c1.343.155 2.703.254 4.077.294a.64.64 0 0 0 .657-.642Z" />
+                         </svg>                                                               
+                         <%= plugin %>
+                       </a>
+                     <% }) %>
+                  </ul>
+               </li>
+                  <li class="mt-auto border-t border-white/5">
+                     <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-xl pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                        </svg>
+                        <span><%= req.translations.signOut %></span>
+                     </a>
                   </li>
-                  <!--<li>
-                     <div class="text-xs font-medium leading-6 text-neutral-400">Your teams</div>
-                     <ul role="list" class="-mx-2 mt-2 space-y-1">
-                       <li>
-                         <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-xl p-2 text-sm leading-6 font-medium">
-                           <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">H</span>
-                           <span class="truncate">Heroicons</span>
-                         </a>
-                       </li>
-                       <li>
-                         <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-xl p-2 text-sm leading-6 font-medium">
-                           <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">T</span>
-                           <span class="truncate">Tailwind Labs</span>
-                         </a>
-                       </li>
-                       <li>
-                         <a href="#" class="text-neutral-400 hover:text-white hover:bg-neutral-800 group flex gap-x-3 rounded-xl p-2 text-sm leading-6 font-medium">
-                           <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-[0.625rem] font-medium text-neutral-400 group-hover:text-white">W</span>
-                           <span class="truncate">Workcation</span>
-                         </a>
-                       </li>
-                     </ul>
-                     </li> -->
-                     <li class="mt-auto border-t border-white/5">
-                      <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-xl pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition hover:text-white">
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-                         </svg>
-                         <span><%= req.translations.signOut %></span>
-                      </a>
-                   </li>
-                </ul>
-             </nav>
-          </div>
-       </div>
-       <div id="colcont" class="lg:pl-56">
-       <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 shadow-sm sm:gap-x-6 sm:px-4 lg:px-4">
-          <button type="button" id="sidebar-toggle" class="w-fit p-2 mt-1 rounded-xl text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
-             <span class="sr-only">Open sidebar</span>
-             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-             </svg>
-          </button>
-          <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-             <div class="relative flex flex-1 flex-col">
-                <div class="flex items-center w-fit mt-3.5 px-4 py-2 h-10  rounded-xl border border-white/5  active:scale-100 duration-200 bg-transparent text-white">
-                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-neutral-400">
-                      <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
-                   </svg>
-                   <input id="searchInput" 
-                      class="bg-transparent border-transparent focus-visible:ring-transparent border-none ring-transparent sm:text-sm placeholder:text-zinc-500" 
-                      placeholder="<%= req.translations.search %>" 
-                      type="search" 
-                      name="search"
-                      autocomplete="off"
-                      onclick="input.blur()"
-                      onfocus="showSearchResults()">
-                </div>
-                <div id="searchResults" class="absolute bg-white w-[12.5rem] rounded-xl shadow-lg hidden mt-20 px-2 pb-2">
-                </div>
-             </div>
-             <script src="/javascript/search/index.js"></script>
-             <script>
-                document.addEventListener('keydown', function(event) {
-                  if (event.key === 'F1') {
-                    event.preventDefault();
-                    document.getElementById('searchInput').focus();
-                  }
-                });
-                
-                function showSearchResults() {
-                  document.getElementById('searchResults').classList.remove('hidden');
-                }
-                
-                document.getElementById('searchInput').addEventListener('focus', showSearchResults);
-             </script>
-             <script>
-                function showSearchResults() {
-                    var searchResults = document.getElementById('searchResults');
-                    searchResults.classList.remove('hidden');
-                }
-                
-                document.addEventListener('click', function(event) {
-                    var searchInput = document.getElementById('searchInput');
-                    var searchResults = document.getElementById('searchResults');
-                    if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
-                        searchResults.classList.add('hidden');
-                    }
-                });
-             </script>
- 
- 
- <div class="flex items-center gap-x-4 lg:gap-x-6">
-    <!-- Profile dropdown -->
-    <div class="relative mt-3 mr-4">
-      <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true" onclick="toggleDropdown()">
-        <img class="h-8 w-8 rounded-lg bg-transparent" src="https://api.dicebear.com/9.x/thumbs/svg?seed=<%= user.username %>" alt="">
-        <span class="hidden lg:flex lg:items-center ml-2.5 text-sm font-medium leading-6 text-white" aria-hidden="true">
-          <%= user.username %>
-          <span class="font-mono text-xs text-zinc-300 font-normal ml-1">(<%= user.userId.substring(0, 6) %>)</span>
-        </span>
-      </button>
-      <div id="dropdown-menu" class="hidden absolute right-0 z-10 mt-2 w-56 bg-white rounded-2xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none pb-2">
-        <div class="py-2 px-4">
-          <p class="text-sm font-medium text-gray-700 mt-2">Theme</p>
-          <div class="flex space-x-4 mt-2">
-            <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Sun Theme">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                <path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm8,24a64,64,0,1,0,64,64A64.07,64.07,0,0,0,128,64ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"></path>
-              </svg>
-            </button>
-            <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Moon Theme">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="24" fill="currentColor" viewBox="0 0 256 256">
-                <path d="M240,96a8,8,0,0,1-8,8H216v16a8,8,0,0,1-16,0V104H184a8,8,0,0,1,0-16h16V72a8,8,0,0,1,16,0V88h16A8,8,0,0,1,240,96ZM144,56h8v8a8,8,0,0,0,16,0V56h8a8,8,0,0,0,0-16h-8V32a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16Zm65.14,94.33A88.07,88.07,0,0,1,105.67,46.86a8,8,0,0,0-10.6-9.06A96,96,0,1,0,218.2,160.93a8,8,0,0,0-9.06-10.6Z"></path>
-              </svg>
-            </button>
-            <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Monitor Theme">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="24" fill="currentColor" viewBox="0 0 256 256">
-                <path d="M232,64V176a24,24,0,0,1-24,24H48a24,24,0,0,1-24-24V64A24,24,0,0,1,48,40H208A24,24,0,0,1,232,64ZM160,216H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="border-t border-gray-200 my-2 mt-2 mb-2"></div>
-        <div class="py-1 px-4">
-          <label for="language-selector" class="block text-sm font-medium text-gray-700">Language</label>
-          <select id="language-selector" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" onchange="changeLanguage(this.value)">
-            <option value="de">Deutsch</option>
-            <option value="en">English</option>
-            <option value="nl">Nederlands</option>
-          </select>
-        </div>
+               </ul>
+            </nav>
+         </div>
       </div>
-    </div>
-  </div>
-  
-  <script>
-    function toggleDropdown() {
-      const dropdownMenu = document.getElementById('dropdown-menu');
-      dropdownMenu.classList.toggle('hidden');
-    }
-  
-    // Optional: Close the dropdown when clicking outside
-    window.addEventListener('click', function(e) {
-      const userMenuButton = document.getElementById('user-menu-button');
-      const dropdownMenu = document.getElementById('dropdown-menu');
-      if (!userMenuButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-        dropdownMenu.classList.add('hidden');
-      }
-    });
-  </script>
-          </div>
+      <div id="colcont" class="lg:pl-56">
+      <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 sm:gap-x-6 sm:px-4 lg:px-4">
+         <div class="hidden lg:block">
+         <button type="button" id="sidebar-toggle" class="hidden lg:block w-fit p-2 mt-1 rounded-xl text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
+            <span class="sr-only">Open sidebar</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+         </button>
+      </div>
+         <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+            <div class="relative flex flex-1 flex-col">
+               <div class="ml-14 lg:-ml-2 flex items-center w-fit mt-3.5 px-4 py-2 h-10  rounded-xl border border-white/5  active:scale-100 duration-200 bg-transparent text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-neutral-400">
+                     <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+                  </svg>
+                  <input id="searchInput" 
+                     class="bg-transparent border-transparent focus-visible:ring-transparent border-none ring-transparent sm:text-sm placeholder:text-zinc-500" 
+                     placeholder="<%= req.translations.search %>" 
+                     type="search" 
+                     name="search"
+                     autocomplete="off"
+                     onclick="input.blur()"
+                     onfocus="showSearchResults()">
+               </div>
+               <div id="searchResults" class="absolute bg-white w-[12.5rem] rounded-xl shadow-lg hidden mt-20 px-2 pb-2">
+               </div>
+            </div>
+            <script src="/javascript/search/index.js"></script>
+            <script>
+               document.addEventListener('keydown', function(event) {
+                 if (event.key === 'F1') {
+                   event.preventDefault();
+                   document.getElementById('searchInput').focus();
+                 }
+               });
+               
+               function showSearchResults() {
+                 document.getElementById('searchResults').classList.remove('hidden');
+               }
+               
+               document.getElementById('searchInput').addEventListener('focus', showSearchResults);
+            </script>
+            <script>
+               function showSearchResults() {
+                   var searchResults = document.getElementById('searchResults');
+                   searchResults.classList.remove('hidden');
+               }
+               
+               document.addEventListener('click', function(event) {
+                   var searchInput = document.getElementById('searchInput');
+                   var searchResults = document.getElementById('searchResults');
+                   if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+                       searchResults.classList.add('hidden');
+                   }
+               });
+
+               
+            </script>
+<div class="flex items-center gap-x-4 lg:gap-x-6">
+   <!-- Profile dropdown -->
+   <div class="relative mt-3 mr-4">
+     <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true" onclick="toggleDropdown()">
+       <img class="h-8 w-8 rounded-lg bg-transparent" src="https://api.dicebear.com/9.x/thumbs/svg?seed=<%= user.username %>" alt="">
+       <span class="hidden lg:flex lg:items-center ml-2.5 text-sm font-medium leading-6 text-white" aria-hidden="true">
+         <%= user.username %>
+         <span class="font-mono text-xs text-zinc-300 font-normal ml-1">(<%= user.userId.substring(0, 6) %>)</span>
+       </span>
+     </button>
+     <div id="dropdown-menu" class="hidden absolute right-0 z-10 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none pb-2 transform opacity-0 scale-95 transition-all duration-200 ease-out">
+       <div class="p-4">
+         <div class="py-1 px-1">
+           <label for="language-selector" class="block text-sm font-medium text-gray-700 mb-2">Language</label>
+           <div class="relative">
+             <select id="language-selector" class="appearance-none w-full bg-white border border-gray-300 rounded-md py-2 pl-2 pr-10 text-sm leading-5 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500" onchange="changeLanguage(this.value)">
+               
+               <% languages.forEach(function(language) { %>
+                  <option value="<%= language %>" 
+                    <%= (req.cookies.lang ? req.cookies.lang : 'en') === language ? 'selected' : '' %>>
+                    <%= req.translations[language] %>
+                  </option>
+                <% }); %>
+                
+             </select>
+           </div>
+         </div>
        </div>
-       <script>
- document.addEventListener('DOMContentLoaded', function() {
-   const navLinks = document.querySelectorAll('.nav-link');
-   const activeBackground = document.getElementById('active-background');
-   const contentSection = document.getElementById('content');
-   let isAnimating = false;
+     </div>
+   </div>
+ </div>
  
-   function updateActiveLink(currentPath) {
-     navLinks.forEach((link) => {
-       if (link.getAttribute('href') === currentPath) {
-         link.classList.add('active');
-         const linkRect = link.getBoundingClientRect();
-         const navRect = link.closest('ul').getBoundingClientRect();
-         activeBackground.style.transform = `translateY(${linkRect.top - navRect.top}px)`;
-       } else {
-         link.classList.remove('active');
-       }
-     });
+ <style>
+   .flag-icon {
+     width: 20px;
+     height: 15px;
+     background-size: cover;
+     background-position: center;
    }
+   .flag-icon-de { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1IDMiPjxwYXRoIGQ9Ik0wIDBoNXYxSDB6IiBmaWxsPSIjMDAwIi8+PHBhdGggZD0iTTAgMWg1djFIMHoiIGZpbGw9IiNEMDAiLz48cGF0aCBkPSJNMCAyaDV2MUgweiIgZmlsbD0iI0ZGQ0UwMCIvPjwvc3ZnPg=='); }
+   .flag-icon-en { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjM1IDY1MCI+PHBhdGggZmlsbD0iIzAxMjE2OSIgZD0iTTAgMGgxMjM1djY1MEgweiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0wIDc1aDEyMzV2MjVIMHptMCAxMjVoMTIzNXYyNUgwem0wIDEyNWgxMjM1djI1SDB6bTAgMTI1aDEyMzV2MjVIMHptMCAxMjVoMTIzNXYyNUgweiIvPjxwYXRoIGZpbGw9IiNDODEwMkUiIGQ9Ik0wIDEwMGgxMjM1djI1SDB6bTAgMTI1aDEyMzV2MjVIMHptMCAxMjVoMTIzNXYyNUgwem0wIDEyNWgxMjM1djI1SDB6bTAgMTI1aDEyMzV2MjVIMHoiLz48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMCAwaDQ5NHYzNTBIMHoiLz48ZyBmaWxsPSIjQzgxMDJFIj48cGF0aCBkPSJNMjIwIDAgMCA2MHYzNWwyMjAgNzVMMCA1OXY0NGwyMjAgOTR6Ii8+PHBhdGggZD0iTTI3NCAwdjE4MEgwdjQ0aDI3NHYxMjZoNDRWMjI0aDQ5NHYtNDRINTE4VjBoLTQ0djEyNkgwdjQ0aDQ3NFYweiIvPjwvZz48L3N2Zz4='); }
+   .flag-icon-nl { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5IDYiPjxwYXRoIGZpbGw9IiMyMTQ2OEIiIGQ9Ik0wIDBoOXYySDB6Ii8+PHBhdGggZmlsbD0iI0ZGRiIgZD0iTTAgMmg5djJIMHoiLz48cGF0aCBmaWxsPSIjQUUxQzI4IiBkPSJNMCA0aDl2MkgweiIvPjwvc3ZnPg=='); }
+ </style>
  
-   function animatePageTransition(href) {
-     if (isAnimating) return;
-     isAnimating = true;
- 
-     contentSection.style.opacity = '0';
-     contentSection.style.transform = 'translateX(-20px)';
- 
-     setTimeout(() => {
-       window.location.href = href;
-     }, 300);
+ <script>
+   function toggleDropdown() {
+     const dropdownMenu = document.getElementById('dropdown-menu');
+     dropdownMenu.classList.toggle('hidden');
+     if (!dropdownMenu.classList.contains('hidden')) {
+       setTimeout(() => {
+         dropdownMenu.style.transform = 'scale(1)';
+         dropdownMenu.style.opacity = '1';
+       }, 10);
+     } else {
+       dropdownMenu.style.transform = 'scale(0.95)';
+       dropdownMenu.style.opacity = '0';
+     }
    }
- 
-   navLinks.forEach(link => {
-     link.addEventListener('click', (e) => {
-       e.preventDefault();
-       const href = link.getAttribute('href');
-       animatePageTransition(href);
-     });
+   window.addEventListener('click', function(e) {
+     const userMenuButton = document.getElementById('user-menu-button');
+     const dropdownMenu = document.getElementById('dropdown-menu');
+     if (!userMenuButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+       dropdownMenu.classList.add('hidden');
+       dropdownMenu.style.transform = 'scale(0.95)';
+       dropdownMenu.style.opacity = '0';
+     }
    });
- 
-   // Update active link on page load
-   updateActiveLink(window.location.pathname);
- 
-   // Handle browser back/forward
-   window.addEventListener('popstate', () => {
-     updateActiveLink(window.location.pathname);
-   });
- });
-       </script>
-           <script>
-             function changeLanguage(lang) {
-                 fetch(`/setLanguage?lang=${lang}`)
-                     .then(response => response.json())
-                     .then(data => {
-                         if (data.success) {
-                             location.reload();
-                         } else {
-                             alert('Failed to change language');
-                         }
-                     });
+ </script>
+         </div>
+      </div>
+      <script>
+         document.addEventListener('DOMContentLoaded', function() {
+           const navLinks = document.querySelectorAll('.nav-link');
+           const activeBackground = document.getElementById('active-background');
+           const contentSection = document.getElementById('content');
+           let isAnimating = false;
+           let currentActiveLink = null;
+         
+           function getCookie(name) {
+             const value = `; ${document.cookie}`;
+             const parts = value.split(`; ${name}=`);
+             if (parts.length === 2) return parts.pop().split(';').shift();
+           }
+         
+           function setCookie(name, value, days) {
+             let expires = '';
+             if (days) {
+               const date = new Date();
+               date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+               expires = `; expires=${date.toUTCString()}`;
              }
-         </script>
- 
-       <div id="loader" class="fixed ml-56 mt-16 inset-0 flex items-center justify-center bg-[#141414] transition-opacity duration-300 opacity-100 z-50">
-          <svg class="animate-spin h-5 w-5 text-white inline-flex"
-             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                stroke-width="4"></circle>
-             <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-             </path>
+             document.cookie = `${name}=${value || ''}${expires}; path=/`;
+           }
+         
+           function updateActiveBackground(link) {
+             const linkRect = link.getBoundingClientRect();
+             const navRect = link.closest('ul').getBoundingClientRect();
+             const topOffset = linkRect.top - navRect.top + link.closest('ul').scrollTop;
+         
+             activeBackground.style.height = `${linkRect.height}px`;
+             activeBackground.style.transform = `translateY(${topOffset}px)`;
+         
+             setCookie('lastActiveLink', link.id, 7);
+             currentActiveLink = link;
+           }
+         
+           function moveActiveBackgroundInstantly(link) {
+             activeBackground.style.transition = 'none';
+             updateActiveBackground(link);
+             setTimeout(() => {
+               activeBackground.style.transition = 'transform 0.3s ease, height 0.3s ease';
+             }, 50);
+           }
+         
+           function updateActiveLink(currentPath) {
+             let foundActive = false;
+             navLinks.forEach((link) => {
+               let currentpathx2 = currentPath.replace('instance/', 'instances');
+               if (currentpathx2.startsWith(link.getAttribute('href'))) {
+                 link.classList.add('active');
+                 if (currentActiveLink) {
+                   updateActiveBackground(link);
+                 } else {
+                   moveActiveBackgroundInstantly(link);
+                 }
+                 foundActive = true;
+               } else {
+                 link.classList.remove('active');
+               }
+             });
+         
+             if (!foundActive) {
+               activeBackground.style.transform = 'translateY(0)';
+               activeBackground.style.height = '0px';
+             }
+           }
+         
+           const lastActiveLinkId = getCookie('lastActiveLink');
+           if (lastActiveLinkId) {
+             const lastActiveLink = document.getElementById(lastActiveLinkId);
+             if (lastActiveLink) {
+               lastActiveLink.classList.add('active');
+               moveActiveBackgroundInstantly(lastActiveLink);
+             }
+           }
+         
+           function animatePageTransition(href) {
+             if (isAnimating) return;
+             isAnimating = true;
+         
+             contentSection.style.opacity = '0';
+             contentSection.style.transform = 'translateX(-20px)';
+               window.location.href = href;
+           }
+         
+           navLinks.forEach(link => {
+             link.addEventListener('click', (e) => {
+               e.preventDefault();
+               const href = link.getAttribute('href');
+               updateActiveLink(href);
+               animatePageTransition(href);
+             });
+           });
+         
+           updateActiveLink(window.location.pathname);
+         
+           window.addEventListener('popstate', () => {
+             updateActiveLink(window.location.pathname);
+           });
+         });
+
+
+         document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleButton = document.getElementById('sidebar-toggle');
+            const colcont = document.getElementById('colcont');
+
+            function setCookie(name, value, days) {
+               const date = new Date();
+               date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+               const expires = "expires=" + date.toUTCString();
+               document.cookie = name + "=" + value + ";" + expires + ";path=/";
+            }
+            function getCookie(name) {
+               const nameEQ = name + "=";
+               const ca = document.cookie.split(';');
+               for(let i = 0; i < ca.length; i++) {
+                  let c = ca[i];
+                  while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                  if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+               }
+               return null;
+            }
+            const sidebarState = getCookie('sidebar-collapsed');
+            if (sidebarState === 'true') {
+               sidebar.classList.add('collapsed');
+               colcont.classList.add('colcont');
+            } else {
+               sidebar.classList.remove('collapsed');
+               colcont.classList.remove('colcont');
+            }
+            toggleButton.addEventListener('click', () => {
+               sidebar.classList.toggle('collapsed');
+               colcont.classList.toggle('colcont');
+               const isCollapsed = sidebar.classList.contains('collapsed');
+               setCookie('sidebar-collapsed', isCollapsed, 7);
+            });
+
+            const mobileToggleButton = document.getElementById('mobile-sidebar-toggle');
+            if (mobileToggleButton) {
+               mobileToggleButton.addEventListener('click', () => {
+                  sidebar.classList.toggle('open');
+                  if (sidebar.classList.contains('open')) {
+                     mobileToggleButton.classList.add('right-4');
+                     mobileToggleButton.classList.remove('left-4');
+                  } else {
+                     mobileToggleButton.classList.add('left-4');
+                     mobileToggleButton.classList.remove('right-4');
+                  }
+               });
+            }
+         });
+         </script>         
+         
+         
+          <script src="/javascript/language/index.js"></script>
+
+      <div id="loader" class="loading-spin fixed ml-56 mt-16 inset-0 flex items-center justify-center <%= theme['paneltheme-color'] %> transition-opacity duration-300 opacity-100 z-50">
+         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="currentColor">
+            <path d="M18.696,10.5c-0.275-0.479-0.113-1.09,0.365-1.367l4.759-2.751c0.482-0.273,1.095-0.11,1.37,0.368 c0.276,0.479,0.115,1.092-0.364,1.364l-4.764,2.751C19.583,11.141,18.973,10.977,18.696,10.5z"/>
+            <path d="M16.133,6.938l2.75-4.765c0.276-0.478,0.889-0.643,1.367-0.366c0.479,0.276,0.641,0.886,0.365,1.366l-2.748,4.762 C17.591,8.415,16.979,8.58,16.5,8.303C16.021,8.027,15.856,7.414,16.133,6.938z"/>
+            <path d="M13.499,7.5c-0.552,0-1-0.448-1-1.001V1c0-0.554,0.448-1,1-1c0.554,0,1.003,0.447,1.003,1v5.499 C14.5,7.053,14.053,7.5,13.499,7.5z"/>
+            <path d="M8.303,10.5c-0.277,0.477-0.888,0.641-1.365,0.365L2.175,8.114C1.697,7.842,1.532,7.229,1.808,6.75 c0.277-0.479,0.89-0.642,1.367-0.368l4.762,2.751C8.416,9.41,8.58,10.021,8.303,10.5z"/>
+            <path d="M9.133,7.937l-2.75-4.763c-0.276-0.48-0.111-1.09,0.365-1.366c0.479-0.277,1.09-0.114,1.367,0.366l2.75,4.765 c0.274,0.476,0.112,1.088-0.367,1.364C10.021,8.581,9.409,8.415,9.133,7.937z"/>
+            <path d="M6.499,14.5H1c-0.554,0-1-0.448-1-1c0-0.554,0.447-1.001,1-1.001h5.499c0.552,0,1.001,0.448,1.001,1.001 C7.5,14.052,7.052,14.5,6.499,14.5z"/>
+            <path d="M8.303,16.502c0.277,0.478,0.113,1.088-0.365,1.366l-4.762,2.749c-0.478,0.273-1.091,0.112-1.368-0.366 c-0.276-0.479-0.111-1.089,0.367-1.368l4.762-2.748C7.415,15.856,8.026,16.021,8.303,16.502z"/>
+            <path d="M10.866,20.062l-2.75,4.767c-0.277,0.475-0.89,0.639-1.367,0.362c-0.477-0.277-0.642-0.886-0.365-1.365l2.75-4.764 c0.277-0.477,0.888-0.638,1.366-0.365C10.978,18.974,11.141,19.585,10.866,20.062z"/>
+            <path d="M13.499,19.502c0.554,0,1.003,0.448,1.003,1.002v5.498c0,0.55-0.448,0.999-1.003,0.999c-0.552,0-1-0.447-1-0.999v-5.498 C12.499,19.95,12.946,19.502,13.499,19.502z"/>
+            <path d="M17.867,19.062l2.748,4.764c0.275,0.479,0.113,1.088-0.365,1.365c-0.479,0.276-1.091,0.112-1.367-0.362l-2.75-4.767 c-0.276-0.477-0.111-1.088,0.367-1.365C16.979,18.424,17.591,18.585,17.867,19.062z"/>
+            <path d="M18.696,16.502c0.276-0.48,0.887-0.646,1.365-0.367l4.765,2.748c0.479,0.279,0.64,0.889,0.364,1.368 c-0.275,0.479-0.888,0.64-1.37,0.366l-4.759-2.749C18.583,17.59,18.421,16.979,18.696,16.502z"/>
+            <path d="M25.998,12.499h-5.501c-0.552,0-1.001,0.448-1.001,1.001c0,0.552,0.447,1,1.001,1h5.501c0.554,0,1.002-0.448,1.002-1 C27,12.946,26.552,12.499,25.998,12.499z"/>
           </svg>
-       </div>
+      </div>

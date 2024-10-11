@@ -3,22 +3,47 @@ const path = require('path');
 const express = require('express');
 const router = express.Router();
 
+const pluginsJsonPath = path.join('./plugins', 'plugins.json');
+
+function readPluginsJson() {
+    try {
+        const pluginsJson = fs.readFileSync(pluginsJsonPath, 'utf8');
+        return JSON.parse(pluginsJson);
+    } catch (error) {
+        console.error('Error reading plugins.json:', error);
+        return {};
+    }
+}
+
 function loadPlugins(pluginDir) {
     const plugins = {};
     const pluginFolders = fs.readdirSync(pluginDir);
-//make a check that it only loads the enabled plugins from the plugins.json
+    const pluginsJson = readPluginsJson();
+
     pluginFolders.forEach(folder => {
         const folderPath = path.join(pluginDir, folder);
-        const indexPath = path.join(folderPath, 'index.js');
-        const configPath = path.join(folderPath, 'manifest.json');
 
-        if (fs.existsSync(indexPath) && fs.existsSync(configPath)) {
+        if (fs.statSync(folderPath).isDirectory()) {
+            const configPath = path.join(folderPath, 'manifest.json');
+
+            if (!fs.existsSync(configPath)) {
+                console.warn(`Manifest file does not exist for plugin ${folder}.`);
+                return;
+            }
+
             const pluginConfig = require(configPath);
-            const pluginModule = require(indexPath);
+
+            if (!pluginsJson[pluginConfig.name]) {
+                console.warn(`Plugin ${pluginConfig.name} is not found in plugins.json.`);
+                return;
+            }
+
+            if (!pluginsJson[pluginConfig.name].enabled) {
+                return;
+            }
 
             plugins[folder] = {
                 config: pluginConfig,
-                module: pluginModule
             };
         }
     });

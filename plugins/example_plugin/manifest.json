@@ -9,6 +9,10 @@
         "example url": "/example"
     },
     "sidebar": {
-        "example url": "/example"
+        "Example": {
+            "url": "/example",
+            "search_data": "cloud",
+            "icon": "/public/example.svg"
+        }
     }
 }
