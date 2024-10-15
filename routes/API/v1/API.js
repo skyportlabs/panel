@@ -74,6 +74,72 @@ router.post('/api/getUser', validateApiKey, async (req, res) => {
   }
 });
 
+router.post('/api/instances/suspend/:id', validateApiKey, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      return res.status(400).json({ error: 'Missing required parameters' });
+    }
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+      return res.status(404).send('Instance not found');
+    }
+
+    instance.suspended = true;
+    await db.set(id + '_instance', instance);
+    let instances = await db.get('instances') || [];
+
+    let instanceToSuspend = instances.find(obj => obj.ContainerId === instance.ContainerId);
+    if (instanceToSuspend) {
+      instanceToSuspend.suspended = true;
+    }
+
+    await db.set('instances', instances);
+
+    logAudit(req.user.userId, req.user.username, 'instance:suspend', req.ip);
+    res.status(201).json({ success: 'Instance Suspended Successfully' });
+  } catch (error) {
+    log.error('Error in suspend instance:', error);
+    res.status(500).send('An error occurred while suspending the instance');
+  }
+});
+
+router.post('/api/instances/unsuspend/:id', validateApiKey, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      return res.status(400).json({ error: 'Missing required parameters' });
+    }
+    const instance = await db.get(id + '_instance');
+    if (!instance) {
+      return res.status(404).send('Instance not found');
+    }
+
+    instance.suspended = false;
+
+    await db.set(id + '_instance', instance);
+
+    let instances = await db.get('instances') || [];
+
+    let instanceToUnsuspend = instances.find(obj => obj.ContainerId === instance.ContainerId);
+    if (instanceToUnsuspend) {
+      instanceToUnsuspend.suspended = false;
+    }
+
+    await db.set('instances', instances);
+
+    logAudit(req.user.userId, req.user.username, 'instance:unsuspend', req.ip);
+
+    res.status(201).json({ success: 'Instance Suspended Successfully' });
+  } catch (error) {
+    log.error('Error in unsuspend instance :', error);
+    res.status(500).send('An error occurred while unsuspending the instance');
+  }
+});
+
+
 router.post('/api/auth/create-user', validateApiKey, async (req, res) => {
   try {
     const { username, email, password, userId, admin } = req.body;
