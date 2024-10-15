@@ -12,7 +12,7 @@ class FileOperations {
   }
 
   async request(method, endpoint, data = null) {
-    const url = `${this.baseUrl}${endpoint}`;
+    const url = `${this.baseUri${endpoint}`;
     try {
       const response = await axios({
         method,
