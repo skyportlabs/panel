@@ -7,9 +7,18 @@
            <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.nodesText %></p>
          </div>
          <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+
+          <div class="flex gap-2">
+
+            <button onclick="radarcheck()" type="button" class="block rounded-xl bg-neutral-900/20 text-neutral-300 border border-neutral-400/20 px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2 flex gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"></path></svg>
+              Run Radar Scan
+          </button>
            <button id="createButton" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">
             <%= req.translations.createNewNode %>
           </button>
+          </div>
+
          </div>
        </div>
 
@@ -190,6 +199,15 @@
       
 </main>
 <script>
+
+  async function radarcheck() {
+    await fetch('/admin/nodes/radar/check',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  }
 
   function handleRowClick(event, url) {
     if (event.target.tagName !== 'BUTTON' && event.target.tagName !== 'A') {

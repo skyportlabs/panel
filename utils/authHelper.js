@@ -35,6 +35,28 @@ async function isUserAuthorizedForContainer(userId, containerId) {
   }
 };
 
+async function isInstanceSuspended(userId, instance, id) {
+  try {
+    const users = await db.get('users') || [];
+
+    const user = users.find(u => u.userId === userId);
+    if (user.admin) return false;
+
+    if (!instance.suspended) {
+      instance.suspended = false;
+      db.set(id + '_instance', instance);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    log.error('Error:', error);
+    return true;
+  }
+};
+
+
 module.exports = {
-  isUserAuthorizedForContainer
+  isUserAuthorizedForContainer,
+  isInstanceSuspended
 };

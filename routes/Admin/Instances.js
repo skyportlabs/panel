@@ -193,6 +193,9 @@ router.post('/admin/instances/unsuspend/:id', isAdmin, async (req, res) => {
     if (instanceToUnsuspend) {
       instanceToUnsuspend.suspended = false;
     }
+    if (instanceToUnsuspend['suspended-flagg']) {
+      delete instanceToUnsuspend['suspended-flagg'];
+    }
 
     await db.set('instances', instances);
 

@@ -4,7 +4,7 @@ const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditLog.js');
 const log = new (require('cat-loggr'))();
 const { loadPlugins } = require('../../plugins/loadPls.js');
-const { isUserAuthorizedForContainer } = require('../../utils/authHelper.js');
+const { isUserAuthorizedForContainer, isInstanceSuspended } = require('../../utils/authHelper');
 const path = require('path');
 
 const { checkContainerState } = require('../../utils/checkstate.js');
@@ -38,13 +38,9 @@ router.get('/instance/:id/startup', async (req, res) => {
             return res.status(403).send('Unauthorized access to this instance.');
         }
 
-        if (!instance.suspended) {
-            instance.suspended = false;
-            db.set(id + '_instance', instance);
-        }
-    
-        if (instance.suspended === true) {
-            return res.redirect('../../instance/' + id + '/suspended');
+        const suspended = await isInstanceSuspended(req.user.userId, instance, id);
+        if (suspended === true) {
+            return res.render('instance/suspended', { req, user: req.user });
         }
 
         res.render('instance/startup.ejs', {
@@ -89,13 +85,9 @@ router.post('/instances/startup/changevariable/:id', async (req, res) => {
             return res.status(403).send('Unauthorized access to this instance.');
         }
 
-        if (!instance.suspended) {
-            instance.suspended = false;
-            db.set(id + '_instance', instance);
-        }
-    
-        if (instance.suspended === true) {
-            return res.redirect('../../instance/' + id + '/suspended');
+        const suspended = await isInstanceSuspended(req.user.userId, instance, id);
+        if (suspended === true) {
+            return res.render('instance/suspended', { req, user: req.user });
         }
 
         const updatedEnv = instance.Env.map(envVar => {
@@ -140,13 +132,9 @@ router.get('/instances/startup/changeimage/:id', async (req, res) => {
             return res.status(403).send('Unauthorized access to this instance.');
         }
 
-        if (!instance.suspended) {
-            instance.suspended = false;
-            db.set(id + '_instance', instance);
-        }
-    
-        if (instance.suspended === true) {
-            return res.redirect('../../instance/' + id + '/suspended');
+        const suspended = await isInstanceSuspended(req.user.userId, instance, id);
+        if (suspended === true) {
+            return res.render('instance/suspended', { req, user: req.user });
         }
 
         const nodeId = instance.Node.id;

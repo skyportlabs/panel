@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
-const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
+const { isUserAuthorizedForContainer, isInstanceSuspended } = require('../../utils/authHelper');
 const log = new (require('cat-loggr'))();
 
 const { loadPlugins } = require('../../plugins/loadPls.js');
@@ -34,13 +34,9 @@ router.get("/instance/:id/db", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-    if (!instance.suspended) {
-        instance.suspended = false;
-        db.set(id + '_instance', instance);
-    }
-
-    if (instance.suspended === true) {
-        return res.redirect('../../instance/' + id + '/suspended');
+    const suspended = await isInstanceSuspended(req.user.userId, instance, id);
+    if (suspended === true) {
+        return res.render('instance/suspended', { req, user: req.user });
     }
 
     if (instance.Node && instance.Node.address && instance.Node.port) {
@@ -96,13 +92,9 @@ router.post("/instance/:id/db/create/:name", async (req, res) => {
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-    if (!instance.suspended) {
-        instance.suspended = false;
-        db.set(id + '_instance', instance);
-    }
-
-    if (instance.suspended === true) {
-        return res.redirect('../../instance/' + id + '/suspended');
+    const suspended = await isInstanceSuspended(req.user.userId, instance, id);
+    if (suspended === true) {
+        return res.render('instance/suspended', { req, user: req.user });
     }
 
     if (instance.Node && instance.Node.address && instance.Node.port) {
