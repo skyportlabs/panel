@@ -5,7 +5,7 @@
   "domain": "localhost",
   "mode": "production",
   "version": "0.3.0",
-  "note": "you can also use Mysql if you put mysql://user:pass@localhost:3306/dbname into databaseURL!",
+  "_note": "You can also use MySQL or Redis by setting databaseURL to mysql://user:pass@localhost:3306/dbname for MySQL or redis://:mypassword@localhost:6379 for Redis.",
   "databaseURL": "sqlite://skyport.db",
   "databaseTable": "skyport",
   "ogTitle": "Skyport Panel",

@@ -9,16 +9,17 @@ let db;
 if (config.databaseURL.startsWith('sqlite')) {
     const Keyv = require('keyv');
     db = new Keyv('sqlite://skyport.db');
+} else if (config.databaseURL.startsWith('redis')) {
+    const Keyv = require('keyv');
+    db = new Keyv(config.databaseURL);
 } else {
     const Keyv = require('@keyvhq/core');
     const KeyvMysql = require('@keyvhq/mysql');
-
     const mysqlConfig = {
         url: config.databaseURL,
         table: 'skyport',
         keySize: 255,
     };
-
     db = new Keyv({
         store: new KeyvMysql(mysqlConfig.url, {
             table: mysqlConfig.table,
@@ -26,5 +27,6 @@ if (config.databaseURL.startsWith('sqlite')) {
         })
     });
 }
+
 
 module.exports = { db };
