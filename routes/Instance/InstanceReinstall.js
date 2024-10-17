@@ -1,7 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
-const { isUserAuthorizedForContainer } = require('../../utils/authHelper.js');
+const { isUserAuthorizedForContainer, isInstanceSuspended } = require('../../utils/authHelper');
 const { checkContainerState } = require('../../utils/checkstate.js');
 const log = new (require('cat-loggr'))();
 
@@ -31,13 +31,9 @@ router.post('/instance/reinstall/:id', async (req, res) => {
             return res.status(403).send('Unauthorized access to this instance.');
         }
 
-        if (!instance.suspended) {
-            instance.suspended = false;
-            db.set(id + '_instance', instance);
-        }
-    
-        if (instance.suspended === true) {
-            return res.redirect('../../instance/' + id + '/suspended');
+        const suspended = await isInstanceSuspended(req.user.userId, instance, id);
+        if (suspended === true) {
+            return res.render('instance/suspended', { req, user: req.user });
         }
 
         const { Node: node, imageData, Memory: memory, Cpu: cpu, Ports: ports, Name: name, User: user, Primary: primary, ContainerId: containerId, Env } = instance;

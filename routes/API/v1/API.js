@@ -127,6 +127,10 @@ router.post('/api/instances/unsuspend/:id', validateApiKey, async (req, res) => 
     if (instanceToUnsuspend) {
       instanceToUnsuspend.suspended = false;
     }
+    
+    if (instanceToUnsuspend['suspended-flagg']) {
+      delete instanceToUnsuspend['suspended-flagg'];
+    }
 
     await db.set('instances', instances);
 

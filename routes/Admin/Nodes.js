@@ -333,4 +333,52 @@ router.post('/admin/node/:id', isAdmin, async (req, res) => {
   res.status(201).send(updatedNode);
 });
 
+router.post('/admin/nodes/radar/check', isAdmin, async (req, res) => {
+  try {
+    const nodes = await db.get('nodes') || [];
+    let instances = await db.get('instances') || [];
+
+    for (const nodeid of nodes) {
+      const node = await db.get(`${nodeid}_node`);
+      if (node) {
+        const nodestatus = await checkNodeStatus(node);
+        if (nodestatus) {
+          try {
+            const response = await axios.get(`http://${node.address}:${node.port}/check/all`, {
+              auth: {
+                username: 'Skyport',
+                password: node.apiKey
+              }
+            });
+            
+            if (response.data.flaggedMessages.length > 0) {
+              for (const message of response.data.flaggedMessages) {
+                const { containerId, message: flaggedMessage } = message;
+                for (let instance of instances) {
+                  if (instance.ContainerId === containerId) {
+                    instance.suspended = true;
+                    instance['suspended-flagg'] = flaggedMessage;
+                  }
+                }
+              }
+            }
+          } catch (error) {
+            if (error.response && error.response.status === 401) {
+            } else {
+              console.error(`Error checking node ${nodeid}:`, error.message);
+            }
+          }
+        }
+      }
+    }
+
+    await db.set('instances', instances);
+
+    res.status(200).send('Node checks completed.');
+  } catch (error) {
+    console.error('Error during node check:', error.message);
+    res.status(500).send('An error occurred while checking nodes.');
+  }
+});
+
 module.exports = router;

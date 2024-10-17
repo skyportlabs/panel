@@ -6,7 +6,7 @@ const FormData = require('form-data');
 const fs = require('node:fs');
 const axios = require('axios');
 const { db } = require('../../handlers/db.js');
-const { isUserAuthorizedForContainer } = require('../../utils/authHelper');
+const { isUserAuthorizedForContainer, isInstanceSuspended } = require('../../utils/authHelper');
 const log = new (require('cat-loggr'))();
 
 router.post("/instance/:id/files/upload", upload.array('files'), async (req, res) => {
@@ -33,13 +33,9 @@ router.post("/instance/:id/files/upload", upload.array('files'), async (req, res
     }
 
 
-    if (!instance.suspended) {
-        instance.suspended = false;
-        db.set(id + '_instance', instance);
-    }
-
-    if (instance.suspended === true) {
-        return res.redirect('../../instance/' + id + '/suspended');
+    const suspended = await isInstanceSuspended(req.user.userId, instance, id);
+    if (suspended === true) {
+        return res.render('instance/suspended', { req, user: req.user });
     }
 
     const apiUrl = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/files/upload?path=${encodeURIComponent(subPath)}`;
