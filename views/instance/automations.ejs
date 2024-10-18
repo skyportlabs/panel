@@ -1,0 +1,487 @@
+<%- include('../components/template') %>
+<main id="content" class="min-h-screen text-white">
+   <div class="bg-transparent">
+      <div class="sm:flex sm:items-center px-8 pt-4">
+         <div class="sm:flex-auto">
+            <h1 class="text-base font-medium leading-6">Manage Instance</h1>
+            <p class="mt-1 text-sm text-neutral-500">View, update, and manage an instance on the Skyport panel.</p>
+         </div>
+         <% let query = req.query.path ? '?path=' + req.query.path : ''; %>
+         <div class="mt-4 sm:ml-16 sm:mt-0 flex space-x-4">
+            <button id="save-button" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                Save Workflow
+            </button>
+            <input type="file" id="fileInput" multiple style="display: none;">
+         </div>
+      </div>
+   </div>
+
+   <%- include('../components/instance') %>
+
+   <div class="flex gap-8 m-5">
+      <div id="action-blocks" class="w-64 bg-neutral-800/20 p-6 rounded-lg shadow-lg">
+         <h3 class="text-xl font-semibold text-white mb-6">Actions</h3>
+         <div class="action-block p-4 bg-indigo-600 shadow-lg rounded-lg mb-4 text-white cursor-pointer transition-transform transform hover:scale-105" draggable="true" data-type="interval">
+            <span class="font-medium">Interval</span>
+            <select class="interval-select mt-2 bg-indigo-700 text-white rounded w-full p-2">
+                <option value="0.5">Every 30 Minutes</option>
+                <option value="1">1 Hour</option>
+                <option value="2">2 Hours</option>
+                <option value="3">3 Hours</option>
+                <option value="4">4 Hours</option>
+                <option value="5">5 Hours</option>
+                <option value="7">7 Hours</option>
+                <option value="9">9 Hours</option>
+                <option value="13">13 Hours</option>
+                <option value="15">15 Hours</option>
+                <option value="17">17 Hours</option>
+                <option value="24">Every Day</option>
+                <option value="48">Every 2 Days</option>
+                <option value="72">Every 3 Days</option>
+                <option value="96">Every 4 Days</option>
+                <option value="120">Every 5 Days</option>
+                <option value="144">Every 6 Days</option>
+                <option value="168">Every Week</option>
+                
+            </select>
+         </div>
+         <div class="action-block p-4 bg-green-600 shadow-lg rounded-lg mb-4 text-white cursor-pointer transition-transform transform hover:scale-105" draggable="true" data-type="power">
+            <span class="font-medium">Power Action</span>
+            <select class="power-action-select mt-2 bg-green-700 text-white rounded w-full p-2">
+               <option value="start">Start</option>
+               <option value="stop">Stop</option>
+               <option value="restart">Restart</option>
+            </select>
+         </div>
+         <div class="action-block p-4 bg-purple-600 shadow-lg rounded-lg mb-4 text-white cursor-pointer transition-transform transform hover:scale-105" draggable="true" data-type="webhook">
+            <span class="font-medium">Webhook</span>
+            <input type="text" placeholder="Enter URL" class="mt-2 bg-purple-700 text-white rounded w-full p-2">
+         </div>
+      </div>
+
+      <div id="workspace" class="flex-1 border border-neutral-200/20 p-6 rounded-lg shadow-lg relative overflow-hidden" style="height: 600px; 
+      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1.5px, transparent 1.5px),
+                        radial-gradient(circle, rgba(255, 255, 255, 0.1) 1.5px, transparent 1px);
+      background-size: 40px 40px; /* Erhöhte Größe für weniger Punkte */
+      background-position: 0 0, 20px 20px;">
+      <h3 class="text-xl font-semibold text-white mb-6">Workspace</h3>
+      <p id="workspace-placeholder" class="text-gray-400 mb-4">Drag actions here to build your automation workflow.</p>
+      <svg id="connectors" class="absolute inset-0 pointer-events-none" style="z-index: 0;"></svg>
+  </div>
+   </div>
+</main>
+<%- include('../components/footer') %>
+
+<style>
+
+   .action-block, .block-item {
+      cursor: grab;
+   }
+   .action-block:active, .block-item:active {
+      cursor: grabbing;
+   }
+   .block-item {
+      position: absolute;
+      width: 200px; 
+      z-index: 10;
+   }
+   .connector {
+      stroke: #4f46e5;
+      stroke-width: 2;
+      fill: none;
+      filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+   }
+   .connection-point {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #4f46e5;
+      position: absolute;
+      cursor: crosshair;
+      box-shadow: 0 0 0 2px white, 0 0 0 4px #4f46e5, 0 0 5px 4px rgba(79, 70, 229, 0.5);
+      z-index: 20;
+      transition: transform 0.2s;
+   }
+   .connection-point:hover {
+      transform: scale(1.2);
+   }
+
+   #connectors {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    }
+
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let draggedElement = null;
+    let offset = { x: 0, y: 0 };
+    let currentConnection = null;
+    const actions = document.getElementById('action-blocks');
+    const workspace = document.getElementById('workspace');
+    const connectors = document.getElementById('connectors');
+    const saveButton = document.getElementById('save-button');
+    const placeholder = document.getElementById('workspace-placeholder');
+    let connections = [];
+    let blockIdCounter = 0;
+
+    workspace.addEventListener('contextmenu', showContextMenu);
+    document.addEventListener('click', hideContextMenu);
+
+    const savedWorkflow = <%- JSON.stringify(workflow) %>;
+
+    actions.addEventListener('dragstart', dragStart);
+    workspace.addEventListener('dragover', dragOver);
+    workspace.addEventListener('drop', drop);
+    workspace.addEventListener('mousedown', startDragging);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', stopDragging);
+    saveButton.addEventListener('click', saveWorkflow);
+
+    if (savedWorkflow) {
+        loadSavedWorkflow(savedWorkflow);
+    }
+
+    function loadSavedWorkflow(data) {
+        workspace.querySelectorAll('.block-item').forEach(el => el.remove());
+        connectors.innerHTML = '';
+        connections = [];
+
+        const blockMap = new Map();
+
+        data.blocks.forEach(block => {
+            const blockElement = createBlockElement(block.type);
+            blockElement.style.left = `${block.x}px`;
+            blockElement.style.top = `${block.y}px`;
+            blockElement.dataset.id = block.id;
+            workspace.appendChild(blockElement);
+            createConnectionPoints(blockElement);
+
+            const select = blockElement.querySelector('select');
+            const input = blockElement.querySelector('input');
+            
+            if (select && block.meta.selectedValue) {
+                select.value = block.meta.selectedValue;
+            }
+            if (input && block.meta.inputValue) {
+                input.value = block.meta.inputValue;
+            }
+
+            blockMap.set(block.id, blockElement);
+            blockIdCounter = Math.max(blockIdCounter, parseInt(block.id) + 1);
+        });
+
+        data.connections.forEach(connection => {
+            const fromElement = blockMap.get(connection.from);
+            const toElement = blockMap.get(connection.to);
+            if (fromElement && toElement) {
+                const fromPoint = fromElement.querySelector('.connection-point[data-position="right"]');
+                const toPoint = toElement.querySelector('.connection-point[data-position="left"]');
+                
+                const connector = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                connector.setAttribute('class', 'connector');
+                connectors.appendChild(connector);
+                connections.push({ start: fromPoint, end: toPoint, connector: connector });
+            }
+        });
+
+        updateConnections();
+        updatePlaceholder();
+    }
+
+    function showContextMenu(e) {
+        e.preventDefault();
+        hideContextMenu();
+
+        const contextMenu = document.createElement('div');
+        contextMenu.id = 'context-menu';
+        contextMenu.style.position = 'absolute';
+        contextMenu.style.left = `${e.clientX}px`;
+        contextMenu.style.top = `${e.clientY + 10}px`;
+        contextMenu.classList.add('bg-neutral-200', 'p-1', 'rounded-lg', 'shadow', 'z-10', 'w-40', 'text-sm', 'border', 'border-neutral-300/20');
+
+        const target = e.target.closest('.block-item, .connector');
+        if (target) {
+            const deleteOption = document.createElement('div');
+            deleteOption.textContent = 'Delete';
+            deleteOption.style.cursor = 'pointer';
+            deleteOption.classList.add('text-red-500', 'hover:text-neutral-200', 'transition-all', 'rounded-lg', 'px-2', 'py-1', 'hover:bg-red-600');
+
+            deleteOption.addEventListener('click', () => {
+                if (target.classList.contains('block-item')) {
+                    deleteBlock(target);
+                } else if (target.classList.contains('connector')) {
+                    deleteConnection(target);
+                }
+                hideContextMenu();
+            });
+
+            contextMenu.appendChild(deleteOption);
+
+            document.body.appendChild(contextMenu);
+        }
+    }
+
+    function hideContextMenu() {
+        const existingMenu = document.getElementById('context-menu');
+        if (existingMenu) {
+            existingMenu.remove();
+        }
+    }
+
+    function deleteBlock(block) {
+        connections = connections.filter(conn => {
+            if (conn.start.parentElement === block || conn.end.parentElement === block) {
+                connectors.removeChild(conn.connector);
+                return false;
+            }
+            return true;
+        });
+
+        workspace.removeChild(block);
+        updatePlaceholder();
+    }
+
+    function deleteConnection(connector) {
+        const index = connections.findIndex(conn => conn.connector === connector);
+        if (index !== -1) {
+            connections.splice(index, 1);
+            connectors.removeChild(connector);
+        }
+    }
+
+
+    function createBlockElement(type) {
+        const blockTemplate = actions.querySelector(`[data-type="${type}"]`);
+        const clone = blockTemplate.cloneNode(true);
+        clone.classList.add('block-item');
+        clone.dataset.type = type;
+        clone.dataset.id = blockIdCounter++;
+        return clone;
+    }
+
+    function dragStart(e) {
+        const clone = createBlockElement(e.target.dataset.type);
+        workspace.appendChild(clone);
+        draggedElement = clone;
+        offset.x = e.offsetX;
+        offset.y = e.offsetY;
+    }
+
+    function dragOver(e) {
+        e.preventDefault();
+        if (draggedElement) {
+            const x = e.clientX - workspace.getBoundingClientRect().left - offset.x;
+            const y = e.clientY - workspace.getBoundingClientRect().top - offset.y;
+            draggedElement.style.left = `${x}px`;
+            draggedElement.style.top = `${y}px`;
+            updateConnections();
+        }
+    }
+
+    function drop(e) {
+        if (draggedElement) {
+            createConnectionPoints(draggedElement);
+            draggedElement = null;
+        }
+        updatePlaceholder();
+    }
+    
+        function createConnectionPoints(block) {
+            ['left', 'right'].forEach(point => {
+                const connectionPoint = document.createElement('div');
+                connectionPoint.classList.add('connection-point');
+                connectionPoint.dataset.position = point;
+                
+                if (point === 'left') {
+                    connectionPoint.style.left = '-6px';
+                } else {
+                    connectionPoint.style.right = '-6px';
+                }
+                connectionPoint.style.top = '50%';
+                block.appendChild(connectionPoint);
+                
+                connectionPoint.addEventListener('mousedown', handleConnectionPoint);
+            });
+        }
+    
+        function handleConnectionPoint(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const clickedPoint = e.target;
+            if (!currentConnection) {
+                startNewConnection(clickedPoint);
+            } else {
+                completeConnection(clickedPoint);
+            }
+        }
+    
+        function startNewConnection(point) {
+            if (point.dataset.position === 'right') {
+                const connector = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                connector.setAttribute('class', 'connector');
+                connectors.appendChild(connector);
+                currentConnection = { start: point, connector: connector };
+                document.addEventListener('mousemove', updateCurrentConnection);
+                document.addEventListener('mouseup', finishConnection);
+            }
+        }
+
+    
+        function updateCurrentConnection(e) {
+            if (currentConnection) {
+                const startPos = getConnectionPointPosition(currentConnection.start);
+                const endPos = {
+                    x: e.clientX - workspace.getBoundingClientRect().left,
+                    y: e.clientY - workspace.getBoundingClientRect().top
+                };
+                drawConnection({ start: startPos, end: endPos }, currentConnection.connector);
+            }
+        }
+    
+        function finishConnection(e) {
+            document.removeEventListener('mousemove', updateCurrentConnection);
+            document.removeEventListener('mouseup', finishConnection);
+            if (currentConnection && e.target.classList.contains('connection-point')) {
+                completeConnection(e.target);
+            } else {
+                connectors.removeChild(currentConnection.connector);
+                currentConnection = null;
+            }
+        }
+    
+        function completeConnection(point) {
+            if (point !== currentConnection.start) {
+                const fromBlock = currentConnection.start.parentElement;
+                const toBlock = point.parentElement;
+
+                if (currentConnection.start.dataset.position === 'right' && point.dataset.position === 'left') {
+                    currentConnection.end = point;
+                    connections.push(currentConnection);
+                    updateConnections();
+                } else {
+                    connectors.removeChild(currentConnection.connector);
+                }
+            } else {
+                connectors.removeChild(currentConnection.connector);
+            }
+            currentConnection = null;
+        }
+    
+        function drawConnection(connection, connector) {
+            const startPos = connection.start;
+            const endPos = connection.end;
+            const midX = (startPos.x + endPos.x) / 2;
+            const d = `M ${startPos.x},${startPos.y} C ${midX},${startPos.y} ${midX},${endPos.y} ${endPos.x},${endPos.y}`;
+            connector.setAttribute('d', d);
+        }
+
+    
+        function getConnectionPointPosition(point, side = 'right') {
+            const workspaceRect = workspace.getBoundingClientRect();
+            const rect = point.getBoundingClientRect();
+
+            if (side === 'right') {
+                return {
+                    x: rect.right - workspaceRect.left,
+                    y: rect.top + rect.height / 2 - workspaceRect.top
+                };
+            } else if (side === 'left') {
+                return {
+                    x: rect.left - workspaceRect.left,
+                    y: rect.top + rect.height / 2 - workspaceRect.top
+                };
+            }
+        }
+    
+        function startDragging(e) {
+            const block = e.target.closest('.block-item');
+            if (block) {
+                draggedElement = block;
+                offset.x = e.clientX - block.getBoundingClientRect().left;
+                offset.y = e.clientY - block.getBoundingClientRect().top;
+            }
+        }
+    
+        function drag(e) {
+            if (draggedElement) {
+                const x = e.clientX - workspace.offsetLeft - offset.x;
+                const y = e.clientY - workspace.offsetTop - offset.y;
+                draggedElement.style.left = `${x}px`;
+                draggedElement.style.top = `${y}px`;
+                updateConnections();
+            }
+        }
+    
+        function stopDragging() {
+            draggedElement = null;
+        }
+    
+        function updateConnections() {
+            connections.forEach(connection => {
+                const startPos = getConnectionPointPosition(connection.start);
+                const endPos = getConnectionPointPosition(connection.end);
+                drawConnection({ start: startPos, end: endPos }, connection.connector);
+            });
+        }
+    
+        function updatePlaceholder() {
+            const blocks = workspace.querySelectorAll('.block-item');
+            placeholder.style.display = blocks.length > 0 ? 'none' : 'block';
+        }
+    
+        async function saveWorkflow() {
+        const blocks = Array.from(workspace.querySelectorAll('.block-item'));
+        const blockData = blocks.map(block => {
+            let meta = {};
+            const select = block.querySelector('select');
+            const input = block.querySelector('input');
+
+            if (select) {
+                meta.selectedValue = select.value;
+            }
+            if (input) {
+                meta.inputValue = input.value;
+            }
+
+            return {
+                id: block.dataset.id,
+                type: block.dataset.type,
+                x: parseFloat(block.style.left),
+                y: parseFloat(block.style.top),
+                meta: meta
+            };
+        });
+
+        const connectionData = connections.map(connection => ({
+            from: connection.start.parentElement.dataset.id,
+            to: connection.end.parentElement.dataset.id
+        }));
+
+        try {
+            const response = await fetch('/instance/<%= req.params.id %>/automations/save-workflow', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ blocks: blockData, connections: connectionData })
+            });
+            const result = await response.json();
+            if (result.success) {
+                alert('Workflow saved successfully!');
+            } else {
+                throw new Error(result.message || 'Unknown error occurred');
+            }
+        } catch (error) {
+            console.error('Error saving workflow:', error);
+            alert('Failed to save the workflow: ' + error.message);
+        }
+    }
+});
+</script>
+    

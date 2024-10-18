@@ -4,6 +4,8 @@ const axios = require('axios');
 const { db } = require('../../handlers/db.js');
 const { logAudit } = require('../../handlers/auditLog.js');
 const { isAdmin } = require('../../utils/isAdmin.js');
+const fs = require('fs');
+const path = require('path');
 const log = new (require('cat-loggr'))();
 
 // we forgot checkNodeStatus
@@ -47,22 +49,48 @@ async function checkNodeStatus(node) {
   }
 }
 
+const workflowsFilePath = path.join(__dirname, '../../storage/workflows.json');
+
 async function deleteInstance(instance) {
   try {
-    await axios.get(`http://Skyport:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}/delete`);
-    
-    let userInstances = await db.get(instance.User + '_instances') || [];
-    userInstances = userInstances.filter(obj => obj.ContainerId !== instance.ContainerId);
-    await db.set(instance.User + '_instances', userInstances);
-    
-    let globalInstances = await db.get('instances') || [];
-    globalInstances = globalInstances.filter(obj => obj.ContainerId !== instance.ContainerId);
-    await db.set('instances', globalInstances);
-    
-    await db.delete(instance.ContainerId + '_instance');
+      await axios.get(`http://Skyport:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}/delete`);
+      let userInstances = await db.get(instance.User + '_instances') || [];
+      userInstances = userInstances.filter(obj => obj.Id !== instance.Id);
+      await db.set(instance.User + '_instances', userInstances);
+
+      let globalInstances = await db.get('instances') || [];
+      globalInstances = globalInstances.filter(obj => obj.Id !== instance.Id);
+      await db.set('instances', globalInstances);
+      
+      await db.delete(instance.Id + '_instance');
+      
+      await db.delete(instance.Id + '_workflow');
+      await deleteWorkflowFromFile(instance.Id);
+
   } catch (error) {
-    log.error(`Error deleting instance ${instance.ContainerId}:`, error);
-    throw error;
+      log.error(`Error deleting instance ${instance.Id}:`, error);
+      throw error;
+  }
+}
+
+function deleteWorkflowFromFile(instanceId) {
+  try {
+      if (fs.existsSync(workflowsFilePath)) {
+          const data = fs.readFileSync(workflowsFilePath, 'utf8');
+          const workflows = JSON.parse(data);
+          
+          if (workflows[instanceId]) {
+              delete workflows[instanceId];
+              fs.writeFileSync(workflowsFilePath, JSON.stringify(workflows, null, 2), 'utf8');
+              console.log(`Workflow for instance ${instanceId} deleted successfully from file.`);
+          } else {
+              console.log(`No workflow found for instance ${instanceId} in the file.`);
+          }
+      } else {
+          console.error('Workflows file does not exist.');
+      }
+  } catch (error) {
+      console.error('Error deleting workflow from file:', error);
   }
 }
 
