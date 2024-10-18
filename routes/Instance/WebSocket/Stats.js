@@ -20,27 +20,29 @@ router.ws("/stats/:id", async (ws, req) => {
     const node = instance.Node;
     const volume = instance.VolumeId;
     const socket = new WebSocket(`ws://${node.address}:${node.port}/stats/${instance.ContainerId}/${volume}`);
-
+    
     socket.onopen = () => {
         socket.send(JSON.stringify({ "event": "auth", "args": [node.apiKey] }));
     };
-
+    
     socket.onmessage = msg => {
         ws.send(msg.data);
     };
-
+    
     socket.onerror = (error) => {
-        ws.send('\x1b[31;1mThis instance is unavailable! \x1b[0mThe skyportd instance appears to be down. Retrying...')
+        ws.send(JSON.stringify({ error: 'Stats service is temporarily unavailable' }));
     };
-
-    socket.onclose = (event) => {};
-
+    
+    socket.onclose = (event) => {
+        ws.close(1011, 'Stats service disconnected');
+    };
+    
     ws.onmessage = msg => {
         socket.send(msg.data);
     };
-
+    
     ws.on('close', () => {
-        socket.close(); 
+        socket.close();
     });
 });
 

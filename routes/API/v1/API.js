@@ -254,7 +254,7 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
       if (++attempts < maxAttempts) {
         setTimeout(checkState, delay);
       } else {
-        log.log(`Container ${volumeId} failed to become active after ${maxAttempts} attempts.`);
+        log.info(`Container ${volumeId} failed to become active after ${maxAttempts} attempts.`);
         await updateInstanceState(volumeId, 'FAILED', containerId, userId);
       }
     } catch (error) {
@@ -262,7 +262,7 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
       if (++attempts < maxAttempts) {
         setTimeout(checkState, delay);
       } else {
-        log.log(`Container ${volumeId} state check failed after ${maxAttempts} attempts.`);
+        log.info(`Container ${volumeId} state check failed after ${maxAttempts} attempts.`);
         await updateInstanceState(volumeId, 'FAILED', null, userId);
       }
     }
