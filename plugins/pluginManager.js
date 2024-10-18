@@ -276,7 +276,5 @@ loadAndActivatePlugins();
 
 const pluginSidebarloader = () => pluginSidebar;
 
-module.exports = {
-    pluginSidebar: pluginSidebarloader,
-    router: router
-};
+module.exports.pluginSidebar = pluginSidebarloader;
+module.exports = router;
