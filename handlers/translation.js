@@ -1,8 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 
-
-
 function loadTranslations(lang) {
   const filePath = path.join(__dirname, `../lang/${lang}/lang.json`);
   if (fs.existsSync(filePath)) {

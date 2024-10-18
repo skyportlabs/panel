@@ -64,6 +64,7 @@ router.get("/instance/:id/archives", async (req, res) => {
                     user: req.user, 
                     archives, 
                     settings,
+                    
                     addons: {
                         plugins: allPluginData
                     }

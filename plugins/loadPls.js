@@ -50,5 +50,8 @@ function loadPlugins(pluginDir) {
 
     return plugins;
 }
-module.exports = router;
-module.exports.loadPlugins = loadPlugins;
+
+module.exports = {
+    loadPlugins: loadPlugins,
+    router: router
+};

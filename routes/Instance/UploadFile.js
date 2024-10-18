@@ -32,7 +32,6 @@ router.post("/instance/:id/files/upload", upload.array('files'), async (req, res
         return res.status(403).send('Unauthorized access to this instance.');
     }
 
-
     const suspended = await isInstanceSuspended(req.user.userId, instance, id);
     if (suspended === true) {
         return res.render('instance/suspended', { req, user: req.user });

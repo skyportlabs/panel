@@ -77,7 +77,6 @@ router.get('/admin/instances', isAdmin, async (req, res) => {
   res.render('admin/instances', {
     req,
     user: req.user,
-
     instances,
     images,
     nodes,
@@ -95,7 +94,6 @@ router.get('/admin/instances/:id/edit', isAdmin, async (req, res) => {
   res.render('admin/instance_edit', {
     req,
     user: req.user,
-
     instance,
     images,
     users

@@ -39,8 +39,8 @@ router.get("/instance/:id/files", async (req, res) => {
         const files = await fetchFiles(instance, req.query.path);
         res.render('instance/files', { 
             req, 
-            files: files, 
             user: req.user, 
+            files: files, 
 
             addons: {
                 plugins: allPluginData
@@ -49,9 +49,9 @@ router.get("/instance/:id/files", async (req, res) => {
     } catch (error) {
         const errorMessage = error.response && error.response.data ? error.response.data.message : 'Connection to node failed.';
         res.status(500).render('500', { 
-            error: errorMessage, 
             req, 
             user: req.user, 
+            error: errorMessage, 
 
             addons: {
                 plugins: allPluginData

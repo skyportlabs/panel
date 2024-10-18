@@ -20,7 +20,6 @@ router.get('/admin/overview', isAdmin, async (req, res) => {
     res.render('admin/overview', {
       req,
       user: req.user,
-
       usersTotal,
       nodesTotal,
       imagesTotal,

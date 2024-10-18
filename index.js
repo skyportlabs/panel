@@ -153,7 +153,6 @@ app.use(async (req, res, next) => {
   }
 });
 
-
 if (config.mode === 'production' || false) {
   app.use((req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');
