@@ -47,6 +47,7 @@ router.get('/instance/:id/startup', async (req, res) => {
             req,
             user: req.user,
             instance,
+            
             addons: {
                 plugins: allPluginData
             }

@@ -30,6 +30,7 @@ router.get('/instance/:id/users', async (req, res) => {
             req,
             user: req.user,
             users,
+
             addons: {
                 plugins: allPluginData
             } 

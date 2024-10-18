@@ -43,6 +43,7 @@ router.get("/instance/:id/settings", async (req, res) => {
         req,
         user: req.user,
         instance,
+        
         addons: {
             plugins: allPluginData
         } 

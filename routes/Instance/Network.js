@@ -40,6 +40,7 @@ router.get("/instance/:id/network", async (req, res) => {
         user: req.user,
         instance,
         ports,
+        
         addons: {
             plugins: allPluginData
         }

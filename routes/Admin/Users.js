@@ -22,7 +22,6 @@ router.get('/admin/users', isAdmin, async (req, res) => {
   res.render('admin/users', {
     req,
     user: req.user,
-
     users: await db.get('users') || []
   });
 });
@@ -99,8 +98,6 @@ router.get('/admin/users/edit/:userId', isAdmin, async (req, res) => {
     req,
     user: req.user,
     editUser: user,
-
-    
   });
 });
 

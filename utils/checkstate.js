@@ -56,7 +56,7 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
         if (++attempts < maxAttempts) {
           setTimeout(checkState, delay);
         } else {
-          console.log(`Container ${volumeId} failed to become active after ${maxAttempts} attempts.`);
+          log.error(`Container ${volumeId} failed to become active after ${maxAttempts} attempts.`);
           // Update state to FAILED in all relevant places
           instance.InternalState = 'FAILED';
           await db.set(`${volumeId}_instance`, instance);
@@ -72,7 +72,7 @@ async function checkContainerState(volumeId, nodeAddress, nodePort, apiKey, user
         if (++attempts < maxAttempts) {
           setTimeout(checkState, delay);
         } else {
-          console.log(`Container ${volumeId} state check failed after ${maxAttempts} attempts.`);
+          log.info(`Container ${volumeId} state check failed after ${maxAttempts} attempts.`);
           // Update state to FAILED in all relevant places (same as above)
           const instance = await db.get(`${volumeId}_instance`);
           instance.InternalState = 'FAILED';

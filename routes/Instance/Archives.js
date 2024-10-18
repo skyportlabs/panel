@@ -64,6 +64,7 @@ router.get("/instance/:id/archives", async (req, res) => {
                     user: req.user, 
                     archives, 
                     settings,
+                    
                     addons: {
                         plugins: allPluginData
                     }
@@ -128,7 +129,7 @@ router.post('/instance/:id/archives/create', async (req, res) => {
 
 
 router.post('/instance/:id/archives/delete/:archivename', async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body); idk 
     const { id, archivename } = req.params;
     if (!req.user) {
         return res.redirect('/');
@@ -173,7 +174,7 @@ router.post('/instance/:id/archives/delete/:archivename', async (req, res) => {
 });
 
 router.post('/instance/:id/archives/rollback/:archivename', async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     const { id, archivename } = req.params;
     if (!req.user) {
         return res.redirect('/');

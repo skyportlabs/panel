@@ -5,8 +5,6 @@
  * request to proceed. Otherwise, it redirects the user to the login page.
  */
 
-const { db } = require('./db');
-
 /**
  * Middleware function to check if the user is authenticated. Utilizes Passport's built-in method
  * to determine if the current session is authenticated. If the session is authenticated, it calls

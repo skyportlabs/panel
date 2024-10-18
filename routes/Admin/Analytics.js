@@ -22,13 +22,11 @@ router.get('/admin/analytics', isAdmin, async (req, res) => {
   }));
 
   res.render('admin/analytics', {
+    req,
+    user: req.user,
     pageViews,
     methodCounts,
     timeSeriesData,
-    req,
-    user: req.user,
-
-    
   });
 });
 

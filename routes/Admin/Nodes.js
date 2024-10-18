@@ -59,7 +59,6 @@ router.get('/admin/nodes', isAdmin, async (req, res) => {
   });
 });
 
-
 router.get('/admin/node/:id/stats', isAdmin, async (req, res) => {
   const { id } = req.params;
 
@@ -101,9 +100,6 @@ router.get('/admin/node/:id/stats', isAdmin, async (req, res) => {
     status
   });
 });
-
-
-
 
 router.post('/nodes/create', isAdmin, async (req, res) => {
   const configureKey = uuidv4();
@@ -305,7 +301,6 @@ router.get('/admin/node/:id', isAdmin, async (req, res) => {
   res.render('admin/node', {
     req,
     user: req.user,
-
     node
   });
 });

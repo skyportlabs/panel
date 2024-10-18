@@ -33,7 +33,6 @@ router.get("/instances", isAuthenticated, async (req, res) => {
     res.render('instances', {
         req,
         user: req.user,
-
         instances,
         config: require('../../config.json')
     });
@@ -69,13 +68,13 @@ router.get("/instance/:id", async (req, res) => {
 
     res.render('instance/instance', {
         req,
+        user: req.user,
         ContainerId: instance.ContainerId,
         instance,
         port,
         domain,
-        user: req.user,
-
         files: await fetchFiles(instance, ""),
+        
         addons: {
             plugins: allPluginData
         }

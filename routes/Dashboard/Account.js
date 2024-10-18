@@ -13,6 +13,7 @@ const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
 const saltRounds = process.env.SALT_ROUNDS || 10;
 const log = new (require('cat-loggr'))();
+const { isAuthenticated } = require('../../handlers/auth.js');
 
 async function doesUserExist(username) {
     const users = await db.get('users');
@@ -51,7 +52,7 @@ router.get('/accounts', async (req, res) => {
     res.json({ exists: userExists });
 });
 
-router.post('/update-username', async (req, res) => {
+router.post('/update-username', isAuthenticated, async (req, res) => {
     const { currentUsername, newUsername } = req.body;
 
     if (!currentUsername || !newUsername) {
@@ -59,11 +60,6 @@ router.post('/update-username', async (req, res) => {
     }
 
     try {
-        // Check if the user is authenticated
-        if (!req.isAuthenticated()) {
-            return res.status(401).send('User is not authenticated.');
-        }
-
         // Logout the user
         req.logout(async (err) => {
             if (err) {
@@ -107,11 +103,8 @@ router.post('/update-username', async (req, res) => {
 });
 
 
-router.get('/enable-2fa', async (req, res) => {
+router.get('/enable-2fa', isAuthenticated, async (req, res) => {
     try {
-        if (!req.isAuthenticated()) {
-            return res.status(401).send('User is not authenticated.');
-        }
         const users = await db.get('users');
         const currentUser = users.find(user => user.username === req.user.username);
         const secret = speakeasy.generateSecret({
@@ -146,12 +139,8 @@ router.get('/enable-2fa', async (req, res) => {
     }
 });
 
-router.post('/verify-2fa', async (req, res) => {
+router.post('/verify-2fa', isAuthenticated, async (req, res) => {
     try {
-        if (!req.isAuthenticated()) {
-            return res.status(401).send('User is not authenticated.');
-        }
-
         const { token } = req.body;
         const users = await db.get('users');
         const currentUser = users.find(user => user.username === req.user.username);
@@ -183,14 +172,9 @@ router.post('/verify-2fa', async (req, res) => {
 });
 
 
-router.post('/disable-2fa', async (req, res) => {
+router.post('/disable-2fa', isAuthenticated, async (req, res) => {
     try {
-        if (!req.isAuthenticated()) {
-            return res.status(401).send('User is not authenticated.');
-        }
-
         const users = await db.get('users');
-        const currentUser = users.find(user => user.username === req.user.username);
 
         const updatedUsers = users.map(user => {
             if (user.username === req.user.username) {
@@ -209,7 +193,7 @@ router.post('/disable-2fa', async (req, res) => {
 });
 
 
-router.post('/change-password', async (req, res) => {
+router.post('/change-password', isAuthenticated, async (req, res) => {
     const { currentPassword, newPassword } = req.body;
 
     if (!currentPassword || !newPassword) {
@@ -217,11 +201,6 @@ router.post('/change-password', async (req, res) => {
     }
 
     try {
-        // Check if the user is authenticated
-        if (!req.isAuthenticated()) {
-            return res.status(401).send('User is not authenticated.');
-        }
-
         // Get the user's information from the database
         const users = await db.get('users');
         const currentUser = users.find(user => user.username === req.user.username);
@@ -263,15 +242,10 @@ router.post('/change-password', async (req, res) => {
 });
 
 
-router.post('/validate-password', async (req, res) => {
+router.post('/validate-password', isAuthenticated, async (req, res) => {
     try {
         // Retrieve the password from the request body
         const { currentPassword } = req.body;
-
-        // Check if the user is authenticated
-        if (!req.isAuthenticated()) {
-            return res.status(401).json({ message: 'User is not authenticated.' });
-        }
 
         // Get the user's information from the database
         const users = await db.get('users');

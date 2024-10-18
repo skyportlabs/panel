@@ -137,5 +137,4 @@ router.post("/instance/:id/db/create/:name", async (req, res) => {
     }
 });
 
-
 module.exports = router;

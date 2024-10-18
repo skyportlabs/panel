@@ -185,14 +185,6 @@ async function loadAndActivatePlugins() {
     }
 }
 
-process.on('uncaughtException', (error) => {
-    log.error(`Uncaught Exception: ${error.message}`);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-    log.error(`Unhandled Rejection at: ${promise} reason: ${reason.message || reason}`);
-});
-
 router.get('/admin/plugins', isAdmin, async (req, res) => {
     const pluginsJson = await readPluginsJson();
 
@@ -205,10 +197,10 @@ router.get('/admin/plugins', isAdmin, async (req, res) => {
 
     res.render('admin/plugins', {
         req,
+        user: req.user,
         plugins: pluginList,
         pluginSidebar,
         enabledPlugins,
-        user: req.user,
     });
 });
 
@@ -237,10 +229,10 @@ router.get('/admin/plugins/:dir/edit', isAdmin, async (req, res) => {
 
         res.render('admin/plugin', {
             req,
+            user: req.user,
             pluginSidebar,
             dir,
             content: manifestJson,
-            user: req.user,
         });
     } catch (error) {
         log.error(`Error loading plugin edit page: ${error.message}`);
@@ -270,6 +262,14 @@ router.post('/admin/plugins/reload', isAdmin, async (req, res) => {
         log.error(`Error reloading plugins: ${error.message}`);
         res.status(500).send('An error occurred. Please try again later.');
     }
+});
+// ok wtf could ben ot in index ?
+process.on('uncaughtException', (error) => {
+    log.error(`Uncaught Exception: ${error.message}`);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    log.error(`Unhandled Rejection at: ${promise} reason: ${reason.message || reason}`);
 });
 
 loadAndActivatePlugins();

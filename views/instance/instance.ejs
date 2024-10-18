@@ -376,21 +376,34 @@
         
             initStatsWebSocket();
         });
+
+        function isValidJson(str) {
+            try {
+              JSON.parse(str);
+            } catch (e) {
+              return false;
+            }
+            return true;
+        }
         
         function initStatsWebSocket() {
             const statsWs = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/stats/${instanceId}`);
             
             statsWs.onmessage = event => {
-                const stats = JSON.parse(event.data);
-                if (stats.error) {
-                    console.error('Error fetching stats:', stats.error);
-                    return;
-                }
+                if (isValidJson(event.data)) {
+                    const stats = JSON.parse(event.data);
+                    if (stats.error) {
+                        console.error('Error fetching stats:', stats.error);
+                        return;
+                    }
         
-                updateRamUsage(stats);
-                updateCpuUsage(stats);
-                updateDiskUsage(stats);
-                updateStatus(stats);
+                    updateRamUsage(stats);
+                    updateCpuUsage(stats);
+                    updateDiskUsage(stats);
+                    updateStatus(stats);
+                } else {
+                    console.log('Received non-JSON data:', event.data);
+                }
             };
         }
         
