@@ -371,6 +371,7 @@
                             containerId: instanceId
                         }));
 
+                        // Tempory system, i need to recode this part for sychronization with the daemon
                         if (action === 'stop') {
                             ws.close();
                             term.write('\r\n\u001b[1m\u001b[33m[skyportd] \u001b[0mServer marked as stopping...\r\n');
