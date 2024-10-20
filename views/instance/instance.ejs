@@ -253,8 +253,8 @@
             ws.onopen = () => console.log('WebSocket connected!');
             ws.onmessage = handleWebSocketMessage;
             ws.onclose = () => {
-                //console.log('WebSocket connection closed, attempting to reconnect...');
-                //setTimeout(initWebSocket, 3000);
+                console.log('WebSocket connection closed, attempting to reconnect...');
+                setTimeout(initWebSocket, 3000);
             };
             ws.onerror = (error) => {
                 console.log('WebSocket encountered an error:', error, 'Attempting to reconnect...');
@@ -277,7 +277,7 @@
         
                 term.write('\x1b[0m' + trimmedLine);
         
-                if (trimmedLine.includes("state:")) {
+                if (trimmedLine.includes("Working on")) {
                     term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
                     term.clear();
                     ws.close();
@@ -371,32 +371,6 @@
                             containerId: instanceId
                         }));
 
-                        // Tempory system, i need to recode this part for sychronization with the daemon
-                        if (action === 'stop') {
-                            ws.close();
-                            term.write('\r\n\u001b[1m\u001b[33m[skyportd] \u001b[0mServer marked as stopping...\r\n');
-                        } else if (action === 'start') {
-                            setTimeout(() => {
-                                initWebSocket();
-                            }, 1000);
-                            term.write('\r\n\u001b[1m\u001b[33m[skyportd] \u001b[0mServer marked as starting...\r\n');
-                            setTimeout(() => {
-                                term.clear();
-                                term.write('\r\n\u001b[1m\u001b[33m[skyportd] \u001b[0mServer marked as starting...\r\n');
-                            }, 2000);
-                        } else if (action === 'restart') {
-                            setTimeout(() => {
-                                ws.close(); 
-                                term.write('\r\n\u001b[1m\u001b[33m[skyportd] \u001b[0mServer marked as stopping...\r\n');
-                                setTimeout(() => {
-                                    initWebSocket();
-                                    setTimeout(() => {
-                                        term.clear();
-                                        term.write('\r\n\u001b[1m\u001b[33m[skyportd] \u001b[0mServer marked as starting...\r\n');
-                                    }, 2000);
-                                }, 2000);
-                            }, 10000);
-                        }
                         
                     }
                 });
