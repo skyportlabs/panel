@@ -134,6 +134,21 @@ async function updateConfig() {
 
 updateConfig();
 
+function getLanguages() {
+  return fs.readdirSync(__dirname + '/lang').map(file => file.split('.')[0]);
+}
+
+app.get('/setLanguage', async (req, res) => {
+  const lang = req.query.lang;
+  if (lang && getLanguages().includes(lang)) {
+      res.cookie('lang', lang, { maxAge: 90000000, httpOnly: true, sameSite: 'strict' });
+      req.user.lang = lang;
+      res.json({ success: true });
+  } else {
+      res.json({ success: false });
+  }
+});
+
 app.use(async (req, res, next) => {
   try {
     const settings = await db.get('settings');
@@ -181,21 +196,6 @@ app.use(express.static('public'));
  * Logs the loaded routes and mounts them to the Express application under the root path. This allows for
  * modular route definitions that can be independently maintained and easily scaled.
  */
-
-function getLanguages() {
-  return fs.readdirSync(__dirname + '/lang').map(file => file.split('.')[0]);
-}
-
-app.get('/setLanguage', async (req, res) => {
-  const lang = req.query.lang;
-  if (lang && getLanguages().includes(lang)) {
-      res.cookie('lang', lang, { maxAge: 90000000, httpOnly: true, sameSite: 'strict' });
-      req.user.lang = lang;
-      res.json({ success: true });
-  } else {
-      res.json({ success: false });
-  }
-});
 
 const routesDir = path.join(__dirname, 'routes');
 function loadRoutes(directory) {

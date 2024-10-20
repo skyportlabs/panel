@@ -82,9 +82,6 @@ function deleteWorkflowFromFile(instanceId) {
           if (workflows[instanceId]) {
               delete workflows[instanceId];
               fs.writeFileSync(workflowsFilePath, JSON.stringify(workflows, null, 2), 'utf8');
-              console.log(`Workflow for instance ${instanceId} deleted successfully from file.`);
-          } else {
-              console.log(`No workflow found for instance ${instanceId} in the file.`);
           }
       } else {
           console.error('Workflows file does not exist.');

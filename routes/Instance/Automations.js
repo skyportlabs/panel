@@ -27,7 +27,7 @@ function saveWorkflowToFile(instanceId, workflow) {
 
         fs.writeFileSync(workflowsFilePath, JSON.stringify(workflows, null, 2), 'utf8');
     } catch (error) {
-        console.error('Error saving workflow to file:', error);
+        log.error('Error saving workflow to file:', error);
     }
 }
 
@@ -44,7 +44,7 @@ function saveScheduledWorkflows() {
 
         fs.writeFileSync(scheduledWorkflowsFilePath, JSON.stringify(scheduledWorkflows, null, 2), 'utf8');
     } catch (error) {
-        console.error('Error saving scheduled workflows:', error);
+        log.error('Error saving scheduled workflows:', error);
     }
 }
 
@@ -62,7 +62,7 @@ function loadScheduledWorkflows() {
             }
         }
     } catch (error) {
-        console.error('Error loading scheduled workflows:', error);
+        log.error('Error loading scheduled workflows:', error);
     }
 }
 
@@ -146,7 +146,7 @@ router.post("/instance/:instanceId/automations/save-workflow", async (req, res) 
 
         res.json({ success: true, message: 'Workflow saved successfully' });
     } catch (error) {
-        console.error('Error saving workflow:', error);
+        log.error('Error saving workflow:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
@@ -190,7 +190,7 @@ function logCountdownToNextExecution(scheduledJob, intervalMinutes) {
                 clearInterval(logInterval);
             }
         } else {
-            console.error('Invalid next execution time. Cannot calculate remaining time.');
+            log.error('Invalid next execution time. Cannot calculate remaining time.');
             clearInterval(logInterval);
         }
     }, 5000);
@@ -223,7 +223,7 @@ function executeWorkflow(instanceId) {
                     });
             });
     } else {
-        console.error(`No workflow found for instance ${instanceId}`);
+        log.error(`No workflow found for instance ${instanceId}`);
     }
 }
 
@@ -249,14 +249,14 @@ async function executePowerAction(instanceId, powerAction) {
         } else if (response.status === 304) {
             return true;
         } else {
-            console.error(`Unexpected status code: ${response.status}. Power action ${powerAction} might have failed.`);
+            log.error(`Unexpected status code: ${response.status}. Power action ${powerAction} might have failed.`);
             return false;
         }
     } catch (error) {
         if (error.response && error.response.status === 304) {
             return true;
         } else {
-            console.error('Error executing power action:', error.message);
+            log.error('Error executing power action:', error.message);
             return false;
         }
     }
@@ -268,7 +268,7 @@ async function sendWebhookNotification(webhookUrl, message) {
             content: message
         });
     } catch (error) {
-        console.error('Failed to send webhook notification:', error.message);
+        log.error('Failed to send webhook notification:', error.message);
     }
 }
 
@@ -282,7 +282,7 @@ function loadWorkflowFromFile(instanceId) {
             return null;
         }
     } catch (error) {
-        console.error('Error loading workflow from file:', error);
+        log.error('Error loading workflow from file:', error);
         return null;
     }
 }
